@@ -448,72 +448,113 @@
 
 {% block content %}
 
-<!-- ═══ HERO ═══ -->
+<!-- ═══ HERO: EVAGHER FULL-VIEWPORT EDITORIAL SPLIT SHOWCASE ═══ -->
 <section id="hero">
   <div class="editorial-watermark">HAUTE COUTURE BRIDAL</div>
-  <div class="hbg-img"></div>
-  <div class="hov"></div>
   
-  <!-- Modern Editorial Portrait Showcase -->
-  <div class="hphoto">
-    <div class="hphoto-wrap">
-      <!-- Ambient Luxury Radial Aura -->
-      <div class="hphoto-glow"></div>
-      
-      <!-- Celestial Orbit Ring -->
-      <div class="hphoto-orbit"></div>
+  <!-- Left: Screen-Covering Sequential Photo Slider -->
+  <div class="hero-slider-deck" id="hero-slider-deck" onclick="openPeekGallery(window.currentHeroSlide || 0)" title="Click to open full-screen lookbook gallery">
+    <div class="hero-slider-overlay"></div>
+    
+    <div class="hero-slide active" data-slide="0">
+      <img src="{% static 'core/images/royal_maroon_bride.jpg' %}" alt="Royal Deep Maroon Velvet Bridal Couture">
+    </div>
+    <div class="hero-slide" data-slide="1">
+      <img src="{% static 'core/images/curated/bengali_bride_regal_portrait.jpg' %}" alt="Royal Bengali Bride Regal Mukut Portrait">
+    </div>
+    <div class="hero-slide" data-slide="2">
+      <img src="{% static 'core/images/reception_ivory_bride.jpg' %}" alt="Christian & Reception Pure Ivory Haute Bride">
+    </div>
+    <div class="hero-slide" data-slide="3">
+      <img src="{% static 'core/images/engagement_lilac_glam.jpg' %}" alt="Modern Lilac Glass-Skin Engagement Glamour">
+    </div>
 
-      <!-- Arched Cameo Silhouette Frame -->
-      <div class="hphoto-arch">
-        <div class="hphoto-arch-backdrop"></div>
-        <img src="{% static 'core/images/anshita_hero_portrait.png' %}" alt="Anshita — Founder & Master Bridal Artist" class="hphoto-cutout">
+    <!-- Minimalist Floating Counter & Progress Indicator -->
+    <div class="hero-slider-controls" onclick="event.stopPropagation()">
+      <span class="hero-counter" id="hero-counter">01 / 04</span>
+      <div class="hero-slider-dots" id="hero-slider-dots">
+        <span class="hero-slider-dot active" onclick="setHeroSlide(0)"></span>
+        <span class="hero-slider-dot" onclick="setHeroSlide(1)"></span>
+        <span class="hero-slider-dot" onclick="setHeroSlide(2)"></span>
+        <span class="hero-slider-dot" onclick="setHeroSlide(3)"></span>
       </div>
-
-      <!-- Floating Glass Accolade Badges -->
-      <div class="hphoto-pill-tl">
-        <span class="hpill-gold">✨</span>
-        <span class="hpill-txt">8+ {{ t.stat_years|default:'Years Mastery' }}</span>
-      </div>
-
-      <div class="hphoto-pill-br">
-        <span class="hpill-gold">👑</span>
-        <span class="hpill-txt">500+ {{ t.stat_brides|default:'Royal Brides' }}</span>
-      </div>
-
-      <div class="hphoto-pill-bottom">
-        <span class="hpill-gold">✦</span>
-        <span class="hpill-txt">{{ t.founder_badge|default:'Founder & Master Bridal Artist' }}</span>
-        <span class="hpill-gold">✦</span>
-      </div>
+      <span class="hero-view-gallery-hint" onclick="openPeekGallery(window.currentHeroSlide || 0)">
+        <span>🔍</span> Gallery
+      </span>
     </div>
   </div>
 
-  <div class="hcont">
-    <p class="h-sub">{{ t.hero_sub|default:"✦ Haute Couture Bridal Artistry · India ✦" }}</p>
-    <h1 class="h-title">{{ t.hero_title|default:"Anshita" }}<br><span>{{ t.hero_title_span|default:"Makeover" }}</span></h1>
-    <p class="h-tag">{{ t.hero_tag|default:"India's premier bridal couture & beauty studio — where timeless grace meets royal artistry for your most cherished celebration. 💍" }}</p>
-    <div class="h-ctas">
-      <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20reserve%20a%20bridal%20consultation." target="_blank" class="btn-p">💬 {{ t.btn_reserve|default:'Reserve Appointment' }}</a>
-      <a href="/academy/" class="btn-o">🎓 {{ t.btn_explore_academy|default:'Explore Academy' }}</a>
+  <!-- Right: Asymmetrical Editorial Brand Panel -->
+  <div class="hero-editorial-panel">
+    <p class="hero-badge-sub">{{ t.hero_sub|default:"HAUTE COUTURE BRIDAL · INDIA" }}</p>
+    <h1 class="hero-brand-headline">
+      ANSHITA<br><span>MAKEOVER</span>
+    </h1>
+    <p class="hero-editorial-tag">
+      {{ t.hero_tag|default:"Sculpting regal perfection for discerning brides. Timeless grace, international artistry, and 18-hour cry-proof radiance for your most sacred celebration." }}
+    </p>
+
+    <!-- Refined Editorial Accolade Badges -->
+    <div class="hero-accolades">
+      <div class="hero-accolade-item">
+        <span class="hero-accolade-icon">👑</span>
+        <div class="hero-accolade-text">
+          <strong>500+ Brides</strong>
+          <span>Royal Celebrations</span>
+        </div>
+      </div>
+      <div class="hero-accolade-item">
+        <span class="hero-accolade-icon">✨</span>
+        <div class="hero-accolade-text">
+          <strong>8+ Years</strong>
+          <span>Couture Mastery</span>
+        </div>
+      </div>
+      <div class="hero-accolade-item">
+        <span class="hero-accolade-icon">💎</span>
+        <div class="hero-accolade-text">
+          <strong>Dior & CT Kit</strong>
+          <span>Ultra-Luxury Formula</span>
+        </div>
+      </div>
+      <div class="hero-accolade-item">
+        <span class="hero-accolade-icon">✈️</span>
+        <div class="hero-accolade-text">
+          <strong>Pan-India</strong>
+          <span>Palace Destinations</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Editorial Call to Action Deck -->
+    <div class="hero-editorial-ctas">
+      <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita!%20I%20would%20like%20to%20reserve%20a%20bridal%20consultation." target="_blank" class="btn-p">
+        💬 {{ t.btn_reserve|default:'Reserve Appointment' }}
+      </a>
+      <button onclick="openPeekGallery(0)" class="btn-o">
+        🖼️ View Lookbook
+      </button>
+      <a href="/academy/" class="btn-o" style="border-color:rgba(212,175,55,0.3)">
+        🎓 Academy
+      </a>
     </div>
   </div>
-  <div class="sarrow"><span>{{ t.scroll_txt|default:'Scroll' }}</span><svg viewBox="0 0 30 18"><path d="M2 2l13 13L28 2"/></svg></div>
 </section>
 
-<!-- ═══ SERVICES ═══ -->
+<!-- ═══ SERVICES: CURATED COUTURE DISCIPLINES ═══ -->
 <section id="services" style="background:var(--dark)">
   <div class="sw">
     <div class="rev">
-      <p class="sl">{{ t.services_sl|default:'Curated Artistry' }}</p>
+      <p class="sl">{{ t.services_sl|default:'Artistry Disciplines' }}</p>
       <h2 class="sh">{{ t.services_sh|default:'Signature Services' }}</h2>
       <div class="gdiv"></div>
-      <p class="ss">{{ t.services_ss|default:'From bespoke bridal transformations to everyday couture glam, every nuance is sculpted to timeless perfection with luxury international products.' }}</p>
+      <p class="ss">{{ t.services_ss|default:'Precision techniques tailored to each bride. International master formulas, high-definition lighting optimization, and couture hair architecture.' }}</p>
     </div>
     <div class="svc-grid" style="margin-top:44px">
       <div class="svc-card rev d1">
         <span class="svc-icon">💄</span>
         <h3>{{ t.svc_makeup_title|default:'Bridal & Couture Makeup' }}</h3>
-        <p>{{ t.svc_makeup_desc|default:'Airbrush, High Definition, Soft Glam, Reception & Auspicious Occasions' }}</p>
+        <p>{{ t.svc_makeup_desc|default:'Airbrush & HD micro-pigments with 18-hour tear and sweat resistance.' }}</p>
         <div class="art-chips">
           {% for a in makeup_artists %}<span class="art-chip">{{ a.name }}</span>{% endfor %}
         </div>
@@ -521,7 +562,7 @@
       <div class="svc-card rev d2">
         <span class="svc-icon">💇</span>
         <h3>{{ t.svc_hair_title|default:'Haute Hair Artistry' }}</h3>
-        <p>{{ t.svc_hair_desc|default:'Couture bridal updos, textured Hollywood waves, traditional floral buns & styling' }}</p>
+        <p>{{ t.svc_hair_desc|default:'Sculpted updos, textured Hollywood waves, and fresh floral placement.' }}</p>
         <div class="art-chips">
           {% for a in hair_artists %}<span class="art-chip">{{ a.name }}</span>{% endfor %}
         </div>
@@ -529,25 +570,25 @@
       <div class="svc-card rev d3">
         <span class="svc-icon">💅</span>
         <h3>{{ t.svc_nails_title|default:'Nail Extensions & Art' }}</h3>
-        <p>{{ t.svc_nails_desc|default:'Luxury gel extensions, Swarovski bridal nail art, French ombré & acrylics' }}</p>
+        <p>{{ t.svc_nails_desc|default:'Swarovski bridal accents, French ombré, and luxury gel sculpting.' }}</p>
         <div class="art-chips">
           {% for a in nail_artists %}<span class="art-chip">{{ a.name }}</span>{% endfor %}
         </div>
       </div>
       <div class="svc-card rev d4">
         <span class="svc-icon">✨</span>
-        <h3>{{ t.svc_skin_title|default:'Skin & Pre-Bridal Care' }}</h3>
-        <p>{{ t.svc_skin_desc|default:'Hydra-glow facials, dermal prep, brightening rituals & tailored bridal therapies' }}</p>
+        <h3>{{ t.svc_skin_title|default:'Skin & Dermal Prep' }}</h3>
+        <p>{{ t.svc_skin_desc|default:'Deep barrier hydration and glass-skin radiance rituals before application.' }}</p>
       </div>
       <div class="svc-card rev d5">
         <span class="svc-icon">👰</span>
         <h3>{{ t.svc_bridal_title|default:'Complete Bridal Suite' }}</h3>
-        <p>{{ t.svc_bridal_desc|default:'Comprehensive luxury packages from pre-wedding rituals to the final pheras' }}</p>
+        <p>{{ t.svc_bridal_desc|default:'End-to-end styling from pre-wedding rituals to the sacred pheras.' }}</p>
       </div>
       <div class="svc-card rev d6">
         <span class="svc-icon">👑</span>
-        <h3>{{ t.svc_draping_title|default:'Couture Styling & Draping' }}</h3>
-        <p>{{ t.svc_draping_desc|default:'Royal saree & lehenga draping, dupatta pinning, and bespoke jewellery setting' }}</p>
+        <h3>{{ t.svc_draping_title|default:'Couture Draping & Setting' }}</h3>
+        <p>{{ t.svc_draping_desc|default:'Royal lehenga pleating, double dupatta pinning, and jewellery alignment.' }}</p>
       </div>
     </div>
   </div>
@@ -810,7 +851,20 @@
       {% endfor %}
     </div>
 
-    <div style="text-align:center;margin-top:36px" class="rev d3">
+    <!-- Floating / Docked Quick Action Toolbar -->
+    <div class="pkg-docked-bar rev d2">
+      <a href="#package-compare" class="pkg-docked-btn primary">
+        ⚖️ Compare All Packages
+      </a>
+      <a href="#calc-section" class="pkg-docked-btn">
+        🧮 Custom Package Builder
+      </a>
+      <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita!%20I%20would%20like%20to%20discuss%20a%20tailored%20bridal%20package." target="_blank" class="pkg-docked-btn">
+        💬 Direct WhatsApp
+      </a>
+    </div>
+
+    <div style="text-align:center;margin-top:24px" class="rev d3">
       <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20request%20a%20bespoke%20bridal%20and%20family%20makeup%20consultation." target="_blank" class="btn-p">
         {{ t.btn_custom_bridal_quote|default:'💬 Request Bespoke Bridal Consultation' }}
       </a>
@@ -1360,33 +1414,33 @@
         {% endfor %}
       {% else %}
         <!-- Curated Real Looks from @anshitamakeover21 -->
-        <div class="gal-item rev d1" data-cat="bridal" onclick="openLightbox('{% static 'core/images/royal_maroon_bride.jpg' %}', 'Regal Deep Maroon Velvet Bridal Couture', 'bridal')">
+        <div class="gal-item rev d1" data-cat="bridal" onclick="openPeekGallery(0)">
           <img src="{% static 'core/images/royal_maroon_bride.jpg' %}" alt="Regal Deep Maroon Velvet Bridal Couture">
-          <div class="gal-ov">🔍 View Look</div>
+          <div class="gal-ov">🔍 View Lookbook</div>
         </div>
-        <div class="gal-item rev d2" data-cat="bridal" onclick="openLightbox('{% static 'core/images/reception_ivory_bride.jpg' %}', 'Christian & Reception Pure Ivory Couture Bridal Look', 'bridal')">
-          <img src="{% static 'core/images/reception_ivory_bride.jpg' %}" alt="Christian & Reception Ivory Couture Bridal Look">
-          <div class="gal-ov">🔍 View Look</div>
+        <div class="gal-item rev d2" data-cat="bridal" onclick="openPeekGallery(1)">
+          <img src="{% static 'core/images/curated/bengali_bride_regal_portrait.jpg' %}" alt="Royal Bengali Bride Regal Mukut Portrait">
+          <div class="gal-ov">🔍 View Lookbook</div>
         </div>
-        <div class="gal-item rev d3" data-cat="bridal" onclick="openLightbox('{% static 'core/images/bengali_bride_chandan.jpg' %}', 'Royal Bengali Bride with Sandalwood Chandan Art', 'bridal')">
-          <img src="{% static 'core/images/bengali_bride_chandan.jpg' %}" alt="Royal Bengali Bride with Sandalwood Chandan Art">
-          <div class="gal-ov">🔍 View Look</div>
+        <div class="gal-item rev d3" data-cat="bridal" onclick="openPeekGallery(2)">
+          <img src="{% static 'core/images/reception_ivory_bride.jpg' %}" alt="Christian & Reception Pure Ivory Haute Bride">
+          <div class="gal-ov">🔍 View Lookbook</div>
         </div>
-        <div class="gal-item rev d4" data-cat="engagement" onclick="openLightbox('{% static 'core/images/engagement_lilac_glam.jpg' %}', 'Modern Lilac Glass-Skin Engagement Look', 'engagement')">
+        <div class="gal-item rev d4" data-cat="engagement" onclick="openPeekGallery(3)">
           <img src="{% static 'core/images/engagement_lilac_glam.jpg' %}" alt="Modern Lilac Glass-Skin Engagement Look">
-          <div class="gal-ov">🔍 View Look</div>
+          <div class="gal-ov">🔍 View Lookbook</div>
         </div>
-        <div class="gal-item rev d5" data-cat="bridal" onclick="openLightbox('{% static 'core/images/bengali_bride_look.jpg' %}', 'Traditional Bengali Bridal Adornment', 'bridal')">
-          <img src="{% static 'core/images/bengali_bride_look.jpg' %}" alt="Traditional Bengali Bridal Adornment">
-          <div class="gal-ov">🔍 View Look</div>
+        <div class="gal-item rev d5" data-cat="bridal" onclick="openPeekGallery(4)">
+          <img src="{% static 'core/images/bengali_bride_chandan.jpg' %}" alt="Traditional Bengali Bridal Adornment">
+          <div class="gal-ov">🔍 View Lookbook</div>
         </div>
-        <div class="gal-item rev d6" data-cat="hair" onclick="openLightbox('{% static 'core/images/bridal_makeup_inaction.jpg' %}', 'Anshita Curating Bridal Royalty in Studio', 'hair')">
+        <div class="gal-item rev d6" data-cat="hair" onclick="openPeekGallery(6)">
           <img src="{% static 'core/images/bridal_makeup_inaction.jpg' %}" alt="Anshita Curating Bridal Royalty in Studio">
-          <div class="gal-ov">🔍 View Look</div>
+          <div class="gal-ov">🔍 View Lookbook</div>
         </div>
-        <div class="gal-item rev d7" data-cat="party" onclick="openLightbox('{% static 'core/images/anshita_front.jpg' %}', 'Haute Couture Bridal Artistry', 'party')">
+        <div class="gal-item rev d7" data-cat="party" onclick="openPeekGallery(7)">
           <img src="{% static 'core/images/anshita_front.jpg' %}" alt="Haute Couture Bridal Artistry">
-          <div class="gal-ov">🔍 View Look</div>
+          <div class="gal-ov">🔍 View Lookbook</div>
         </div>
       {% endif %}
     </div>

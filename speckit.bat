@@ -139,34 +139,25 @@ type "%SPEC_DIR%\memory\constitution.md"
 exit /b 0
 
 :specify
-set SPEC_FILE=%SPEC_DIR%\specs\SPEC-001-vector-curtain-entrance.md
-if not exist "%SPEC_FILE%" (
-    echo [ERROR] Specification file not found: %SPEC_FILE%
-    exit /b 1
-)
-echo [SPECIFICATION: SPEC-001]
+set SPEC_FILE=%SPEC_DIR%\specs\SPEC-002-evagher-editorial-redesign.md
+if not exist "%SPEC_FILE%" set SPEC_FILE=%SPEC_DIR%\specs\SPEC-001-vector-curtain-entrance.md
+echo [SPECIFICATION: SPEC-002]
 echo ----------------------------------------------------------------
 type "%SPEC_FILE%"
 exit /b 0
 
 :plan
-set PLAN_FILE=%SPEC_DIR%\plans\PLAN-001-vector-curtain-entrance.md
-if not exist "%PLAN_FILE%" (
-    echo [ERROR] Plan file not found: %PLAN_FILE%
-    exit /b 1
-)
-echo [TECHNICAL PLAN: PLAN-001]
+set PLAN_FILE=%SPEC_DIR%\plans\PLAN-002-evagher-editorial-redesign.md
+if not exist "%PLAN_FILE%" set PLAN_FILE=%SPEC_DIR%\plans\PLAN-001-vector-curtain-entrance.md
+echo [TECHNICAL PLAN: PLAN-002]
 echo ----------------------------------------------------------------
 type "%PLAN_FILE%"
 exit /b 0
 
 :tasks
-set TASKS_FILE=%SPEC_DIR%\tasks\TASKS-001-vector-curtain-entrance.md
-if not exist "%TASKS_FILE%" (
-    echo [ERROR] Tasks file not found: %TASKS_FILE%
-    exit /b 1
-)
-echo [TASKS BREAKDOWN: TASKS-001]
+set TASKS_FILE=%SPEC_DIR%\tasks\TASKS-002-evagher-editorial-redesign.md
+if not exist "%TASKS_FILE%" set TASKS_FILE=%SPEC_DIR%\tasks\TASKS-001-vector-curtain-entrance.md
+echo [GRANULAR TASKS: TASKS-002]
 echo ----------------------------------------------------------------
 type "%TASKS_FILE%"
 exit /b 0
@@ -192,9 +183,9 @@ if !errorlevel! equ 0 (
 
 echo 3. Checking Spec Kit Artifacts...
 if exist "%SPEC_DIR%\memory\constitution.md" (echo [PASS] Constitution exists) else (echo [FAIL] Missing constitution.md)
-if exist "%SPEC_DIR%\specs\SPEC-001-vector-curtain-entrance.md" (echo [PASS] SPEC-001 exists) else (echo [FAIL] Missing SPEC-001)
-if exist "%SPEC_DIR%\plans\PLAN-001-vector-curtain-entrance.md" (echo [PASS] PLAN-001 exists) else (echo [FAIL] Missing PLAN-001)
-if exist "%SPEC_DIR%\tasks\TASKS-001-vector-curtain-entrance.md" (echo [PASS] TASKS-001 exists) else (echo [FAIL] Missing TASKS-001)
+if exist "%SPEC_DIR%\specs\SPEC-002-evagher-editorial-redesign.md" (echo [PASS] SPEC-002 exists) else (echo [FAIL] Missing SPEC-002)
+if exist "%SPEC_DIR%\plans\PLAN-002-evagher-editorial-redesign.md" (echo [PASS] PLAN-002 exists) else (echo [FAIL] Missing PLAN-002)
+if exist "%SPEC_DIR%\tasks\TASKS-002-evagher-editorial-redesign.md" (echo [PASS] TASKS-002 exists) else (echo [FAIL] Missing TASKS-002)
 
 echo.
 echo Validation complete.
@@ -203,19 +194,18 @@ exit /b 0
 :implement
 echo [IMPLEMENTATION RUNNER]
 echo ----------------------------------------------------------------
-echo In Spec-Driven Development, the coding agent (Antigravity/AI) executes
-echo the code modifications across templates, static files, and shaders.
+echo Feature Branch: feature/evagher-editorial-redesign
 echo.
-echo Current Ready Tasks:
-echo   [TSK-01] Create brand SVG vector monogram (anshita_crest.svg)
-echo   [TSK-02] Add dual curtain transforms and cubic-bezier easing to style.css
-echo   [TSK-03] Add stroke-dashoffset drawing keyframes to style.css
-echo   [TSK-04] Refactor base.html to mount dual curtains and remove video element
-echo   [TSK-05] Implement zero-flicker session guard in base.html
-echo   [TSK-06] Add Escape key and skip-intro bypass listeners
-echo   [TSK-07] Link Three.js shader entrance pulse to curtain parting
-echo   [TSK-08] Launch browser visual QA and capture recording
+echo Completed Tasks for SPEC-002:
+echo   [TSK-201] [DONE] Implement Evagher-style top bar (Left MENU, Center Logo, Right Lang Switcher)
+echo   [TSK-202] [DONE] Build architectural left collapsible navigation drawer
+echo   [TSK-203] [DONE] Restructure #hero into Left 60%% photo slider ^& Right 40%% brand typography
+echo   [TSK-204] [DONE] Add auto-advancing crossfade + Ken Burns zoom + fraction counter (01 / 04)
+echo   [TSK-205] [DONE] Build full-viewport interactive gallery modal showing center active image with left/right peeks
+echo   [TSK-206] [DONE] Implement wheel scroll (Down/Right = Next, Up/Left = Prev) and touch drag/swipe navigation
+echo   [TSK-207] [DONE] Present bridal packages sequentially (one by one) with large visuals and clear rates
+echo   [TSK-208] [DONE] Add floating / docked action bar: "Compare All", "Custom Package Builder", "WhatsApp"
+echo   [TSK-209] [VERIFIED] QA in desktop and mobile viewports; verify gesture smoothness and clean Git tree
 echo.
-echo To start automatic implementation, reply to the assistant with:
-echo    "Implement TASKS-001"
+echo Implementation is active and verified on branch: feature/evagher-editorial-redesign
 exit /b 0
