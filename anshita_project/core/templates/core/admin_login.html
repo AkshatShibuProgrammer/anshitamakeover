@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Login — Anshita Makeover</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080808;color:#F5EDD6;font-family:'Segoe UI',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.box{background:#1A1A1A;border:1px solid rgba(212,175,55,.2);border-radius:20px;padding:36px 28px;width:min(400px,100%)}
+.logo{text-align:center;margin-bottom:20px}
+.logo img{height:75px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(212,175,55,.3))}
+h2{font-family:'Playfair Display',serif;color:#D4AF37;font-size:1.5rem;text-align:center;margin-bottom:4px}
+p{color:rgba(245,237,214,.4);font-size:.78rem;text-align:center;margin-bottom:20px}
+label{font-size:.72rem;color:rgba(245,237,214,.6);display:block;margin-bottom:4px;letter-spacing:.5px}
+input{width:100%;background:#222;border:1px solid rgba(212,175,55,.2);color:#F5EDD6;padding:11px 14px;border-radius:8px;font-size:.88rem;outline:none;margin-bottom:14px;transition:border-color .2s}
+input:focus{border-color:#D4AF37}
+.pwd-wrap{position:relative}
+.pwd-wrap input{padding-right:42px}
+.pwd-toggle{position:absolute;right:10px;top:10px;background:none;border:none;color:rgba(212,175,55,.7);cursor:pointer;font-size:1rem}
+.btn{width:100%;padding:13px;border-radius:24px;border:none;cursor:pointer;background:linear-gradient(135deg,#A07820,#D4AF37);color:#080808;font-weight:700;letter-spacing:1.5px;font-size:.82rem;margin-top:4px;transition:transform .15s}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.err{color:#FF8DA1;font-size:.78rem;text-align:center;margin-bottom:14px;padding:10px;background:rgba(255,141,161,.1);border:1px solid rgba(255,141,161,.2);border-radius:8px;line-height:1.4}
+.cred-hint{background:rgba(212,175,55,.06);border:1px dashed rgba(212,175,55,.3);border-radius:10px;padding:10px 14px;margin-bottom:18px;font-size:.74rem;color:rgba(245,237,214,.8);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cred-hint strong{color:#D4AF37}
+.fill-btn{background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.4);color:#D4AF37;padding:4px 10px;border-radius:12px;font-size:.68rem;cursor:pointer;font-weight:600}
+.fill-btn:hover{background:#D4AF37;color:#080808}
+a{color:rgba(232,164,184,.6);font-size:.72rem;text-decoration:none;display:block;text-align:center;margin-top:14px}
+a:hover{color:#E8A4B8}
+.back{color:rgba(245,237,214,.3);margin-top:20px;display:block}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo"><img src="{% static 'core/images/logo.jpeg' %}" alt="Anshita Makeover"></div>
+  <h2>Admin Portal</h2>
+  <p>Anshita Makeover Management System</p>
+
+  <div class="cred-hint">
+    <div>
+      User: <strong>akshat</strong> or <strong>admin</strong><br>
+      Pass: <strong>Anshita@2026</strong>
+    </div>
+    <button type="button" class="fill-btn" onclick="fillCreds()">Auto-Fill</button>
+  </div>
+
+  {% if error %}<div class="err">{{ error }}</div>{% endif %}
+
+  <form method="post" id="login-form">
+    {% csrf_token %}
+    <label>Username or Email</label>
+    <input name="username" id="username" placeholder="akshat / admin" autocomplete="username" required>
+    
+    <label>Password</label>
+    <div class="pwd-wrap">
+      <input type="password" name="password" id="password" placeholder="Anshita@2026" autocomplete="current-password" required>
+      <button type="button" class="pwd-toggle" onclick="togglePwd()">👁️</button>
+    </div>
+
+    <button class="btn" type="submit">Login as Admin</button>
+  </form>
+
+  <a href="/django-admin/password_reset/">🔑 Forgot Password? Reset via Email</a>
+  <a href="/" class="back">← Back to Website</a>
+</div>
+
+<script>
+function fillCreds() {
+  document.getElementById('username').value = 'akshat';
+  document.getElementById('password').value = 'Anshita@2026';
+}
+function togglePwd() {
+  const p = document.getElementById('password');
+  p.type = p.type === 'password' ? 'text' : 'password';
+}
+document.getElementById('login-form').addEventListener('submit', function() {
+  document.getElementById('username').value = document.getElementById('username').value.trim();
+  document.getElementById('password').value = document.getElementById('password').value.trim();
+});
+</script>
+</body>
+</html>

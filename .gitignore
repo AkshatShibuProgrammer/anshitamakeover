@@ -1,0 +1,49 @@
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.sqlite3
+db.sqlite3
+*.log
+staticfiles/
+media/
+
+# Environment & local secrets
+.env
+.venv/
+env/
+venv/
+ENV/
+gemini_api_key.txt
+openai_api_key.txt
+*api_key*.txt
+
+# Media uploads (optional if large, but keep templates & static)
+# uploads/
+
+# Scratch & temporary analysis files
+temp/
+inspect_tg.py
+generate_visualizer.py
+uploads/
+anshita/
+evagher_captures/
+analyze_evagher.py
+extract_glsl.py
+extract_shader.py
+extract_shaders_detailed.py
+find_distort_texture.py
+find_fragment_shader.py
+get_complete_shader.py
+capture_evagher.py
+capture_album.py
+explore_evagher_pages.py
+verify_webgl_local.py
+anshita_webgl_verified.png
+distortion_1.jpg
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
