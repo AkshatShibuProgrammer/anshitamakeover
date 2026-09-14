@@ -865,9 +865,12 @@ section{position:relative;z-index:10}
 }
 .peek-info-caption{
   font-family:var(--font-h);
-  font-size:0.9rem;
+  font-size:0.86rem;
   color:var(--white);
+  max-width:min(460px, 45vw);
   white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 .peek-info-counter{
   font-family:monospace;
@@ -2528,44 +2531,54 @@ if(document.readyState === 'complete' || document.readyState === 'interactive'){
 /* ═══ EVAGHER INTERACTIVE PEEK MODAL GALLERY ENGINE ═══ */
 window.peekGalleryItems = [
   {
-    src: '/static/core/images/royal_maroon_bride.jpg',
-    caption: 'Regal Deep Maroon Velvet Bridal Couture',
-    category: 'Bridal Suite'
+    src: '/static/core/images/curated/IMG-20250807-WA0316.jpg',
+    caption: 'Royal Bengali Bride in Traditional Red & White Banarasi with Handcrafted Alta Artistry',
+    category: 'Royal Bridal'
   },
   {
-    src: '/static/core/images/curated/bengali_bride_regal_portrait.jpg',
-    caption: 'Royal Bengali Mukut & Chandan Artistry',
-    category: 'Bengali Bridal'
+    src: '/static/core/images/curated/IMG-20250807-WA0350.jpg',
+    caption: 'Sacred Sandalwood Chandan Motifs with 22k Temple Gold & Glitter Cut-Crease Eyes',
+    category: 'Chandan Art'
+  },
+  {
+    src: '/static/core/images/engagement_dewy_glam.jpg',
+    caption: 'Bespoke Glass-Skin Dewy Glamour & Hollywood Waves in Champagne Blush Lehenga',
+    category: 'Engagement Glam'
+  },
+  {
+    src: '/static/core/images/reception_cocktail_glam.jpg',
+    caption: 'Sculpted Smoky Eyes & Velvet Mauve Lips with Hollywood Waves for Evening Reception',
+    category: 'Reception & Cocktail'
+  },
+  {
+    src: '/static/core/images/bridal_hair_couture.jpg',
+    caption: 'Elaborate Low Braided Chignon Woven with Fresh Jasmine Mogra & Royal Temple Ornaments',
+    category: 'Hair Couture'
+  },
+  {
+    src: '/static/core/images/bridal_nail_art.jpg',
+    caption: 'Handcrafted French Ombré Gel Extensions Embellished with Micro-Swarovski Crystals',
+    category: 'Nail Artistry'
+  },
+  {
+    src: '/static/core/images/curated/IMG-20250807-WA0391.jpg',
+    caption: 'Traditional Subho Drishti Ritual Portrait with Hand-Decorated Betel Leaf & Alta Grace',
+    category: 'Bengali Rituals'
+  },
+  {
+    src: '/static/core/images/curated/ig_post_DRQ_mbjEmVz.jpg',
+    caption: 'Regal Deep Crimson Velvet Veil & Heritage Polki Jewellery Couture Bridal Look',
+    category: 'Royal Bridal'
   },
   {
     src: '/static/core/images/reception_ivory_bride.jpg',
-    caption: 'Christian & Reception Pure Ivory Haute Bride',
-    category: 'Reception Glam'
+    caption: 'Christian & Modern Reception Pure Ivory Minimalist Haute Couture Bride',
+    category: 'Ivory Couture'
   },
   {
-    src: '/static/core/images/engagement_lilac_glam.jpg',
-    caption: 'Modern Lilac Glass-Skin Engagement Look',
-    category: 'Engagement'
-  },
-  {
-    src: '/static/core/images/bengali_bride_chandan.jpg',
-    caption: 'Forehead Sandalwood Chandan Sculpting',
-    category: 'Traditional Art'
-  },
-  {
-    src: '/static/core/images/curated/bengali_bride_subho_drishti.jpg',
-    caption: 'Subho Drishti & Alta Hand Aesthetics',
-    category: 'Rituals'
-  },
-  {
-    src: '/static/core/images/bridal_makeup_inaction.jpg',
-    caption: 'Founder Anshita Sinha in Studio Session',
-    category: 'Couture Studio'
-  },
-  {
-    src: '/static/core/images/anshita_front.jpg',
-    caption: 'Signature Glass Skin & Royal Micro-Glow',
-    category: 'Signature Masterclass'
+    src: '/static/core/images/curated/anshita_artistry_brush_action.jpg',
+    caption: 'Anshita Sinha Live Studio Session — Sculpting Haute Bridal Looks with Precision Airbrush',
+    category: 'Masterclass Studio'
   }
 ];
 

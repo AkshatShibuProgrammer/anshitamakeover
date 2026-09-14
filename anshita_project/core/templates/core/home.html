@@ -457,16 +457,16 @@
     <div class="hero-slider-overlay"></div>
     
     <div class="hero-slide active" data-slide="0">
-      <img src="{% static 'core/images/royal_maroon_bride.jpg' %}" alt="Royal Deep Maroon Velvet Bridal Couture">
+      <img src="{% static 'core/images/curated/IMG-20250807-WA0316.jpg' %}" alt="Royal Bengali Bride in Traditional Red & White Banarasi with Handcrafted Alta Artistry">
     </div>
     <div class="hero-slide" data-slide="1">
-      <img src="{% static 'core/images/curated/bengali_bride_regal_portrait.jpg' %}" alt="Royal Bengali Bride Regal Mukut Portrait">
+      <img src="{% static 'core/images/curated/IMG-20250807-WA0350.jpg' %}" alt="Sacred Sandalwood Chandan Motifs with 22k Temple Gold & Glitter Cut-Crease Eyes">
     </div>
     <div class="hero-slide" data-slide="2">
-      <img src="{% static 'core/images/reception_ivory_bride.jpg' %}" alt="Christian & Reception Pure Ivory Haute Bride">
+      <img src="{% static 'core/images/engagement_dewy_glam.jpg' %}" alt="Modern Glass-Skin Dewy Glamour & Hollywood Waves in Champagne Blush Lehenga">
     </div>
     <div class="hero-slide" data-slide="3">
-      <img src="{% static 'core/images/engagement_lilac_glam.jpg' %}" alt="Modern Lilac Glass-Skin Engagement Glamour">
+      <img src="{% static 'core/images/reception_cocktail_glam.jpg' %}" alt="Sculpted Smoky Eyes & Velvet Mauve Lips with Hollywood Waves for Reception Sangeet">
     </div>
 
     <!-- Minimalist Floating Counter & Progress Indicator -->
@@ -1404,10 +1404,10 @@
     <div class="gal-grid">
       {% if gallery %}
         {% for img in gallery %}
-        <div class="gal-item rev d{{ forloop.counter }}" data-cat="{{ img.category }}" onclick="openLightbox('{{ img.image.url }}', '{{ img.caption|escapejs }}', '{{ img.category|escapejs }}')">
+        <div class="gal-item rev d{{ forloop.counter }}" data-cat="{{ img.category }}" onclick="openPeekGallery({{ forloop.counter0 }})">
           <img src="{{ img.image.url }}" alt="{{ img.caption }}">
           <div class="gal-ov">
-            <span>🔍 View Look</span>
+            <span>🔍 View Lookbook</span>
             <small style="font-size:.65rem;color:var(--gold);display:block;margin-top:4px">{{ img.caption|truncatechars:42 }}</small>
           </div>
         </div>
