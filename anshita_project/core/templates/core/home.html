@@ -1571,6 +1571,18 @@
   </div>
 
   <p class="f-copy">{{ t.footer_copy|default:'© 2026 Anshita Makeover · India · All Rights Reserved' }}</p>
+  
+  <!-- Designed by The Sinha Family Group Luxury Credit & Insignia -->
+  <div class="f-designed-by" style="margin:22px 0 16px;display:flex;align-items:center;justify-content:center;gap:12px">
+    <a href="/sinha-logos/" title="View The Sinha Family Group Luxury Logo Studio" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;padding:8px 18px;border-radius:24px;background:rgba(255,255,255,0.03);border:1px solid rgba(212,175,55,0.22);transition:all .3s ease">
+      <img src="{% static 'core/images/brand/sinha_family_crest.jpg' %}" alt="The Sinha Family Group" style="width:26px;height:26px;border-radius:50%;border:1px solid var(--gold);object-fit:cover">
+      <span style="font-family:var(--font-h);font-size:.76rem;letter-spacing:1.8px;color:var(--gold-l);text-transform:uppercase;font-weight:600">
+        Designed by <strong style="color:#FFF;font-weight:700">The Sinha Family Group</strong>
+      </span>
+      <span style="font-size:.65rem;color:var(--gold);opacity:.8">✦</span>
+    </a>
+  </div>
+
   <div class="f-admin-link">
     {% if user.is_authenticated %}
     <button class="adm-login-btn" onclick="openAdmin()">⚙️ Admin Portal</button>

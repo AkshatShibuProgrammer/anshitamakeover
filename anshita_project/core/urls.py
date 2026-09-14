@@ -18,5 +18,6 @@ urlpatterns = [
     path('api/admin/review/', views.admin_review_manage, name='admin_review'),
     path('api/admin/media/', views.admin_media_manage, name='admin_media'),
     path('api/admin/ai/', views.admin_ai_command, name='admin_ai'),
+    path('sinha-logos/', views.sinha_logo_studio, name='sinha_logo_studio'),
 ]
 

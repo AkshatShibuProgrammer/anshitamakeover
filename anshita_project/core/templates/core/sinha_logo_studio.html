@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Sinha Family Group — Luxury Logo Visualizer & Prompt Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D4AF37;
+    --gold-light: #F7E7A9;
+    --gold-dark: #9C721D;
+    --black: #080707;
+    --card-bg: #120F11;
+    --border: rgba(212, 175, 55, 0.25);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(circle at top, #181215 0%, #080707 100%);
+    color: #F5EDD6;
+    font-family: 'Montserrat', sans-serif;
+    padding: 60px 24px;
+    min-height: 100vh;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 50px; }
+  .header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 2.4rem;
+    letter-spacing: 6px;
+    background: linear-gradient(135deg, #FFF 20%, var(--gold) 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+  }
+  .header p {
+    color: rgba(245, 237, 214, 0.65);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+  }
+  .logo-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+    transition: transform 0.4s ease, border-color 0.4s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .logo-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold);
+  }
+  .img-wrapper {
+    position: relative;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    background: #000;
+  }
+  .img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  .logo-card:hover .img-wrapper img {
+    transform: scale(1.04);
+  }
+  .badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: rgba(8, 7, 7, 0.85);
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    font-size: 0.68rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+  }
+  .content {
+    padding: 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .logo-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.25rem;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  .logo-desc {
+    font-size: 0.82rem;
+    color: rgba(245, 237, 214, 0.7);
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+  .prompt-box {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px dashed rgba(212, 175, 55, 0.3);
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 0.76rem;
+    color: rgba(245, 237, 214, 0.85);
+    line-height: 1.4;
+    margin-bottom: 16px;
+    position: relative;
+    user-select: all;
+  }
+  .prompt-label {
+    display: block;
+    font-size: 0.62rem;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .copy-btn {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+  }
+  .copy-btn:hover {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+    transform: translateY(-1px);
+  }
+  .footer-note {
+    text-align: center;
+    padding: 30px;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: rgba(245, 237, 214, 0.6);
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>THE SINHA FAMILY GROUP</h1>
+    <p>Luxury Corporate Identity & Emblem Design Concepts</p>
+  </div>
+
+  <div class="grid">
+    <!-- Concept 1 -->
+    <div class="logo-card">
+      <div class="img-wrapper">
+        <span class="badge">Concept 01 — Haute Monogram</span>
+        <img src="/static/core/images/brand/sinha_family_crest.jpg" alt="Sinha Family Crest Monogram">
+      </div>
+      <div class="content">
+        <div>
+          <h3 class="logo-title">Royal SFG Calligraphy Medallion</h3>
+          <p class="logo-desc">Interlocking ornate royal calligraphy "SFG" enclosed within a fine-line architectural foliage wreath and royal crown crest.</p>
+        </div>
+        <div>
+          <div class="prompt-box">
+            <span class="prompt-label">Exact AI Generation Prompt:</span>
+            A luxurious, royal family crest and corporate emblem for 'The Sinha Family Group'. Minimalist haute couture aesthetic on deep obsidian black background. Interlocking royal gold calligraphy monogram 'SFG' enclosed within a delicate fine-line circular architectural medallion. High-end gold foil effect with subtle metallic beveling, regal symmetry, crisp vector feel, 8k luxury studio branding. No text artifacts, clean iconic emblem.
+          </div>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); alert('Prompt copied to clipboard!');">Copy Prompt</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Concept 2 -->
+    <div class="logo-card">
+      <div class="img-wrapper">
+        <span class="badge">Concept 02 — Heraldic Lion</span>
+        <img src="/static/core/images/brand/sinha_lion_crest.jpg" alt="Sinha Royal Lion Crest">
+      </div>
+      <div class="content">
+        <div>
+          <h3 class="logo-title">Imperial Crowned Lion (Sinha)</h3>
+          <p class="logo-desc">Drawing from the Sanskrit roots of "Sinha" (Lion), this concept combines a proud regal lion profile wearing a crown with Cartier-grade gold filigree.</p>
+        </div>
+        <div>
+          <div class="prompt-box">
+            <span class="prompt-label">Exact AI Generation Prompt:</span>
+            A heraldic royal family crest for 'The Sinha Family Group' (Sinha meaning lion in Sanskrit). Minimalist modern royal crest featuring a stylized imperial lion profile inside a gold circular crown medallion. Matte black luxury background, refined thin gold foil lines, Cartier / Rolex level luxury corporate identity. Symmetrical, elegant, haute couture.
+          </div>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); alert('Prompt copied to clipboard!');">Copy Prompt</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Concept 3 -->
+    <div class="logo-card">
+      <div class="img-wrapper">
+        <span class="badge">Concept 03 — Modern Architectural</span>
+        <img src="/static/core/images/brand/sinha_minimal_arch.jpg" alt="Sinha Minimal Shield">
+      </div>
+      <div class="content">
+        <div>
+          <h3 class="logo-title">Architectural Geometric Shield</h3>
+          <p class="logo-desc">Ultra-minimalist contemporary seal. A geometric gold faceted shield with modern serif typography, tailored for global enterprise branding.</p>
+        </div>
+        <div>
+          <div class="prompt-box">
+            <span class="prompt-label">Exact AI Generation Prompt:</span>
+            A modern architectural luxury seal and emblem for 'The Sinha Family Group'. Sleek fine-line geometric crest with a golden shield, subtle crown, and serif typography 'SINHA'. Ultra minimal, black tie elegance, Yves Saint Laurent and Armani Privé brand style, gold vector rendering on obsidian background. High resolution, perfectly centered.
+          </div>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); alert('Prompt copied to clipboard!');">Copy Prompt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    👑 <strong>Next Step:</strong> Choose your favorite concept or copy the prompt into your preferred AI image generator (Midjourney, Flux, or Gemini) to iterate further. Once chosen, we will vectorize it and integrate it into the website footer!
+  </div>
+</div>
+
+</body>
+</html>

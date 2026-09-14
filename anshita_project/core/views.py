@@ -1075,4 +1075,6 @@ def admin_media_manage(request):
     return JsonResponse({'media': items})
 
 
-
+def sinha_logo_studio(request):
+    """Visualizer page for The Sinha Family Group luxury branding and prompts"""
+    return render(request, 'core/sinha_logo_studio.html')

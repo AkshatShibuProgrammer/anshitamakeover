@@ -123,13 +123,13 @@ exit /b 0
 echo [SPEC KIT WORKFLOW STATUS]
 echo ----------------------------------------------------------------
 echo [STAGE 1: CONSTITUTION] : ACTIVE (.specify\memory\constitution.md)
-echo [STAGE 2: SPECIFY]      : COMPLETED (.specify\specs\SPEC-001-vector-curtain-entrance.md)
-echo [STAGE 3: PLAN]         : COMPLETED (.specify\plans\PLAN-001-vector-curtain-entrance.md)
-echo [STAGE 4: TASKS]        : READY     (.specify\tasks\TASKS-001-vector-curtain-entrance.md)
+echo [STAGE 2: SPECIFY]      : COMPLETED (.specify\specs\SPEC-002-evagher-editorial-redesign.md)
+echo [STAGE 3: PLAN]         : COMPLETED (.specify\plans\PLAN-002-evagher-editorial-redesign.md)
+echo [STAGE 4: TASKS]        : READY     (.specify\tasks\TASKS-002-evagher-editorial-redesign.md)
 echo [STAGE 5: IMPLEMENT]    : PENDING USER APPROVAL / IN PROGRESS
 echo.
-echo Active Feature: SPEC-001 (Haute Couture Vector Entrance and Dual-Curtain System)
-echo Ready Tasks   : TSK-01 through TSK-08
+echo Active Feature: SPEC-002 (Evagher Full-Viewport Editorial Layout and Peek Gallery)
+echo Ready Tasks   : TSK-201 through TSK-209
 exit /b 0
 
 :constitution
