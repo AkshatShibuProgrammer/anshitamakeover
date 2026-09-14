@@ -20,6 +20,13 @@ class SiteSettings(models.Model):
     exit_coupon_discount_percent = models.IntegerField(default=10)
     exit_coupon_label = models.CharField(max_length=200, default='Exclusive Secret Privilege: Extra 10% Additional Discount')
 
+    # Booking Offer Mechanics & Bundle Privilege Rules (Admin & AI Configurable)
+    offer_bridal_free_sides = models.IntegerField(default=2, help_text='Number of free side makeups with bridal booking')
+    offer_next_sides_discounted_price = models.DecimalField(max_digits=10, decimal_places=2, default=2500.00, help_text='Special discounted price for 3rd and 4th side makeups')
+    offer_combo_discount_percent = models.IntegerField(default=15, help_text='Extra discount % when booking Bridal + Engagement')
+    offer_grand_combo_bundle_price = models.DecimalField(max_digits=10, decimal_places=2, default=50000.00, help_text='Flat package price for Grand Royal Bridal + Engagement bundle')
+    offer_rules_active = models.BooleanField(default=True, help_text='Enable custom booking offer privilege rules')
+
     class Meta:
         verbose_name = 'Site Settings'
 

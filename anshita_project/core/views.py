@@ -238,25 +238,49 @@ def chatbot_api(request):
 
 
 def gemini_chat(api_key, user_msg, session_id):
-    """Client-facing AI Concierge using Google Gemini 2.5 Flash"""
+    """Client-facing AI Concierge using Google Gemini 2.5 Flash with rich markdown tables and visual layouts"""
     import requests
-    system_prompt = """You are the luxury concierge AI for Anshita Makeover — India's premier bespoke bridal couture, hair, and beauty studio.
+    site = get_site_settings()
+    free_sides = site.offer_bridal_free_sides
+    disc_sides_rate = int(site.offer_next_sides_discounted_price)
+    combo_disc = site.offer_combo_discount_percent
+    combo_flat = int(site.offer_grand_combo_bundle_price)
+
+    system_prompt = f"""You are the luxury concierge AI for Anshita Makeover — India's premier bespoke bridal couture, hair, and beauty studio.
 Respond in a warm, dignified, respectful, and sophisticated tone. Use clear English or respectful, elegant Hindi/Hinglish when addressed in Hindi.
-Polite guidelines: 'We would be delighted to assist you', 'Aapka hardik swagat hai', 'Please connect with our bridal team on WhatsApp at +91 78792 23442'.
+
+CRITICAL FORMATTING INSTRUCTIONS:
+- Whenever sharing details about packages, services, comparisons, or pricing, DO NOT provide plain wall-of-text paragraphs.
+- ALWAYS structure package comparisons and pricing into BEAUTIFUL, CLEAN MARKDOWN TABLES with headers, bold highlights, and emoji markers.
+- Use bullet points (✦ or •) for key inclusions and highlights.
+- Highlight exclusive VIP booking privileges clearly.
+
+Active Exclusive Privilege Offers:
+1. 👰 **Bridal Booking Privilege**:
+   - First {free_sides} Side Makeups are completely **FREE (₹0)**!
+   - Next 2 Side Makeups at a special subsidized rate of only **₹{disc_sides_rate:,} each** (instead of standard ₹6,500).
+2. 💍 **Bridal + Engagement Combo Privilege**:
+   - Enjoy **{combo_disc}% to 20% Additional Discount** when booking Bridal and Engagement together!
+3. 👑 **Grand Royal Heritage Suite (Bridal + Engagement Flat Bundle)**:
+   - Complete signature suite at a flat **₹{combo_flat:,}** (includes 2 free side makeups + hair couture + royal dupatta draping).
+
+Signature Price Table Format:
+| Service / Package | Standard Rate | Special Privilege Rate | Key Inclusions |
+| :--- | :--- | :--- | :--- |
+| **Imperial Royal HD Bridal Suite** | ₹35,000 | ₹24,500 | HD Base, Cut-Crease Eyes, Hair Styling, 2 Side Makeups FREE |
+| **Master Airbrush Bridal Suite** | ₹45,000 | ₹31,500 | TEMPTU 24-hr Cry-Proof, Luxury Vanity, 2 Side Makeups FREE |
+| **Engagement & Roka Luminescence** | ₹18,000 | ₹12,600 | Glass-Skin Glow, Textured Waves, Saree Draping |
+| **Grand Royal Heritage Suite** | ₹58,000 | ₹{combo_flat:,} | Bridal + Engagement Combo + 2 FREE Side Makeups |
+| **Side & Bridesmaid Artistry** | ₹6,500 | ₹{disc_sides_rate:,} (after 2 Free) | Dewy party glam, lashes, professional draping |
 
 Key Studio Highlights:
-- Founder & Master Artist: Anshita (Master Bridal Couturier & Specialist with 8+ years experience, 500+ brides styled across India)
-- Studio Presence: Flagship studio in Jabalpur, traveling for destination weddings across Rajasthan, Goa, Mumbai, Delhi, and Pan-India
+- Founder & Master Artist: Anshita (8+ years experience, 500+ brides styled across India)
+- Studio Location: Jabalpur flagship studio & Traveling pan-India for destination weddings
 - Direct WhatsApp Concierge: +91 78792 23442 | Instagram: @anshitamakeover21
-- Signature Services: Master Airbrush Bridal (TEMPTU 24-hr cry-proof), Imperial Royal HD Bridal, Engagement & Roka Glam, Haute Hair Architecture, Gel Nail Art & Extensions, Pre-Bridal Hydra Rituals
-- Pricing:
-  * Imperial Royal HD Bridal: ₹24,500 (Special Offer) / ₹35,000 Standard
-  * Master Airbrush Suite: ₹31,500 (Special Offer) / ₹45,000 Standard
-  * Engagement / Roka Glam: ₹12,600 (Special Offer) / ₹18,000 Standard
-  * Side & Bridesmaids: ₹4,550/person (Special Offer) / ₹6,500 Standard
-- Academy Masterclass: ₹35,400 (incl 18% GST), 4 Weeks hands-on master training, ₹5,000 registration.
-- Event Photography: Standard ₹90,000 | Royal Premium ₹1,20,000.
-Conclude each answer elegantly with an invitation to book or connect via WhatsApp (+91 78792 23442)."""
+- Academy Masterclass: ₹35,400 (4 Weeks, 100% hands-on training, ₹5,000 registration)
+- Event Photography: Standard ₹90,000 | Royal Premium ₹1,20,000
+
+Conclude each answer elegantly with an invitation to book via WhatsApp (+91 78792 23442)."""
 
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
     payload = {
@@ -297,25 +321,54 @@ def admin_ai_command(request):
             return JsonResponse({'ok': False, 'error': 'Gemini API key not configured.'})
 
         # Ask Gemini to return structured JSON action
-        system_instruction = """You are the Admin Assistant AI for Anshita Makeover website.
-Your job is to parse the admin's natural language instruction and return a STRICT JSON object representing the action to execute.
-Do NOT include markdown backticks or any conversational text. Return ONLY valid raw JSON.
+        system_instruction = """You are the Dedicated Admin AI Co-Pilot for Anshita Makeover website management and database validation.
+Your role is to strictly validate and execute modifications to:
+1. Packages, prices, and features
+2. Booking offer rules: number of free side makeups (e.g. 2 free), subsidized side makeup rate (e.g. ₹2,500 to ₹3,000), combo bridal+engagement discount % (e.g. 10% to 20%), and Grand Royal Combo bundle flat rate (e.g. ₹50,000).
+3. Coupons and exit privileges
+4. Instagram reels and media embeds
+
+Do NOT include conversational chatter or markdown fences. Return ONLY a single raw JSON object matching one of the schemas below.
+
+Validation Rules:
+- Discount percentages must be between 0% and 50% (Combo discount must not exceed 20%).
+- Subsidized side makeup price must be between 2000 and 4500 (standard is 2500 - 3000).
+- Free side makeup count must be an integer between 0 and 5 (default 2).
 
 Supported Action Schemas:
 
-1. Add/Update Service or Package:
+1. Modify Booking Privileges & Offer Rules:
+{
+  "action": "modify_booking_offers",
+  "free_sides": 2,
+  "discounted_side_price": 2500,
+  "combo_discount_percent": 15,
+  "bundle_price": 50000,
+  "active": true
+}
+
+2. Add or Update Service/Package:
 {
   "action": "create_package",
   "name": "Package Name",
   "package_type": "bridal|side_makeup|engagement|reception|party|hair|nails|beauty|custom",
-  "price": 8500,
-  "price_label": "₹8,500",
+  "price": 50000,
+  "price_label": "₹50,000",
   "tagline": "Short description",
   "features": "Feature 1\\nFeature 2\\nFeature 3",
   "is_featured": false
 }
 
-2. Update Coupon:
+3. Update Existing Package Price:
+{
+  "action": "update_package",
+  "package_id": 22,
+  "name_query": "Grand Royal|HD Bridal|Airbrush",
+  "price": 50000,
+  "features": "Optional new features"
+}
+
+4. Update Coupon:
 {
   "action": "update_coupon",
   "coupon_code": "SUMMER40",
@@ -324,28 +377,27 @@ Supported Action Schemas:
   "active": true
 }
 
-3. Embed Instagram or YouTube Video:
+5. Embed Media:
 {
   "action": "add_media",
-  "title": "Title of media",
+  "title": "Title",
   "media_type": "instagram|youtube",
   "url": "https://...",
-  "category": "bridal|engagement|hair|nails|beauty|party",
-  "section": "gallery|reels|both",
-  "caption": "Brief description"
+  "category": "bridal|engagement|hair|nails|party",
+  "section": "gallery|reels|both"
 }
 
-4. Update Service Price:
+6. Update Service Price:
 {
   "action": "update_price",
   "service": "makeup_hd|makeup_airbrush|nails_art|nails_extension|photo_premium|photo_standard",
   "price": 26000
 }
 
-5. General / Informational answer (if not a direct db modification):
+7. Informational / Validation warning:
 {
   "action": "answer",
-  "message": "Informational response or explanation"
+  "message": "Explanation or validation notice"
 }
 """
         import requests
@@ -369,7 +421,60 @@ Supported Action Schemas:
         action_type = action_data.get('action')
 
         # Execute Actions
-        if action_type == 'create_package':
+        if action_type == 'modify_booking_offers':
+            site = get_site_settings()
+            if 'free_sides' in action_data and action_data['free_sides'] is not None:
+                site.offer_bridal_free_sides = max(0, min(5, int(action_data['free_sides'])))
+            if 'discounted_side_price' in action_data and action_data['discounted_side_price'] is not None:
+                rate = float(action_data['discounted_side_price'])
+                site.offer_next_sides_discounted_price = max(1500.0, min(4500.0, rate))
+            if 'combo_discount_percent' in action_data and action_data['combo_discount_percent'] is not None:
+                disc = int(action_data['combo_discount_percent'])
+                site.offer_combo_discount_percent = max(5, min(25, disc))
+            if 'bundle_price' in action_data and action_data['bundle_price'] is not None:
+                b_price = float(action_data['bundle_price'])
+                site.offer_grand_combo_bundle_price = b_price
+                # Also synchronize package 22 or bundle package price in DB
+                MakeupPackage.objects.filter(name__icontains='Grand Royal Heritage').update(
+                    price=b_price,
+                    price_label=f"₹{int(b_price):,}"
+                )
+            if 'active' in action_data:
+                site.offer_rules_active = bool(action_data['active'])
+            site.save()
+            return JsonResponse({
+                'ok': True,
+                'message': (
+                    f"✨ Booking Offers Validated & Saved!\n"
+                    f"• Bridal Free Sides: {site.offer_bridal_free_sides} Free\n"
+                    f"• Next 2 Sides Special Rate: ₹{int(site.offer_next_sides_discounted_price):,}\n"
+                    f"• Engagement Combo Privilege: {site.offer_combo_discount_percent}% OFF\n"
+                    f"• Grand Heritage Bundle: ₹{int(site.offer_grand_combo_bundle_price):,}"
+                ),
+                'action_executed': action_data
+            })
+
+        elif action_type == 'update_package':
+            query = action_data.get('name_query') or action_data.get('name', '')
+            pkg_id = action_data.get('package_id')
+            qs = MakeupPackage.objects.filter(id=pkg_id) if pkg_id else MakeupPackage.objects.filter(name__icontains=query)
+            pkg = qs.first()
+            if not pkg:
+                return JsonResponse({'ok': False, 'error': f"Could not find package matching '{query}' to update."})
+            if 'price' in action_data and action_data['price'] is not None:
+                p_val = float(action_data['price'])
+                pkg.price = p_val
+                pkg.price_label = f"₹{int(p_val):,}"
+            if action_data.get('features'):
+                pkg.features = action_data['features']
+            pkg.save()
+            return JsonResponse({
+                'ok': True,
+                'message': f"✨ Package '{pkg.name}' updated! New price: {pkg.price_label}.",
+                'action_executed': action_data
+            })
+
+        elif action_type == 'create_package':
             pkg = MakeupPackage.objects.create(
                 name=action_data.get('name', 'Bespoke Package'),
                 package_type=action_data.get('package_type', 'bridal'),
@@ -466,15 +571,34 @@ Supported Action Schemas:
 def fallback_chatbot(msg):
     msg_lower = msg.lower()
     if any(w in msg_lower for w in ['bridal', 'wedding', 'shaadi', 'bride', 'dulhan']):
-        return "Namaste! ✨ We would be delighted to curate your dream bridal look. Our signature packages include:\n✦ Senior Master Bridal (Anshita / Shristee / Priya): ₹35,000\n✦ Master Airbrush Bridal Suite (Tejal): ₹45,000\nEvery package includes bespoke HD/Airbrush makeup, skin prep, couture hair styling & royal dupatta setting.\nTo reserve your auspicious date, please WhatsApp our bridal team at +91 78792 23442."
-    if any(w in msg_lower for w in ['nail', 'nails', 'manicure', 'pedicure']):
-        return "For luxury nail aesthetics, our senior nail artist Shristee crafts exquisite gel extensions, Swarovski bridal nail art, and French ombré manicures. 💅\nKindly reach us at +91 78792 23442 to reserve your slot."
-    if any(w in msg_lower for w in ['hair', 'baal', 'styling', 'draping']):
-        return "Our master hair stylists craft couture bridal updos, romantic textured waves, and authentic saree/lehenga draping. 💇\nPlease contact our studio concierge at +91 78792 23442 for consultations."
-    if any(w in msg_lower for w in ['course', 'academy', 'learn', 'sikho', 'sikhna', 'admission', 'batch']):
-        return "Welcome to Anshita Academy! 🎓\nOur flagship Professional Makeup Artist Masterclass:\n✦ Duration: 4 Weeks (3 Hours/Day)\n✦ Investment: ₹35,400 (Inclusive of 18% GST)\n✦ Registration: ₹5,000 to reserve your seat\n✦ Complete curriculum: HD bridal, airbrush, skin prep, portfolio & client management.\nFor the syllabus and upcoming batch dates, WhatsApp us at +91 78792 23442."
-    if any(w in msg_lower for w in ['price', 'rate', 'cost', 'kitna', 'fees', 'charges']):
-        return "Our curated service investments:\n💄 Signature Bridal: ₹35,000 – ₹45,000\n🎓 Professional Makeup Masterclass: ₹35,400\n📸 Event Photography & Cinematography: ₹90,000 – ₹1,20,000\nFor a personalized bespoke quotation tailored to your requirements, please WhatsApp +91 78792 23442."
+        return """Namaste! ✨ We would be delighted to curate your dream bridal look.
+
+### 👑 Signature Bridal Suites & Booking Privileges
+
+| Package Suite | Investment | Special Inclusions |
+| :--- | :--- | :--- |
+| **Imperial Royal HD Suite** | ₹24,500 *(Offer)* | HD Base, Cut-Crease Eyes, Dupatta Draping, **2 Side Makeups FREE** |
+| **Master Airbrush Suite** | ₹31,500 *(Offer)* | TEMPTU 24-hr Cry-Proof, Vanity Setup, **2 Side Makeups FREE** |
+| **Grand Royal Heritage Suite** | ₹50,000 *(Bundle)* | **Bridal + Engagement Suite** + 2 Side Makeups FREE |
+
+✦ **VIP Booking Privilege**: First 2 Side Makeups are **FREE (₹0)**, and the next 2 at only **₹2,500 each**!
+✦ **Combo Privilege**: Up to 20% discount on Engagement & Roka when booked together!
+
+To reserve your auspicious date, please WhatsApp our bridal team at +91 78792 23442."""
+
+    if any(w in msg_lower for w in ['price', 'rate', 'cost', 'kitna', 'fees', 'charges', 'package', 'packages']):
+        return """### ✨ Anshita Makeover Curated Pricing Guide
+
+| Service / Suite | Investment | Privilege Benefits |
+| :--- | :--- | :--- |
+| **Imperial Royal HD Bridal** | ₹24,500 / ₹35,000 | 2 Side Makeups FREE |
+| **Master Airbrush Bridal** | ₹31,500 / ₹45,000 | TEMPTU 24-hr Cry-Proof, 2 FREE Sides |
+| **Engagement & Roka Glam** | ₹12,600 / ₹18,000 | Glass-Skin Glow & Hair Styling |
+| **Grand Royal Combo Suite** | ₹50,000 Flat | Bridal + Engagement + 2 Free Sides |
+| **Side & Family Artistry** | ₹2,500 (Subsidized) | Professional Glam & Draping |
+| **Academy Masterclass** | ₹35,400 | 4 Weeks Certified Hands-on Training |
+
+✦ Connect with our concierge on WhatsApp at **+91 78792 23442** for a tailored quote!"""
     if any(w in msg_lower for w in ['photo', 'photography', 'event', 'videography', 'camera']):
         return "Through Anshita Signature Events & Photography, we offer complete royal wedding coverage: 📸\n✦ Standard Collection: ₹90,000 (Candid + Traditional, 300+ edited portraits)\n✦ Royal Premium Collection: ₹1,20,000 (Full-day cinematic video, Drone aerials, Pre-wedding & Premium album)\nFor complete event management inquiries, please connect with us at +91 78792 23442."
     if any(w in msg_lower for w in ['coupon', 'discount', 'offer', 'code']):
@@ -503,19 +627,31 @@ def set_language(request):
 
 # ── Admin Login/Logout ────────────────────────────────────────
 def admin_login(request):
-    if request.user.is_authenticated:
-        return redirect(request.GET.get('next', '/'))
+    is_ajax = (
+        request.headers.get('x-requested-with') == 'XMLHttpRequest' or
+        request.headers.get('accept', '').startswith('application/json') or
+        request.POST.get('ajax') == '1'
+    )
+    if request.user.is_authenticated and request.user.is_staff:
+        if is_ajax:
+            return JsonResponse({'ok': True, 'redirect': '/?admin=1'})
+        return redirect(request.GET.get('next', '/?admin=1'))
+
     error = ''
     if request.method == 'POST':
-        username = request.POST.get('username', '')
-        password = request.POST.get('password', '')
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '').strip()
         user = authenticate(request, username=username, password=password)
         if user and user.is_staff:
             login(request, user)
-            next_url = request.GET.get('next') or '/'
+            next_url = request.GET.get('next') or '/?admin=1'
+            if is_ajax:
+                return JsonResponse({'ok': True, 'redirect': next_url})
             return redirect(next_url)
         else:
-            error = 'Invalid credentials or not an admin.'
+            error = 'Invalid credentials or account does not have admin privileges.'
+            if is_ajax:
+                return JsonResponse({'ok': False, 'error': error}, status=401)
     return render(request, 'core/admin_login.html', {'error': error})
 
 
@@ -601,6 +737,30 @@ def admin_price_update(request):
                 label = f"₹{p_val/100000:.1f} Lakh" if p_val >= 100000 else f"₹{int(p_val):,}"
                 EventPackage.objects.filter(package_type=pkg_type).update(price=p_val, price_label=label)
                 return JsonResponse({'ok': True})
+
+        # Booking Privilege / Offer update
+        if target_type in ['booking_offer', 'offer_rules']:
+            site = get_site_settings()
+            if 'free_sides' in data and data['free_sides'] is not None:
+                site.offer_bridal_free_sides = max(0, min(5, int(data['free_sides'])))
+            if 'discounted_side_price' in data and data['discounted_side_price'] is not None:
+                site.offer_next_sides_discounted_price = float(data['discounted_side_price'])
+            if 'combo_discount_percent' in data and data['combo_discount_percent'] is not None:
+                site.offer_combo_discount_percent = max(0, min(30, int(data['combo_discount_percent'])))
+            if 'bundle_price' in data and data['bundle_price'] is not None:
+                b_pr = float(data['bundle_price'])
+                site.offer_grand_combo_bundle_price = b_pr
+                MakeupPackage.objects.filter(name__icontains='Grand Royal Heritage').update(price=b_pr, price_label=f"₹{int(b_pr):,}")
+            if 'active' in data:
+                site.offer_rules_active = bool(data['active'])
+            site.save()
+            return JsonResponse({
+                'ok': True,
+                'free_sides': site.offer_bridal_free_sides,
+                'discounted_side_price': float(site.offer_next_sides_discounted_price),
+                'combo_discount_percent': site.offer_combo_discount_percent,
+                'bundle_price': float(site.offer_grand_combo_bundle_price)
+            })
 
         # Service price update
         is_on_request = data.get('is_on_request', False)

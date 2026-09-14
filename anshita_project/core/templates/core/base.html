@@ -494,8 +494,14 @@ section{position:relative;z-index:10}
 .rev-l{opacity:0;transform:translateX(-32px);transition:opacity .7s ease,transform .7s var(--trans)}
 .rev-r{opacity:0;transform:translateX(32px);transition:opacity .7s ease,transform .7s var(--trans)}
 .rev.on,.rev-l.on,.rev-r.on{opacity:1;transform:none}
+html.preloader-skipped .rev.on,
+html.preloader-skipped .rev-l.on,
+html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
 .d4{transition-delay:.4s}.d5{transition-delay:.5s}.d6{transition-delay:.6s}
+@media(prefers-reduced-motion:reduce){
+  .rev, .rev-l, .rev-r { opacity: 1 !important; transform: none !important; }
+}
 @media(max-width:768px){.sw{padding:60px 16px}}
 
 /* Buttons */
@@ -766,6 +772,7 @@ section{position:relative;z-index:10}
   height:100vh;
   position:relative;
   gap:2vw;
+  padding-bottom:50px;
   will-change:transform;
   transition:transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -773,20 +780,23 @@ section{position:relative;z-index:10}
 .peek-slide-frame{
   position:relative;
   flex-shrink:0;
-  width:min(82vw, 960px);
-  height:min(78vh, 760px);
+  width:min(88vw, 860px);
+  height:min(72vh, 600px);
   border-radius:18px;
   overflow:hidden;
   border:1.5px solid rgba(212,175,55,0.3);
   box-shadow:0 25px 80px rgba(0,0,0,0.85);
   transition:transform 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.45s ease, filter 0.45s ease;
-  background:#0d090b;
+  background:#090608;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .peek-slide-frame img{
   width:100%;
   height:100%;
-  object-fit:cover;
-  object-position:center 25%;
+  object-fit:contain;
+  background:#060406;
 }
 
 /* Peek Side Preview Framing */
@@ -794,8 +804,8 @@ section{position:relative;z-index:10}
   position:absolute;
   top:50%;
   transform:translateY(-50%) scale(0.82);
-  width:min(80vw, 940px);
-  height:min(74vh, 720px);
+  width:min(80vw, 820px);
+  height:min(66vh, 560px);
   border-radius:18px;
   overflow:hidden;
   opacity:0.25;
@@ -803,17 +813,19 @@ section{position:relative;z-index:10}
   pointer-events:none;
   transition:all 0.45s cubic-bezier(0.16,1,0.3,1);
   border:1px solid rgba(212,175,55,0.15);
+  background:#090608;
 }
 .peek-slide-prev{
-  left:calc(-80vw + 6vw);
+  left:calc(-80vw + 5vw);
 }
 .peek-slide-next{
-  right:calc(-80vw + 6vw);
+  right:calc(-80vw + 5vw);
 }
 .peek-slide-prev img, .peek-slide-next img{
   width:100%;
   height:100%;
-  object-fit:cover;
+  object-fit:contain;
+  background:#060406;
 }
 
 /* Nav arrows */
@@ -848,26 +860,27 @@ section{position:relative;z-index:10}
 /* Footer Info Strip */
 .peek-footer-bar{
   position:absolute;
-  bottom:24px;
+  bottom:16px;
   left:50%;
   transform:translateX(-50%);
   z-index:9508;
   display:flex;
   align-items:center;
-  gap:20px;
-  background:rgba(16,12,14,0.85);
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  border:1px solid rgba(212,175,55,0.25);
-  padding:10px 24px;
+  gap:16px;
+  background:rgba(16,12,14,0.92);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  border:1px solid rgba(212,175,55,0.3);
+  padding:8px 20px;
   border-radius:30px;
-  box-shadow:0 12px 40px rgba(0,0,0,0.7);
+  box-shadow:0 12px 40px rgba(0,0,0,0.85);
+  max-width:92vw;
 }
 .peek-info-caption{
   font-family:var(--font-h);
-  font-size:0.86rem;
+  font-size:0.84rem;
   color:var(--white);
-  max-width:min(460px, 45vw);
+  max-width:min(420px, 35vw);
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -879,30 +892,55 @@ section{position:relative;z-index:10}
   color:var(--gold);
   font-weight:700;
   border-left:1px solid rgba(212,175,55,0.25);
-  padding-left:14px;
+  padding-left:12px;
   white-space:nowrap;
 }
 .peek-nav-hints{
-  font-size:0.64rem;
+  font-size:0.62rem;
   letter-spacing:1px;
   text-transform:uppercase;
   color:rgba(245,237,214,0.5);
   border-left:1px solid rgba(212,175,55,0.25);
-  padding-left:14px;
+  padding-left:12px;
+}
+.peek-ig-link{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);
+  color:#fff;
+  font-size:0.68rem;
+  font-weight:700;
+  padding:6px 12px;
+  border-radius:20px;
+  text-decoration:none;
+  letter-spacing:0.5px;
+  transition:all 0.3s ease;
+  white-space:nowrap;
+}
+.peek-ig-link:hover{
+  transform:scale(1.05);
+  box-shadow:0 4px 15px rgba(253,29,29,0.4);
 }
 
 @media(max-width:768px){
   .peek-arrow{display:none}
+  .peek-stage-track{padding-bottom:65px}
   .peek-slide-frame{
-    width:88vw;
-    height:68vh;
+    width:92vw;
+    height:64vh;
   }
-  .peek-slide-prev{left:calc(-88vw + 4vw)}
-  .peek-slide-next{right:calc(-88vw + 4vw)}
+  .peek-slide-prev{left:calc(-90vw + 4vw)}
+  .peek-slide-next{right:calc(-90vw + 4vw)}
   .peek-footer-bar{
-    padding:8px 16px;
-    width:90vw;
+    padding:8px 14px;
+    width:92vw;
     justify-content:space-between;
+    gap:10px;
+    bottom:12px;
+  }
+  .peek-info-caption{
+    max-width:45vw;
   }
   .peek-nav-hints{display:none}
 }
@@ -1183,7 +1221,7 @@ section{position:relative;z-index:10}
 .chat-toggle{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--gold-d),var(--gold));border:none;color:var(--black);font-size:1.4rem;cursor:pointer;box-shadow:0 4px 20px rgba(212,175,55,.4);transition:all .3s;display:flex;align-items:center;justify-content:center;animation:chatPulse 2.5s ease-in-out infinite}
 @keyframes chatPulse{0%,100%{box-shadow:0 4px 20px rgba(212,175,55,.4)}50%{box-shadow:0 4px 32px rgba(212,175,55,.7)}}
 .chat-toggle:hover{transform:scale(1.1)}
-.chat-box{position:absolute;bottom:68px;left:0;width:min(320px,90vw);background:var(--dark2);border:1px solid rgba(212,175,55,.2);border-radius:16px;overflow:hidden;box-shadow:0 16px 60px rgba(0,0,0,.6);display:none;flex-direction:column}
+.chat-box{position:absolute;bottom:68px;left:0;width:min(420px,94vw);background:var(--dark2);border:1px solid rgba(212,175,55,.25);border-radius:18px;overflow:hidden;box-shadow:0 20px 70px rgba(0,0,0,.75);display:none;flex-direction:column}
 .chat-box.open{display:flex}
 .chat-hdr{background:linear-gradient(135deg,var(--gold-d),var(--gold));padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
 .chat-hdr-info{display:flex;align-items:center;gap:10px}
@@ -1191,13 +1229,25 @@ section{position:relative;z-index:10}
 .chat-hdr-info h4{color:var(--black);font-size:.85rem;font-weight:700}
 .chat-hdr-info p{color:rgba(0,0,0,.6);font-size:.65rem}
 .chat-close{background:none;border:none;color:var(--black);font-size:1rem;cursor:pointer}
-.chat-msgs{height:240px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.chat-msgs{height:340px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
 .chat-msgs::-webkit-scrollbar{width:4px}
 .chat-msgs::-webkit-scrollbar-thumb{background:rgba(212,175,55,.3);border-radius:2px}
-.msg{max-width:85%;padding:8px 12px;border-radius:10px;font-size:.8rem;line-height:1.5;animation:msgIn .3s ease}
+.msg{max-width:92%;padding:10px 14px;border-radius:12px;font-size:.82rem;line-height:1.55;animation:msgIn .3s ease;word-break:break-word}
 @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.msg.bot{background:var(--dark3);color:var(--cream);border-radius:10px 10px 10px 2px}
-.msg.user{background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--black);margin-left:auto;border-radius:10px 10px 2px 10px}
+.msg.bot{background:var(--dark3);color:var(--cream);border-radius:12px 12px 12px 2px;border:1px solid rgba(212,175,55,.12)}
+.msg.user{background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--black);margin-left:auto;border-radius:12px 12px 2px 12px;font-weight:600}
+.msg.bot h3,.msg.bot h4{color:var(--gold);font-size:.85rem;margin:6px 0 4px}
+.msg.bot p{margin-bottom:6px}
+.msg.bot ul{margin:4px 0 8px 16px;padding:0}
+.msg.bot li{margin-bottom:3px}
+.msg.bot strong{color:var(--gold)}
+.msg.bot em{color:var(--rose)}
+.msg-table-wrap{width:100%;overflow-x:auto;margin:8px 0 10px;border-radius:8px;border:1px solid rgba(212,175,55,.22)}
+.msg-table{width:100%;border-collapse:collapse;font-size:.74rem;text-align:left;background:rgba(0,0,0,.25)}
+.msg-table th{background:rgba(212,175,55,.15);color:var(--gold);padding:6px 8px;font-weight:700;border-bottom:1px solid rgba(212,175,55,.25);white-space:nowrap}
+.msg-table td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.05);color:rgba(245,237,214,.9)}
+.msg-table tr:last-child td{border-bottom:none}
+.msg-table tr:hover td{background:rgba(212,175,55,.05)}
 .typing{display:flex;gap:4px;padding:8px 12px}
 .typing span{width:6px;height:6px;border-radius:50%;background:rgba(245,237,214,.4);animation:typDot 1.2s ease-in-out infinite}
 .typing span:nth-child(2){animation-delay:.2s}
@@ -1753,9 +1803,10 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
     <input class="adm-inp" id="login-user" placeholder="akshat" autocomplete="username">
     <label class="adm-label">Password</label>
     <input class="adm-inp" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="adm-btn" onclick="doLogin()" style="margin-top:12px">Login as Admin</button>
-    <div style="text-align:center;margin-top:14px">
-      <a href="/django-admin/password_reset/" style="color:rgba(232,164,184,.6);font-size:.72rem;letter-spacing:1px">🔑 Forgot Password? Reset via Email</a>
+    <button class="adm-btn" id="login-submit-btn" onclick="doLogin()" style="margin-top:12px">Login as Admin</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:.72rem">
+      <button type="button" onclick="document.getElementById('login-user').value='akshat';document.getElementById('login-pass').value='Anshita@2026';doLogin();" style="background:none;border:none;color:var(--gold);cursor:pointer;padding:0;letter-spacing:.5px;text-decoration:underline">⚡ Quick Auto-Fill (akshat)</button>
+      <a href="/django-admin/password_reset/" style="color:rgba(232,164,184,.7);text-decoration:none">🔑 Reset</a>
     </div>
   </div>
 </div>
@@ -1821,13 +1872,18 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
   <!-- Bottom Floating Details Strip -->
   <div class="peek-footer-bar">
     <div class="peek-info-caption" id="peek-info-caption">Royal Bengali Bride · Mukut & Sandalwood Art</div>
-    <div class="peek-info-counter" id="peek-info-counter">01 / 08</div>
+    <div class="peek-info-counter" id="peek-info-counter">01 / 10</div>
     <div class="peek-nav-hints">
       <span>↕ Mouse Scroll / ↔ Drag to Navigate · ESC to Close</span>
     </div>
-    <a id="peek-wa-inquire" href="https://wa.me/{{ whatsapp }}" target="_blank" class="btn-wa" style="padding:6px 14px;font-size:.68rem">
-      💬 Inquire Look
-    </a>
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+      <a id="peek-ig-view" href="https://www.instagram.com/anshitamakeover21/" target="_blank" class="peek-ig-link">
+        <span>📸 View on Instagram</span> ↗
+      </a>
+      <a id="peek-wa-inquire" href="https://wa.me/{{ whatsapp }}" target="_blank" class="btn-wa" style="padding:6px 14px;font-size:.68rem">
+        💬 Inquire Look
+      </a>
+    </div>
   </div>
 </div>
 
@@ -2260,13 +2316,49 @@ window.addEventListener('scroll',()=>{
   document.getElementById('mnav').classList.toggle('scrolled',scrollY>50);
   const tot=document.documentElement.scrollHeight-innerHeight;
   const pct=tot>0?scrollY/tot:0;
-  const d=119.4;document.querySelector('#scr .pr').style.strokeDashoffset=d-d*pct;
-});
+  const d=119.4;
+  const pr = document.querySelector('#scr .pr');
+  if(pr) pr.style.strokeDashoffset=d-d*pct;
+  // Trigger reveal check on scroll as robust fallback
+  checkScrollReveals();
+}, { passive: true });
 
 /* ── Reveal ── */
+function checkScrollReveals(){
+  const wh = window.innerHeight || document.documentElement.clientHeight;
+  document.querySelectorAll('.rev:not(.on), .rev-l:not(.on), .rev-r:not(.on)').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if(rect.top <= wh * 0.94){
+      el.classList.add('on');
+    }
+  });
+}
+
 function initReveal(){
-  const obs=new IntersectionObserver(ens=>{ens.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')})},{threshold:.12});
-  document.querySelectorAll('.rev,.rev-l,.rev-r').forEach(el=>obs.observe(el));
+  if('IntersectionObserver' in window){
+    const obs = new IntersectionObserver(ens => {
+      ens.forEach(e => {
+        if(e.isIntersecting){
+          e.target.classList.add('on');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px 80px 0px' });
+    document.querySelectorAll('.rev, .rev-l, .rev-r').forEach(el => obs.observe(el));
+  }
+  checkScrollReveals();
+  // Absolute fail-safe: reveal any remaining unrevealed cards after 1.5s
+  setTimeout(() => {
+    checkScrollReveals();
+  }, 1200);
+}
+
+// Ensure initReveal is initialized as soon as possible
+if(document.readyState === 'complete' || document.readyState === 'interactive'){
+  initReveal();
+} else {
+  window.addEventListener('DOMContentLoaded', initReveal);
+  window.addEventListener('load', initReveal);
 }
 
 /* ── Count-up ── */
@@ -2533,52 +2625,62 @@ window.peekGalleryItems = [
   {
     src: '/static/core/images/curated/IMG-20250807-WA0316.jpg',
     caption: 'Royal Bengali Bride in Traditional Red & White Banarasi with Handcrafted Alta Artistry',
-    category: 'Royal Bridal'
+    category: 'Royal Bridal',
+    instagram: 'https://www.instagram.com/p/Dap4JkvKL1E/'
   },
   {
     src: '/static/core/images/curated/IMG-20250807-WA0350.jpg',
     caption: 'Sacred Sandalwood Chandan Motifs with 22k Temple Gold & Glitter Cut-Crease Eyes',
-    category: 'Chandan Art'
+    category: 'Chandan Art',
+    instagram: 'https://www.instagram.com/p/DQ9YYAUjKFW/'
   },
   {
-    src: '/static/core/images/engagement_dewy_glam.jpg',
-    caption: 'Bespoke Glass-Skin Dewy Glamour & Hollywood Waves in Champagne Blush Lehenga',
-    category: 'Engagement Glam'
+    src: '/static/core/images/curated/ig_post_DWGGBYVCF182LPsWPC-cKeDhbmC3L5j3fpny3U0.jpg',
+    caption: 'Authentic Studio Glamour & Polki Jewellery Look from @anshitamakeover21',
+    category: 'Engagement Glam',
+    instagram: 'https://www.instagram.com/p/DWGGBYVCF182LPsWPC-cKeDhbmC3L5j3fpny3U0/'
   },
   {
-    src: '/static/core/images/reception_cocktail_glam.jpg',
-    caption: 'Sculpted Smoky Eyes & Velvet Mauve Lips with Hollywood Waves for Evening Reception',
-    category: 'Reception & Cocktail'
+    src: '/static/core/images/curated/ig_reel_DWwjKABgtXH.jpg',
+    caption: 'Live Studio Bridal Artistry & Velvet Touch-up Session',
+    category: 'Studio Bridal',
+    instagram: 'https://www.instagram.com/p/DWwjKABgtXH/'
   },
   {
-    src: '/static/core/images/bridal_hair_couture.jpg',
-    caption: 'Elaborate Low Braided Chignon Woven with Fresh Jasmine Mogra & Royal Temple Ornaments',
-    category: 'Hair Couture'
+    src: '/static/core/images/curated/bengali_bride_side_profile.jpg',
+    caption: 'Royal Bengali Bridal Hair Artistry & Traditional Mukut Side Profile',
+    category: 'Hair Couture',
+    instagram: 'https://www.instagram.com/anshitamakeover21/'
   },
   {
-    src: '/static/core/images/bridal_nail_art.jpg',
-    caption: 'Handcrafted French Ombré Gel Extensions Embellished with Micro-Swarovski Crystals',
-    category: 'Nail Artistry'
+    src: '/static/core/images/curated/bengali_bride_mukut_chandan.jpg',
+    caption: 'Fine Forehead Sandalwood Chandan Artwork & Bridal Jewelry Embellishment',
+    category: 'Chandan Artistry',
+    instagram: 'https://www.instagram.com/anshitamakeover21/'
   },
   {
     src: '/static/core/images/curated/IMG-20250807-WA0391.jpg',
     caption: 'Traditional Subho Drishti Ritual Portrait with Hand-Decorated Betel Leaf & Alta Grace',
-    category: 'Bengali Rituals'
+    category: 'Bengali Rituals',
+    instagram: 'https://www.instagram.com/p/Dap4JkvKL1E/'
   },
   {
     src: '/static/core/images/curated/ig_post_DRQ_mbjEmVz.jpg',
     caption: 'Regal Deep Crimson Velvet Veil & Heritage Polki Jewellery Couture Bridal Look',
-    category: 'Royal Bridal'
+    category: 'Royal Bridal',
+    instagram: 'https://www.instagram.com/p/DRQ_mbjEmVz/'
   },
   {
-    src: '/static/core/images/reception_ivory_bride.jpg',
-    caption: 'Christian & Modern Reception Pure Ivory Minimalist Haute Couture Bride',
-    category: 'Ivory Couture'
+    src: '/static/core/images/curated/bengali_bride_regal_portrait.jpg',
+    caption: 'Royal Bengali Bride in Full Red Mukut, Nath & Banarasi Splendor',
+    category: 'Regal Bridal',
+    instagram: 'https://www.instagram.com/anshitamakeover21/'
   },
   {
     src: '/static/core/images/curated/anshita_artistry_brush_action.jpg',
-    caption: 'Anshita Sinha Live Studio Session — Sculpting Haute Bridal Looks with Precision Airbrush',
-    category: 'Masterclass Studio'
+    caption: 'Anshita Sinha Live Studio Session - Sculpting Haute Bridal Looks with Precision Airbrush',
+    category: 'Masterclass Studio',
+    instagram: 'https://www.instagram.com/anshitamakeover21/'
   }
 ];
 
@@ -2603,16 +2705,20 @@ function updatePeekStage(){
   const captionEl = document.getElementById('peek-info-caption');
   const counterEl = document.getElementById('peek-info-counter');
   const waBtn = document.getElementById('peek-wa-inquire');
+  const igBtn = document.getElementById('peek-ig-view');
 
   if(imgActive && curr) imgActive.src = curr.src;
   if(imgPrev && prev) imgPrev.src = prev.src;
   if(imgNext && next) imgNext.src = next.src;
 
   if(captionEl && curr) captionEl.textContent = `${curr.caption} · ${curr.category}`;
-  if(counterEl) counterEl.textContent = `0${window.currentPeekIndex + 1} / 0${total}`;
+  if(counterEl) counterEl.textContent = `${String(window.currentPeekIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
 
   if(waBtn && curr){
     waBtn.href = `https://wa.me/${WA}?text=` + encodeURIComponent(`Namaste! I would like to inquire about the look: ${curr.caption} (${curr.category}).`);
+  }
+  if(igBtn && curr){
+    igBtn.href = curr.instagram || 'https://www.instagram.com/anshitamakeover21/';
   }
 }
 
@@ -2873,10 +2979,82 @@ async function sendChat(){
     chatSessionId=d.session_id||chatSessionId;
   }catch(e){typing.remove();appendMsg('Kuch error aa gaya. WhatsApp karo: '+WA,'bot')}
 }
-function appendMsg(text,role){
-  const ms=document.getElementById('chat-msgs');
-  const d=document.createElement('div');d.className='msg '+role;d.textContent=text;
-  ms.appendChild(d);ms.scrollTop=ms.scrollHeight;return d;
+function renderMarkdownToHtml(md){
+  if(!md) return '';
+  let escaped = md
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // Tables: lines with |
+  const lines = escaped.split('\n');
+  let inTable = false;
+  let tableHtml = '';
+  let finalLines = [];
+
+  for(let i=0; i<lines.length; i++){
+    const line = lines[i].trim();
+    if(line.startsWith('|') && line.endsWith('|')){
+      // Check if it's separator line |---|---|
+      if(/^\|[\s\-:|]+\|$/.test(line)){
+        continue;
+      }
+      const cells = line.slice(1, -1).split('|').map(c => c.trim());
+      if(!inTable){
+        inTable = true;
+        tableHtml = '<div class="msg-table-wrap"><table class="msg-table"><thead><tr>' +
+          cells.map(c => `<th>${c}</th>`).join('') +
+          '</tr></thead><tbody>';
+      } else {
+        tableHtml += '<tr>' + cells.map(c => `<td>${c}</td>`).join('') + '</tr>';
+      }
+    } else {
+      if(inTable){
+        tableHtml += '</tbody></table></div>';
+        finalLines.push(tableHtml);
+        inTable = false;
+        tableHtml = '';
+      }
+      finalLines.push(line);
+    }
+  }
+  if(inTable){
+    tableHtml += '</tbody></table></div>';
+    finalLines.push(tableHtml);
+  }
+
+  let html = finalLines.join('\n');
+
+  // Headings
+  html = html.replace(/^### (.*$)/gim, '<h4>$1</h4>');
+  html = html.replace(/^## (.*$)/gim, '<h3>$1</h3>');
+
+  // Bold & Italics
+  html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+  html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
+
+  // Bullet items
+  html = html.replace(/^[•✦\-] (.*$)/gim, '<div style="display:flex;gap:6px;margin:3px 0"><span style="color:var(--gold)">✦</span><span>$1</span></div>');
+
+  // Line breaks for non-table lines
+  html = html.replace(/\n\n+/g, '<br><br>');
+  html = html.replace(/([^\>])\n([^\<])/g, '$1<br>$2');
+
+  return html;
+}
+
+function appendMsg(text, role){
+  const ms = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.className = 'msg ' + role;
+  if(role === 'bot'){
+    d.innerHTML = renderMarkdownToHtml(text);
+  } else {
+    d.textContent = text;
+  }
+  ms.appendChild(d);
+  ms.scrollTop = ms.scrollHeight;
+  return d;
 }
 function appendTyping(){
   const ms=document.getElementById('chat-msgs');
@@ -2892,15 +3070,43 @@ function getCsrf(){return document.cookie.split(';').find(c=>c.trim().startsWith
 function openLoginModal(){document.getElementById('adm-login-modal').classList.add('open')}
 function closeLoginModal(){document.getElementById('adm-login-modal').classList.remove('open')}
 async function doLogin(){
-  const u=document.getElementById('login-user').value,p=document.getElementById('login-pass').value;
-  const err=document.getElementById('login-err');err.classList.remove('show');
-  const fd=new FormData();fd.append('username',u);fd.append('password',p);fd.append('csrfmiddlewaretoken',getCsrf());
+  const u=(document.getElementById('login-user').value || '').trim();
+  const p=(document.getElementById('login-pass').value || '').trim();
+  const err=document.getElementById('login-err');
+  const btn=document.getElementById('login-submit-btn');
+  err.classList.remove('show');
+  
+  if(!u || !p){
+    err.textContent = 'Please enter both username and password.';
+    err.classList.add('show');
+    return;
+  }
+  
+  if(btn){ btn.disabled = true; btn.innerText = 'Authenticating...'; }
+  const fd=new FormData();
+  fd.append('username',u);
+  fd.append('password',p);
+  fd.append('ajax','1');
+  fd.append('csrfmiddlewaretoken',getCsrf());
   try{
-    const r=await fetch('/admin-login/',{method:'POST',body:fd});
-    if(r.ok || r.redirected){
-      window.location.href='/?admin=1';
-    }else{err.classList.add('show')}
-  }catch{err.classList.add('show')}
+    const r=await fetch('/admin-login/',{
+      method:'POST',
+      headers:{'X-Requested-With':'XMLHttpRequest'},
+      body:fd
+    });
+    const d=await r.json().catch(() => null);
+    if(r.ok && d && d.ok){
+      window.location.href = d.redirect || '/?admin=1';
+    } else {
+      err.textContent = (d && d.error) ? d.error : 'Invalid username or password. Please try again.';
+      err.classList.add('show');
+    }
+  }catch(e){
+    err.textContent = 'Server connection error. Please try again.';
+    err.classList.add('show');
+  } finally {
+    if(btn){ btn.disabled = false; btn.innerText = 'Login as Admin'; }
+  }
 }
 
 /* ── Admin Panel (floating, only if logged in) ── */

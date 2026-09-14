@@ -13,8 +13,9 @@
   </div>
   <div class="adm-tabs" style="overflow-x:auto">
     <button class="adm-tab-btn active" data-tab="coupon" onclick="adTab('coupon')">🏷️ Coupon</button>
+    <button class="adm-tab-btn" data-tab="offers" onclick="adTab('offers')" style="color:var(--gold);font-weight:700">🎁 Booking Offers</button>
+    <button class="adm-tab-btn" data-tab="ai" onclick="adTab('ai')" style="color:#60a5fa;font-weight:700">🤖 AI Copilot</button>
     <button class="adm-tab-btn" data-tab="media" onclick="adTab('media')">📸 Media & Reels</button>
-    <button class="adm-tab-btn" data-tab="ai" onclick="adTab('ai')" style="color:var(--gold);font-weight:700">🤖 AI Copilot</button>
     <button class="adm-tab-btn" data-tab="services" onclick="adTab('services')">✨ Services</button>
     <button class="adm-tab-btn" data-tab="reviews" onclick="adTab('reviews')">⭐ Reviews</button>
     <button class="adm-tab-btn" data-tab="prices" onclick="adTab('prices')">💰 Prices</button>
@@ -87,6 +88,40 @@
           <label for="c-exit-active">Enable Go-Back / Exit-Intent Privilege Modal</label>
         </div>
         <button class="adm-btn" onclick="saveExitCoupon()">Save Secret Exit Coupon</button>
+      </div>
+    </div>
+
+    <!-- Booking Offers & Privilege Engine Tab -->
+    <div class="adm-tab-content" id="adm-offers">
+      <div class="adm-sec">
+        <h4>🎁 Booking Privilege Mechanics & Rules</h4>
+        <p style="font-size:.72rem;color:rgba(245,237,214,.5);margin-bottom:12px">
+          Modify the dynamic booking privileges offered to clients when calculating quotes or booking bridal packages.
+        </p>
+
+        <span class="adm-label">Free Side Makeups with Bridal Booking</span>
+        <input class="adm-inp" id="bo-free-sides" type="number" min="0" max="5" value="{{ site.offer_bridal_free_sides|default:2 }}" placeholder="2">
+        <small style="font-size:.68rem;color:var(--gold);display:block;margin-top:-4px;margin-bottom:8px">Default: 2 Side Makeups FREE (₹0)</small>
+
+        <span class="adm-label">Subsidized Rate for Next 2 Side Makeups (3rd & 4th) (₹)</span>
+        <input class="adm-inp" id="bo-disc-side" type="number" min="1500" max="5000" step="100" value="{{ site.offer_next_sides_discounted_price|floatformat:0|default:2500 }}" placeholder="2500">
+        <small style="font-size:.68rem;color:rgba(245,237,214,.4);display:block;margin-top:-4px;margin-bottom:8px">Can offer ₹2,500 to ₹3,000 per person (Standard is ₹6,500)</small>
+
+        <span class="adm-label">Bridal + Engagement Combo Discount %</span>
+        <input class="adm-inp" id="bo-combo-disc" type="number" min="5" max="25" value="{{ site.offer_combo_discount_percent|default:15 }}" placeholder="15">
+        <small style="font-size:.68rem;color:rgba(245,237,214,.4);display:block;margin-top:-4px;margin-bottom:8px">Range: 10% to 20% combo savings on Engagement</small>
+
+        <span class="adm-label">Grand Royal Heritage Combo Suite Flat Price (₹)</span>
+        <input class="adm-inp" id="bo-bundle-price" type="number" value="{{ site.offer_grand_combo_bundle_price|floatformat:0|default:50000 }}" placeholder="50000">
+        <small style="font-size:.68rem;color:rgba(245,237,214,.4);display:block;margin-top:-4px;margin-bottom:8px">Flat rate for Bridal + Engagement (e.g. ₹50,000 instead of ₹58,000)</small>
+
+        <div class="adm-row" style="margin-top:6px">
+          <input type="checkbox" id="bo-active" {% if site.offer_rules_active %}checked{% endif %}>
+          <label for="bo-active">Enable Privilege Rules in Estimator & Booking</label>
+        </div>
+
+        <button class="adm-btn" onclick="saveBookingOffers()" style="margin-top:8px">Save Booking Privilege Rules</button>
+        <div id="bo-status-msg" style="display:none;margin-top:10px;font-size:.76rem;color:#22c55e"></div>
       </div>
     </div>
 
@@ -190,11 +225,12 @@
         <div style="background:rgba(212,175,55,.06);border:1px dashed rgba(212,175,55,.2);border-radius:12px;padding:12px;margin-bottom:14px">
           <div style="font-size:.68rem;color:var(--gold);font-weight:700;letter-spacing:1px;margin-bottom:6px">TRY SAYING:</div>
           <ul style="font-size:.72rem;color:rgba(245,237,214,.75);margin-left:14px;line-height:1.6">
+            <li>"Offer 2 free side makeups with bridal booking and next 2 at 2500"</li>
+            <li>"Put 15 percent extra offer when booking bridal plus engagement"</li>
+            <li>"Set Grand Royal Bridal & Engagement bundle package price to 50000"</li>
             <li>"Change coupon to ROYAL40 with 40% discount for festive season"</li>
-            <li>"Add a new package called Sangeet Glow for 9500 with HD eye art and curls"</li>
-            <li>"Embed instagram reel https://www.instagram.com/reel/Dap4JkvKL1E/ titled Paan Leaf Reveal"</li>
-            <li>"Embed youtube video https://youtu.be/dQw4w9WgXcQ titled Bridal Styling"</li>
             <li>"Update Airbrush bridal price to 32000"</li>
+            <li>"Embed instagram reel https://www.instagram.com/reel/Dap4JkvKL1E/ titled Paan Leaf Reveal"</li>
           </ul>
         </div>
 
@@ -463,10 +499,10 @@
       <img src="{% static 'core/images/curated/IMG-20250807-WA0350.jpg' %}" alt="Sacred Sandalwood Chandan Motifs with 22k Temple Gold & Glitter Cut-Crease Eyes">
     </div>
     <div class="hero-slide" data-slide="2">
-      <img src="{% static 'core/images/engagement_dewy_glam.jpg' %}" alt="Modern Glass-Skin Dewy Glamour & Hollywood Waves in Champagne Blush Lehenga">
+      <img src="{% static 'core/images/curated/ig_post_DWGGBYVCF182LPsWPC-cKeDhbmC3L5j3fpny3U0.jpg' %}" alt="Authentic Polki Jewellery & Dewy Glass-Skin Glamour from @anshitamakeover21">
     </div>
     <div class="hero-slide" data-slide="3">
-      <img src="{% static 'core/images/reception_cocktail_glam.jpg' %}" alt="Sculpted Smoky Eyes & Velvet Mauve Lips with Hollywood Waves for Reception Sangeet">
+      <img src="{% static 'core/images/curated/bengali_bride_regal_portrait.jpg' %}" alt="Royal Bengali Bride in Full Red Mukut, Nath & Banarasi Splendor">
     </div>
 
     <!-- Minimalist Floating Counter & Progress Indicator -->
@@ -1068,11 +1104,20 @@
         <div class="calc-row">
           <label class="calc-label" for="calc-pkg">Bridal Package Suite</label>
           <select class="calc-select" id="calc-pkg" onchange="updateCalc()">
-            <option value="35000" selected>Imperial Royal HD Bridal Suite (₹35,000)</option>
-            <option value="45000">Master Airbrush Bridal Suite (₹45,000)</option>
+            <option value="35000" data-is-bridal="true" selected>Imperial Royal HD Bridal Suite (₹35,000)</option>
+            <option value="45000" data-is-bridal="true">Master Airbrush Bridal Suite (₹45,000)</option>
+            <option value="50000" data-is-combo="true" data-is-bridal="true">👑 Grand Royal Heritage Suite: Bridal + Engagement Bundle (₹50,000 VIP Rate)</option>
             <option value="18000">Engagement & Roka Luminescence (₹18,000)</option>
             <option value="22000">Reception Statement Glamour (₹22,000)</option>
           </select>
+        </div>
+
+        <!-- Bridal + Engagement Combo Privilege Checkbox -->
+        <div id="calc-combo-wrap" style="background:rgba(212,175,55,.08);border:1px dashed rgba(212,175,55,.3);border-radius:10px;padding:10px 14px;margin-bottom:14px">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.82rem;color:var(--cream)">
+            <input type="checkbox" id="calc-add-engagement" onchange="updateCalc()" style="accent-color:var(--gold);width:16px;height:16px">
+            <span>Add <strong>Engagement & Roka Glam</strong> to your Bridal booking (Enjoy <strong>{{ site.offer_combo_discount_percent|default:15 }}% Extra Combo Privilege</strong>)</span>
+          </label>
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
@@ -1088,14 +1133,14 @@
             <label class="calc-label" for="calc-sides">Side Makeups (Family / Bridesmaids)</label>
             <select class="calc-select" id="calc-sides" onchange="updateCalc()">
               <option value="0">None</option>
-              <option value="1">1 Person (₹6,500)</option>
-              <option value="2">2 Persons (₹13,000)</option>
-              <option value="3" selected>3 Persons — Trio Privilege (₹16,500)</option>
-              <option value="4">4 Persons (₹23,000)</option>
-              <option value="5">5 Persons (₹29,500)</option>
-              <option value="6">6 Persons — Double Trio (₹33,000)</option>
-              <option value="7">7 Persons (₹39,500)</option>
-              <option value="8">8 Persons (₹46,000)</option>
+              <option value="1">1 Person (₹0 with Bridal Privilege)</option>
+              <option value="2" selected>2 Persons (₹0 FREE with Bridal Suite)</option>
+              <option value="3">3 Persons (2 FREE + 1 @ ₹{{ site.offer_next_sides_discounted_price|floatformat:0|default:'2,500' }})</option>
+              <option value="4">4 Persons (2 FREE + 2 @ ₹{{ site.offer_next_sides_discounted_price|floatformat:0|default:'2,500' }})</option>
+              <option value="5">5 Persons (2 FREE + 2 @ Special Rate + 1 Standard)</option>
+              <option value="6">6 Persons (2 FREE + 2 Special + 2 Standard)</option>
+              <option value="7">7 Persons (Family Suite)</option>
+              <option value="8">8 Persons (Grand Entourage)</option>
             </select>
           </div>
         </div>
@@ -1104,12 +1149,15 @@
         <div class="calc-result-box">
           <div class="calc-result-hdr">
             <span class="calc-result-label">Estimated Investment:</span>
-            <span class="calc-result-val" id="calc-total-display">₹69,500</span>
+            <span class="calc-result-val" id="calc-total-display">₹50,000</span>
           </div>
           <div class="calc-breakdown" id="calc-breakdown-text">
-            Bridal Suite: ₹35,000 · Outstation Fee (1 Day): ₹18,000 · 3 Side Makeups (Trio): ₹16,500
+            Bridal Suite: ₹35,000 · 2 Side Makeups: FREE (VIP Privilege)
           </div>
-          <p class="calc-note" id="calc-note-text">
+          <div id="calc-savings-badge" style="display:inline-block;background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;padding:4px 10px;border-radius:12px;font-size:.72rem;font-weight:700;margin-top:6px;letter-spacing:.5px">
+            ✨ VIP Savings Applied: 2 Free Side Makeups Included
+          </div>
+          <p class="calc-note" id="calc-note-text" style="margin-top:8px">
             *Note: Outstation travel (return flight/train tickets + cabs) & hotel stay with meals for Anshita + 1 assistant provided by client.
           </p>
         </div>
@@ -1707,6 +1755,39 @@ async function saveExitCoupon(){
   }
 }
 
+/* ── Booking Offers & Privilege Admin ── */
+async function saveBookingOffers(){
+  const freeSides = document.getElementById('bo-free-sides').value;
+  const discSide = document.getElementById('bo-disc-side').value;
+  const comboDisc = document.getElementById('bo-combo-disc').value;
+  const bundlePrice = document.getElementById('bo-bundle-price').value;
+  const active = document.getElementById('bo-active').checked;
+  const statusEl = document.getElementById('bo-status-msg');
+
+  const res = await fetch('/api/admin/price/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrf() },
+    body: JSON.stringify({
+      type: 'booking_offer',
+      free_sides: freeSides,
+      discounted_side_price: discSide,
+      combo_discount_percent: comboDisc,
+      bundle_price: bundlePrice,
+      active: active
+    })
+  });
+  const data = await res.json();
+  if(data.ok){
+    if(statusEl){
+      statusEl.style.display = 'block';
+      statusEl.textContent = '✅ Privilege rules updated & active! Reloading...';
+    }
+    setTimeout(() => location.reload(), 1000);
+  } else {
+    alert(data.error || 'Failed to save booking privileges.');
+  }
+}
+
 /* ── Price Admin ── */
 async function savePrice(service,val){
   await fetch('/api/admin/price/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrf()},body:JSON.stringify({service,price:val})});
@@ -1899,17 +1980,44 @@ async function deleteService(id){
 }
 
 /* ── Interactive Outstation & Bridal Calculator ── */
+// Admin Configurable Offer Constants (with dynamic fallbacks)
+window.OFFER_CONFIG = {
+  freeSides: parseInt("{{ site.offer_bridal_free_sides|default:2 }}", 10) || 2,
+  discSideRate: parseFloat("{{ site.offer_next_sides_discounted_price|default:2500 }}") || 2500,
+  comboDiscPercent: parseInt("{{ site.offer_combo_discount_percent|default:15 }}", 10) || 15,
+  comboFlatPrice: parseFloat("{{ site.offer_grand_combo_bundle_price|default:50000 }}") || 50000,
+  standardSideRate: 6500,
+  rulesActive: {% if site.offer_rules_active %}true{% else %}false{% endif %}
+};
+
 function updateCalc(){
   const locEl = document.getElementById('calc-loc');
   const pkgEl = document.getElementById('calc-pkg');
   const daysEl = document.getElementById('calc-days');
   const sidesEl = document.getElementById('calc-sides');
+  const engCb = document.getElementById('calc-add-engagement');
+  const comboWrap = document.getElementById('calc-combo-wrap');
+  const savingsBadge = document.getElementById('calc-savings-badge');
   if(!locEl || !pkgEl || !daysEl || !sidesEl) return;
 
   const loc = locEl.value;
-  const bridalFee = parseInt(pkgEl.value, 10) || 35000;
+  const selectedOption = pkgEl.selectedOptions[0];
+  let bridalFee = parseInt(pkgEl.value, 10) || 35000;
   const days = parseInt(daysEl.value, 10) || 1;
   const sideCount = parseInt(sidesEl.value, 10) || 0;
+  const isBridal = selectedOption?.dataset?.isBridal === 'true' || bridalFee >= 35000;
+  const isDedicatedCombo = selectedOption?.dataset?.isCombo === 'true';
+
+  // Toggle visibility/state of the "Add Engagement" combo checkbox if already a dedicated combo or engagement
+  if(comboWrap){
+    if(isDedicatedCombo || bridalFee === 18000){
+      comboWrap.style.display = 'none';
+    } else {
+      comboWrap.style.display = 'block';
+    }
+  }
+
+  const addEngagement = (engCb && engCb.checked && comboWrap && comboWrap.style.display !== 'none');
 
   // Travel / Outstation Fee Calculation
   let locFee = 0;
@@ -1924,31 +2032,74 @@ function updateCalc(){
     locBreakdown = `Studio Jabalpur: ₹0 travel surcharge`;
   }
 
-  // Side Makeup with Trio Privilege
-  // Trio group of 3 is ₹16,500 instead of 3 * 6,500 = 19,500 (saves ₹3,000)
-  const trios = Math.floor(sideCount / 3);
-  const singles = sideCount % 3;
-  const sideFee = (trios * 16500) + (singles * 6500);
-
+  // Side Makeup Calculation with User's Exact Privilege Offer Rules:
+  // - If Bridal booking is active: 2 side makeups FREE
+  // - Next 2 side makeups (3rd & 4th) at discounted rate (e.g. ₹2,500 - ₹3,000)
+  // - 5th and subsequent at standard ₹6,500 (or Trio group)
+  let sideFee = 0;
+  let totalSavings = 0;
   let sideBreakdown = '';
+
+  const cfg = window.OFFER_CONFIG;
   if(sideCount > 0){
-    if(trios > 0 && singles > 0){
-      sideBreakdown = `${sideCount} Side Makeups (${trios} Trio + ${singles}): ₹${sideFee.toLocaleString('en-IN')}`;
-    } else if(trios > 0){
-      sideBreakdown = `${sideCount} Side Makeups (${trios} Trio Privilege): ₹${sideFee.toLocaleString('en-IN')}`;
+    if(isBridal && cfg.rulesActive){
+      const freeCount = Math.min(sideCount, cfg.freeSides); // up to 2 FREE
+      const remainingAfterFree = Math.max(0, sideCount - freeCount);
+      const discountedCount = Math.min(remainingAfterFree, 2); // next 2 at ₹2,500 - ₹3,000
+      const standardCount = Math.max(0, remainingAfterFree - discountedCount);
+
+      sideFee = (discountedCount * cfg.discSideRate) + (standardCount * cfg.standardSideRate);
+      const standardOriginalFee = sideCount * cfg.standardSideRate;
+      totalSavings += (standardOriginalFee - sideFee);
+
+      let parts = [];
+      if(freeCount > 0) parts.push(`${freeCount} FREE`);
+      if(discountedCount > 0) parts.push(`${discountedCount} @ ₹${cfg.discSideRate.toLocaleString('en-IN')}`);
+      if(standardCount > 0) parts.push(`${standardCount} @ ₹${cfg.standardSideRate.toLocaleString('en-IN')}`);
+      sideBreakdown = `${sideCount} Side Makeups (${parts.join(' + ')}): ₹${sideFee.toLocaleString('en-IN')}`;
     } else {
+      // Standard calculation with trio privilege
+      const trios = Math.floor(sideCount / 3);
+      const singles = sideCount % 3;
+      sideFee = (trios * 16500) + (singles * 6500);
       sideBreakdown = `${sideCount} Side Makeup${sideCount>1?'s':''}: ₹${sideFee.toLocaleString('en-IN')}`;
     }
   }
 
-  const grandTotal = bridalFee + locFee + sideFee;
+  // Base Package & Combo calculations
+  let pkgBreakdown = `Bridal Suite: ₹${bridalFee.toLocaleString('en-IN')}`;
+  let comboFee = 0;
+
+  if(addEngagement){
+    // Bridal + Engagement Combo: Add engagement (18,000 standard) with combo discount (e.g. 15% or capped 20%)
+    const rawEng = 18000;
+    const comboDiscRate = cfg.comboDiscPercent / 100;
+    const engDiscounted = Math.round(rawEng * (1 - comboDiscRate));
+    comboFee = engDiscounted;
+    totalSavings += (rawEng - engDiscounted);
+    pkgBreakdown = `Bridal Suite: ₹${bridalFee.toLocaleString('en-IN')} + Engagement Combo: ₹${engDiscounted.toLocaleString('en-IN')} (${cfg.comboDiscPercent}% OFF)`;
+  } else if(isDedicatedCombo){
+    pkgBreakdown = `Grand Royal Bridal & Engagement Suite: ₹${bridalFee.toLocaleString('en-IN')} (VIP Bundle Rate)`;
+    totalSavings += 8000; // standard 35k + 18k + 5k = 58k value
+  }
+
+  const grandTotal = bridalFee + comboFee + locFee + sideFee;
 
   document.getElementById('calc-total-display').innerText = '₹' + grandTotal.toLocaleString('en-IN');
   
-  let parts = [`Bridal Suite: ₹${bridalFee.toLocaleString('en-IN')}`];
+  let parts = [pkgBreakdown];
   if(locBreakdown) parts.push(locBreakdown);
   if(sideBreakdown) parts.push(sideBreakdown);
   document.getElementById('calc-breakdown-text').innerText = parts.join(' · ');
+
+  if(savingsBadge){
+    if(totalSavings > 0){
+      savingsBadge.style.display = 'inline-block';
+      savingsBadge.innerText = `✨ Total VIP Privilege Savings: ₹${totalSavings.toLocaleString('en-IN')} Applied!`;
+    } else {
+      savingsBadge.style.display = 'none';
+    }
+  }
 
   const noteEl = document.getElementById('calc-note-text');
   if(loc === 'outstation'){
@@ -1966,12 +2117,15 @@ function sendCalculatedQuote(){
   const days = document.getElementById('calc-days').value;
   const sides = document.getElementById('calc-sides').value;
   const total = document.getElementById('calc-total-display').innerText;
+  const engCb = document.getElementById('calc-add-engagement');
+  const hasEng = engCb && engCb.checked ? 'Yes (with Combo Privilege Discount)' : 'No';
 
-  const msg = `Namaste Anshita Makeover! ✨\nI would like to check availability and book a consultation:\n` +
+  const msg = `Namaste Anshita Makeover! ✨\nI would like to check availability and book a consultation with current Privilege Offers:\n` +
     `📍 Location: ${locText}\n` +
     `👰 Suite: ${pkgText}\n` +
+    `💍 Add Engagement & Roka: ${hasEng}\n` +
     `📅 Event Days: ${days} Day(s)\n` +
-    `👭 Side Makeups: ${sides} Person(s)\n` +
+    `👭 Side Makeups: ${sides} Person(s) (2 FREE + next 2 @ discounted rate)\n` +
     `💰 Estimated Budget: ${total}\n\n` +
     `My Wedding Dates: [Please specify dates here]`;
 
