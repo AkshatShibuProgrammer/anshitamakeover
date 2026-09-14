@@ -83,50 +83,121 @@ button{cursor:pointer;font-family:var(--font-b)}
   transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* ═══ PRELOADER (HIGH-FASHION LOGO REVEAL) ═══ */
+/* ═══ PRELOADER (ARCHITECTURAL DUAL-CURTAIN & HAUTE COUTURE VECTOR CREST) ═══ */
 #preloader{
-  position:fixed;inset:0;z-index:9999;
+  position:fixed;inset:0;z-index:99999;
   display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(ellipse at center, #1a1014 0%, #080808 85%);
-  transition:opacity 0.9s cubic-bezier(0.16,1,0.3,1), visibility 0.9s ease;
   overflow:hidden;
+  pointer-events:all;
 }
-.pl-video-container{
+.preloader-skipped #preloader{
+  display:none !important;
+}
+
+/* Dual Architectural Sliding Panels */
+.preloader-curtain{
+  position:absolute;top:0;bottom:0;width:50vw;height:100vh;
+  background:radial-gradient(circle at center, #120e10 0%, #060505 100%);
+  z-index:1;
+  will-change:transform;
+  transition:transform 1.25s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.curtain-left{
+  left:0;
+  border-right:1px solid rgba(212,175,55,0.22);
+  box-shadow:inset -15px 0 30px rgba(0,0,0,0.8);
+}
+.curtain-right{
+  right:0;
+  border-left:1px solid rgba(212,175,55,0.22);
+  box-shadow:inset 15px 0 30px rgba(0,0,0,0.8);
+}
+
+/* Center Monogram Stage */
+.preloader-stage{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  transition:opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.77,0,0.175,1);
+}
+.crest-svg-container{
+  width:min(320px, 80vw);
+  height:min(320px, 80vw);
   position:relative;
-  width:min(380px, 85vw);
-  aspect-ratio:9/16;
-  max-height:76vh;
-  border-radius:28px;
-  overflow:hidden;
-  border:1.5px solid rgba(212,175,55,0.4);
-  box-shadow:0 0 50px rgba(212,175,55,0.25), 0 25px 60px rgba(0,0,0,0.9);
-  background:#0d0a0c;
   display:flex;align-items:center;justify-content:center;
+  filter:drop-shadow(0 0 35px rgba(212,175,55,0.35));
 }
-.pl-video{
+.crest-svg{
   width:100%;height:100%;
-  object-fit:cover;
-  pointer-events:none;
 }
+
+/* Animated SVG Strokes */
+.vector-path{
+  stroke-dasharray:1200;
+  stroke-dashoffset:1200;
+  animation:drawCrestStroke 2.2s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+.path-ring-inner{ animation-delay: 0.15s; }
+.path-crown{ animation-delay: 0.3s; }
+.path-flourish{ animation-delay: 0.45s; }
+.path-letter-a1{ animation-delay: 0.5s; }
+.path-letter-a2{ animation-delay: 0.8s; }
+.path-letter-m{ animation-delay: 0.65s; }
+.path-swash{ animation-delay: 1.1s; }
+
+@keyframes drawCrestStroke{
+  to{
+    stroke-dashoffset:0;
+  }
+}
+
+.brand-title-text, .brand-subtitle-text{
+  opacity:0;
+  transform:translateY(8px);
+  animation:fadeTextUp 1s cubic-bezier(0.16,1,0.3,1) 1.2s forwards;
+}
+@keyframes fadeTextUp{
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* Skip Button */
 .pl-skip{
-  position:absolute;bottom:24px;
-  background:rgba(18,18,18,0.7);
-  border:1px solid rgba(212,175,55,0.35);
-  backdrop-filter:blur(10px);
+  margin-top:20px;
+  background:rgba(20,16,18,0.75);
+  border:1px solid rgba(212,175,55,0.4);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
   color:var(--gold);
-  font-size:0.65rem;
-  letter-spacing:2px;
+  font-size:0.68rem;
+  letter-spacing:2.5px;
   text-transform:uppercase;
-  padding:6px 18px;
-  border-radius:20px;
+  padding:8px 22px;
+  border-radius:24px;
   cursor:pointer;
-  transition:all 0.3s;
-  z-index:10;
+  transition:all 0.35s cubic-bezier(0.16,1,0.3,1);
+  box-shadow:0 4px 20px rgba(0,0,0,0.5);
 }
 .pl-skip:hover{
   background:var(--gold);
   color:var(--black);
-  box-shadow:0 0 15px rgba(212,175,55,0.6);
+  box-shadow:0 0 25px rgba(212,175,55,0.7);
+  transform:translateY(-1px) scale(1.03);
+}
+
+/* Parting Doors Animation */
+#preloader.curtains-open .curtain-left{
+  transform:translateX(-100%);
+}
+#preloader.curtains-open .curtain-right{
+  transform:translateX(100%);
+}
+#preloader.curtains-open .preloader-stage{
+  opacity:0;
+  transform:scale(1.08);
+  pointer-events:none;
 }
 
 /* ═══ COUPON BANNER ═══ */
@@ -1001,15 +1072,16 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
   <span class="scr-arrow">↑</span>
 </div>
 
-<!-- PRELOADER (FRAMELSS LUXURY LOGO REVEAL) -->
+<!-- PRELOADER (ARCHITECTURAL DUAL-CURTAIN & HAUTE COUTURE VECTOR CREST) -->
 <div id="preloader">
-  <div class="pl-video-container">
-    <video class="pl-video" id="pl-reveal-vid" autoplay muted playsinline preload="auto">
-      <source src="{% static 'core/videos/logo_reveal.webm' %}" type="video/webm">
-      <source src="{% static 'core/videos/logo_reveal.mp4' %}" type="video/mp4">
-    </video>
+  <div class="preloader-curtain curtain-left"></div>
+  <div class="preloader-curtain curtain-right"></div>
+  <div class="preloader-stage">
+    <div class="crest-svg-container">
+      {% include "core/includes/anshita_crest.html" %}
+    </div>
+    <button class="pl-skip" onclick="dismissPreloader()" title="Press Escape or Click to Enter">Enter Studio →</button>
   </div>
-  <button class="pl-skip" onclick="dismissPreloader()">Enter Studio →</button>
 </div>
 
 <!-- ADMIN OVERLAY -->
@@ -1032,7 +1104,7 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
 <nav id="mnav">
   <a href="/" class="nl">
     <div class="nl-glow"></div>
-    <img src="{% static 'core/images/logo.jpeg' %}" alt="Anshita Makeover">
+    <img src="{% static 'core/images/brand/anshita_haute_emblem.png' %}" alt="Anshita Makeover" style="height:44px;width:auto;object-fit:contain;filter:drop-shadow(0 0 10px rgba(212,175,55,0.4));">
     <div class="nl-brand-txt">
       <span class="nl-brand-title">ANSHITA</span>
       <span class="nl-brand-sub">MAKEOVER</span>
@@ -1555,7 +1627,7 @@ document.querySelectorAll('.btn-p, .btn-o, .btn-wa, .calc-cta, .evt-cta').forEac
   });
 });
 
-/* ── Preloader (Video Reveal Lifecycle - Shown Only Once Per Session) ── */
+/* ── Preloader (Evagher Dual-Curtain & Vector Reveal Lifecycle) ── */
 let preloaderDismissed = false;
 function dismissPreloader() {
   if (preloaderDismissed) return;
@@ -1567,40 +1639,50 @@ function dismissPreloader() {
     countUp();
     return;
   }
-  pl.style.opacity = '0';
+  
+  // Trigger Stage 2 dual curtain split (left slides left, right slides right)
+  pl.classList.add('curtains-open');
+  
+  // Stage 3 WebGL burst trigger if available
+  if (window.bgMaterial && window.bgMaterial.uniforms && window.bgMaterial.uniforms.uSpeed) {
+    gsap.to(window.bgMaterial.uniforms.uSpeed, { value: 0.008, duration: 1.2, yoyo: true, repeat: 1 });
+  }
+
+  // Remove preloader from flow after curtains part smoothly
   setTimeout(() => {
     pl.style.display = 'none';
+    document.documentElement.classList.add('preloader-skipped');
     initReveal();
     countUp();
-  }, 400);
+  }, 1250);
 }
 
-// Check immediately before paint if already seen in this browsing session
+// Instant head session guard (eliminates FOUC on internal navigation)
 (function checkPreloaderSession() {
-  if (sessionStorage.getItem('anshita_preloader_seen')) {
+  if (sessionStorage.getItem('anshita_preloader_seen') === 'true') {
     preloaderDismissed = true;
+    document.documentElement.classList.add('preloader-skipped');
     const pl = document.getElementById('preloader');
     if (pl) pl.style.display = 'none';
   }
 })();
 
+// Automatic progression after vector stroke drawing completes (~2.8s)
 window.addEventListener('DOMContentLoaded', () => {
-  if (sessionStorage.getItem('anshita_preloader_seen')) {
+  if (sessionStorage.getItem('anshita_preloader_seen') === 'true') {
     dismissPreloader();
     return;
   }
-  const vid = document.getElementById('pl-reveal-vid');
-  if (vid) {
-    vid.addEventListener('ended', dismissPreloader);
-    vid.addEventListener('timeupdate', () => {
-      if (vid.currentTime >= 7.0) {
-        dismissPreloader();
-      }
-    });
-    setTimeout(dismissPreloader, 6500);
-  } else {
-    setTimeout(dismissPreloader, 1500);
-  }
+
+  // Auto trigger curtain parting once stroke animation finishes
+  setTimeout(dismissPreloader, 2800);
+
+  // Keyboard accessibility: Escape key bypasses immediately
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      dismissPreloader();
+    }
+  });
 });
 
 /* ── Scroll ── */
