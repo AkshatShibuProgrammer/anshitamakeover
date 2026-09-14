@@ -9,7 +9,8 @@ echo.
 set SPEC_DIR=%~dp0.specify
 set PROJECT_DIR=%~dp0
 
-if "%~1"=="" goto help
+if "%~1"=="" goto interactive_menu
+if /i "%~1"=="menu" goto interactive_menu
 if /i "%~1"=="help" goto help
 if /i "%~1"=="status" goto status
 if /i "%~1"=="constitution" goto constitution
@@ -21,7 +22,84 @@ if /i "%~1"=="implement" goto implement
 
 echo [ERROR] Unknown command: %~1
 echo Type "speckit.bat help" for available commands.
+pause
 exit /b 1
+
+:interactive_menu
+cls
+echo ================================================================
+echo    ANSHITA MAKEOVER - SPEC KIT (SPEC-DRIVEN DEVELOPMENT) CLI
+echo ================================================================
+echo.
+echo   [1] View Workflow Status
+echo   [2] View Constitution (Architectural Non-Negotiables)
+echo   [3] View Specification (SPEC-001)
+echo   [4] View Implementation Plan (PLAN-001)
+echo   [5] View Granular Tasks (TASKS-001)
+echo   [6] Run Automated Validation (Git Clean, Secrets, Django)
+echo   [7] View Implementation Checklist
+echo   [8] Exit
+echo.
+set /p choice="Enter option (1-8): "
+
+if "%choice%"=="1" goto menu_status
+if "%choice%"=="2" goto menu_constitution
+if "%choice%"=="3" goto menu_specify
+if "%choice%"=="4" goto menu_plan
+if "%choice%"=="5" goto menu_tasks
+if "%choice%"=="6" goto menu_validate
+if "%choice%"=="7" goto menu_implement
+if "%choice%"=="8" exit /b 0
+goto interactive_menu
+
+:menu_status
+cls
+call :status
+echo.
+pause
+goto interactive_menu
+
+:menu_constitution
+cls
+call :constitution
+echo.
+pause
+goto interactive_menu
+
+:menu_specify
+cls
+call :specify
+echo.
+pause
+goto interactive_menu
+
+:menu_plan
+cls
+call :plan
+echo.
+pause
+goto interactive_menu
+
+:menu_tasks
+cls
+call :tasks
+echo.
+pause
+goto interactive_menu
+
+:menu_validate
+cls
+call :validate
+echo.
+pause
+goto interactive_menu
+
+:menu_implement
+cls
+call :implement
+echo.
+pause
+goto interactive_menu
 
 :help
 echo Available Spec Kit Commands:
