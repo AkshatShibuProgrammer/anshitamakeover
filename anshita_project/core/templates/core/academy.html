@@ -5,18 +5,18 @@
 
 {% block content %}
 <!-- HERO -->
-<section style="background:linear-gradient(135deg,var(--maroon),var(--dark2) 60%,var(--black));padding:100px 28px 60px;text-align:center;position:relative;overflow:hidden">
+<section class="academy-hero" style="background:linear-gradient(135deg,var(--maroon),var(--dark2) 60%,var(--black));padding:100px 28px 60px;text-align:center;position:relative;overflow:hidden">
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(212,175,55,.1),transparent 60%)"></div>
   <div style="position:relative;z-index:2">
     <p class="sl" style="justify-content:center" class="rev">🎓 Anshita Academy</p>
     <h1 class="sh rev" style="text-align:center;font-size:clamp(2rem,5vw,3.5rem)">Learn from the <span>Masters</span></h1>
     <div class="gdiv" style="margin:18px auto"></div>
-    <p style="color:rgba(245,237,214,.65);max-width:580px;margin:0 auto 28px;line-height:1.8;font-size:.95rem">
+    <p class="academy-hero-sub" style="color:rgba(245,237,214,.75);max-width:580px;margin:0 auto 28px;line-height:1.8;font-size:.95rem">
       Transform your artistic vision into a celebrated career. Industry-recognized masterclasses curated for certified excellence and high-end bridal mastery.
     </p>
     <!-- Registration Fee Banner -->
-    <div style="display:inline-flex;align-items:center;gap:14px;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.2);border-radius:50px;padding:10px 24px;flex-wrap:wrap;justify-content:center">
-      <span style="font-size:.75rem;color:rgba(245,237,214,.6);letter-spacing:2px">SEAT RESERVATION</span>
+    <div class="academy-reg-banner" style="display:inline-flex;align-items:center;gap:14px;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.2);border-radius:50px;padding:10px 24px;flex-wrap:wrap;justify-content:center">
+      <span style="font-size:.75rem;color:rgba(245,237,214,.8);letter-spacing:2px">SEAT RESERVATION</span>
       <span style="background:var(--gold);color:var(--black);padding:4px 16px;border-radius:20px;font-weight:800;font-size:1rem">₹5,000</span>
       <span style="font-size:.75rem;color:var(--rose)">Limited Seats Per Cohort</span>
     </div>
@@ -29,13 +29,13 @@
 
 {% for course in courses %}
 <!-- COURSE CARD -->
-<div style="background:linear-gradient(135deg,var(--dark2),rgba(123,28,46,.12),var(--dark2));border:1px solid rgba(212,175,55,.2);border-radius:20px;overflow:hidden;margin-bottom:36px;position:relative" class="rev">
+<div class="academy-card rev" style="background:linear-gradient(135deg,var(--dark2),rgba(123,28,46,.12),var(--dark2));border:1px solid rgba(212,175,55,.2);border-radius:20px;overflow:hidden;margin-bottom:36px;position:relative">
 
   <!-- Animated top border -->
   <div style="height:3px;background:linear-gradient(90deg,var(--gold-d),var(--gold-l),var(--rose),var(--gold-l),var(--gold-d));background-size:200% auto;animation:shimBtn 3s linear infinite"></div>
 
   {% if course.batch_start_note %}
-  <div style="background:linear-gradient(90deg,var(--maroon),rgba(123,28,46,.6));padding:10px 28px;border-bottom:1px solid rgba(212,175,55,.12);text-align:center">
+  <div class="academy-batch-banner" style="background:linear-gradient(90deg,var(--maroon),rgba(123,28,46,.6));padding:10px 28px;border-bottom:1px solid rgba(212,175,55,.12);text-align:center">
     <span style="font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold-l)">⭐ {{ course.batch_start_note }}</span>
   </div>
   {% endif %}
@@ -47,75 +47,75 @@
         <h2 style="font-family:var(--font-h);font-size:clamp(1.4rem,3.5vw,2rem);color:var(--white);margin-bottom:6px">
           <span style="background:linear-gradient(135deg,var(--gold-d),var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">{{ course.name }}</span>
         </h2>
-        {% if course.tagline %}<p style="color:rgba(245,237,214,.55);font-size:.82rem;letter-spacing:1px">{{ course.tagline }}</p>{% endif %}
+        {% if course.tagline %}<p class="academy-tagline" style="color:rgba(245,237,214,.7);font-size:.82rem;letter-spacing:1px">{{ course.tagline }}</p>{% endif %}
       </div>
       <div style="text-align:right">
         {% if course.has_offer %}
-        <div style="font-size:.75rem;color:rgba(245,237,214,.5);letter-spacing:1px">Standard: <del>₹{{ course.total_fee|floatformat:0 }}</del></div>
+        <div class="academy-standard-rate" style="font-size:.75rem;color:rgba(245,237,214,.6);letter-spacing:1px">Standard: <del>₹{{ course.total_fee|floatformat:0 }}</del></div>
         <p style="font-family:var(--font-h);font-size:2rem;color:var(--gold);line-height:1" id="total-{{ course.id }}">₹{{ course.offer_price|floatformat:0 }}</p>
         <p style="font-size:.68rem;letter-spacing:1px;color:var(--rose);font-weight:600">✦ Save ₹{{ course.saving|floatformat:0 }} Today with {{ coupon.code }} ✦</p>
         {% else %}
-        <p style="font-size:.65rem;letter-spacing:2px;color:rgba(245,237,214,.35);text-transform:uppercase">Total Payable</p>
+        <p style="font-size:.65rem;letter-spacing:2px;color:rgba(245,237,214,.6);text-transform:uppercase">Total Payable</p>
         <p style="font-family:var(--font-h);font-size:2rem;color:var(--gold);line-height:1" id="total-{{ course.id }}">₹{{ course.total_payable|floatformat:0 }}</p>
-        <p style="font-size:.65rem;letter-spacing:1px;color:rgba(245,237,214,.3)">incl. {{ course.gst_percent }}% GST</p>
+        <p style="font-size:.65rem;letter-spacing:1px;color:rgba(245,237,214,.6)">incl. {{ course.gst_percent }}% GST</p>
         {% endif %}
       </div>
     </div>
 
     <!-- Stats -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px">
+    <div class="academy-stats-grid">
 
-      <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:10px;padding:16px;text-align:center">
+      <div class="academy-stat-box" style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:10px;padding:16px;text-align:center">
         <span style="font-family:var(--font-h);font-size:1.6rem;color:var(--gold);display:block">{{ course.duration_label }}</span>
-        <span style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:rgba(245,237,214,.4)">Duration</span>
+        <span class="academy-stat-lbl" style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:rgba(245,237,214,.6)">Duration</span>
       </div>
-      <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:10px;padding:16px;text-align:center">
+      <div class="academy-stat-box" style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:10px;padding:16px;text-align:center">
         <span style="font-family:var(--font-h);font-size:1.6rem;color:var(--gold);display:block">{{ course.hours_per_day }} hr</span>
-        <span style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:rgba(245,237,214,.4)">Per Day</span>
+        <span class="academy-stat-lbl" style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:rgba(245,237,214,.6)">Per Day</span>
       </div>
-      <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:10px;padding:16px;text-align:center">
+      <div class="academy-stat-box" style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:10px;padding:16px;text-align:center">
         <span style="font-family:var(--font-h);font-size:1.6rem;color:var(--gold);display:block">{{ course.total_hours }} hr</span>
-        <span style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:rgba(245,237,214,.4)">Total Hours</span>
+        <span class="academy-stat-lbl" style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:rgba(245,237,214,.6)">Total Hours</span>
       </div>
-      <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:10px;padding:16px;text-align:center">
+      <div class="academy-stat-box" style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.15);border-radius:10px;padding:16px;text-align:center">
         <span style="font-family:var(--font-h);font-size:1.6rem;color:var(--gold);display:block">{{ course.modules.count }}</span>
-        <span style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:rgba(245,237,214,.4)">Modules</span>
+        <span class="academy-stat-lbl" style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:rgba(245,237,214,.6)">Modules</span>
       </div>
     </div>
 
     <!-- Coupon Applied Box -->
     {% if coupon %}
-    <div style="background:rgba(232,164,184,.07);border:1px dashed var(--rose);border-radius:10px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:24px">
+    <div class="academy-coupon-box" style="background:rgba(232,164,184,.07);border:1px dashed var(--rose);border-radius:10px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:24px">
       <span style="color:var(--rose);font-size:.82rem">🎉 Coupon <strong>{{ coupon.code }}</strong> applied!</span>
       <span style="font-family:var(--font-h);font-size:1.4rem;color:var(--gold)">{{ coupon.discount }}% OFF</span>
     </div>
     {% endif %}
 
     <!-- Fee Breakdown -->
-    <div style="background:rgba(0,0,0,.3);border:1px solid rgba(212,175,55,.1);border-radius:12px;overflow:hidden;margin-bottom:28px">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.04)">
-        <span style="font-size:.82rem;color:rgba(245,237,214,.65)">Course Fee</span>
-        <span style="font-size:.88rem;color:var(--cream);font-weight:600">₹{{ course.course_fee|floatformat:0 }}</span>
+    <div class="academy-fee-box" style="background:rgba(0,0,0,.3);border:1px solid rgba(212,175,55,.1);border-radius:12px;overflow:hidden;margin-bottom:28px">
+      <div class="academy-fee-row" style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.04)">
+        <span class="lbl" style="font-size:.82rem;color:rgba(245,237,214,.75)">Course Fee</span>
+        <span class="val" style="font-size:.88rem;color:var(--cream);font-weight:600">₹{{ course.course_fee|floatformat:0 }}</span>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.04)">
-        <span style="font-size:.82rem;color:rgba(245,237,214,.65)">GST ({{ course.gst_percent }}%)</span>
-        <span style="font-size:.88rem;color:var(--cream);font-weight:600">₹{{ course.gst_amount }}</span>
+      <div class="academy-fee-row" style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.04)">
+        <span class="lbl" style="font-size:.82rem;color:rgba(245,237,214,.75)">GST ({{ course.gst_percent }}%)</span>
+        <span class="val" style="font-size:.88rem;color:var(--cream);font-weight:600">₹{{ course.gst_amount }}</span>
       </div>
       {% if course.has_offer %}
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.04)">
-        <span style="font-size:.82rem;color:rgba(245,237,214,.65)">Standard Total Payable (incl. GST)</span>
-        <span style="font-size:.88rem;color:rgba(245,237,214,.65);text-decoration:line-through">₹{{ course.total_payable|floatformat:0 }}</span>
+      <div class="academy-fee-row" style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.04)">
+        <span class="lbl" style="font-size:.82rem;color:rgba(245,237,214,.75)">Standard Total Payable (incl. GST)</span>
+        <span class="val" style="font-size:.88rem;color:rgba(245,237,214,.65);text-decoration:line-through">₹{{ course.total_payable|floatformat:0 }}</span>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.04);background:rgba(232,164,184,.06)">
+      <div class="academy-fee-row disc" style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.04);background:rgba(232,164,184,.06)">
         <span style="font-size:.82rem;color:var(--rose)">🏷️ Active Privilege ({{ coupon.code }})</span>
         <span style="font-size:.88rem;color:var(--rose);font-weight:700">-{{ course.discount_percent }}% OFF (Save ₹{{ course.saving|floatformat:0 }})</span>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:linear-gradient(90deg,rgba(212,175,55,.18),rgba(212,175,55,.08))">
+      <div class="academy-fee-row final" style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:linear-gradient(90deg,rgba(212,175,55,.18),rgba(212,175,55,.08))">
         <span style="font-size:.88rem;color:var(--gold);font-weight:700;letter-spacing:1px">Special Offer Payable</span>
         <span style="font-size:1.2rem;color:var(--gold-l);font-weight:800">₹{{ course.offer_price|floatformat:0 }}</span>
       </div>
       {% else %}
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:linear-gradient(90deg,rgba(212,175,55,.12),rgba(212,175,55,.05))">
+      <div class="academy-fee-row final" style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:linear-gradient(90deg,rgba(212,175,55,.12),rgba(212,175,55,.05))">
         <span style="font-size:.88rem;color:var(--gold);font-weight:700;letter-spacing:1px">Total Payable</span>
         <span style="font-size:1.1rem;color:var(--gold);font-weight:800">₹{{ course.total_payable|floatformat:0 }}</span>
       </div>
@@ -130,11 +130,11 @@
     </button>
     <div id="curr-{{ course.id }}" style="max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.17,.67,.4,1)">
       {% for mod in course.modules.all %}
-      <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+      <div class="academy-curr-item" style="display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.04)">
         <div style="min-width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--black);font-weight:800;font-size:.78rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ forloop.counter|stringformat:"02d" }}</div>
         <div>
           <h4 style="color:var(--gold-l);font-size:.88rem;margin-bottom:4px">{{ mod.title }}</h4>
-          {% if mod.description %}<p style="color:rgba(245,237,214,.5);font-size:.78rem;line-height:1.5">{{ mod.description }}</p>{% endif %}
+          {% if mod.description %}<p style="color:rgba(245,237,214,.6);font-size:.78rem;line-height:1.5">{{ mod.description }}</p>{% endif %}
         </div>
       </div>
       {% endfor %}
@@ -217,9 +217,11 @@
     </div>
   </div>
 
-  <p class="f-copy">{{ t.footer_copy|default:'© 2026 Anshita Makeover · India · All Rights Reserved' }}</p>
+  <!-- Concept 02 Vector Crest & Designed by The Sinha Family Group -->
+  {% include 'core/includes/sinha_c2_footer_crest.html' %}
+
   <div class="f-admin-link">
-    {% if user.is_authenticated %}<button class="adm-login-btn" onclick="openAdmin()">⚙️ Admin Panel</button>
+    {% if user.is_authenticated %}<a href="/admin-portal/" class="adm-login-btn" style="text-decoration:none;">⚙️ Admin Portal</a>
     {% else %}<button class="adm-login-btn" onclick="openLoginModal()">🔐 Admin Login</button>{% endif %}
   </div>
 </footer>

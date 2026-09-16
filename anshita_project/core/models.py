@@ -27,6 +27,31 @@ class SiteSettings(models.Model):
     offer_grand_combo_bundle_price = models.DecimalField(max_digits=10, decimal_places=2, default=50000.00, help_text='Flat package price for Grand Royal Bridal + Engagement bundle')
     offer_rules_active = models.BooleanField(default=True, help_text='Enable custom booking offer privilege rules')
 
+    # Travel & Outstation Pricing Configuration
+    travel_widget_active = models.BooleanField(default=True, help_text='Show outstation travel estimator widget on homepage')
+    travel_same_zone_km = models.IntegerField(default=100, help_text='Radius (km) considered same zone with no extra travel charge')
+    travel_near_label = models.CharField(max_length=200, default='Nearby Cities (100–400 km)', help_text='Label for near outstation zone')
+    travel_near_fee_min = models.IntegerField(default=8000, help_text='Near outstation minimum travel fee (₹)')
+    travel_near_fee_max = models.IntegerField(default=15000, help_text='Near outstation maximum travel fee (₹)')
+    travel_far_label = models.CharField(max_length=200, default='Pan-India Destination (400+ km)', help_text='Label for far outstation zone')
+    travel_far_fee_min = models.IntegerField(default=20000, help_text='Far outstation minimum travel fee (₹)')
+    travel_far_fee_max = models.IntegerField(default=40000, help_text='Far outstation maximum travel fee (₹)')
+    travel_custom_note = models.CharField(max_length=500, default='Round-trip travel (train/air) + hotel accommodation + local transport for artist & 1 assistant provided by client. Minimum package value ₹50,000+ for outstation bookings.', help_text='Custom note displayed in travel widget')
+    # Default Auto-Applied Today's Special & VIP Coupon System
+    default_auto_coupon_active = models.BooleanField(default=True, help_text="Automatically apply today's special discount code")
+    default_auto_coupon_code = models.CharField(max_length=50, default='TODAYVIP', help_text="Default auto-applied coupon code")
+    default_auto_coupon_discount = models.IntegerField(default=15, help_text="Discount percent or flat discount")
+    default_auto_coupon_type = models.CharField(max_length=20, default='percent', choices=[('percent', '% Percentage'), ('flat', '₹ Flat Amount')])
+    default_auto_coupon_badge = models.CharField(max_length=250, default="⚡ TODAY'S EXCLUSIVE DEAL: Extra 15% VIP Privilege applied automatically today!")
+    vip_generated_codes = models.TextField(blank=True, default='[]', help_text="JSON list of generated VIP access codes")
+
+    # AI Price Negotiation Range & Floor Controls
+    ai_negotiation_enabled = models.BooleanField(default=True, help_text="Enable AI smart price negotiation")
+    ai_negotiation_min_floor_percent = models.IntegerField(default=75, help_text="Minimum floor price percent (e.g. 75 means min 75% of base price)")
+    ai_max_discount_percent = models.IntegerField(default=20, help_text="Maximum discount % AI is permitted to negotiate")
+    ai_negotiation_strategy = models.CharField(max_length=50, default='balanced', help_text="conservative | balanced | high_conversion")
+    ai_negotiation_instructions = models.TextField(blank=True, default="Offer complimentary side makeups first. If client asks for discount, offer 10% then up to 20% max with today-only urgency.")
+
     class Meta:
         verbose_name = 'Site Settings'
 
@@ -126,6 +151,11 @@ class MakeupPackage(models.Model):
     is_active = models.BooleanField(default=True)
     order = models.IntegerField(default=0)
 
+    # AI Negotiation & Admin Floor Pricing Guardrails
+    min_negotiated_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text='Absolute minimum price AI Concierge is allowed to offer')
+    max_discount_percent = models.IntegerField(default=15, help_text='Maximum discount percentage AI is permitted to negotiate')
+    allow_ai_negotiation = models.BooleanField(default=True, help_text='Allow AI Concierge to negotiate on this package')
+
     class Meta:
         ordering = ['order', 'name']
 
@@ -155,6 +185,11 @@ class GalleryImage(models.Model):
     is_active = models.BooleanField(default=True)
     order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # Person / Lookbook Grouping (Avoid repeating same person, enable grouped lookbook modal)
+    look_group_id = models.CharField(max_length=50, blank=True, help_text='ID to group multiple photos of the same bride/person e.g. "bengali_bride"')
+    look_group_name = models.CharField(max_length=150, blank=True, help_text='Title for lookbook e.g. "Royal Bengali Bride (4 Looks)"')
+    is_group_cover = models.BooleanField(default=True, help_text='Primary card shown on main grid')
 
     class Meta:
         ordering = ['order', '-created_at']
@@ -259,6 +294,15 @@ class ServicePrice(models.Model):
 
 
 class EventPackage(models.Model):
+    CATEGORY_CHOICES = [
+        ('photography', '📸 Photography & Cinematography'),
+        ('decor', '🎪 Event Planning & Stage Decor'),
+        ('catering', '🍽️ Catering & Hospitality'),
+        ('salon', '💆 Salon & Pre-Bridal Care'),
+        ('dj', '🎶 DJ, Sound & Entertainment'),
+        ('full_event', '👑 Full Wedding Management'),
+        ('custom', '✨ Custom VIP Partner Add-on'),
+    ]
     PACKAGE_TYPE = [
         ('photography_premium', 'Photography - Premium'),
         ('photography_standard', 'Photography - Standard'),
@@ -266,9 +310,11 @@ class EventPackage(models.Model):
         ('custom', 'Custom Package'),
     ]
     name = models.CharField(max_length=200)
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='custom')
     package_type = models.CharField(max_length=30, choices=PACKAGE_TYPE, default='custom')
     description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    vendor_cost = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True, default=0.00, help_text='Base external vendor cost charged to studio')
+    price = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True, help_text='Client quote price')
     price_label = models.CharField(max_length=100, default='On Request')
     features = models.TextField(help_text='One feature per line', blank=True)
     is_active = models.BooleanField(default=True)
@@ -284,6 +330,26 @@ class EventPackage(models.Model):
 
     def get_features_list(self):
         return [f.strip() for f in self.features.splitlines() if f.strip()]
+
+    @property
+    def studio_commission(self):
+        if self.price and self.vendor_cost is not None:
+            return max(0.0, float(self.price) - float(self.vendor_cost))
+        return 0.0
+
+    @property
+    def margin_percent(self):
+        if self.price and float(self.price) > 0 and self.vendor_cost is not None:
+            comm = float(self.price) - float(self.vendor_cost)
+            return round((comm / float(self.price)) * 100, 1)
+        return 0.0
+
+    @property
+    def roi_percent(self):
+        if self.vendor_cost and float(self.vendor_cost) > 0 and self.price:
+            comm = float(self.price) - float(self.vendor_cost)
+            return round((comm / float(self.vendor_cost)) * 100, 1)
+        return 0.0
 
     def display_price(self):
         if self.price:
@@ -339,4 +405,135 @@ class CustomerReview(models.Model):
 
     def get_stars_range(self):
         return range(self.rating)
+
+
+class StudioService(models.Model):
+    """Admin-controllable signature service disciplines rendered in #services"""
+    CATEGORY_CHOICES = [
+        ('bridal', 'Bridal Suite'),
+        ('reception', 'Reception & Cocktail'),
+        ('engagement', 'Engagement & Roka'),
+        ('sangeet', 'Sangeet & Haldi'),
+        ('saree', 'Haute Hair & Saree Draping'),
+        ('party', 'Family & Bridesmaids'),
+        ('nails', 'Nail Extensions & Art'),
+        ('beauty', 'Skin & Pre-Bridal'),
+    ]
+    title = models.CharField(max_length=200, help_text='Service title e.g. "Imperial Bridal Couture & Airbrush"')
+    discipline = models.CharField(max_length=150, help_text='Discipline tag e.g. "SIGNATURE DISCIPLINE 01 · SACRED WEDDING DAY"')
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='bridal')
+    price = models.DecimalField(max_digits=10, decimal_places=2, help_text='Actual standalone service investment in ₹')
+    discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text='Optional standard discounted price in ₹')
+    bundle_note = models.CharField(max_length=200, blank=True, help_text='Short optional bundle tag e.g. "Save 25% with Wedding Package"')
+    description = models.TextField(help_text='Concise 1-2 sentence luxury editorial description')
+    features = models.TextField(help_text='Features/inclusions list, one feature per line for dynamic admin control', blank=True)
+    image = models.ImageField(upload_to='services/', blank=True, null=True)
+    image_url = models.CharField(max_length=500, blank=True, help_text='Static or CDN fallback path e.g. "/static/core/images/curated/..."')
+    look_group_id = models.CharField(max_length=100, blank=True, help_text='Linked look group ID for lookbook popup')
+    
+    # AI Negotiation & Admin Floor Pricing Guardrails
+    min_negotiated_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text='Absolute minimum price AI is allowed to negotiate for this service')
+    max_discount_percent = models.IntegerField(default=15, help_text='Max discount % AI is permitted to negotiate for this service')
+    allow_ai_negotiation = models.BooleanField(default=True, help_text='Allow AI Concierge to negotiate on this service')
+
+    order = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return f"[{self.discipline}] {self.title}"
+
+    def get_features_list(self):
+        return [f.strip() for f in self.features.splitlines() if f.strip()]
+
+    @property
+    def display_image(self):
+        if self.image:
+            return self.image.url
+        if self.image_url:
+            return self.image_url
+        return '/static/core/images/curated/royal_crimson_bride_angle3.jpg'
+
+
+class LookGroup(models.Model):
+    """Categorized person/client folder for photos, videos, Instagram reels, and YouTube embeds"""
+    CATEGORY_CHOICES = [
+        ('bridal', 'Bridal Suites'),
+        ('reception', 'Reception & Cocktail'),
+        ('engagement', 'Engagement & Roka'),
+        ('sangeet', 'Sangeet & Haldi'),
+        ('hair', 'Hair & Draping'),
+        ('party', 'Party & Side Glam'),
+        ('nails', 'Nail Artistry'),
+        ('studio', 'Studio & Masterclass'),
+    ]
+    name = models.CharField(max_length=200, help_text='Group display name e.g. "Kuhu — Traditional Kolkata Banarasi & Chandan Art"')
+    client_name = models.CharField(max_length=100, blank=True, help_text='Client or Model name e.g. "Kuhu", "Miss Rajak"')
+    makeup_type = models.CharField(max_length=150, blank=True, help_text='Type of makeup e.g. "Traditional Bengali Mukut & Chandan", "Mauve Shimmer Cut-Crease"')
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='bridal')
+    cover_image = models.ImageField(upload_to='lookgroups/covers/', blank=True, null=True)
+    cover_image_url = models.CharField(max_length=500, blank=True, help_text='Fallback static image path')
+    description = models.TextField(blank=True)
+    order = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', '-created_at']
+
+    def __str__(self):
+        client = f" ({self.client_name})" if self.client_name else ""
+        return f"{self.name}{client}"
+
+    @property
+    def display_cover(self):
+        if self.cover_image:
+            return self.cover_image.url
+        if self.cover_image_url:
+            return self.cover_image_url
+        first_item = self.media_items.filter(order__gte=0).first()
+        if first_item:
+            return first_item.display_thumb
+        return '/static/core/images/curated/royal_crimson_bride_angle3.jpg'
+
+
+class LookMediaItem(models.Model):
+    """Individual photo, video file, Instagram post/reel, or YouTube link inside a LookGroup"""
+    MEDIA_TYPES = [
+        ('image', 'Uploaded Photo'),
+        ('video_file', 'Direct Video File (MP4)'),
+        ('instagram', 'Instagram Reel / Post (Auto Embed)'),
+        ('youtube', 'YouTube Video (Auto Embed)'),
+    ]
+    group = models.ForeignKey(LookGroup, on_delete=models.CASCADE, related_name='media_items')
+    media_type = models.CharField(max_length=20, choices=MEDIA_TYPES, default='image')
+    image_file = models.ImageField(upload_to='lookgroups/media/', blank=True, null=True)
+    video_file = models.FileField(upload_to='lookgroups/videos/', blank=True, null=True)
+    external_url = models.URLField(max_length=500, blank=True, help_text='Instagram Reel/Post or YouTube URL')
+    embed_code = models.CharField(max_length=200, blank=True, help_text='Instagram shortcode or YouTube video ID')
+    thumbnail_url = models.CharField(max_length=500, blank=True, help_text='Auto-fetched thumbnail for Instagram/YouTube or static path')
+    title = models.CharField(max_length=200, blank=True)
+    caption = models.CharField(max_length=300, blank=True)
+    order = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return f"[{self.get_media_type_display()}] {self.title or self.caption or f'Item {self.id}'} in {self.group.name}"
+
+    @property
+    def display_thumb(self):
+        if self.image_file:
+            return self.image_file.url
+        if self.thumbnail_url:
+            return self.thumbnail_url
+        if self.media_type == 'youtube' and self.embed_code:
+            return f"https://img.youtube.com/vi/{self.embed_code}/hqdefault.jpg"
+        return '/static/core/images/curated/royal_crimson_bride_angle3.jpg'
+
 

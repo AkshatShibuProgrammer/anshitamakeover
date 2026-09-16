@@ -1,0 +1,44 @@
+[
+  {
+    "name": "bride_look1_portrait.jpg",
+    "source_telegram": "IMG-20250807-WA0316.jpg",
+    "dimensions": "3024x4032",
+    "webp_path": "anshita_project/core/static/core/images/authentic\\bride_look1_portrait.webp",
+    "jpg_path": "anshita_project/core/static/core/images/authentic\\bride_look1_portrait.jpg"
+  },
+  {
+    "name": "bride_look1_side.jpg",
+    "source_telegram": "IMG-20250807-WA0317.jpg",
+    "dimensions": "3024x4032",
+    "webp_path": "anshita_project/core/static/core/images/authentic\\bride_look1_side.webp",
+    "jpg_path": "anshita_project/core/static/core/images/authentic\\bride_look1_side.jpg"
+  },
+  {
+    "name": "bride_look2_front.jpg",
+    "source_telegram": "IMG-20250807-WA0334.jpg",
+    "dimensions": "3024x4032",
+    "webp_path": "anshita_project/core/static/core/images/authentic\\bride_look2_front.webp",
+    "jpg_path": "anshita_project/core/static/core/images/authentic\\bride_look2_front.jpg"
+  },
+  {
+    "name": "bride_look2_jewelry.jpg",
+    "source_telegram": "IMG-20250807-WA0337.jpg",
+    "dimensions": "3024x4032",
+    "webp_path": "anshita_project/core/static/core/images/authentic\\bride_look2_jewelry.webp",
+    "jpg_path": "anshita_project/core/static/core/images/authentic\\bride_look2_jewelry.jpg"
+  },
+  {
+    "name": "bride_look3_candid.jpg",
+    "source_telegram": "IMG-20250807-WA0349.jpg",
+    "dimensions": "3024x4032",
+    "webp_path": "anshita_project/core/static/core/images/authentic\\bride_look3_candid.webp",
+    "jpg_path": "anshita_project/core/static/core/images/authentic\\bride_look3_candid.jpg"
+  },
+  {
+    "name": "bride_look3_closeup.jpg",
+    "source_telegram": "IMG-20250807-WA0350.jpg",
+    "dimensions": "3024x4032",
+    "webp_path": "anshita_project/core/static/core/images/authentic\\bride_look3_closeup.webp",
+    "jpg_path": "anshita_project/core/static/core/images/authentic\\bride_look3_closeup.jpg"
+  }
+]

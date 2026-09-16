@@ -36,15 +36,16 @@ class AcademyCourseAdmin(admin.ModelAdmin):
 
 @admin.register(MakeupPackage)
 class MakeupPackageAdmin(admin.ModelAdmin):
-    list_display = ['name', 'package_type', 'price', 'is_featured', 'is_active', 'order']
-    list_editable = ['price', 'is_featured', 'is_active', 'order']
+    list_display = ['name', 'package_type', 'price', 'min_negotiated_price', 'max_discount_percent', 'allow_ai_negotiation', 'is_active', 'order']
+    list_editable = ['price', 'min_negotiated_price', 'max_discount_percent', 'allow_ai_negotiation', 'is_active', 'order']
+    list_filter = ['package_type', 'allow_ai_negotiation', 'is_active']
 
 
 @admin.register(GalleryImage)
 class GalleryImageAdmin(admin.ModelAdmin):
-    list_display = ['caption', 'category', 'artist', 'is_active', 'order']
-    list_editable = ['is_active', 'order']
-    list_filter = ['category', 'artist']
+    list_display = ['caption', 'category', 'look_group_id', 'is_group_cover', 'is_active', 'order']
+    list_editable = ['look_group_id', 'is_group_cover', 'is_active', 'order']
+    list_filter = ['category', 'is_group_cover', 'is_active']
 
 
 @admin.register(ServicePrice)

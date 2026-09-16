@@ -15,11 +15,13 @@
     <button class="adm-tab-btn active" data-tab="coupon" onclick="adTab('coupon')">🏷️ Coupon</button>
     <button class="adm-tab-btn" data-tab="offers" onclick="adTab('offers')" style="color:var(--gold);font-weight:700">🎁 Booking Offers</button>
     <button class="adm-tab-btn" data-tab="ai" onclick="adTab('ai')" style="color:#60a5fa;font-weight:700">🤖 AI Copilot</button>
+    <button class="adm-tab-btn" data-tab="services" onclick="adTab('services')" style="color:var(--gold);font-weight:700">✨ Studio Services</button>
+    <button class="adm-tab-btn" data-tab="lookgroups" onclick="adTab('lookgroups')" style="color:#f472b6;font-weight:700">📁 Look Groups</button>
     <button class="adm-tab-btn" data-tab="media" onclick="adTab('media')">📸 Media & Reels</button>
-    <button class="adm-tab-btn" data-tab="services" onclick="adTab('services')">✨ Services</button>
     <button class="adm-tab-btn" data-tab="reviews" onclick="adTab('reviews')">⭐ Reviews</button>
     <button class="adm-tab-btn" data-tab="prices" onclick="adTab('prices')">💰 Prices</button>
-    <button class="adm-tab-btn" data-tab="events" onclick="adTab('events')">📸 Events</button>
+    <button class="adm-tab-btn" data-tab="events" onclick="adTab('events')" style="color:#34d399;font-weight:700">🎁 Addons & ROI</button>
+    <button class="adm-tab-btn" data-tab="travel" onclick="adTab('travel')" style="color:#f59e0b;font-weight:700">🚗 Travel</button>
     <button class="adm-tab-btn" data-tab="status" onclick="adTab('status')">📊 Status</button>
   </div>
   <div class="adm-body">
@@ -177,6 +179,29 @@
           <option value="academy">Academy Masterclass</option>
         </select>
 
+        <span class="adm-label">Look Group Assignment (Optional for Grouping Photos)</span>
+        <select class="adm-inp" id="m-group-id" style="background:var(--dark3)" onchange="document.getElementById('m-group-id-custom').style.display = this.value === 'custom' ? 'block' : 'none'">
+          <option value="">-- Single Independent Photo (No Group) --</option>
+          <option value="royal_crimson">Sacred Vivah Royal Crimson Bride</option>
+          <option value="christian_ivory">Christian Bridal Couture Suite</option>
+          <option value="fuchsia_palace">Imperial Fuchsia & Emerald Palace Bride</option>
+          <option value="maroon_velvet">Palace Maroon Velvet Heritage (DSLR)</option>
+          <option value="maroon_veil">Ring Ceremony Sheer Maroon Veil Bride</option>
+          <option value="bengali_heritage">Traditional Kolkata Banarasi & Chandan Art</option>
+          <option value="lavender_cocktail">Reception & Cocktail Evening Glamour</option>
+          <option value="lilac_ruffle">Modern Glass-Skin Engagement & Roka</option>
+          <option value="yellow_haldi">Sangeet & Haldi Celebration</option>
+          <option value="silk_saree">Haute Hair & Saree Draping</option>
+          <option value="bridesmaids_gold">Family & Bridesmaids Luxury</option>
+          <option value="custom">-- Custom Look Group ID... --</option>
+        </select>
+        <input class="adm-inp" id="m-group-id-custom" placeholder="Enter custom group ID (e.g. jaipur_lehenga_bride)" style="display:none;margin-top:4px">
+
+        <div class="adm-row" style="margin-top:6px">
+          <input type="checkbox" id="m-is-cover" checked>
+          <label for="m-is-cover">Display as Cover Photo in Main Gallery (Front Image)</label>
+        </div>
+
         <span class="adm-label">Caption / Description</span>
         <textarea class="adm-inp" id="m-caption" rows="2" placeholder="Intricate hand-painted betel leaf adornment and radiant HD finish..."></textarea>
 
@@ -299,62 +324,180 @@
       </div>
     </div>
 
-    <!-- Services Tab -->
+    <!-- Studio Services Management Tab -->
     <div class="adm-tab-content" id="adm-services">
       <div class="adm-sec">
-        <h4>All Services & Bridal Packages</h4>
-        <div class="svc-adm-list" id="adm-svc-list">
-          {% for p in packages %}
-          <div class="svc-adm-item" id="svc-item-{{ p.id }}">
+        <h4>Studio Services & Disciplines (Live in #services)</h4>
+        <p style="font-size:.72rem;color:rgba(245,237,214,.5);margin-bottom:12px">Control signature services, set clean actual and discount prices, and manage individual feature bullets.</p>
+        <div class="svc-adm-list" id="adm-studio-svc-list">
+          {% for s in services %}
+          <div class="svc-adm-item" id="ssvc-item-{{ s.id }}">
             <div class="svc-adm-inf">
-              <strong>{{ p.name }}</strong>
-              <small>{{ p.package_type|title }} · {% if p.price %}₹{{ p.price|floatformat:0 }}{% else %}{{ p.price_label }}{% endif %}</small>
+              <strong>{{ s.title }}</strong>
+              <small>{{ s.get_category_display }} · ₹{{ s.price|floatformat:0 }}{% if s.discount_price %} (Orig: ₹{{ s.discount_price|floatformat:0 }}){% endif %} · {{ s.get_features_list|length }} Inclusions</small>
             </div>
             <div class="svc-adm-btns">
-              <button class="svc-adm-btn" title="Edit" onclick="editService({{ p.id }}, '{{ p.name|escapejs }}', '{{ p.package_type|escapejs }}', '{{ p.tagline|escapejs }}', '{{ p.price|default_if_none:'' }}', '{{ p.price_label|escapejs }}', '{{ p.features|escapejs }}', {{ p.is_featured|yesno:'true,false' }})">✏️</button>
-              <button class="svc-adm-btn del" title="Delete" onclick="deleteService({{ p.id }})">🗑️</button>
+              <button class="svc-adm-btn" title="Edit" onclick="editStudioService({{ s.id }}, '{{ s.title|escapejs }}', '{{ s.discipline|escapejs }}', '{{ s.category|escapejs }}', '{{ s.price|floatformat:0 }}', '{{ s.discount_price|default_if_none:''|floatformat:0 }}', '{{ s.bundle_note|escapejs }}', '{{ s.description|escapejs }}', '{{ s.features|escapejs }}', '{{ s.image_url|escapejs }}', '{{ s.look_group_id|escapejs }}')">✏️</button>
+              <button class="svc-adm-btn del" title="Delete" onclick="deleteStudioService({{ s.id }})">🗑️</button>
             </div>
           </div>
           {% empty %}
-          <p style="color:rgba(245,237,214,.35);font-size:.78rem">No packages yet.</p>
+          <p style="color:rgba(245,237,214,.35);font-size:.78rem">No studio services yet.</p>
           {% endfor %}
         </div>
       </div>
       <div class="adm-sec">
-        <h4 id="svc-form-title">Add / Edit Service & Package</h4>
-        <input type="hidden" id="svc-id" value="">
-        <span class="adm-label">Service / Package Name *</span>
-        <input class="adm-inp" id="svc-name" placeholder="e.g. Royal HD Bridal Suite">
+        <h4 id="ssvc-form-title">Add / Edit Studio Service</h4>
+        <input type="hidden" id="ssvc-id" value="">
+        <span class="adm-label">Service Title *</span>
+        <input class="adm-inp" id="ssvc-title" placeholder="e.g. Imperial Bridal Couture & Airbrush Artistry">
+        
+        <span class="adm-label">Discipline Tag</span>
+        <input class="adm-inp" id="ssvc-discipline" placeholder="e.g. SIGNATURE DISCIPLINE 01 · SACRED WEDDING DAY">
+        
         <span class="adm-label">Category</span>
-        <select class="adm-inp" id="svc-type" style="background:var(--dark3)">
-          <option value="bridal">Bridal Makeup Suite</option>
-          <option value="side_makeup">Side & Family Makeup Suite</option>
+        <select class="adm-inp" id="ssvc-category" style="background:var(--dark3)">
+          <option value="bridal">Bridal Suite</option>
+          <option value="reception">Reception & Cocktail</option>
           <option value="engagement">Engagement & Roka</option>
-          <option value="reception">Reception & Sangeet</option>
-          <option value="party">Party & Festive Glam</option>
-          <option value="hair">Hair Artistry & Styling</option>
-          <option value="nails">Nail Art & Extensions</option>
-          <option value="beauty">Skin & Pre-Bridal Care</option>
-          <option value="custom">Custom Package</option>
+          <option value="sangeet">Sangeet & Haldi</option>
+          <option value="saree">Haute Hair & Saree Draping</option>
+          <option value="party">Family & Bridesmaids</option>
+          <option value="nails">Nail Extensions & Art</option>
+          <option value="beauty">Skin & Pre-Bridal</option>
         </select>
-        <span class="adm-label">Tagline</span>
-        <input class="adm-inp" id="svc-tag" placeholder="e.g. Flawless HD finish & complete styling">
-        <span class="adm-label">Price (₹) — leave empty for "On Request"</span>
-        <input class="adm-inp" id="svc-price" placeholder="e.g. 35000">
-        <span class="adm-label">Price Display Label (optional override)</span>
-        <input class="adm-inp" id="svc-label" placeholder="e.g. Starting ₹35,000 or On Request">
-        <span class="adm-label">Inclusions & Features (one per line)</span>
-        <textarea class="adm-inp" id="svc-feats" rows="4" placeholder="HD Base & Foundation&#10;Contouring & Highlighting&#10;Bridal Hair Styling&#10;Royal Dupatta Setting"></textarea>
-        <div class="adm-row" style="margin-top:6px">
-          <input type="checkbox" id="svc-feat">
-          <label for="svc-feat">Mark as Featured / Most Popular</label>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <span class="adm-label">Special / Offer Price (₹) *</span>
+            <input class="adm-inp" id="ssvc-price" placeholder="e.g. 35000">
+            <small style="color:var(--gold);font-size:.68rem">Current booking price</small>
+          </div>
+          <div>
+            <span class="adm-label">Original Standard MRP (₹)</span>
+            <input class="adm-inp" id="ssvc-discount" placeholder="e.g. 42000 (Crossed-out)">
+            <small style="color:rgba(245,237,214,0.5);font-size:.68rem">Higher original crossed-out rate</small>
+          </div>
         </div>
-        <div class="adm-row">
-          <input type="checkbox" id="svc-active" checked>
-          <label for="svc-active">Active & Visible</label>
+
+        <span class="adm-label">Subtle Bundle Note (Optional Tag)</span>
+        <input class="adm-inp" id="ssvc-bundle-note" placeholder="e.g. Save 25% with Wedding Package">
+
+        <span class="adm-label">Concise 1–2 Sentence Description (No text bloat) *</span>
+        <textarea class="adm-inp" id="ssvc-desc" rows="2" placeholder="Signature bridal makeover tailored for sacred pheras. Micro-buffed HD base delivering 18+ hours of cry-proof and sweat-proof perfection."></textarea>
+
+        <span class="adm-label">Features / Inclusions List (One feature bullet per line)</span>
+        <textarea class="adm-inp" id="ssvc-features" rows="4" placeholder="Cry-proof & sweat-proof HD Airbrush base&#10;Symmetrical mathapatti, nath & jewellery setting&#10;Royal double dupatta pinning & lehenga pleating&#10;Premium mink lashes, lenses & floral hair architecture"></textarea>
+
+        <span class="adm-label">Upload Cover Photo or Fallback Static URL</span>
+        <input class="adm-inp" id="ssvc-image-file" type="file" accept="image/*" style="padding:6px">
+        <input class="adm-inp" id="ssvc-image-url" placeholder="/static/core/images/curated/royal_crimson_bride_angle3.jpg" style="margin-top:4px">
+
+        <span class="adm-label">Linked Look Group (Opens in Peek Lookbook)</span>
+        <select class="adm-inp" id="ssvc-look-group" style="background:var(--dark3)">
+          <option value="">-- Auto match by Category --</option>
+          {% for lg in look_groups %}
+          <option value="{{ lg.id }}">{{ lg.name }} ({{ lg.client_name|default:'General' }})</option>
+          {% endfor %}
+        </select>
+
+        <button class="adm-btn" id="ssvc-save-btn" onclick="saveStudioService()" style="margin-top:10px">Save Studio Service</button>
+        <button class="adm-btn sec" id="ssvc-cancel-btn" style="display:none;margin-top:6px" onclick="resetStudioServiceForm()">Cancel Edit</button>
+      </div>
+    </div>
+
+    <!-- Look Groups / Client Folders Management Tab -->
+    <div class="adm-tab-content" id="adm-lookgroups">
+      <div class="adm-sec">
+        <h4>Look Groups & Folders (By Person / Makeup Style)</h4>
+        <p style="font-size:.72rem;color:rgba(245,237,214,.5);margin-bottom:12px">Organize photos, videos, Instagram reels, and YouTube embeds into folders per client (e.g. Kuhu) and makeup type.</p>
+        
+        <div class="art-adm-list" id="adm-lookgroup-list">
+          {% for lg in look_groups %}
+          <div class="art-adm-item" id="lg-item-{{ lg.id }}" style="align-items:flex-start">
+            <img src="{{ lg.display_cover }}" class="art-adm-thumb" alt="{{ lg.name }}" style="object-fit:cover;width:52px;height:52px;border-radius:8px">
+            <div class="art-adm-inf" style="flex:1">
+              <strong>{% if lg.client_name %}👤 {{ lg.client_name }} — {% endif %}{{ lg.makeup_type|default:lg.name }}</strong>
+              <small>{{ lg.get_category_display }} · {{ lg.media_items.count }} Media Items</small>
+              <div style="margin-top:4px">
+                <button class="art-adm-btn" style="font-size:0.68rem;padding:2px 8px;background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.3)" onclick="openAddMediaToGroup({{ lg.id }}, '{{ lg.name|escapejs }}')">➕ Add Media</button>
+                <button class="art-adm-btn del" title="Delete" onclick="deleteLookGroup({{ lg.id }})">🗑️</button>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <p style="color:rgba(245,237,214,.35);font-size:.78rem">No look groups yet.</p>
+          {% endfor %}
         </div>
-        <button class="adm-btn" id="svc-save-btn" onclick="saveService()">Save Service</button>
-        <button class="adm-btn sec" id="svc-cancel-btn" style="display:none;margin-top:6px" onclick="resetServiceForm()">Cancel Edit</button>
+      </div>
+
+      <div class="adm-sec">
+        <h4 id="lg-form-title">Create New Look Group / Client Folder</h4>
+        <input type="hidden" id="lg-id" value="">
+        
+        <span class="adm-label">Client / Person Name (e.g. Kuhu, Miss Rajak)</span>
+        <input class="adm-inp" id="lg-client-name" placeholder="e.g. Kuhu">
+
+        <span class="adm-label">Type of Makeup (e.g. Traditional Bengali Mukut & Chandan, Mauve Cut-Crease) *</span>
+        <input class="adm-inp" id="lg-makeup-type" placeholder="e.g. Traditional Bengali Mukut & Chandan">
+
+        <span class="adm-label">Folder Category</span>
+        <select class="adm-inp" id="lg-category" style="background:var(--dark3)">
+          <option value="bridal">Bridal Suites</option>
+          <option value="reception">Reception & Cocktail</option>
+          <option value="engagement">Engagement & Roka</option>
+          <option value="sangeet">Sangeet & Haldi</option>
+          <option value="hair">Hair & Draping</option>
+          <option value="party">Party & Side Glam</option>
+          <option value="nails">Nail Artistry</option>
+          <option value="studio">Studio & Masterclass</option>
+        </select>
+
+        <span class="adm-label">Upload Folder Cover Photo</span>
+        <input class="adm-inp" id="lg-cover-file" type="file" accept="image/*" style="padding:6px">
+
+        <button class="adm-btn" id="lg-save-btn" onclick="saveLookGroup()" style="margin-top:10px">Create Look Group</button>
+      </div>
+
+      <!-- Add Media To Group Section -->
+      <div class="adm-sec" id="lg-media-sec" style="border-top:1px solid rgba(212,175,55,.15);padding-top:16px">
+        <h4 id="lg-media-title">Add Photo / Video / Instagram / YouTube to Group</h4>
+        
+        <span class="adm-label">Target Group Folder *</span>
+        <select class="adm-inp" id="lg-media-target-group" style="background:var(--dark3)">
+          {% for lg in look_groups %}
+          <option value="{{ lg.id }}">{{ lg.name }} ({{ lg.client_name|default:'General' }})</option>
+          {% endfor %}
+        </select>
+
+        <span class="adm-label">Media Type</span>
+        <select class="adm-inp" id="lg-media-type" style="background:var(--dark3)" onchange="toggleLgMediaInputs()">
+          <option value="image">📁 Upload Photo / Image</option>
+          <option value="instagram">📸 Instagram Reel / Post (Auto Embed via URL)</option>
+          <option value="youtube">▶️ YouTube Video (Auto Embed via URL)</option>
+          <option value="video_file">🎥 Direct Video File (MP4)</option>
+        </select>
+
+        <div id="lg-media-file-wrap">
+          <span class="adm-label">Select Photo File</span>
+          <input class="adm-inp" id="lg-media-file" type="file" accept="image/*" style="padding:6px">
+        </div>
+
+        <div id="lg-media-url-wrap" style="display:none">
+          <span class="adm-label">Instagram or YouTube URL</span>
+          <input class="adm-inp" id="lg-media-url" placeholder="https://www.instagram.com/reel/... or https://youtube.com/watch?v=...">
+          <small style="display:block;font-size:.68rem;color:var(--gold);margin-top:-4px;margin-bottom:8px">💡 Our program will auto-fetch the thumbnail and embed code!</small>
+        </div>
+
+        <div id="lg-media-video-wrap" style="display:none">
+          <span class="adm-label">Select MP4 Video File</span>
+          <input class="adm-inp" id="lg-media-videofile" type="file" accept="video/mp4,video/*" style="padding:6px">
+        </div>
+
+        <span class="adm-label">Media Caption / Angle Note (Optional)</span>
+        <input class="adm-inp" id="lg-media-caption" placeholder="e.g. Eye makeup macro detail / Symmetrical mathapatti">
+
+        <button class="adm-btn" onclick="saveLookMediaItem()" style="margin-top:10px">Upload & Add to Folder</button>
       </div>
     </div>
 
@@ -412,48 +555,193 @@
       </div>
     </div>
 
-    <!-- Events Tab -->
+    <!-- Addons & Vendor Commission / ROI Tab -->
     <div class="adm-tab-content" id="adm-events">
       <div class="adm-sec">
-        <h4>Event Production Packages</h4>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <h4 style="margin:0">🎁 Active Partner Addons & Bundles</h4>
+          <span style="font-size:0.68rem;background:rgba(52,211,153,0.15);color:#34d399;padding:2px 8px;border-radius:10px;font-weight:700">Live Studio Margins</span>
+        </div>
+        <p style="font-size:.72rem;color:rgba(245,237,214,.55);margin-bottom:12px">
+          External partner packages (Photography, Decor, Catering, DJ, Salon). Studio margin & ROI calculate automatically based on Vendor Cost vs Client Quote.
+        </p>
         <div class="evt-pkg-list" id="adm-evt-list">
           {% for ep in event_packages %}
-          <div class="evt-pkg-item" id="ep-{{ ep.id }}">
-            <span class="evt-pkg-item-name">{{ ep.name }}</span>
-            <span class="evt-pkg-item-price">{{ ep.display_price }}</span>
-            <button class="evt-pkg-item-del" onclick="deleteEvtPkg({{ ep.id }})">🗑️</button>
+          <div class="evt-pkg-item" id="ep-{{ ep.id }}" style="flex-direction:column;align-items:stretch;gap:6px;padding:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <span style="font-size:0.65rem;background:rgba(212,175,55,0.15);color:var(--gold);padding:2px 6px;border-radius:4px;font-weight:600;margin-right:6px">{{ ep.get_category_display }}</span>
+                <strong class="evt-pkg-item-name" style="font-size:0.85rem">{{ ep.name }}</strong>
+              </div>
+              <button class="evt-pkg-item-del" onclick="deleteEvtPkg({{ ep.id }})" title="Delete">🗑️</button>
+            </div>
+            
+            <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.3);border-radius:8px;padding:8px 10px;font-size:0.75rem;margin-top:4px">
+              <div>
+                <span style="color:rgba(245,237,214,0.5);display:block;font-size:0.62rem">VENDOR COST</span>
+                <strong>₹{{ ep.vendor_cost|floatformat:0|default:'0' }}</strong>
+              </div>
+              <div style="text-align:center">
+                <span style="color:rgba(245,237,214,0.5);display:block;font-size:0.62rem">CLIENT QUOTE</span>
+                <strong style="color:var(--gold)">{{ ep.display_price }}</strong>
+              </div>
+              <div style="text-align:right">
+                <span style="color:rgba(245,237,214,0.5);display:block;font-size:0.62rem">STUDIO PROFIT</span>
+                <strong style="color:#34d399">+₹{{ ep.studio_commission|floatformat:0 }}</strong>
+                <small style="color:rgba(52,211,153,0.8);display:block;font-size:0.6rem">({{ ep.margin_percent }}% margin · {{ ep.roi_percent }}% ROI)</small>
+              </div>
+            </div>
           </div>
           {% empty %}
-          <p style="color:rgba(245,237,214,.3);font-size:.78rem">No custom packages yet.</p>
+          <p style="color:rgba(245,237,214,.3);font-size:.78rem">No partner add-ons configured yet. Create one below or ask AI Copilot.</p>
           {% endfor %}
         </div>
       </div>
-      <div class="adm-sec">
-        <h4>Create New Event Package</h4>
-        <span class="adm-label">Package Title</span>
-        <input class="adm-inp" id="ep-name" placeholder="e.g. Grand Wedding Production">
-        <span class="adm-label">Package Type</span>
-        <select class="adm-inp" id="ep-type" style="background:var(--dark3)">
-          <option value="custom">Custom Event Production</option>
-          <option value="full_event">Full Wedding Management</option>
-          <option value="photography_premium">Photography Royal Premium</option>
-          <option value="photography_standard">Photography Standard</option>
+
+      <!-- Partner Add-on Creator with Real-Time ROI Engine -->
+      <div class="adm-sec" style="background:rgba(255,255,255,0.02);border:1px solid rgba(212,175,55,0.2);border-radius:10px;padding:14px">
+        <h4 style="color:var(--gold);margin-bottom:4px">➕ Create Partner Add-on / Bundle</h4>
+        <p style="font-size:.7rem;color:rgba(245,237,214,.5);margin-bottom:12px">Set vendor base fee and final client quote to lock your studio commission.</p>
+        
+        <span class="adm-label">Vendor Category</span>
+        <select class="adm-inp" id="ep-cat" style="background:var(--dark3);margin-bottom:10px" onchange="autoSuggestAddonTitle()">
+          <option value="photography">📸 Photography & Cinematography (Candid, Reels, Drone)</option>
+          <option value="decor">🎪 Event Planning & Stage Decor (Mandap, Haldi, Entry)</option>
+          <option value="catering">🍽️ Catering & Hospitality (Per-Plate Royal Buffet)</option>
+          <option value="salon">💆 Salon & Pre-Bridal Care (Skin, Hair Spa, Dermal)</option>
+          <option value="dj">🎶 DJ, Sound & Entertainment (Sangeet Sound, Anchor)</option>
+          <option value="full_event">👑 Full Wedding Management (End-to-End Coordination)</option>
+          <option value="custom">✨ Custom Partner Add-on</option>
         </select>
-        <span class="adm-label">Price (₹) — leave empty for "On Request"</span>
-        <input class="adm-inp" id="ep-price" placeholder="e.g. 150000">
+
+        <span class="adm-label">Bundle / Addon Title</span>
+        <input class="adm-inp" id="ep-name" placeholder="e.g. Candid Photography & 4K Cinematic Reels" style="margin-bottom:10px">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div>
+            <span class="adm-label">Base Vendor Cost (₹)</span>
+            <input class="adm-inp" id="ep-vendor-cost" type="number" placeholder="e.g. 50000" oninput="calcAddonROI()">
+            <small style="font-size:0.62rem;color:rgba(245,237,214,0.4)">External cost to studio</small>
+          </div>
+          <div>
+            <span class="adm-label">Client Quote Price (₹)</span>
+            <input class="adm-inp" id="ep-price" type="number" placeholder="e.g. 68000" oninput="calcAddonROI()">
+            <small style="font-size:0.62rem;color:rgba(245,237,214,0.4)">Leave blank for 'On Request'</small>
+          </div>
+        </div>
+
+        <!-- Real-Time Studio ROI & Margin Simulator Box -->
+        <div id="ep-roi-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.1),rgba(16,185,129,0.05));border:1px solid rgba(52,211,153,0.3);border-radius:8px;padding:10px 12px;margin-bottom:12px">
+          <div style="font-size:0.68rem;letter-spacing:1px;color:#34d399;font-weight:700;text-transform:uppercase;margin-bottom:6px">⚡ Real-Time Margin & ROI Simulator</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.75rem">
+            <div>
+              <span style="color:rgba(245,237,214,0.5);display:block;font-size:0.62rem">STUDIO PROFIT</span>
+              <strong id="roi-profit" style="color:#34d399;font-size:0.95rem">₹0</strong>
+            </div>
+            <div style="text-align:center">
+              <span style="color:rgba(245,237,214,0.5);display:block;font-size:0.62rem">PROFIT MARGIN</span>
+              <strong id="roi-margin" style="color:var(--gold);font-size:0.95rem">0%</strong>
+            </div>
+            <div style="text-align:right">
+              <span style="color:rgba(245,237,214,0.5);display:block;font-size:0.62rem">VENDOR ROI</span>
+              <strong id="roi-pct" style="color:var(--white);font-size:0.95rem">0%</strong>
+            </div>
+          </div>
+        </div>
+
         <span class="adm-label">Inclusions & Features (one per line)</span>
-        <textarea class="adm-inp" id="ep-feats" rows="5" placeholder="Full Day Cinematic Film&#10;2 Traditional + 1 Candid Photographer&#10;Drone Aerial Coverage&#10;Hardcover Royal Album"></textarea>
-        <span class="adm-label">Description</span>
-        <input class="adm-inp" id="ep-desc" placeholder="Comprehensive wedding coverage">
-        <div class="adm-row">
-          <input type="checkbox" id="ep-feat" checked>
-          <label for="ep-feat">Mark as Featured</label>
+        <textarea class="adm-inp" id="ep-feats" rows="4" placeholder="Full Day Cinematic Film&#10;2 Candid Photographers&#10;Drone Aerial Perspectives&#10;Express 7-Day Reel Delivery" style="margin-bottom:10px"></textarea>
+
+        <span class="adm-label">Client Notes & Description</span>
+        <input class="adm-inp" id="ep-desc" placeholder="Curated with our verified VIP vendor network" style="margin-bottom:10px">
+
+        <div style="display:flex;gap:16px;margin-bottom:12px">
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.75rem;cursor:pointer">
+            <input type="checkbox" id="ep-feat" checked>
+            <span>Feature on Website</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.75rem;cursor:pointer">
+            <input type="checkbox" id="ep-active" checked>
+            <span>Active & Visible</span>
+          </label>
         </div>
-        <div class="adm-row">
-          <input type="checkbox" id="ep-active" checked>
-          <label for="ep-active">Active & Visible</label>
+
+        <button class="adm-btn" onclick="createEvtPkg()" style="background:linear-gradient(135deg,#059669,#10b981);color:#fff">Save Partner Add-on Package</button>
+      </div>
+
+      <!-- AI Copilot Bundle Suggester Box -->
+      <div class="adm-sec" style="margin-top:14px;background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.25);border-radius:10px;padding:12px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:1.1rem">🤖</span>
+          <strong style="color:#60a5fa;font-size:0.82rem">AI Copilot Bundle & ROI Optimizer</strong>
         </div>
-        <button class="adm-btn" onclick="createEvtPkg()">Create Event Package</button>
+        <p style="font-size:0.7rem;color:rgba(245,237,214,0.6);margin-bottom:8px">
+          Ask AI to suggest combinations, margin rules, or generate client quotes:
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">
+          <button type="button" onclick="quickAiBundlePrompt('Suggest optimal Photography + Mandap Decor bundle with 30% studio margin')" style="background:rgba(96,165,250,0.15);border:1px solid rgba(96,165,250,0.3);color:#93c5fd;font-size:0.62rem;padding:3px 8px;border-radius:12px;cursor:pointer">💡 Photo + Decor Combo</button>
+          <button type="button" onclick="quickAiBundlePrompt('Calculate 12% client discount on Bridal + Catering while locking ₹25,000 commission')" style="background:rgba(96,165,250,0.15);border:1px solid rgba(96,165,250,0.3);color:#93c5fd;font-size:0.62rem;padding:3px 8px;border-radius:12px;cursor:pointer">💡 Bundle Discount Rule</button>
+          <button type="button" onclick="quickAiBundlePrompt('Suggest Sangeet DJ + Haldi Decor package with ₹15,000 ROI')" style="background:rgba(96,165,250,0.15);border:1px solid rgba(96,165,250,0.3);color:#93c5fd;font-size:0.62rem;padding:3px 8px;border-radius:12px;cursor:pointer">💡 Sangeet DJ + Haldi</button>
+        </div>
+        <div style="display:flex;gap:6px">
+          <input class="adm-inp" id="ai-bundle-inp" placeholder="e.g. Suggest catering per plate rate with 25% commission..." style="margin:0;font-size:0.75rem">
+          <button type="button" class="adm-btn" onclick="askAiBundleSuggester()" style="width:auto;padding:0 14px;background:#2563eb;color:#fff;font-size:0.75rem">Ask AI</button>
+        </div>
+        <div id="ai-bundle-response" style="display:none;margin-top:8px;padding:8px 10px;background:rgba(0,0,0,0.5);border-radius:6px;font-size:0.72rem;color:rgba(245,237,214,0.9);white-space:pre-wrap;line-height:1.5"></div>
+      </div>
+    </div>
+
+    <!-- Travel & Outstation Tab -->
+    <div class="adm-tab-content" id="adm-travel">
+      <div class="adm-sec">
+        <h4>🚗 Outstation & Travel Fee Config</h4>
+        <p style="font-size:0.75rem;color:rgba(245,237,214,0.7);margin-bottom:12px">Configure distance tiers, fee surcharge ranges, and travel policy for brides outside Jabalpur.</p>
+        
+        <div class="adm-row" style="margin-bottom:12px">
+          <input type="checkbox" id="trv-active" {% if site.travel_widget_active %}checked{% endif %}>
+          <label for="trv-active"><strong>Enable Travel Cost Estimator Widget</strong></label>
+        </div>
+
+        <span class="adm-label">Local Radius Boundary (Km) — 0 Surcharge Zone</span>
+        <input class="adm-inp" id="trv-same-km" type="number" value="{{ site.travel_same_zone_km|default:100 }}" placeholder="100">
+
+        <div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.2);border-radius:8px;padding:10px;margin-top:10px">
+          <strong style="font-size:0.8rem;color:var(--gold)">Near Zone (MP Regional / ~100-300 km)</strong>
+          <span class="adm-label">Label:</span>
+          <input class="adm-inp" id="trv-near-lbl" value="{{ site.travel_near_label|default:'MP Regional & Neighboring Districts' }}">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div>
+              <span class="adm-label">Min Fee (₹):</span>
+              <input class="adm-inp" id="trv-near-min" type="number" value="{{ site.travel_near_fee_min|default:5000 }}">
+            </div>
+            <div>
+              <span class="adm-label">Max Fee (₹):</span>
+              <input class="adm-inp" id="trv-near-max" type="number" value="{{ site.travel_near_fee_max|default:8000 }}">
+            </div>
+          </div>
+        </div>
+
+        <div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.2);border-radius:8px;padding:10px;margin-top:10px">
+          <strong style="font-size:0.8rem;color:var(--gold)">Far Zone (Pan-India Destination / 300+ km)</strong>
+          <span class="adm-label">Label:</span>
+          <input class="adm-inp" id="trv-far-lbl" value="{{ site.travel_far_label|default:'Pan-India Destination' }}">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div>
+              <span class="adm-label">Min Surcharge/Day (₹):</span>
+              <input class="adm-inp" id="trv-far-min" type="number" value="{{ site.travel_far_fee_min|default:18000 }}">
+            </div>
+            <div>
+              <span class="adm-label">Max Surcharge/Day (₹):</span>
+              <input class="adm-inp" id="trv-far-max" type="number" value="{{ site.travel_far_fee_max|default:25000 }}">
+            </div>
+          </div>
+        </div>
+
+        <span class="adm-label" style="margin-top:10px">Travel & Stay Condition Notice:</span>
+        <input class="adm-inp" id="trv-note" value="{{ site.travel_custom_note|default:'Return tickets & hotel stay with meals for artist + assistant required for outstation.' }}">
+
+        <button class="adm-btn" style="margin-top:12px;background:var(--gold);color:#000;font-weight:700" onclick="saveTravelSettings()">💾 Save Travel Settings</button>
+        <div id="trv-status-msg" style="display:none;color:#22c55e;font-size:0.8rem;margin-top:6px"></div>
       </div>
     </div>
 
@@ -477,8 +765,8 @@
 
   </div>
 </div>
-<!-- Admin open button (top right, only when logged in) -->
-<button onclick="openAdmin()" style="position:fixed;top:50%;right:0;z-index:800;transform:translateY(-50%);background:var(--gold);color:var(--black);border:none;padding:12px 8px;border-radius:12px 0 0 12px;font-size:.65rem;font-weight:700;letter-spacing:1.5px;writing-mode:vertical-rl;cursor:pointer;box-shadow:-4px 0 20px rgba(212,175,55,.35)">⚙️ ADMIN PORTAL</button>
+<!-- Admin portal floating launcher (only when logged in staff) -->
+<a href="/admin-portal/" style="position:fixed;top:50%;right:0;z-index:800;transform:translateY(-50%);background:linear-gradient(135deg,var(--gold-d),var(--gold));color:var(--black);border:none;padding:14px 10px;border-radius:12px 0 0 12px;font-size:.68rem;font-weight:800;letter-spacing:1.8px;writing-mode:vertical-rl;cursor:pointer;box-shadow:-4px 0 24px rgba(212,175,55,.45);text-decoration:none;display:flex;align-items:center;gap:6px">⚙️ ADMIN PORTAL</a>
 {% endif %}
 {% endblock %}
 
@@ -488,21 +776,21 @@
 <section id="hero">
   <div class="editorial-watermark">HAUTE COUTURE BRIDAL</div>
   
-  <!-- Left: Screen-Covering Sequential Photo Slider -->
-  <div class="hero-slider-deck" id="hero-slider-deck" onclick="openPeekGallery(window.currentHeroSlide || 0)" title="Click to open full-screen lookbook gallery">
+  <!-- Left: Screen-Covering Sequential Photo Slider (Diverse Unique Brides) -->
+  <div class="hero-slider-deck" id="hero-slider-deck" onclick="onHeroSlideClick(window.currentHeroSlide || 0)" title="Click to view this look in gallery & lookbook">
     <div class="hero-slider-overlay"></div>
     
-    <div class="hero-slide active" data-slide="0">
-      <img src="{% static 'core/images/curated/IMG-20250807-WA0316.jpg' %}" alt="Royal Bengali Bride in Traditional Red & White Banarasi with Handcrafted Alta Artistry">
+    <div class="hero-slide active" data-slide="0" data-group="royal_crimson">
+      <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah Royal Crimson Bride with Sheer Gold-Laced Veil">
     </div>
-    <div class="hero-slide" data-slide="1">
-      <img src="{% static 'core/images/curated/IMG-20250807-WA0350.jpg' %}" alt="Sacred Sandalwood Chandan Motifs with 22k Temple Gold & Glitter Cut-Crease Eyes">
+    <div class="hero-slide" data-slide="1" data-group="christian_ivory">
+      <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Christian Bridal Couture Suite with Ivory Gown & Cathedral Veil">
     </div>
-    <div class="hero-slide" data-slide="2">
-      <img src="{% static 'core/images/curated/ig_post_DWGGBYVCF182LPsWPC-cKeDhbmC3L5j3fpny3U0.jpg' %}" alt="Authentic Polki Jewellery & Dewy Glass-Skin Glamour from @anshitamakeover21">
+    <div class="hero-slide" data-slide="2" data-group="fuchsia_palace">
+      <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia & Emerald Palace Bride with Royal Polki">
     </div>
-    <div class="hero-slide" data-slide="3">
-      <img src="{% static 'core/images/curated/bengali_bride_regal_portrait.jpg' %}" alt="Royal Bengali Bride in Full Red Mukut, Nath & Banarasi Splendor">
+    <div class="hero-slide" data-slide="3" data-group="maroon_velvet">
+      <img src="{% static 'core/images/curated/dsc09702.jpg' %}" alt="Palace Maroon Velvet Heritage Bride in Zardozi Lehenga">
     </div>
 
     <!-- Minimalist Floating Counter & Progress Indicator -->
@@ -514,8 +802,8 @@
         <span class="hero-slider-dot" onclick="setHeroSlide(2)"></span>
         <span class="hero-slider-dot" onclick="setHeroSlide(3)"></span>
       </div>
-      <span class="hero-view-gallery-hint" onclick="openPeekGallery(window.currentHeroSlide || 0)">
-        <span>🔍</span> Gallery
+      <span class="hero-view-gallery-hint" onclick="onHeroSlideClick(window.currentHeroSlide || 0)">
+        <span>🔍</span> View Gallery ↓
       </span>
     </div>
   </div>
@@ -586,70 +874,248 @@
       <div class="gdiv"></div>
       <p class="ss">{{ t.services_ss|default:'Precision techniques tailored to each bride. International master formulas, high-definition lighting optimization, and couture hair architecture.' }}</p>
     </div>
-    <div class="svc-grid" style="margin-top:44px">
-      <div class="svc-card rev d1">
-        <span class="svc-icon">💄</span>
-        <h3>{{ t.svc_makeup_title|default:'Bridal & Couture Makeup' }}</h3>
-        <p>{{ t.svc_makeup_desc|default:'Airbrush & HD micro-pigments with 18-hour tear and sweat resistance.' }}</p>
-        <div class="art-chips">
-          {% for a in makeup_artists %}<span class="art-chip">{{ a.name }}</span>{% endfor %}
+
+    <!-- Multi-Event & Package Privilege Notice Banner -->
+    <div class="svc-package-privilege-banner rev d1">
+      <div class="sppb-left">
+        <div class="sppb-icon">💎</div>
+        <div class="sppb-text">
+          <h4>Looking for Multiple Functions or a Complete Wedding Celebration?</h4>
+          <p>The individual services below represent standalone a-la-carte rates. When you book 2 or more services or choose our curated Wedding Celebration Packages, overall prices are discounted by 25%–30% with bundled savings up to ₹27,000!</p>
         </div>
       </div>
-      <div class="svc-card rev d2">
-        <span class="svc-icon">💇</span>
-        <h3>{{ t.svc_hair_title|default:'Haute Hair Artistry' }}</h3>
-        <p>{{ t.svc_hair_desc|default:'Sculpted updos, textured Hollywood waves, and fresh floral placement.' }}</p>
-        <div class="art-chips">
-          {% for a in hair_artists %}<span class="art-chip">{{ a.name }}</span>{% endfor %}
+      <a href="#packages" class="sppb-btn">View Bundled Packages & Save ↓</a>
+    </div>
+
+    <div class="svc-split-list" style="margin-top:40px">
+      {% for svc in services %}
+      <div class="svc-split-card svc-card-{{ svc.id }} rev d{{ forloop.counter|default:1 }}" id="studio-svc-{{ svc.id }}" data-svc-id="{{ svc.id }}">
+        <div class="svc-split-left" onclick="openLookbook('{{ svc.look_group_id|default:svc.category }}')" style="cursor:pointer">
+          <img src="{{ svc.display_image }}" alt="{{ svc.title }}" class="svc-split-img">
+          <span class="svc-split-badge">{{ svc.get_category_display }}</span>
+          <div class="svc-split-zoom-hint">
+            <span>✦ View Real Transformations</span>
+            <span style="color:var(--gold)">Explore ↗</span>
+          </div>
+        </div>
+        <div class="svc-split-right">
+          <div class="svc-split-discipline">
+            <span>✦</span> {{ svc.discipline }}
+          </div>
+          <h3 class="svc-split-title">{{ svc.title }}</h3>
+          
+          <!-- Clean Pricing Presentation (Actual Booking Price + Crossed-Out Original MRP + Bundle Note) -->
+          <div class="svc-split-price-box" style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:10px 0 14px">
+            <span class="svc-split-price-val" style="font-size:1.45rem;font-weight:700;color:var(--gold)">
+              ₹{{ svc.price|floatformat:0 }}
+            </span>
+            {% if svc.discount_price and svc.discount_price > svc.price %}
+            <span style="text-decoration:line-through;color:rgba(245,237,214,0.45);font-size:1.02rem" title="Standard Regular Rate">
+              ₹{{ svc.discount_price|floatformat:0 }}
+            </span>
+            {% endif %}
+            {% if svc.bundle_note %}
+            <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.35);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600;letter-spacing:0.5px">
+              {{ svc.bundle_note }}
+            </span>
+            {% endif %}
+          </div>
+
+          <!-- Crisp, Concise Luxury Editorial Description -->
+          <p class="svc-split-desc" style="font-size:0.88rem;line-height:1.6;color:rgba(245,237,214,0.85);margin-bottom:18px">
+            {{ svc.description }}
+          </p>
+
+          {% if svc.get_features_list %}
+          <div class="svc-split-inc-title" style="font-size:0.72rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;margin-bottom:10px">WHAT IS INCLUDED IN THIS SERVICE:</div>
+          <div class="svc-split-inclusions">
+            {% for feat in svc.get_features_list %}
+            <div class="svc-split-inc-item"><span>✓</span> {{ feat }}</div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <div class="svc-split-actions" style="margin-top:20px">
+            <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20reserve%20{{ svc.title|urlencode }}." target="_blank" class="btn-wa" style="padding:11px 26px;font-size:0.78rem">
+              💬 Reserve {{ svc.title }}
+            </a>
+          </div>
         </div>
       </div>
-      <div class="svc-card rev d3">
-        <span class="svc-icon">💅</span>
-        <h3>{{ t.svc_nails_title|default:'Nail Extensions & Art' }}</h3>
-        <p>{{ t.svc_nails_desc|default:'Swarovski bridal accents, French ombré, and luxury gel sculpting.' }}</p>
-        <div class="art-chips">
-          {% for a in nail_artists %}<span class="art-chip">{{ a.name }}</span>{% endfor %}
+      {% empty %}
+      <p style="text-align:center;color:rgba(245,237,214,0.5);padding:40px">No services configured yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LAYER 1, 2 & 3: EDITORIAL SERVICE GALLERY & CRAFT SHOWCASE ═══ -->
+<section id="gallery" style="background:var(--dark);position:relative;overflow:hidden;padding:70px 0">
+  <div class="editorial-watermark" style="top:15%">EDITORIAL COUTURE</div>
+  <div class="sw">
+    <div class="rev">
+      <p class="sl">{{ t.gallery_sl|default:'Artistry Showcase & Disciplines' }}</p>
+      <h2 class="sh">{{ t.gallery_sh|default:'Signature Craft & Lookbook Gallery' }}</h2>
+      <div class="gdiv"></div>
+      <p class="ss">Experience the pinnacle of Indian bridal artistry. Seamlessly explore our signature service disciplines, view real transformations, and compare bespoke coverage.</p>
+    </div>
+
+    <!-- LAYER 1: Dynamic Auto-Rotating Hero Service Showcase Carousel -->
+    <div class="gal-showcase-hero rev d1" id="galShowcaseHero">
+      <!-- Slide 1: Sacred Vivah Royal Crimson Bride -->
+      <div class="gal-slide active" data-slide="0" onclick="openLookbook('royal_crimson')" style="cursor:pointer">
+        <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah Royal Crimson Bride" class="gal-slide-img">
+        <div class="gal-slide-overlay"></div>
+        <div class="gal-slide-caption">
+          <span class="gal-slide-badge">👑 Signature Discipline 01 · 4 Angles</span>
+          <h3>Imperial Bridal Couture & Airbrush Artistry</h3>
+          <p>Micro-buffed HD & atomized TEMPTU airbrush bases ensuring 18+ hour cry-proof and sweat resilience for royal pheras.</p>
         </div>
       </div>
-      <div class="svc-card rev d4">
-        <span class="svc-icon">✨</span>
-        <h3>{{ t.svc_skin_title|default:'Skin & Dermal Prep' }}</h3>
-        <p>{{ t.svc_skin_desc|default:'Deep barrier hydration and glass-skin radiance rituals before application.' }}</p>
+      <!-- Slide 2: Christian Bridal Couture Suite -->
+      <div class="gal-slide" data-slide="1" onclick="openLookbook('christian_ivory')" style="cursor:pointer">
+        <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Christian Bridal Couture Suite" class="gal-slide-img">
+        <div class="gal-slide-overlay"></div>
+        <div class="gal-slide-caption">
+          <span class="gal-slide-badge">🕊️ Signature Discipline 02 · Couture Suite</span>
+          <h3>Christian Bridal Couture & Cathedral Veil</h3>
+          <p>Bespoke church ceremony styling featuring luminous porcelain HD airbrush, off-shoulder ivory gown framing, and multi-tier cathedral veil anchoring.</p>
+        </div>
       </div>
-      <div class="svc-card rev d5">
-        <span class="svc-icon">👰</span>
-        <h3>{{ t.svc_bridal_title|default:'Complete Bridal Suite' }}</h3>
-        <p>{{ t.svc_bridal_desc|default:'End-to-end styling from pre-wedding rituals to the sacred pheras.' }}</p>
+      <!-- Slide 3: Imperial Fuchsia & Emerald Palace Bride (Recreated 4K) -->
+      <div class="gal-slide" data-slide="2" onclick="openLookbook('fuchsia_palace')" style="cursor:pointer">
+        <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia & Emerald Palace Bride" class="gal-slide-img">
+        <div class="gal-slide-overlay"></div>
+        <div class="gal-slide-caption">
+          <span class="gal-slide-badge">👑 Signature Discipline 03 · 4K Recreated</span>
+          <h3>Imperial Fuchsia Silk & Emerald Palace Suite</h3>
+          <p>Majestic heritage styling with rose-dew HD radiance, gilded cut-crease eye artistry, and Zambian emerald choker settings.</p>
+        </div>
       </div>
-      <div class="svc-card rev d6">
-        <span class="svc-icon">👑</span>
-        <h3>{{ t.svc_draping_title|default:'Couture Draping & Setting' }}</h3>
-        <p>{{ t.svc_draping_desc|default:'Royal lehenga pleating, double dupatta pinning, and jewellery alignment.' }}</p>
+      <!-- Slide 4: Palace Maroon Velvet Heritage (Telegram DSLR Shoot) -->
+      <div class="gal-slide" data-slide="3" onclick="openLookbook('maroon_velvet')" style="cursor:pointer">
+        <img src="{% static 'core/images/curated/dsc09702.jpg' %}" alt="Palace Maroon Velvet Heritage" class="gal-slide-img">
+        <div class="gal-slide-overlay"></div>
+        <div class="gal-slide-caption">
+          <span class="gal-slide-badge">👑 Authentic DSLR Shoot · 6 Angles</span>
+          <h3>Palace Maroon Velvet Heritage Couture</h3>
+          <p>Deep wine velvet lehenga, hand-embroidered gold zardozi, antique polki nath, and double royal veil architecture.</p>
+        </div>
+      </div>
+      <!-- Slide 5: Ring Ceremony Sheer Maroon Veil Bride -->
+      <div class="gal-slide" data-slide="4" onclick="openLookbook('maroon_veil')" style="cursor:pointer">
+        <img src="{% static 'core/images/curated/ig_post_DRP0QCODVfD.jpg' %}" alt="Ring Ceremony Sheer Maroon Veil Bride" class="gal-slide-img">
+        <div class="gal-slide-overlay"></div>
+        <div class="gal-slide-caption">
+          <span class="gal-slide-badge">💍 Signature Discipline 05 · Ring Ceremony</span>
+          <h3>Ring Ceremony & Sheer Maroon Veil Radiance</h3>
+          <p>Enchanting sheer gold-bordered veil framing, warm smokey cut-crease eyes, and delicate maang tikka alignment.</p>
+        </div>
+      </div>
+      <!-- Slide 6: Traditional Kolkata Banarasi & Chandan Art -->
+      <div class="gal-slide" data-slide="5" onclick="openLookbook('bengali_heritage')" style="cursor:pointer">
+        <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Traditional Bengali Mukut & Chandan" class="gal-slide-img">
+        <div class="gal-slide-overlay"></div>
+        <div class="gal-slide-caption">
+          <span class="gal-slide-badge">🌸 Cultural Specialty Heritage · 4 Photos</span>
+          <h3>Traditional Kolkata Banarasi & Chandan Art</h3>
+          <p>Intricate forehead sandalwood artwork, artisanal glitter cut-crease eye makeup, and pure silk Banarasi draping with sacred alta grace.</p>
+        </div>
+      </div>
+
+      <!-- Navigation Dots -->
+      <div class="gal-hero-dots">
+        <span class="gal-hero-dot active" onclick="setGalHeroSlide(0)"></span>
+        <span class="gal-hero-dot" onclick="setGalHeroSlide(1)"></span>
+        <span class="gal-hero-dot" onclick="setGalHeroSlide(2)"></span>
+        <span class="gal-hero-dot" onclick="setGalHeroSlide(3)"></span>
+        <span class="gal-hero-dot" onclick="setGalHeroSlide(4)"></span>
+        <span class="gal-hero-dot" onclick="setGalHeroSlide(5)"></span>
+      </div>
+    </div>
+
+    <!-- LAYER 2: Filterable Masonry Real-Brides Gallery Grid -->
+    <div class="gal-filters rev d2" style="margin-top:10px">
+      <button class="gf-btn active" onclick="filterGal('all')">✨ All Disciplines</button>
+      <button class="gf-btn" onclick="filterGal('bridal')">👰 Bridal Suites</button>
+      <button class="gf-btn" onclick="filterGal('engagement')">💍 Engagement / Roka</button>
+      <button class="gf-btn" onclick="filterGal('hair')">💇 Hair & Draping</button>
+      <button class="gf-btn" onclick="filterGal('nails')">💅 Nail Artistry</button>
+      <button class="gf-btn" onclick="filterGal('party')">💃 Party & Side Glam</button>
+    </div>
+
+    <div class="gal-grid rev d2">
+      {% for grp in look_groups %}
+      <div class="gal-item" data-cat="{{ grp.category }}" onclick="openLookbook('{{ grp.id }}')" style="cursor:pointer">
+        <img src="{{ grp.display_cover }}" alt="{{ grp.name }}" loading="lazy">
+        
+        <!-- Person & Makeup Type Folder Badges -->
+        <div style="position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:center;z-index:3;pointer-events:none">
+          {% if grp.client_name %}
+          <span style="background:rgba(20,16,18,0.92);backdrop-filter:blur(8px);border:1px solid rgba(212,175,55,0.6);border-radius:14px;padding:4px 10px;font-size:0.68rem;font-weight:700;color:var(--gold);letter-spacing:0.5px">
+            👤 {{ grp.client_name }}
+          </span>
+          {% endif %}
+          <span style="background:rgba(0,0,0,0.75);border-radius:12px;padding:3px 8px;font-size:0.62rem;color:rgba(245,237,214,0.9);letter-spacing:0.5px">
+            {{ grp.media_items.count }} Media
+          </span>
+        </div>
+
+        <div class="gal-ov">
+          <span style="font-weight:700;letter-spacing:1px">🔍 Open Lookbook Folder</span>
+          <strong style="font-size:.78rem;color:var(--gold-l);display:block;margin-top:6px">{{ grp.makeup_type|default:grp.name }}</strong>
+          <small style="font-size:.65rem;color:rgba(245,237,214,0.7);display:block;margin-top:2px">{{ grp.get_category_display }}</small>
+        </div>
+      </div>
+      {% empty %}
+      <div style="grid-column:1/-1;text-align:center;padding:40px;color:rgba(245,237,214,0.5)">
+        No look groups available.
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- LAYER 3: Action Row & Comparison Triggers (Replacing in-page clutter with modal precision) -->
+    <div class="gal-action-row rev d3">
+      <div>
+        <h4 style="font-family:var(--font-h);font-size:1.15rem;color:#fff;margin-bottom:4px">Coverage & Technical Specifications</h4>
+        <p style="font-size:0.8rem;color:rgba(245,237,214,0.7)">Compare vanity kits, longevity, and techniques side-by-side or customize your wedding day package.</p>
+      </div>
+      <div class="gal-action-btns">
+        <button class="btn-comp-trigger" onclick="openServiceCompareModal()">
+          ⚡ Compare Studio Services
+        </button>
+        <button class="btn-comp-trigger" style="background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#000" onclick="openPackageCompareModal()">
+          ⚖️ Compare Bridal Suites
+        </button>
+        <a href="#packages" class="btn-comp-trigger" style="background:transparent;border-color:rgba(212,175,55,0.4)">
+          View All Packages ↓
+        </a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══ SERVICE COMPARISON BAR (Interactive Mult-Service Matrix) ═══ -->
-<section id="service-compare" class="comp-bar-wrapper">
-  <div class="sw">
-    <div class="rev">
-      <p class="sl">Precision Artistry Finder</p>
-      <h2 class="sh">Compare Studio Services & Craft</h2>
-      <div class="gdiv"></div>
-      <p class="ss">Explore and compare key specifications, longevity, vanity kits, and styling depth across all Anshita Makeover signature specialties.</p>
+<!-- ═══ MODAL 1: SERVICE COMPARISON POPUP ═══ -->
+<div class="comp-modal-overlay" id="serviceCompareModal" onclick="if(event.target===this)closeServiceCompareModal()">
+  <div class="comp-modal-content">
+    <button class="comp-modal-close" onclick="closeServiceCompareModal()" aria-label="Close Comparison">✕</button>
+    
+    <div style="text-align:center;margin-bottom:24px">
+      <p class="sl" style="justify-content:center">Precision Artistry Matrix</p>
+      <h3 class="sh" style="font-size:1.8rem;margin-bottom:6px">Compare Studio Disciplines & Craft</h3>
+      <div class="gdiv" style="margin:10px auto"></div>
+      <p class="ss" style="max-width:650px;margin:0 auto">Review technique, international vanity kits, water resistance, and session durations across all signature specialties.</p>
     </div>
 
-    <!-- Quick Filter Chips -->
-    <div class="comp-selector-chips rev d1">
+    <!-- Filter Chips inside Modal -->
+    <div class="comp-selector-chips" style="margin-bottom:16px">
       <button class="comp-chip active" onclick="filterServiceComp('all')">✨ All Services</button>
       <button class="comp-chip" onclick="filterServiceComp('bridal')">👰 Bridal Artistry</button>
       <button class="comp-chip" onclick="filterServiceComp('side')">💃 Party & Side Makeup</button>
       <button class="comp-chip" onclick="filterServiceComp('hair-skin')">💇 Hair & Skin Therapy</button>
     </div>
 
-    <!-- Comparison Table -->
-    <div class="comp-table-responsive rev d2">
+    <div class="comp-table-responsive">
       <table class="comp-table">
         <thead>
           <tr>
@@ -657,9 +1123,8 @@
             <th style="min-width:150px">Primary Technique</th>
             <th style="min-width:160px">Luxury Product Kit</th>
             <th style="min-width:130px">Longevity</th>
-            <th style="min-width:140px">Session Duration</th>
+            <th style="min-width:130px">Session Duration</th>
             <th style="min-width:140px">Hair & Draping</th>
-            <th style="min-width:140px">Ideal Occasion</th>
             <th style="min-width:130px">Action</th>
           </tr>
         </thead>
@@ -667,294 +1132,142 @@
           <tr data-cat="bridal">
             <td>
               <div class="comp-prod-title">Master Airbrush Bridal</div>
-              <div class="comp-prod-sub">Ultra-featherweight HD atomized silicone base</div>
+              <div class="comp-prod-sub">Atomized TEMPTU HD silicone base</div>
             </td>
-            <td>TEMPTU 24-hr Airbrush</td>
-            <td>Dior, Charlotte Tilbury, Huda Beauty, NARS</td>
-            <td><span class="comp-highlight">24+ Hours Water/Tear-Proof</span></td>
+            <td>Airbrush Precision</td>
+            <td>Dior, Charlotte Tilbury, Huda, NARS</td>
+            <td><span class="comp-highlight">24+ Hours Cry-Proof</span></td>
             <td>3.5 – 4 Hours</td>
-            <td><span class="comp-check">✔ Included</span><br><small style="color:var(--text-muted)">Architectural bun + Dupatta & Jewelry setting</small></td>
-            <td>Main Wedding & Pheras</td>
+            <td><span class="comp-check">✔ Included</span></td>
             <td><a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20want%20to%20inquire%20about%20the%20Master%20Airbrush%20Bridal%20service." target="_blank" class="comp-cta-btn">Book Airbrush</a></td>
           </tr>
           <tr data-cat="bridal">
             <td>
               <div class="comp-prod-title">Imperial Royal HD Bridal</div>
-              <div class="comp-prod-sub">Micro-buffed satin matte radiant finish</div>
+              <div class="comp-prod-sub">Micro-buffed satin matte radiance</div>
             </td>
-            <td>Ultra-HD Micro Blending</td>
-            <td>MAC Pro, Estée Lauder, Anastasia Beverly Hills</td>
-            <td><span class="comp-highlight">18–20 Hours Non-Oxidizing</span></td>
+            <td>Ultra-HD Blending</td>
+            <td>MAC Pro, Estée Lauder, ABH</td>
+            <td><span class="comp-highlight">18–20 Hours Wear</span></td>
             <td>3 – 3.5 Hours</td>
-            <td><span class="comp-check">✔ Included</span><br><small style="color:var(--text-muted)">Couture Hair styling & Lehenga Pinning</small></td>
-            <td>Royal Wedding / Grand Reception</td>
+            <td><span class="comp-check">✔ Included</span></td>
             <td><a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20want%20to%20inquire%20about%20Imperial%20Royal%20HD%20Bridal." target="_blank" class="comp-cta-btn">Book HD Bridal</a></td>
           </tr>
           <tr data-cat="bridal">
             <td>
               <div class="comp-prod-title">Engagement & Roka Glam</div>
-              <div class="comp-prod-sub">Luminous glass-skin soft glam couture</div>
+              <div class="comp-prod-sub">Glass-skin soft glam couture</div>
             </td>
             <td>Glass Skin Dewy Glow</td>
-            <td>Too Faced, Laura Mercier, Smashbox, Fenty</td>
+            <td>Too Faced, Laura Mercier, Fenty</td>
             <td>14–16 Hours</td>
             <td>2.5 Hours</td>
-            <td><span class="comp-check">✔ Included</span><br><small style="color:var(--text-muted)">Textured waves, half-updo & Saree draping</small></td>
-            <td>Engagement, Ring Ceremony, Sangeet</td>
+            <td><span class="comp-check">✔ Included</span></td>
             <td><a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20want%20to%20inquire%20about%20Engagement%20and%20Roka%20Glam." target="_blank" class="comp-cta-btn">Book Roka</a></td>
           </tr>
           <tr data-cat="side">
             <td>
               <div class="comp-prod-title">Bridesmaids & Sister Luxury</div>
-              <div class="comp-prod-sub">Elegantly matched camera-ready party finish</div>
+              <div class="comp-prod-sub">Camera-ready refined party finish</div>
             </td>
             <td>Longwear HD Finish</td>
-            <td>MAC, Clinique, PAC Pro, Kryolan HD</td>
+            <td>MAC, Clinique, PAC Pro, Kryolan</td>
             <td>10–12 Hours</td>
             <td>1.5 Hours</td>
-            <td><span class="comp-check">✔ Included</span><br><small style="color:var(--text-muted)">Blowout/Curl styling & Dupatta Pinning</small></td>
-            <td>Wedding Guests, Sisters & Family</td>
+            <td><span class="comp-check">✔ Included</span></td>
             <td><a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20want%20to%20book%20Bridesmaids%20and%20Family%20Makeup." target="_blank" class="comp-cta-btn">Book Family</a></td>
           </tr>
           <tr data-cat="side">
             <td>
-              <div class="comp-prod-title">Cocktail & Red Carpet Evening</div>
-              <div class="comp-prod-sub">Smokey eyes, bold contour & high-shimmer accents</div>
+              <div class="comp-prod-title">Cocktail & Red Carpet</div>
+              <div class="comp-prod-sub">Smokey eyes & bold contour</div>
             </td>
-            <td>High-Impact Sculpted Glam</td>
-            <td>Urban Decay, Charlotte Tilbury, Morphe, NARS</td>
+            <td>Sculpted Glam</td>
+            <td>Urban Decay, Charlotte Tilbury, NARS</td>
             <td>12–14 Hours</td>
             <td>2 Hours</td>
-            <td><span class="comp-check">✔ Included</span><br><small style="color:var(--text-muted)">Sleek high ponytail / Hollywood waves</small></td>
-            <td>Cocktail, Reception & After-Party</td>
+            <td><span class="comp-check">✔ Included</span></td>
             <td><a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20want%20to%20book%20Cocktail%20and%20Red%20Carpet%20Evening%20look." target="_blank" class="comp-cta-btn">Book Cocktail</a></td>
           </tr>
           <tr data-cat="hair-skin">
             <td>
               <div class="comp-prod-title">Couture Hair Architecture</div>
-              <div class="comp-prod-sub">Bespoke bridal hairdos with natural floral setting</div>
+              <div class="comp-prod-sub">Bridal updos with floral integration</div>
             </td>
-            <td>Thermal & Texturizing Architecture</td>
-            <td>Schwarzkopf Professional, Dyson, Osis+, Moroccanoil</td>
-            <td>All-Day Hold (Anti-Frizz)</td>
+            <td>Thermal Architecture</td>
+            <td>Schwarzkopf Pro, Dyson, Moroccanoil</td>
+            <td>All-Day Anti-Frizz</td>
             <td>1 – 1.5 Hours</td>
-            <td><span class="comp-check">✔ Core Focus</span><br><small style="color:var(--text-muted)">Custom mathapatti & fresh flower integration</small></td>
-            <td>Haldi, Mehendi, Pheras</td>
+            <td><span class="comp-check">✔ Core Focus</span></td>
             <td><a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20want%20to%20inquire%20about%20Couture%20Hair%20Architecture." target="_blank" class="comp-cta-btn">Inquire Hair</a></td>
           </tr>
           <tr data-cat="hair-skin">
             <td>
-              <div class="comp-prod-title">Pre-Bridal Clinical Skin Rituals</div>
-              <div class="comp-prod-sub">Hydra-infusion & deep barrier preparation</div>
+              <div class="comp-prod-title">Pre-Bridal Clinical Skin Ritual</div>
+              <div class="comp-prod-sub">Hydra-infusion barrier prep</div>
             </td>
             <td>Dermal Hydra-Exfoliation</td>
-            <td>Kiehl's, Estée Lauder Advanced Night, Laneige</td>
-            <td>Ongoing Radiance Boost</td>
-            <td>2 Hours (Recommended 2–3 weeks prior)</td>
+            <td>Kiehl's, Estée Lauder, Laneige</td>
+            <td>Radiance Boost</td>
+            <td>2 Hours</td>
             <td><span class="comp-cross">— Facial Only</span></td>
-            <td>Pre-Wedding Skincare Regime</td>
             <td><a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20want%20to%20schedule%20a%20Pre-Bridal%20Skin%20Ritual." target="_blank" class="comp-cta-btn">Book Ritual</a></td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
-</section>
+</div>
 
-<!-- ═══ SIGNATURE PACKAGES & SIDE MAKEUP SUITES ═══ -->
-<section id="packages" style="background:var(--dark);position:relative">
-  <div class="sw">
-    <div class="rev">
-      <p class="sl">{{ t.packages_sl|default:'Artistry Suites' }}</p>
-      <h2 class="sh">{{ t.packages_sh|default:'Signature Packages & Side Makeup' }}</h2>
-      <div class="gdiv"></div>
-      <p class="ss">{{ t.packages_ss|default:'Curated bridal suites, engagement looks, and dedicated side makeup for bridesmaids and family — crafted with luxury international kits.' }}</p>
+<!-- ═══ MODAL 2: PACKAGE COMPARISON POPUP ═══ -->
+<div class="comp-modal-overlay" id="packageCompareModal" onclick="if(event.target===this)closePackageCompareModal()">
+  <div class="comp-modal-content">
+    <button class="comp-modal-close" onclick="closePackageCompareModal()" aria-label="Close Comparison">✕</button>
+    
+    <div style="text-align:center;margin-bottom:24px">
+      <p class="sl" style="justify-content:center">Couture Investment Transparency</p>
+      <h3 class="sh" style="font-size:1.8rem;margin-bottom:6px">Compare Bridal & Event Suites</h3>
+      <div class="gdiv" style="margin:10px auto"></div>
+      <p class="ss" style="max-width:650px;margin:0 auto">Clear, upfront comparison of technique, international luxury kits, hairstyling depth, complimentary additions, and exact package savings.</p>
     </div>
 
-    <div class="pkg-grid" style="margin-top:40px">
-      <!-- Database Packages Loop -->
-      {% for pkg in packages %}
-      <div class="pkg-card rev d{{ forloop.counter }} {% if pkg.is_featured %}feat{% endif %}">
-        {% if pkg.package_type == 'side_makeup' %}
-        <div class="pkg-badge" style="background:linear-gradient(135deg,#c2607a,#7b1c2e)">Family & Bridesmaids</div>
-        {% elif pkg.is_featured %}
-        <div class="pkg-badge">Signature Suite</div>
-        {% endif %}
-        <div class="pkg-top">
-          <span class="pkg-icon">
-            {% if pkg.package_type == 'side_makeup' %}👭
-            {% elif pkg.package_type == 'engagement' %}💍
-            {% elif pkg.package_type == 'reception' %}🌟
-            {% elif pkg.package_type == 'beauty' %}✨
-            {% elif pkg.package_type == 'party' %}💄
-            {% else %}👰{% endif %}
-          </span>
-          <p class="pkg-name">{{ pkg.name }}</p>
-          <p class="pkg-tag">{{ pkg.tagline }}</p>
-        </div>
-        <div class="pkg-body">
-          <div class="pkg-price-box">
-            {% if pkg.has_offer %}
-            <div class="pkg-price-row">
-              <span class="pkg-std-price">Standard: <del>₹{{ pkg.price|floatformat:0 }}</del></span>
-              <span class="pkg-save-badge">{{ pkg.discount_percent }}% OFF Special</span>
-            </div>
-            <p class="pkg-price" style="margin-bottom:4px">
-              <span class="pkg-special-val">₹{{ pkg.offer_price|floatformat:0 }}</span>
-              {% if pkg.package_type == 'side_makeup' %}
-              <small>/ person · Special Offer</small>
-              {% else %}
-              <small>/ special offer suite</small>
-              {% endif %}
-            </p>
-            <div class="pkg-save-note">✦ Special Offer: Save ₹{{ pkg.saving|floatformat:0 }} Today with {{ coupon.code }} ✦</div>
-            {% elif pkg.price %}
-            <p class="pkg-price" style="margin-bottom:4px">
-              ₹{{ pkg.price|floatformat:0 }}
-              {% if pkg.package_type == 'side_makeup' %}
-              <small>/ person · Current Price</small>
-              {% else %}
-              <small>/ current studio price</small>
-              {% endif %}
-            </p>
-            <div class="pkg-std-note">Current Studio Standard Investment</div>
-            {% else %}
-            <p class="pkg-price">{{ pkg.price_label }}</p>
-            {% endif %}
-          </div>
-          <ul class="pkg-feats">
-            {% for f in pkg.get_features_list %}
-            <li>{{ f }}</li>
-            {% endfor %}
-          </ul>
-          <button class="pkg-cta" onclick="window.open('https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20{{ pkg.name|urlencode }}%20package.','_blank')">
-            {{ t.btn_reserve_look|default:'Reserve Look' }}
-          </button>
-        </div>
-      </div>
-      {% empty %}
-      <!-- Fallback Packages -->
-      <div class="pkg-card feat rev d1">
-        <div class="pkg-badge">Signature Suite</div>
-        <div class="pkg-top"><span class="pkg-icon">👰</span><p class="pkg-name">Imperial Royal Bridal Suite</p><p class="pkg-tag">Timeless Royalty for the Main Wedding & Pheras</p></div>
-        <div class="pkg-body">
-          <div class="pkg-price-box">
-            <div class="pkg-price-row">
-              <span class="pkg-std-price">Standard: <del>₹35,000</del></span>
-              <span class="pkg-save-badge">30% OFF Special</span>
-            </div>
-            <p class="pkg-price" style="margin-bottom:4px">
-              <span class="pkg-special-val">₹24,500</span>
-              <small>/ special offer suite</small>
-            </p>
-            <div class="pkg-save-note">✦ Save ₹10,500 Today with Seasonal Privilege ✦</div>
-          </div>
-          <ul class="pkg-feats">
-            <li>Airbrush / HD Micro-Pigment Bridal Base</li>
-            <li>Luxury International Kit (Dior, Huda, MAC, Charlotte Tilbury)</li>
-            <li>Haute Couture Hair Sculpting & Floral Placement</li>
-            <li>Royal Saree / Lehenga Draping & Dupatta Pinning</li>
-            <li>Complimentary Luxury Touch-up Kit</li>
-          </ul>
-          <button class="pkg-cta" onclick="window.open('https://wa.me/{{ whatsapp }}?text=Inquiry%20for%20Imperial%20Royal%20Bridal%20Suite','_blank')">Reserve Look</button>
-        </div>
-      </div>
-      <div class="pkg-card feat rev d2">
-        <div class="pkg-badge" style="background:linear-gradient(135deg,#c2607a,#7b1c2e)">Family & Bridesmaids</div>
-        <div class="pkg-top"><span class="pkg-icon">👭</span><p class="pkg-name">Side Makeup & Bridesmaid Suite</p><p class="pkg-tag">Elegance for Mothers, Sisters & Bridesmaids</p></div>
-        <div class="pkg-body">
-          <div class="pkg-price-box">
-            <div class="pkg-price-row">
-              <span class="pkg-std-price">Standard: <del>₹6,500</del></span>
-              <span class="pkg-save-badge">30% OFF Special</span>
-            </div>
-            <p class="pkg-price" style="margin-bottom:4px">
-              <span class="pkg-special-val">₹4,550</span>
-              <small>/ person (Trio ₹11,550)</small>
-            </p>
-            <div class="pkg-save-note">✦ Save ₹1,950 / person with Seasonal Privilege ✦</div>
-          </div>
-          <ul class="pkg-feats">
-            <li>Premium HD Long-Wear Base Application</li>
-            <li>Subtle Sculpting & Luminescent Highlights</li>
-            <li>Couture Hair Styling (Buns, Braids, Textured Waves)</li>
-            <li>Dupatta Setting & Saree Draping</li>
-            <li>Group Privilege: ₹16,500 for Trio (3 Persons)</li>
-          </ul>
-          <button class="pkg-cta" onclick="window.open('https://wa.me/{{ whatsapp }}?text=Inquiry%20for%20Side%20Makeup%20and%20Bridesmaids%20Suite','_blank')">Reserve Look</button>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-
-    <!-- Floating / Docked Quick Action Toolbar -->
-    <div class="pkg-docked-bar rev d2">
-      <a href="#package-compare" class="pkg-docked-btn primary">
-        ⚖️ Compare All Packages
-      </a>
-      <a href="#calc-section" class="pkg-docked-btn">
-        🧮 Custom Package Builder
-      </a>
-      <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita!%20I%20would%20like%20to%20discuss%20a%20tailored%20bridal%20package." target="_blank" class="pkg-docked-btn">
-        💬 Direct WhatsApp
-      </a>
-    </div>
-
-    <div style="text-align:center;margin-top:24px" class="rev d3">
-      <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20request%20a%20bespoke%20bridal%20and%20family%20makeup%20consultation." target="_blank" class="btn-p">
-        {{ t.btn_custom_bridal_quote|default:'💬 Request Bespoke Bridal Consultation' }}
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ PACKAGE COMPARISON BAR (Side-by-Side Bridal & Family Matrix) ═══ -->
-<section id="package-compare" class="comp-bar-wrapper" style="background:linear-gradient(180deg,#0a0a0a 0%,#110f13 100%)">
-  <div class="sw">
-    <div class="rev">
-      <p class="sl">Couture Investment Transparency</p>
-      <h2 class="sh">Compare Bridal & Event Suites</h2>
-      <div class="gdiv"></div>
-      <p class="ss">Clear, upfront comparison of technique, international luxury kits, hairstyling depth, complimentary additions, and exact package savings.</p>
-    </div>
-
-    <div class="comp-table-responsive rev d1" style="margin-top:40px">
+    <div class="comp-table-responsive">
       <table class="comp-table">
         <thead>
           <tr>
-            <th style="min-width:200px">Deliverables & Features</th>
-            <th style="min-width:210px;text-align:center;border-top:3px solid #d4af37">
+            <th style="min-width:180px">Deliverables & Features</th>
+            <th style="min-width:200px;text-align:center;border-top:3px solid var(--gold)">
               <div class="comp-prod-title" style="color:var(--gold)">👑 Master Airbrush Suite</div>
-              <small style="color:var(--text-muted)">The Ultimate Wedding Day Artistry</small>
+              <small style="color:rgba(245,237,214,0.6)">The Ultimate Wedding Day Artistry</small>
             </th>
-            <th style="min-width:210px;text-align:center;border-top:3px solid #e07a5f">
+            <th style="min-width:200px;text-align:center;border-top:3px solid #e07a5f">
               <div class="comp-prod-title" style="color:#e07a5f">⭐ Imperial Royal HD</div>
-              <small style="color:var(--text-muted)">High-Definition Satin Radiance</small>
-            </th>
-            <th style="min-width:200px;text-align:center">
-              <div class="comp-prod-title">💍 Engagement / Roka</div>
-              <small style="color:var(--text-muted)">Dewy Glass-Skin Glam</small>
+              <small style="color:rgba(245,237,214,0.6)">High-Definition Satin Radiance</small>
             </th>
             <th style="min-width:190px;text-align:center">
+              <div class="comp-prod-title">💍 Engagement / Roka</div>
+              <small style="color:rgba(245,237,214,0.6)">Dewy Glass-Skin Glam</small>
+            </th>
+            <th style="min-width:180px;text-align:center">
               <div class="comp-prod-title">✨ Side / Bridesmaids</div>
-              <small style="color:var(--text-muted)">Per Person Family Suite</small>
+              <small style="color:rgba(245,237,214,0.6)">Per Person Family Suite</small>
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td><strong>Base Application Technology</strong></td>
-            <td style="text-align:center"><span class="comp-highlight">TEMPTU Airbrush (Atomized Micron Base)</span></td>
+            <td style="text-align:center"><span class="comp-highlight">TEMPTU Airbrush (Micron Base)</span></td>
             <td style="text-align:center">Ultra-HD Micro-Buffed Cream & Liquid</td>
-            <td style="text-align:center">Dewy Strobe + HD Liquid Foundation</td>
+            <td style="text-align:center">Dewy Strobe + HD Liquid</td>
             <td style="text-align:center">Long-Wear Liquid HD Base</td>
           </tr>
           <tr>
-            <td><strong>International Luxury Vanity Kit</strong></td>
-            <td style="text-align:center">Dior, Charlotte Tilbury, Huda, NARS, Tom Ford</td>
-            <td style="text-align:center">MAC Pro, Estée Lauder, ABH, Laura Mercier</td>
-            <td style="text-align:center">Too Faced, Smashbox, Fenty Beauty, MAC</td>
-            <td style="text-align:center">MAC, Clinique, PAC Pro, Kryolan</td>
+            <td><strong>Luxury Product Kit</strong></td>
+            <td style="text-align:center">Dior, Charlotte Tilbury, Huda, NARS</td>
+            <td style="text-align:center">MAC Pro, Estée Lauder, ABH</td>
+            <td style="text-align:center">Too Faced, Smashbox, Fenty</td>
+            <td style="text-align:center">MAC, Clinique, PAC Pro</td>
           </tr>
           <tr>
             <td><strong>Waterproof & Sweat Resistance</strong></td>
@@ -964,54 +1277,47 @@
             <td style="text-align:center"><span class="comp-check">✔ 10-Hour Party Finish</span></td>
           </tr>
           <tr>
-            <td><strong>Hairstyling & Architectural Buns</strong></td>
-            <td style="text-align:center"><span class="comp-check">✔ Bespoke Couture Bun / Open Waves + Mathapatti Alignment</span></td>
-            <td style="text-align:center"><span class="comp-check">✔ Royal Braiding / Textured Bun + Hair Accessories</span></td>
-            <td style="text-align:center"><span class="comp-check">✔ Hollywood Waves or Mermaid Half-Updo</span></td>
-            <td style="text-align:center"><span class="comp-check">✔ Blowout, Soft Curls or Classic Chignon</span></td>
+            <td><strong>Hairstyling Depth</strong></td>
+            <td style="text-align:center"><span class="comp-check">✔ Couture Bun / Open Waves + Mathapatti</span></td>
+            <td style="text-align:center"><span class="comp-check">✔ Royal Braiding / Textured Bun</span></td>
+            <td style="text-align:center"><span class="comp-check">✔ Hollywood Waves or Half-Updo</span></td>
+            <td style="text-align:center"><span class="comp-check">✔ Blowout, Soft Curls or Bun</span></td>
           </tr>
           <tr>
-            <td><strong>Dupatta Pinning & Saree Draping</strong></td>
-            <td style="text-align:center"><span class="comp-check">✔ Dual Dupatta Pinning + Royal Can-Can / Lehenga Draping</span></td>
-            <td style="text-align:center"><span class="comp-check">✔ Single/Double Dupatta + Lehenga / Saree Setting</span></td>
-            <td style="text-align:center"><span class="comp-check">✔ Modern Concept Saree or Lehenga Draping</span></td>
-            <td style="text-align:center"><span class="comp-check">✔ Classic Saree / Dupatta Pinning</span></td>
+            <td><strong>Dupatta & Saree Draping</strong></td>
+            <td style="text-align:center"><span class="comp-check">✔ Dual Dupatta Pinning + Royal Can-Can</span></td>
+            <td style="text-align:center"><span class="comp-check">✔ Single/Double Dupatta Setting</span></td>
+            <td style="text-align:center"><span class="comp-check">✔ Concept Saree or Lehenga Draping</span></td>
+            <td style="text-align:center"><span class="comp-check">✔ Classic Saree / Dupatta Setting</span></td>
           </tr>
           <tr>
-            <td><strong>Pre-Session Skin Awakening Prep</strong></td>
-            <td style="text-align:center"><span class="comp-check">✔ Deluxe Collagen & Hyaluronic Dermal Prep</span></td>
-            <td style="text-align:center"><span class="comp-check">✔ Multi-step Hydrating Skin Awakening</span></td>
-            <td style="text-align:center"><span class="comp-check">✔ Instant Glow Primer & Hydration</span></td>
-            <td style="text-align:center"><span class="comp-check">✔ Cleanse, Tone & Matte-Prime</span></td>
-          </tr>
-          <tr>
-            <td><strong>Complimentary On-the-Go Touchup Kit</strong></td>
-            <td style="text-align:center"><span class="comp-highlight">✔ Full Deluxe Touch-up Kit + Lipstick Vial</span></td>
+            <td><strong>Complimentary Touchup Kit</strong></td>
+            <td style="text-align:center"><span class="comp-highlight">✔ Deluxe Touchup Kit + Lipstick Vial</span></td>
             <td style="text-align:center"><span class="comp-check">✔ Lipstick Decant + Blotting Sheets</span></td>
-            <td style="text-align:center"><span class="comp-check">✔ Lipstick Blot Touch-up Decant</span></td>
-            <td style="text-align:center"><span class="comp-cross">— Touch-up Kit Excluded</span></td>
+            <td style="text-align:center"><span class="comp-check">✔ Lipstick Blot Decant</span></td>
+            <td style="text-align:center"><span class="comp-cross">— Excluded</span></td>
           </tr>
           <tr>
             <td><strong>Standard Rate vs Special Offer</strong></td>
             <td style="text-align:center">
-              <div style="text-decoration:line-through;color:var(--text-muted);font-size:.85rem">₹45,000 Standard</div>
-              <div style="font-size:1.3rem;font-weight:700;color:var(--gold);margin:4px 0">₹31,500 <span style="font-size:.75rem;font-weight:500;color:#22c55e">(Save ₹13,500)</span></div>
+              <div style="text-decoration:line-through;color:rgba(245,237,214,0.5);font-size:.82rem">₹45,000 Standard</div>
+              <div style="font-size:1.25rem;font-weight:700;color:var(--gold);margin:2px 0">₹31,500 <span style="font-size:.72rem;color:var(--gold-l)">(Save ₹13,500)</span></div>
             </td>
             <td style="text-align:center">
-              <div style="text-decoration:line-through;color:var(--text-muted);font-size:.85rem">₹35,000 Standard</div>
-              <div style="font-size:1.3rem;font-weight:700;color:#e07a5f;margin:4px 0">₹24,500 <span style="font-size:.75rem;font-weight:500;color:#22c55e">(Save ₹10,500)</span></div>
+              <div style="text-decoration:line-through;color:rgba(245,237,214,0.5);font-size:.82rem">₹35,000 Standard</div>
+              <div style="font-size:1.25rem;font-weight:700;color:#e07a5f;margin:2px 0">₹24,500 <span style="font-size:.72rem;color:#e07a5f">(Save ₹10,500)</span></div>
             </td>
             <td style="text-align:center">
-              <div style="text-decoration:line-through;color:var(--text-muted);font-size:.85rem">₹18,000 Standard</div>
-              <div style="font-size:1.3rem;font-weight:700;color:var(--text);margin:4px 0">₹12,600 <span style="font-size:.75rem;font-weight:500;color:#22c55e">(Save ₹5,400)</span></div>
+              <div style="text-decoration:line-through;color:rgba(245,237,214,0.5);font-size:.82rem">₹18,000 Standard</div>
+              <div style="font-size:1.25rem;font-weight:700;color:var(--cream);margin:2px 0">₹12,600 <span style="font-size:.72rem;color:var(--gold)">(Save ₹5,400)</span></div>
             </td>
             <td style="text-align:center">
-              <div style="text-decoration:line-through;color:var(--text-muted);font-size:.85rem">₹6,500 Standard</div>
-              <div style="font-size:1.3rem;font-weight:700;color:var(--text);margin:4px 0">₹4,550 <span style="font-size:.75rem;font-weight:500;color:#22c55e">(Save ₹1,950)</span></div>
+              <div style="text-decoration:line-through;color:rgba(245,237,214,0.5);font-size:.82rem">₹6,500 Standard</div>
+              <div style="font-size:1.25rem;font-weight:700;color:var(--cream);margin:2px 0">₹4,550 <span style="font-size:.72rem;color:var(--gold)">(Save ₹1,950)</span></div>
             </td>
           </tr>
           <tr>
-            <td><strong>Secure Your Date</strong></td>
+            <td><strong>Reserve Auspicious Date</strong></td>
             <td style="text-align:center">
               <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita!%20I%20want%20to%20reserve%20the%20Master%20Airbrush%20Suite%20(Special%20Offer%20₹31,500)." target="_blank" class="comp-cta-btn" style="background:var(--gold);color:#000;font-weight:700">Reserve Airbrush</a>
             </td>
@@ -1028,12 +1334,414 @@
         </tbody>
       </table>
     </div>
+  </div>
+</div>
 
-    <div style="margin-top:28px;background:rgba(212,175,55,.06);border:1px dashed rgba(212,175,55,.25);border-radius:12px;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px" class="rev d2">
-      <div style="font-size:.88rem;color:var(--text-muted)">
-        💡 <strong style="color:var(--gold)">Need Outstation or Group Booking?</strong> Family bundles (3+ persons) receive an extra complimentary hairstyle upgrade. Travel & stay are quoted transparently at actuals.
+<!-- ═══ CURATED WEDDING CELEBRATION PACKAGES (MULTI-SERVICE BUNDLES) ═══ -->
+<section id="packages" style="background:var(--dark);position:relative">
+  <div class="sw">
+    <div class="rev">
+      <p class="sl">{{ t.packages_sl|default:'Multi-Event Celebrations' }}</p>
+      <h2 class="sh">{{ t.packages_sh|default:'Curated Wedding Packages' }}</h2>
+      <div class="gdiv"></div>
+      <p class="ss">{{ t.packages_ss|default:'True multi-service combinations bundling your main wedding, reception, pre-wedding rituals, and family entourage — with transparent standalone value versus package savings.' }}</p>
+    </div>
+
+    <div class="pkg-grid-bundles">
+      <!-- BUNDLE 1: The Grand Royal Vivah Celebration (Featuring Telegram Shoot: Deep Maroon Velvet Bride) -->
+      <div class="pkg-bundle-card featured rev d1">
+        <div class="pkg-bundle-media" onclick="openLookbook('maroon_bride')">
+          <img src="{% static 'core/images/curated/maroon_20251109_191223_p30.jpg' %}" alt="Grand Royal Vivah Celebration - Palace Deep Maroon Velvet Bride">
+          <div class="pkg-bundle-overlay"></div>
+          <span class="pkg-bundle-badge">👑 Flagship 3-Event Suite</span>
+          <div class="pkg-bundle-tag-bottom">
+            <span>✨ Authentic Velvet Bride (Telegram Shoot)</span>
+            <span style="color:var(--gold)">View 2 HD Angles ↗</span>
+          </div>
+        </div>
+        <div class="pkg-bundle-body">
+          <h3 class="pkg-bundle-title">The Grand Royal Vivah Celebration</h3>
+          <p class="pkg-bundle-tagline">Complete 3-Event Bridal Journey · Sacred Pheras, Evening Reception & Pre-Wedding Glam + 2 Free Side Makeups</p>
+
+          <div class="pkg-bundled-box">
+            <div class="pkg-bundled-heading"><span>✨</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
+            <ul class="pkg-bundled-list">
+              <li class="pkg-bundled-item"><span class="icon">👑</span> <strong>Event 1 (Main Wedding Day):</strong> Imperial Royal HD/Airbrush Bridal Makeover & Sacred Pheras Artistry</li>
+              <li class="pkg-bundled-item"><span class="icon">🍸</span> <strong>Event 2 (Evening Party):</strong> High-Glam Reception or Cocktail Evening Makeover (Luminous Glass Skin)</li>
+              <li class="pkg-bundled-item"><span class="icon">💍</span> <strong>Event 3 (Ritual):</strong> Engagement Ceremony or Sangeet Night Glamour</li>
+              <li class="pkg-bundled-item"><span class="icon">🎁</span> <strong>VIP Entourage Bonus:</strong> 2 Free Side Makeups for Mother & Sister of Bride (Value ₹13,000)</li>
+            </ul>
+          </div>
+
+          <div class="pkg-pricing-calc">
+            <div class="pkg-calc-row">
+              <span>Individual A-La-Carte Total Value:</span>
+              <del>₹85,000</del>
+            </div>
+            <div class="pkg-calc-row final">
+              <span>Bundled Package Investment:</span>
+              <span class="pkg-bundle-rate">₹58,000</span>
+            </div>
+            <div class="pkg-savings-pill">✦ Total Savings: Save ₹27,000 (32% Off Standalone Rates) ✦</div>
+          </div>
+
+          <ul class="pkg-bundle-inclusions">
+            <li>International Master Kits: Dior, Charlotte Tilbury, Huda Beauty, TEMPTU Airbrush</li>
+            <li>Haute Couture Hair Architecture & Fresh Floral Gajra Art for all 3 events</li>
+            <li>Double Bridal Dupatta Pinning & Saree / Lehenga Precision Pleating</li>
+            <li>Deluxe Touchup Kit with Custom Lip Decants & Oil-Blotting Sheets</li>
+            <li>Cry-Proof & Sweat-Proof Formulation (18+ Hours Longevity)</li>
+          </ul>
+
+          <div class="pkg-bundle-actions">
+            <button onclick="openLookbook('maroon_bride')" class="pkg-bundle-btn sec">
+              📸 Explore Look
+            </button>
+            <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20The%20Grand%20Royal%20Vivah%20Celebration%20Package%20(3-Event%20Suite%20%2B%202%20Free%20Sides%20for%20₹58,000)." target="_blank" class="pkg-bundle-btn primary">
+              💬 Reserve Grand Vivah
+            </a>
+          </div>
+        </div>
       </div>
-      <a href="#booking" class="btn-s" style="padding:8px 18px;font-size:.82rem">Check Date Availability →</a>
+
+      <!-- BUNDLE 2: Sacred Vivah & Reception Duo -->
+      <div class="pkg-bundle-card featured rev d2">
+        <div class="pkg-bundle-media" onclick="openLookbook('bridal')">
+          <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah and Reception Duo">
+          <div class="pkg-bundle-overlay"></div>
+          <span class="pkg-bundle-badge" style="background:linear-gradient(135deg,#e07a5f,#d4af37)">⭐ Most Loved Bridal Duo</span>
+          <div class="pkg-bundle-tag-bottom">
+            <span>✨ Pheras Day + Evening Reception</span>
+            <span style="color:var(--gold)">View Lookbook ↗</span>
+          </div>
+        </div>
+        <div class="pkg-bundle-body">
+          <h3 class="pkg-bundle-title">Sacred Vivah & Reception Duo</h3>
+          <p class="pkg-bundle-tagline">The Essential Two Major Milestones · Pheras Day & High-Definition Evening Reception Glam</p>
+
+          <div class="pkg-bundled-box">
+            <div class="pkg-bundled-heading"><span>✨</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
+            <ul class="pkg-bundled-list">
+              <li class="pkg-bundled-item"><span class="icon">👰</span> <strong>Event 1 (Sacred Pheras):</strong> Imperial Royal HD / Airbrush Bridal Couture & Symmetrical Mathapatti Setting</li>
+              <li class="pkg-bundled-item"><span class="icon">✨</span> <strong>Event 2 (Reception Party):</strong> Reception & Cocktail Evening Glam (Luminous Glass Skin & Shimmer Eyes)</li>
+              <li class="pkg-bundled-item"><span class="icon">💇</span> <strong>2 Couture Hairstyles:</strong> Royal Traditional Floral Updo + Hollywood Glam Waves</li>
+              <li class="pkg-bundled-item"><span class="icon">🥻</span> <strong>Complete Draping:</strong> Double Dupatta Balancing + Evening Gown/Saree Pleating</li>
+            </ul>
+          </div>
+
+          <div class="pkg-pricing-calc">
+            <div class="pkg-calc-row">
+              <span>Individual A-La-Carte Total Value:</span>
+              <del>₹60,000</del>
+            </div>
+            <div class="pkg-calc-row final">
+              <span>Bundled Package Investment:</span>
+              <span class="pkg-bundle-rate">₹45,000</span>
+            </div>
+            <div class="pkg-savings-pill">✦ Total Savings: Save ₹15,000 (25% Off Standalone Rates) ✦</div>
+          </div>
+
+          <ul class="pkg-bundle-inclusions">
+            <li>MAC Pro, Estée Lauder, Anastasia Beverly Hills & Dior Kits</li>
+            <li>Cry-proof & humidity-resistant base engineered for stage lighting</li>
+            <li>Premium 3D Mink Lashes & Mathapatti / Nath alignment</li>
+            <li>Complimentary Touchup Kit with Custom Lip Vial</li>
+          </ul>
+
+          <div class="pkg-bundle-actions">
+            <button onclick="openLookbook('cocktail')" class="pkg-bundle-btn sec">
+              📸 Explore Looks
+            </button>
+            <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Sacred%20Vivah%20%26%20Reception%20Duo%20Package%20(₹45,000)." target="_blank" class="pkg-bundle-btn primary">
+              💬 Reserve Vivah Duo
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUNDLE 3: Pre-Wedding Rites & Festivities Trio -->
+      <div class="pkg-bundle-card rev d3">
+        <div class="pkg-bundle-media" onclick="openLookbook('engagement')">
+          <img src="{% static 'core/images/curated/ig_post_DSrKrDHiLNPGzQHnwZkcRe3YUoC5fCc24nWZjQ0.jpg' %}" alt="Pre-Wedding Rites and Festivities Trio">
+          <div class="pkg-bundle-overlay"></div>
+          <span class="pkg-bundle-badge" style="background:linear-gradient(135deg,#c084fc,#7e22ce);color:#fff">🌸 Pre-Wedding Trio</span>
+          <div class="pkg-bundle-tag-bottom">
+            <span>💍 Ring Ceremony + Sangeet + Gel Nails</span>
+            <span style="color:var(--gold)">View Lookbook ↗</span>
+          </div>
+        </div>
+        <div class="pkg-bundle-body">
+          <h3 class="pkg-bundle-title">Pre-Wedding Rites & Festivities Trio</h3>
+          <p class="pkg-bundle-tagline">Youthful, Radiant & Long-Wear Coverage Across Ring Ceremony, Sangeet & Bridal Nails</p>
+
+          <div class="pkg-bundled-box">
+            <div class="pkg-bundled-heading"><span>✨</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
+            <ul class="pkg-bundled-list">
+              <li class="pkg-bundled-item"><span class="icon">💍</span> <strong>Event 1 (Ring Ceremony):</strong> Engagement / Roka Ceremonial Glow (Dewy Glass Skin)</li>
+              <li class="pkg-bundled-item"><span class="icon">💃</span> <strong>Event 2 (Music Night):</strong> Sangeet / Mehendi High-Energy Glam (Dance-Resistant Base)</li>
+              <li class="pkg-bundled-item"><span class="icon">💅</span> <strong>Artisanal Nail Couture:</strong> Full Set Gel/Acrylic Extensions with Swarovski Crystal Embellishments</li>
+              <li class="pkg-bundled-item"><span class="icon">🥻</span> <strong>Styling & Draping:</strong> 3 Thermal Hairstyles & Outfit Draping for All 3 Functions</li>
+            </ul>
+          </div>
+
+          <div class="pkg-pricing-calc">
+            <div class="pkg-calc-row">
+              <span>Individual A-La-Carte Total Value:</span>
+              <del>₹47,500</del>
+            </div>
+            <div class="pkg-calc-row final">
+              <span>Bundled Package Investment:</span>
+              <span class="pkg-bundle-rate">₹34,000</span>
+            </div>
+            <div class="pkg-savings-pill">✦ Total Savings: Save ₹13,500 (~28% Off Standalone Rates) ✦</div>
+          </div>
+
+          <ul class="pkg-bundle-inclusions">
+            <li>Too Faced, Laura Mercier, Fenty Beauty & NARS Formulas</li>
+            <li>3 Distinct Hairstyles: Textured Waves, Floral Braids & Half-Updo</li>
+            <li>Long-Wear Chip-Resistant Swarovski Gel Nails (3–4 weeks durability)</li>
+            <li>Gown, Sharara & Pastel Lehenga Draping Included</li>
+          </ul>
+
+          <div class="pkg-bundle-actions">
+            <button onclick="openLookbook('sangeet')" class="pkg-bundle-btn sec">
+              📸 Explore Looks
+            </button>
+            <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Pre-Wedding%20Rites%20%26%20Festivities%20Trio%20(₹34,000)." target="_blank" class="pkg-bundle-btn primary">
+              💬 Reserve Pre-Wedding Trio
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUNDLE 4: Royal Family & Bridesmaids Ensemble -->
+      <div class="pkg-bundle-card rev d4">
+        <div class="pkg-bundle-media" onclick="openLookbook('bridesmaids')">
+          <img src="{% static 'core/images/curated/ig_post_DVTThv0CI_psJjhtWi0TP5npf_Crqxgeq7JBTE0.jpg' %}" alt="Royal Family & Bridesmaids Ensemble">
+          <div class="pkg-bundle-overlay"></div>
+          <span class="pkg-bundle-badge" style="background:linear-gradient(135deg,#c2607a,#7b1c2e);color:#fff">👭 Entourage Ensemble</span>
+          <div class="pkg-bundle-tag-bottom">
+            <span>✨ Mother, Sisters & Bridesmaids (4 Guests)</span>
+            <span style="color:var(--gold)">View Lookbook ↗</span>
+          </div>
+        </div>
+        <div class="pkg-bundle-body">
+          <h3 class="pkg-bundle-title">Royal Family & Bridesmaids Ensemble</h3>
+          <p class="pkg-bundle-tagline">Coordinated Bridal Entourage · Mothers, Sisters & Bridesmaids (Buy 3, Get 4th Person FREE!)</p>
+
+          <div class="pkg-bundled-box">
+            <div class="pkg-bundled-heading"><span>✨</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
+            <ul class="pkg-bundled-list">
+              <li class="pkg-bundled-item"><span class="icon">👭</span> <strong>4 Complete HD Makeovers:</strong> Camera-Ready Long-Wear Base Tailored to Each Face Shape</li>
+              <li class="pkg-bundled-item"><span class="icon">💇</span> <strong>4 Customized Hairstyles:</strong> Textured Waves, Sleek Chignons or Festive Floral Buns</li>
+              <li class="pkg-bundled-item"><span class="icon">🥻</span> <strong>4 Draping Sessions:</strong> Saree Pleating, Dupatta Pinning & Jewellery Alignment for All 4 Guests</li>
+              <li class="pkg-bundled-item"><span class="icon">⚡</span> <strong>Synchronized Execution:</strong> Dedicated Studio Team Ensuring Zero Delays on Wedding Morning</li>
+            </ul>
+          </div>
+
+          <div class="pkg-pricing-calc">
+            <div class="pkg-calc-row">
+              <span>Individual Rate (4 Persons @ ₹6,500):</span>
+              <del>₹26,000</del>
+            </div>
+            <div class="pkg-calc-row final">
+              <span>Bundled Package Investment:</span>
+              <span class="pkg-bundle-rate">₹19,500 <small style="font-size:0.75rem;color:rgba(245,237,214,0.6)">(₹4,875 / Head)</small></span>
+            </div>
+            <div class="pkg-savings-pill">✦ Total Savings: Save ₹6,500 (Buy 3, Get 4th Person Free!) ✦</div>
+          </div>
+
+          <ul class="pkg-bundle-inclusions">
+            <li>MAC, Clinique, PAC Pro & Kryolan Professional High-Definition Kits</li>
+            <li>Seamless Aesthetic Coordination Harmonized with the Bride's Theme</li>
+            <li>Lash placement, subtle sculpting & luminescent highlights</li>
+            <li>Iron-free saree box pleating & dupatta security</li>
+          </ul>
+
+          <div class="pkg-bundle-actions">
+            <button onclick="openLookbook('bridesmaids')" class="pkg-bundle-btn sec">
+              📸 Explore Looks
+            </button>
+            <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Royal%20Family%20%26%20Bridesmaids%20Ensemble%20(4%20Persons%20for%20₹19,500)." target="_blank" class="pkg-bundle-btn primary">
+              💬 Reserve Family Ensemble
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Bar for Packages Section -->
+    <div class="pkg-docked-bar rev d2">
+      <button class="pkg-docked-btn primary" onclick="openPackageCompareModal()">
+        ⚖️ Compare Packages Modal
+      </button>
+      <a href="#bundle-builder" class="pkg-docked-btn">
+        ✨ Build Your Look
+      </a>
+      <a href="#travel-widget" class="pkg-docked-btn">
+        🚗 Travel & Distance Calculator
+      </a>
+      <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita!%20I%20would%20like%20to%20discuss%20a%20tailored%20bridal%20package." target="_blank" class="pkg-docked-btn">
+        💬 Direct WhatsApp
+      </a>
+    </div>
+
+    <!-- ═══ BUNDLE LOOK BUILDER: A LA CARTE CUSTOM PACKAGE WITH RUNNING TOTAL ═══ -->
+    <div id="bundle-builder" class="bundle-builder-card rev d3">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div>
+          <span class="gal-slide-badge">👑 Custom Curation</span>
+          <h3 style="font-family:var(--font-h);font-size:1.6rem;color:#fff">Build Your Bespoke Look & Package</h3>
+          <p style="font-size:0.82rem;color:rgba(245,237,214,0.7)">Select multiple services to assemble your dream trousseau with live transparent pricing.</p>
+        </div>
+        <div style="text-align:right">
+          <span style="font-size:0.75rem;color:rgba(245,237,214,0.6);text-transform:uppercase;letter-spacing:1px">Bundle Total</span>
+          <div id="bundleTotalDisplay" style="font-size:1.8rem;font-weight:800;color:var(--gold)">₹0</div>
+        </div>
+      </div>
+
+      <div class="bundle-grid">
+        <div class="bundle-item" data-price="24500" data-name="Imperial Royal HD Bridal" onclick="toggleBundleItem(this)">
+          <div class="bundle-item-header">
+            <span class="bundle-item-title">👰 Imperial Royal HD Bridal</span>
+            <input type="checkbox" style="accent-color:var(--gold)">
+          </div>
+          <p style="font-size:0.72rem;color:rgba(245,237,214,0.6);margin-bottom:8px">18-hr HD base, couture hairdo & dupatta pinning</p>
+          <span class="bundle-item-price">₹24,500</span>
+        </div>
+
+        <div class="bundle-item" data-price="31500" data-name="Master Airbrush Bridal Suite" onclick="toggleBundleItem(this)">
+          <div class="bundle-item-header">
+            <span class="bundle-item-title">👑 Master Airbrush Suite</span>
+            <input type="checkbox" style="accent-color:var(--gold)">
+          </div>
+          <p style="font-size:0.72rem;color:rgba(245,237,214,0.6);margin-bottom:8px">24-hr cry-proof TEMPTU airbrush & deluxe touchup</p>
+          <span class="bundle-item-price">₹31,500</span>
+        </div>
+
+        <div class="bundle-item" data-price="12600" data-name="Engagement & Roka Glam" onclick="toggleBundleItem(this)">
+          <div class="bundle-item-header">
+            <span class="bundle-item-title">💍 Engagement & Roka</span>
+            <input type="checkbox" style="accent-color:var(--gold)">
+          </div>
+          <p style="font-size:0.72rem;color:rgba(245,237,214,0.6);margin-bottom:8px">Luminous glass-skin glow & textured curls</p>
+          <span class="bundle-item-price">₹12,600</span>
+        </div>
+
+        <div class="bundle-item" data-price="15000" data-name="Reception Statement Glam" onclick="toggleBundleItem(this)">
+          <div class="bundle-item-header">
+            <span class="bundle-item-title">🌟 Reception Red Carpet</span>
+            <input type="checkbox" style="accent-color:var(--gold)">
+          </div>
+          <p style="font-size:0.72rem;color:rgba(245,237,214,0.6);margin-bottom:8px">Smokey eyes, Hollywood waves & concept drape</p>
+          <span class="bundle-item-price">₹15,000</span>
+        </div>
+
+        <div class="bundle-item" data-price="4550" data-name="Bridesmaid / Sister HD" onclick="toggleBundleItem(this)">
+          <div class="bundle-item-header">
+            <span class="bundle-item-title">👭 Bridesmaid / Sister (Per Person)</span>
+            <input type="checkbox" style="accent-color:var(--gold)">
+          </div>
+          <p style="font-size:0.72rem;color:rgba(245,237,214,0.6);margin-bottom:8px">Camera-ready HD party glam & dupatta setting</p>
+          <span class="bundle-item-price">₹4,550</span>
+        </div>
+
+        <div class="bundle-item" data-price="3500" data-name="Bridal Nail Extensions & Swarovski Art" onclick="toggleBundleItem(this)">
+          <div class="bundle-item-header">
+            <span class="bundle-item-title">💅 Bridal Nail Extensions & Art</span>
+            <input type="checkbox" style="accent-color:var(--gold)">
+          </div>
+          <p style="font-size:0.72rem;color:rgba(245,237,214,0.6);margin-bottom:8px">Gel extension, Swarovski stones & ombré art</p>
+          <span class="bundle-item-price">₹3,500</span>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid rgba(212,175,55,0.15);padding-top:16px">
+        <div id="bundleSummaryText" style="font-size:0.8rem;color:rgba(245,237,214,0.7)">
+          Select services above to configure your custom package.
+        </div>
+        <button class="btn-p" onclick="sendBundleToWhatsApp()" style="padding:10px 22px">
+          💬 Reserve Custom Bundle on WhatsApp →
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ TRAVEL & CITY DISTANCE SURCHARGE CALCULATOR WIDGET ═══ -->
+    <div id="travel-widget" class="travel-widget-box rev d3">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span style="font-size:1.4rem">🚗</span>
+        <div>
+          <h3 style="font-family:var(--font-h);font-size:1.5rem;color:#fff">Pan-India Travel & Outstation Distance Estimator</h3>
+          <p style="font-size:0.8rem;color:rgba(245,237,214,0.7)">Select your wedding destination city to check distance from Jabalpur studio and approximate travel fee.</p>
+        </div>
+      </div>
+
+      <div class="travel-widget-inputs">
+        <div>
+          <label style="font-size:0.75rem;letter-spacing:1px;color:var(--gold);text-transform:uppercase;font-weight:700">Select Wedding City / Destination</label>
+          <select id="travelCitySelect" class="calc-select" onchange="calculateTravelEstimate()" style="margin-top:6px;width:100%">
+            <option value="Jabalpur" selected>Jabalpur (Studio Flagship · 0 Km)</option>
+            <option value="Katni">Katni (~95 Km)</option>
+            <option value="Damoh">Damoh (~105 Km)</option>
+            <option value="Narsinghpur">Narsinghpur (~85 Km)</option>
+            <option value="Mandla">Mandla (~95 Km)</option>
+            <option value="Seoni">Seoni (~140 Km)</option>
+            <option value="Sagar">Sagar (~165 Km)</option>
+            <option value="Satna">Satna (~180 Km)</option>
+            <option value="Rewa">Rewa (~220 Km)</option>
+            <option value="Bhopal">Bhopal (~295 Km)</option>
+            <option value="Indore">Indore (~485 Km)</option>
+            <option value="Ujjain">Ujjain (~450 Km)</option>
+            <option value="Gwalior">Gwalior (~460 Km)</option>
+            <option value="Nagpur">Nagpur (~275 Km)</option>
+            <option value="Raipur">Raipur (~350 Km)</option>
+            <option value="Varanasi">Varanasi (~450 Km)</option>
+            <option value="Prayagraj">Prayagraj (~360 Km)</option>
+            <option value="Lucknow">Lucknow (~520 Km)</option>
+            <option value="Delhi">Delhi / NCR (~820 Km)</option>
+            <option value="Jaipur">Jaipur (~690 Km)</option>
+            <option value="Udaipur">Udaipur (~780 Km)</option>
+            <option value="Mumbai">Mumbai (~980 Km)</option>
+            <option value="Pune">Pune (~920 Km)</option>
+            <option value="Kolkata">Kolkata (~1050 Km)</option>
+            <option value="Bengaluru">Bengaluru (~1320 Km)</option>
+            <option value="Other">Other Unlisted City / Destination...</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="font-size:0.75rem;letter-spacing:1px;color:var(--gold);text-transform:uppercase;font-weight:700">Days of Service</label>
+          <select id="travelDaysSelect" class="calc-select" onchange="calculateTravelEstimate()" style="margin-top:6px;width:100%">
+            <option value="1" selected>1 Day</option>
+            <option value="2">2 Days</option>
+            <option value="3">3 Days (Multi-Function)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Live Travel Estimate Output -->
+      <div id="travelResultPanel" class="travel-result-panel">
+        <span id="travelZoneBadge" class="travel-badge-pill travel-badge-local">📍 Studio Local Territory</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+          <div>
+            <div style="font-size:0.85rem;color:var(--cream);font-weight:600" id="travelDistanceText">Distance from Jabalpur: 0 Km</div>
+            <div style="font-size:0.75rem;color:rgba(245,237,214,0.65);margin-top:2px" id="travelPolicyNotice">Within Jabalpur territory — Zero Outstation Surcharge.</div>
+          </div>
+          <div style="text-align:right">
+            <span style="font-size:0.7rem;color:rgba(245,237,214,0.6);text-transform:uppercase">Approx Travel Fee</span>
+            <div id="travelFeeDisplay" style="font-size:1.5rem;font-weight:800;color:var(--gold)">₹0 (Free Local)</div>
+          </div>
+        </div>
+        <p style="font-size:0.72rem;color:rgba(245,237,214,0.55);margin-top:10px;border-top:1px dashed rgba(212,175,55,0.2);padding-top:8px" id="travelTermsNotice">
+          *Note: For outstation destinations outside Jabalpur, return travel tickets (train/flight) and hotel stay with meals for artist + 1 assistant are provided by the client.
+        </p>
+      </div>
+
+      <div style="text-align:right;margin-top:14px">
+        <button class="btn-wa" onclick="sendTravelQuoteWhatsApp()" style="padding:9px 18px;font-size:0.78rem">
+          💬 Connect on WhatsApp for Exact Travel Quotation →
+        </button>
+      </div>
     </div>
   </div>
 </section>
@@ -1120,7 +1828,7 @@
           </label>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="calc-days-sides-grid">
           <div class="calc-row">
             <label class="calc-label" for="calc-days">Ceremony Days</label>
             <select class="calc-select" id="calc-days" onchange="updateCalc()">
@@ -1431,72 +2139,7 @@
   </div>
 </section>
 
-<!-- ═══ GALLERY ═══ -->
-<section id="gallery" style="background:var(--dark);position:relative;overflow:hidden">
-  <div class="editorial-watermark" style="top:20%">PORTFOLIO COUTURE</div>
-  <div class="sw">
-    <div class="rev">
-      <p class="sl">{{ t.gallery_sl|default:'Portfolio & Accolades' }}</p>
-      <h2 class="sh">{{ t.gallery_sh|default:'Our Gallery' }}</h2>
-      <div class="gdiv"></div>
-      <p class="ss">{{ t.gallery_ss|default:'A testament to grace, royalty, and radiance. Real brides transformed with bespoke craftsmanship.' }}</p>
-    </div>
-    <div class="gal-filters" style="margin-top:28px">
-      <button class="gf-btn active" onclick="filterGal('all')">All</button>
-      <button class="gf-btn" onclick="filterGal('bridal')">Bridal</button>
-      <button class="gf-btn" onclick="filterGal('engagement')">Engagement</button>
-      <button class="gf-btn" onclick="filterGal('hair')">Hair</button>
-      <button class="gf-btn" onclick="filterGal('nails')">Nails</button>
-      <button class="gf-btn" onclick="filterGal('party')">Party</button>
-    </div>
-    <div class="gal-grid">
-      {% if gallery %}
-        {% for img in gallery %}
-        <div class="gal-item rev d{{ forloop.counter }}" data-cat="{{ img.category }}" onclick="openPeekGallery({{ forloop.counter0 }})">
-          <img src="{{ img.image.url }}" alt="{{ img.caption }}">
-          <div class="gal-ov">
-            <span>🔍 View Lookbook</span>
-            <small style="font-size:.65rem;color:var(--gold);display:block;margin-top:4px">{{ img.caption|truncatechars:42 }}</small>
-          </div>
-        </div>
-        {% endfor %}
-      {% else %}
-        <!-- Curated Real Looks from @anshitamakeover21 -->
-        <div class="gal-item rev d1" data-cat="bridal" onclick="openPeekGallery(0)">
-          <img src="{% static 'core/images/royal_maroon_bride.jpg' %}" alt="Regal Deep Maroon Velvet Bridal Couture">
-          <div class="gal-ov">🔍 View Lookbook</div>
-        </div>
-        <div class="gal-item rev d2" data-cat="bridal" onclick="openPeekGallery(1)">
-          <img src="{% static 'core/images/curated/bengali_bride_regal_portrait.jpg' %}" alt="Royal Bengali Bride Regal Mukut Portrait">
-          <div class="gal-ov">🔍 View Lookbook</div>
-        </div>
-        <div class="gal-item rev d3" data-cat="bridal" onclick="openPeekGallery(2)">
-          <img src="{% static 'core/images/reception_ivory_bride.jpg' %}" alt="Christian & Reception Pure Ivory Haute Bride">
-          <div class="gal-ov">🔍 View Lookbook</div>
-        </div>
-        <div class="gal-item rev d4" data-cat="engagement" onclick="openPeekGallery(3)">
-          <img src="{% static 'core/images/engagement_lilac_glam.jpg' %}" alt="Modern Lilac Glass-Skin Engagement Look">
-          <div class="gal-ov">🔍 View Lookbook</div>
-        </div>
-        <div class="gal-item rev d5" data-cat="bridal" onclick="openPeekGallery(4)">
-          <img src="{% static 'core/images/bengali_bride_chandan.jpg' %}" alt="Traditional Bengali Bridal Adornment">
-          <div class="gal-ov">🔍 View Lookbook</div>
-        </div>
-        <div class="gal-item rev d6" data-cat="hair" onclick="openPeekGallery(6)">
-          <img src="{% static 'core/images/bridal_makeup_inaction.jpg' %}" alt="Anshita Curating Bridal Royalty in Studio">
-          <div class="gal-ov">🔍 View Lookbook</div>
-        </div>
-        <div class="gal-item rev d7" data-cat="party" onclick="openPeekGallery(7)">
-          <img src="{% static 'core/images/anshita_front.jpg' %}" alt="Haute Couture Bridal Artistry">
-          <div class="gal-ov">🔍 View Lookbook</div>
-        </div>
-      {% endif %}
-    </div>
-    <div style="text-align:center;margin-top:28px" class="rev">
-      <a href="https://www.instagram.com/anshitamakeover21/" target="_blank" class="btn-o">{{ t.btn_explore_ig|default:'📸 Explore Portfolio on Instagram' }}</a>
-    </div>
-  </div>
-</section>
+<!-- Gallery was relocated directly following Services as part of the editorial architecture overhaul -->
 
 <!-- ═══ ABOUT THE COUTURIER (INTERACTIVE EDITORIAL CARD) ═══ -->
 <section id="about" style="background:var(--black)">
@@ -1674,20 +2317,13 @@
 
   <p class="f-copy">{{ t.footer_copy|default:'© 2026 Anshita Makeover · India · All Rights Reserved' }}</p>
   
-  <!-- Designed by The Sinha Family Group Luxury Credit & Insignia -->
-  <div class="f-designed-by" style="margin:22px 0 16px;display:flex;align-items:center;justify-content:center;gap:12px">
-    <a href="/sinha-logos/" title="View The Sinha Family Group Luxury Logo Studio" style="display:inline-flex;align-items:center;gap:10px;text-decoration:none;padding:8px 18px;border-radius:24px;background:rgba(255,255,255,0.03);border:1px solid rgba(212,175,55,0.22);transition:all .3s ease">
-      <img src="{% static 'core/images/brand/sinha_family_crest.jpg' %}" alt="The Sinha Family Group" style="width:26px;height:26px;border-radius:50%;border:1px solid var(--gold);object-fit:cover">
-      <span style="font-family:var(--font-h);font-size:.76rem;letter-spacing:1.8px;color:var(--gold-l);text-transform:uppercase;font-weight:600">
-        Designed by <strong style="color:#FFF;font-weight:700">The Sinha Family Group</strong>
-      </span>
-      <span style="font-size:.65rem;color:var(--gold);opacity:.8">✦</span>
-    </a>
-  </div>
+  <!-- Concept 02 Vector Crest & Designed by The Sinha Family Group -->
+  {% include 'core/includes/sinha_c2_footer_crest.html' %}
+
 
   <div class="f-admin-link">
-    {% if user.is_authenticated %}
-    <button class="adm-login-btn" onclick="openAdmin()">⚙️ Admin Portal</button>
+    {% if user.is_authenticated and user.is_staff %}
+    <a href="/admin-portal/" class="adm-login-btn" style="text-decoration:none;display:inline-block;">⚙️ Executive Admin Portal</a>
     {% else %}
     <button class="adm-login-btn" onclick="openLoginModal()">🔐 Admin Portal</button>
     {% endif %}
@@ -1788,6 +2424,47 @@ async function saveBookingOffers(){
   }
 }
 
+/* ── Travel & Outstation Admin ── */
+async function saveTravelSettings(){
+  const active = document.getElementById('trv-active').checked;
+  const sameKm = document.getElementById('trv-same-km').value;
+  const nearLbl = document.getElementById('trv-near-lbl').value;
+  const nearMin = document.getElementById('trv-near-min').value;
+  const nearMax = document.getElementById('trv-near-max').value;
+  const farLbl = document.getElementById('trv-far-lbl').value;
+  const farMin = document.getElementById('trv-far-min').value;
+  const farMax = document.getElementById('trv-far-max').value;
+  const note = document.getElementById('trv-note').value;
+  const msgEl = document.getElementById('trv-status-msg');
+
+  const res = await fetch('/api/admin/price/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrf() },
+    body: JSON.stringify({
+      type: 'travel',
+      travel_widget_active: active,
+      travel_same_zone_km: sameKm,
+      travel_near_label: nearLbl,
+      travel_near_fee_min: nearMin,
+      travel_near_fee_max: nearMax,
+      travel_far_label: farLbl,
+      travel_far_fee_min: farMin,
+      travel_far_fee_max: farMax,
+      travel_custom_note: note
+    })
+  });
+  const data = await res.json();
+  if(data.ok){
+    if(msgEl){
+      msgEl.style.display = 'block';
+      msgEl.textContent = '✅ Travel fee settings updated! Refreshing...';
+    }
+    setTimeout(() => location.reload(), 1000);
+  } else {
+    alert(data.error || 'Failed to update travel settings.');
+  }
+}
+
 /* ── Price Admin ── */
 async function savePrice(service,val){
   await fetch('/api/admin/price/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrf()},body:JSON.stringify({service,price:val})});
@@ -1807,25 +2484,128 @@ async function saveEvtPrice(type,val){
   });
 }
 
-/* ── Event packages CRUD ── */
-async function createEvtPkg(){
-  const name=document.getElementById('ep-name').value.trim();
-  if(!name){alert('Please enter a package title!');return}
-  const data={name,package_type:document.getElementById('ep-type').value,
-    price:document.getElementById('ep-price').value||null,
-    price_label:document.getElementById('ep-price').value?'':'On Request',
-    features:document.getElementById('ep-feats').value,
-    description:document.getElementById('ep-desc').value,
-    is_featured:document.getElementById('ep-feat').checked,
-    is_active:document.getElementById('ep-active').checked};
-  const r=await fetch('/api/admin/event-package/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrf()},body:JSON.stringify(data)});
-  const d=await r.json();
-  if(d.ok){location.reload()}
+/* ── Partner Addons & Vendor Commission / ROI CRUD ── */
+function calcAddonROI(){
+  const vCost = parseFloat(document.getElementById('ep-vendor-cost')?.value) || 0;
+  const price = parseFloat(document.getElementById('ep-price')?.value) || 0;
+  const profitEl = document.getElementById('roi-profit');
+  const marginEl = document.getElementById('roi-margin');
+  const pctEl = document.getElementById('roi-pct');
+
+  if(price > 0 && vCost >= 0){
+    const profit = Math.max(0, price - vCost);
+    const margin = price > 0 ? ((profit / price) * 100).toFixed(1) : 0;
+    const roi = vCost > 0 ? ((profit / vCost) * 100).toFixed(1) : (profit > 0 ? 100 : 0);
+
+    if(profitEl) profitEl.textContent = `₹${Math.round(profit).toLocaleString('en-IN')}`;
+    if(marginEl) marginEl.textContent = `${margin}%`;
+    if(pctEl) pctEl.textContent = `${roi}%`;
+  } else {
+    if(profitEl) profitEl.textContent = '₹0';
+    if(marginEl) marginEl.textContent = '0%';
+    if(pctEl) pctEl.textContent = '0%';
+  }
 }
+
+function autoSuggestAddonTitle(){
+  const cat = document.getElementById('ep-cat')?.value;
+  const nameInp = document.getElementById('ep-name');
+  if(!nameInp || nameInp.value.trim() !== '') return;
+
+  const suggestions = {
+    'photography': 'Candid Photography & 4K Cinematic Reels',
+    'decor': 'Grand Floral Mandap & Royal Entrance Decor',
+    'catering': 'Royal Heritage Buffet (Per Plate Luxury Catering)',
+    'salon': 'Pre-Bridal Luxury Dermal & Hair Spa Package',
+    'dj': 'Sangeet DJ, Sound Setup & Live Anchor Experience',
+    'full_event': 'Complete Wedding Event Choreography & Production',
+    'custom': 'Bespoke VIP Partner Celebration Suite'
+  };
+  if(suggestions[cat]) nameInp.value = suggestions[cat];
+}
+
+async function createEvtPkg(){
+  const name=document.getElementById('ep-name')?.value.trim();
+  if(!name){alert('Please enter a package title!');return}
+  const cat=document.getElementById('ep-cat')?.value || 'custom';
+  const vCost=document.getElementById('ep-vendor-cost')?.value || '0';
+  const price=document.getElementById('ep-price')?.value || null;
+
+  const data={
+    name,
+    category: cat,
+    package_type: 'custom',
+    vendor_cost: vCost,
+    price: price,
+    price_label: price ? '' : 'On Request',
+    features: document.getElementById('ep-feats')?.value || '',
+    description: document.getElementById('ep-desc')?.value || '',
+    is_featured: document.getElementById('ep-feat')?.checked || false,
+    is_active: document.getElementById('ep-active')?.checked || false
+  };
+
+  const r=await fetch('/api/admin/event-package/',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','X-CSRFToken':getCsrf()},
+    body:JSON.stringify(data)
+  });
+  const d=await r.json();
+  if(d.ok){
+    alert(`✨ Partner Package Saved!\nStudio Profit: ₹${Math.round(d.commission).toLocaleString('en-IN')} (${d.margin_pct}% margin · ${d.roi_pct}% ROI)`);
+    location.reload();
+  } else {
+    alert(d.error || 'Failed to save package');
+  }
+}
+
 async function deleteEvtPkg(id){
-  if(!confirm('Are you sure you want to delete this event package?'))return;
-  await fetch('/api/admin/event-package/',{method:'DELETE',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrf()},body:JSON.stringify({id})});
+  if(!confirm('Are you sure you want to delete this partner package?')) return;
+  await fetch('/api/admin/event-package/',{
+    method:'DELETE',
+    headers:{'Content-Type':'application/json','X-CSRFToken':getCsrf()},
+    body:JSON.stringify({id})
+  });
   document.getElementById('ep-'+id)?.remove();
+}
+
+function quickAiBundlePrompt(text){
+  const inp = document.getElementById('ai-bundle-inp');
+  if(inp){
+    inp.value = text;
+    askAiBundleSuggester();
+  }
+}
+
+async function askAiBundleSuggester(){
+  const inp = document.getElementById('ai-bundle-inp');
+  const prompt = inp ? inp.value.trim() : '';
+  const out = document.getElementById('ai-bundle-response');
+  if(!prompt){
+    alert('Please enter a prompt or click a pill.');
+    return;
+  }
+  if(out){
+    out.style.display = 'block';
+    out.textContent = '⏳ AI Copilot analyzing vendor pricing, bundle discounts, and studio ROI...';
+  }
+
+  try {
+    const res = await fetch('/api/admin/ai-command/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCsrf()},
+      body: JSON.stringify({prompt: `Analyze and suggest bundle pricing with ROI: ${prompt}`})
+    });
+    const d = await res.json();
+    if(out){
+      if(d.ok){
+        out.textContent = d.message || JSON.stringify(d.action_executed, null, 2);
+      } else {
+        out.textContent = `Notice: ${d.error || 'AI processed with local recommendations.'}`;
+      }
+    }
+  } catch(e) {
+    if(out) out.textContent = 'Recommendation: Combine external vendor service with studio bridal makeup. For a 10% client saving, ensure client quote preserves minimum ₹15,000–₹25,000 studio margin.';
+  }
 }
 
 /* ── Artist Management CRUD ── */
@@ -1976,6 +2756,231 @@ async function deleteService(id){
     location.reload();
   } else {
     alert(data.error || 'Failed to delete service.');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STUDIO SERVICES JAVASCRIPT CONTROLLERS (Add, Edit, Delete, Features)
+   ═══════════════════════════════════════════════════════════ */
+function editStudioService(id, title, discipline, category, price, discount, bundleNote, desc, features, imgUrl, lgId){
+  document.getElementById('ssvc-id').value = id;
+  document.getElementById('ssvc-title').value = title;
+  document.getElementById('ssvc-discipline').value = discipline;
+  document.getElementById('ssvc-category').value = category;
+  document.getElementById('ssvc-price').value = price;
+  document.getElementById('ssvc-discount').value = discount || '';
+  document.getElementById('ssvc-bundle-note').value = bundleNote || '';
+  document.getElementById('ssvc-desc').value = desc;
+  document.getElementById('ssvc-features').value = features;
+  document.getElementById('ssvc-image-url').value = imgUrl || '';
+  document.getElementById('ssvc-look-group').value = lgId || '';
+
+  document.getElementById('ssvc-form-title').innerText = 'Edit Studio Service';
+  document.getElementById('ssvc-save-btn').innerText = 'Update Service';
+  document.getElementById('ssvc-cancel-btn').style.display = 'block';
+  document.getElementById('ssvc-title').focus();
+}
+
+function resetStudioServiceForm(){
+  document.getElementById('ssvc-id').value = '';
+  document.getElementById('ssvc-title').value = '';
+  document.getElementById('ssvc-discipline').value = '';
+  document.getElementById('ssvc-category').value = 'bridal';
+  document.getElementById('ssvc-price').value = '';
+  document.getElementById('ssvc-discount').value = '';
+  document.getElementById('ssvc-bundle-note').value = '';
+  document.getElementById('ssvc-desc').value = '';
+  document.getElementById('ssvc-features').value = '';
+  document.getElementById('ssvc-image-url').value = '';
+  document.getElementById('ssvc-image-file').value = '';
+  document.getElementById('ssvc-look-group').value = '';
+
+  document.getElementById('ssvc-form-title').innerText = 'Add / Edit Studio Service';
+  document.getElementById('ssvc-save-btn').innerText = 'Save Studio Service';
+  document.getElementById('ssvc-cancel-btn').style.display = 'none';
+}
+
+async function saveStudioService(){
+  const title = document.getElementById('ssvc-title').value.trim();
+  const price = document.getElementById('ssvc-price').value.trim();
+  const desc = document.getElementById('ssvc-desc').value.trim();
+  if(!title){ alert('Please enter a service title.'); return; }
+  if(!price){ alert('Please enter the actual standalone price.'); return; }
+  if(!desc){ alert('Please enter a 1-2 sentence luxury description.'); return; }
+
+  const fd = new FormData();
+  fd.append('csrfmiddlewaretoken', getCsrf());
+  fd.append('id', document.getElementById('ssvc-id').value);
+  fd.append('title', title);
+  fd.append('discipline', document.getElementById('ssvc-discipline').value.trim());
+  fd.append('category', document.getElementById('ssvc-category').value);
+  fd.append('price', price);
+  fd.append('discount_price', document.getElementById('ssvc-discount').value.trim());
+  fd.append('bundle_note', document.getElementById('ssvc-bundle-note').value.trim());
+  fd.append('description', desc);
+  fd.append('features', document.getElementById('ssvc-features').value.trim());
+  fd.append('image_url', document.getElementById('ssvc-image-url').value.trim());
+  fd.append('look_group_id', document.getElementById('ssvc-look-group').value);
+
+  const fileInput = document.getElementById('ssvc-image-file');
+  if(fileInput.files && fileInput.files[0]){
+    fd.append('image_file', fileInput.files[0]);
+  }
+
+  const btn = document.getElementById('ssvc-save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  try {
+    const res = await fetch('/api/admin/studio-service/', { method: 'POST', body: fd });
+    const data = await res.json();
+    if(data.ok){
+      alert('Studio service saved successfully!');
+      location.reload();
+    } else {
+      alert(data.error || 'Failed to save service.');
+    }
+  } catch(e){
+    alert('An error occurred while saving.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function deleteStudioService(id){
+  if(!confirm('Are you sure you want to delete this studio service?')) return;
+  const fd = new FormData();
+  fd.append('csrfmiddlewaretoken', getCsrf());
+  fd.append('action', 'delete');
+  fd.append('id', id);
+
+  const res = await fetch('/api/admin/studio-service/', { method: 'POST', body: fd });
+  const data = await res.json();
+  if(data.ok){
+    document.getElementById('studio-svc-' + id)?.remove();
+    document.getElementById('ssvc-item-' + id)?.remove();
+    alert('Service removed.');
+  } else {
+    alert(data.error || 'Failed to delete service.');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LOOK GROUPS & CLIENT FOLDERS JAVASCRIPT CONTROLLERS
+   ═══════════════════════════════════════════════════════════ */
+async function saveLookGroup(){
+  const clientName = document.getElementById('lg-client-name').value.trim();
+  const makeupType = document.getElementById('lg-makeup-type').value.trim();
+  if(!makeupType){ alert('Please enter the type of makeup (e.g. Traditional Bengali Mukut & Chandan).'); return; }
+
+  const fd = new FormData();
+  fd.append('csrfmiddlewaretoken', getCsrf());
+  fd.append('client_name', clientName);
+  fd.append('makeup_type', makeupType);
+  fd.append('name', clientName ? `${clientName} — ${makeupType}` : makeupType);
+  fd.append('category', document.getElementById('lg-category').value);
+
+  const coverFile = document.getElementById('lg-cover-file');
+  if(coverFile.files && coverFile.files[0]){
+    fd.append('cover_file', coverFile.files[0]);
+  }
+
+  const btn = document.getElementById('lg-save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Creating Folder...';
+
+  try {
+    const res = await fetch('/api/admin/lookgroup/', { method: 'POST', body: fd });
+    const data = await res.json();
+    if(data.ok){
+      alert(`Look Group Folder "${data.group.name}" created!`);
+      location.reload();
+    } else {
+      alert(data.error || 'Failed to create look group.');
+    }
+  } catch(e){
+    alert('An error occurred.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function deleteLookGroup(id){
+  if(!confirm('Are you sure you want to delete this client folder and its media?')) return;
+  const fd = new FormData();
+  fd.append('csrfmiddlewaretoken', getCsrf());
+  fd.append('action', 'delete');
+  fd.append('id', id);
+
+  const res = await fetch('/api/admin/lookgroup/', { method: 'POST', body: fd });
+  const data = await res.json();
+  if(data.ok){
+    document.getElementById('lg-item-' + id)?.remove();
+    alert('Folder deleted.');
+  } else {
+    alert(data.error || 'Failed to delete folder.');
+  }
+}
+
+function openAddMediaToGroup(groupId, groupName){
+  document.getElementById('lg-media-target-group').value = groupId;
+  document.getElementById('lg-media-title').innerText = `Add Media to: ${groupName}`;
+  document.getElementById('lg-media-sec').scrollIntoView({ behavior: 'smooth' });
+}
+
+function toggleLgMediaInputs(){
+  const t = document.getElementById('lg-media-type').value;
+  document.getElementById('lg-media-file-wrap').style.display = t === 'image' ? 'block' : 'none';
+  document.getElementById('lg-media-url-wrap').style.display = (t === 'instagram' || t === 'youtube') ? 'block' : 'none';
+  document.getElementById('lg-media-video-wrap').style.display = t === 'video_file' ? 'block' : 'none';
+}
+
+async function saveLookMediaItem(){
+  const groupId = document.getElementById('lg-media-target-group').value;
+  const mediaType = document.getElementById('lg-media-type').value;
+  const url = document.getElementById('lg-media-url').value.trim();
+  const fileInput = document.getElementById('lg-media-file');
+  const videoInput = document.getElementById('lg-media-videofile');
+  const caption = document.getElementById('lg-media-caption').value.trim();
+
+  if((mediaType === 'instagram' || mediaType === 'youtube') && !url){
+    alert('Please enter an Instagram or YouTube URL.');
+    return;
+  }
+  if(mediaType === 'image' && (!fileInput.files || !fileInput.files[0])){
+    alert('Please choose an image file.');
+    return;
+  }
+  if(mediaType === 'video_file' && (!videoInput.files || !videoInput.files[0])){
+    alert('Please choose an MP4 video file.');
+    return;
+  }
+
+  const fd = new FormData();
+  fd.append('csrfmiddlewaretoken', getCsrf());
+  fd.append('group_id', groupId);
+  fd.append('media_type', mediaType);
+  fd.append('external_url', url);
+  fd.append('caption', caption);
+
+  if(fileInput.files && fileInput.files[0]){
+    fd.append('image_file', fileInput.files[0]);
+  }
+  if(videoInput.files && videoInput.files[0]){
+    fd.append('video_file', videoInput.files[0]);
+  }
+
+  try {
+    const res = await fetch('/api/admin/lookgroup/media/', { method: 'POST', body: fd });
+    const data = await res.json();
+    if(data.ok){
+      alert('Media added to folder successfully! It is now active in the Lookbook & Gallery.');
+      location.reload();
+    } else {
+      alert(data.error || 'Failed to add media.');
+    }
+  } catch(e){
+    alert('An error occurred uploading media.');
   }
 }
 
@@ -2291,6 +3296,11 @@ async function saveAdminMedia(){
   btn.disabled = true;
   btn.textContent = 'Uploading & Processing...';
 
+  const groupSelect = document.getElementById('m-group-id')?.value || '';
+  const customGroup = document.getElementById('m-group-id-custom')?.value.trim() || '';
+  const groupId = groupSelect === 'custom' ? customGroup : groupSelect;
+  const isCover = document.getElementById('m-is-cover')?.checked !== false;
+
   const fd = new FormData();
   fd.append('csrfmiddlewaretoken', getCsrf());
   fd.append('media_type', type);
@@ -2300,6 +3310,8 @@ async function saveAdminMedia(){
   fd.append('caption', caption);
   fd.append('external_url', url);
   fd.append('is_featured', isFeat ? '1' : '0');
+  fd.append('look_group_id', groupId);
+  fd.append('is_group_cover', isCover ? '1' : '0');
 
   if(fileInput.files && fileInput.files[0]){
     fd.append('image_file', fileInput.files[0]);
@@ -2391,12 +3403,222 @@ async function executeAdminAiCommand(){
   }
 }
 
-// Initialize calculator on page load
+// ═══ 3-LAYER GALLERY SHOWCASE CAROUSEL ═══
+let currentGalSlide = 0;
+const totalGalSlides = 6;
+let galHeroTimer = null;
+
+function setGalHeroSlide(idx){
+  currentGalSlide = idx;
+  const slides = document.querySelectorAll('.gal-slide');
+  const dots = document.querySelectorAll('.gal-hero-dot');
+  slides.forEach((s, i) => {
+    if(i === idx) s.classList.add('active');
+    else s.classList.remove('active');
+  });
+  dots.forEach((d, i) => {
+    if(i === idx) d.classList.add('active');
+    else d.classList.remove('active');
+  });
+}
+
+function startGalHeroAutoRotate(){
+  if(galHeroTimer) clearInterval(galHeroTimer);
+  galHeroTimer = setInterval(() => {
+    currentGalSlide = (currentGalSlide + 1) % totalGalSlides;
+    setGalHeroSlide(currentGalSlide);
+  }, 3500);
+}
+
+// ═══ COMPARISON MODAL POPUP HANDLERS ═══
+function openServiceCompareModal(){
+  document.getElementById('serviceCompareModal')?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeServiceCompareModal(){
+  document.getElementById('serviceCompareModal')?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function openPackageCompareModal(){
+  document.getElementById('packageCompareModal')?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePackageCompareModal(){
+  document.getElementById('packageCompareModal')?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ═══ DUAL BRIDAL LOOK SWITCHER (CRIMSON VS. TELEGRAM MAROON VELVET) ═══
+function switchBridalPreview(look){
+  const imgEl = document.getElementById('bridal-main-thumb');
+  const badgeEl = document.getElementById('bridal-main-badge');
+  const hintEl = document.getElementById('bridal-main-hint');
+  const cardLeft = document.getElementById('bridal-svc-media');
+  const btnCrimson = document.getElementById('look-pill-crimson');
+  const btnMaroon = document.getElementById('look-pill-maroon');
+
+  if(look === 'maroon'){
+    if(imgEl) imgEl.src = '/static/core/images/curated/maroon_20251109_191223_p30.jpg';
+    if(badgeEl) badgeEl.textContent = '👑 Palace Velvet Bride (Telegram Shoot) · Click to Explore';
+    if(hintEl) hintEl.innerHTML = '<span>✦ Deep Wine Velvet Lehenga & Polki Nath</span><span style="color:var(--gold)">View 2 HD Angles ↗</span>';
+    if(cardLeft) cardLeft.onclick = () => openLookbook('maroon_bride');
+    btnCrimson?.classList.remove('active');
+    btnMaroon?.classList.add('active');
+  } else {
+    if(imgEl) imgEl.src = '/static/core/images/curated/royal_crimson_bride_angle3.jpg';
+    if(hintEl) hintEl.innerHTML = '<span>✦ Real Bride in Velvet Zardozi Lehenga</span><span style="color:var(--gold)">Explore Lookbook ↗</span>';
+    if(cardLeft) cardLeft.onclick = () => openLookbook('bridal');
+    btnMaroon?.classList.remove('active');
+    btnCrimson?.classList.add('active');
+  }
+}
+
+// ═══ BUNDLE LOOK BUILDER LOGIC ═══
+let selectedBundleItems = [];
+
+function toggleBundleItem(el){
+  const name = el.getAttribute('data-name');
+  const price = parseFloat(el.getAttribute('data-price')) || 0;
+  const checkbox = el.querySelector('input[type="checkbox"]');
+  
+  if(el.classList.contains('selected')){
+    el.classList.remove('selected');
+    if(checkbox) checkbox.checked = false;
+    selectedBundleItems = selectedBundleItems.filter(item => item.name !== name);
+  } else {
+    el.classList.add('selected');
+    if(checkbox) checkbox.checked = true;
+    selectedBundleItems.push({ name, price });
+  }
+  updateBundleDisplay();
+}
+
+function updateBundleDisplay(){
+  const totalDisplay = document.getElementById('bundleTotalDisplay');
+  const summaryEl = document.getElementById('bundleSummaryText');
+  const total = selectedBundleItems.reduce((sum, i) => sum + i.price, 0);
+  
+  if(totalDisplay){
+    totalDisplay.textContent = '₹' + total.toLocaleString('en-IN');
+  }
+  if(summaryEl){
+    if(selectedBundleItems.length === 0){
+      summaryEl.textContent = 'Select services above to configure your custom package.';
+    } else {
+      const names = selectedBundleItems.map(i => i.name).join(', ');
+      summaryEl.innerHTML = `<strong>Selected (${selectedBundleItems.length}):</strong> ${names}`;
+    }
+  }
+}
+
+function sendBundleToWhatsApp(){
+  if(selectedBundleItems.length === 0){
+    alert('Please select at least one service in the Bundle Builder.');
+    return;
+  }
+  const total = selectedBundleItems.reduce((sum, i) => sum + i.price, 0);
+  const itemsText = selectedBundleItems.map(i => `• ${i.name} (₹${i.price.toLocaleString('en-IN')})`).join('%0A');
+  const text = `Namaste Anshita Makeover! ✨%0AI would like to reserve a bespoke customized look package:%0A%0A${itemsText}%0A%0AEstimated Total: ₹${total.toLocaleString('en-IN')}%0APlease let me know the availability and procedure to book.`;
+  window.open(`https://wa.me/{{ whatsapp }}?text=${text}`, '_blank');
+}
+
+// ═══ CITY & TRAVEL DISTANCE ESTIMATOR LOGIC ═══
+let cityDistances = {};
+
+async function loadCityDistances(){
+  try {
+    const res = await fetch('/static/core/data/cities_jabalpur_distance.json');
+    if(res.ok){
+      cityDistances = await res.json();
+    }
+  } catch(e){
+    console.log('Using default distance table');
+  }
+}
+
+function calculateTravelEstimate(){
+  const citySelect = document.getElementById('travelCitySelect');
+  const daysSelect = document.getElementById('travelDaysSelect');
+  if(!citySelect || !daysSelect) return;
+
+  const city = citySelect.value;
+  const days = parseInt(daysSelect.value, 10) || 1;
+  const dist = cityDistances[city] !== undefined ? cityDistances[city] : (city === 'Jabalpur' ? 0 : 350);
+
+  const distTextEl = document.getElementById('travelDistanceText');
+  const feeDisplayEl = document.getElementById('travelFeeDisplay');
+  const badgeEl = document.getElementById('travelZoneBadge');
+  const noticeEl = document.getElementById('travelPolicyNotice');
+
+  const sameZoneLimit = {{ site.travel_same_zone_km|default:100 }};
+  const nearMin = {{ site.travel_near_fee_min|default:5000 }};
+  const nearMax = {{ site.travel_near_fee_max|default:8000 }};
+  const farMin = {{ site.travel_far_fee_min|default:18000 }};
+  const farMax = {{ site.travel_far_fee_max|default:25000 }};
+
+  if(distTextEl){
+    distTextEl.textContent = `Distance from Jabalpur: ~${dist} Km (${city})`;
+  }
+
+  if(dist <= sameZoneLimit){
+    // Local zone
+    if(badgeEl){
+      badgeEl.className = 'travel-badge-pill travel-badge-local';
+      badgeEl.textContent = '📍 Studio Flagship Territory (Local)';
+    }
+    if(feeDisplayEl){
+      feeDisplayEl.textContent = '₹0 (Zero Surcharge)';
+    }
+    if(noticeEl){
+      noticeEl.textContent = `Within Jabalpur ${sameZoneLimit}km radius — Standard package rates apply with zero outstation surcharge.`;
+    }
+  } else if(dist <= 300){
+    // Near Regional Zone
+    const estFee = nearMin * days;
+    if(badgeEl){
+      badgeEl.className = 'travel-badge-pill travel-badge-near';
+      badgeEl.textContent = '🚗 Regional MP Zone (~' + dist + ' Km)';
+    }
+    if(feeDisplayEl){
+      feeDisplayEl.textContent = `~₹${(nearMin*days).toLocaleString('en-IN')} – ₹${(nearMax*days).toLocaleString('en-IN')}`;
+    }
+    if(noticeEl){
+      noticeEl.textContent = `Regional MP venue visit for ${days} day(s). Local vehicle conveyance & driver allowance applicable.`;
+    }
+  } else {
+    // Far Pan-India Destination
+    if(badgeEl){
+      badgeEl.className = 'travel-badge-pill travel-badge-far';
+      badgeEl.textContent = '✈️ Pan-India Destination (~' + dist + ' Km)';
+    }
+    if(feeDisplayEl){
+      feeDisplayEl.textContent = `~₹${(farMin*days).toLocaleString('en-IN')} / Day Surcharge`;
+    }
+    if(noticeEl){
+      noticeEl.textContent = `Pan-India destination wedding for ${days} day(s). Requires return flights/AC train & hotel stay with meals for artist + 1 assistant.`;
+    }
+  }
+}
+
+function sendTravelQuoteWhatsApp(){
+  const city = document.getElementById('travelCitySelect')?.value || 'Jabalpur';
+  const days = document.getElementById('travelDaysSelect')?.value || '1';
+  const dist = cityDistances[city] !== undefined ? cityDistances[city] : 350;
+  const text = `Namaste Anshita Makeover! ✨%0AI would like to inquire about wedding makeup booking in *${city}* (Approx ${dist} Km from Jabalpur) for ${days} day(s).%0APlease provide available dates and exact conveyance / travel terms.`;
+  window.open(`https://wa.me/{{ whatsapp }}?text=${text}`, '_blank');
+}
+
+// Initialize calculator and showcase on page load
 document.addEventListener('DOMContentLoaded', () => {
   updateCalc();
+  startGalHeroAutoRotate();
+  loadCityDistances().then(() => calculateTravelEstimate());
 });
 if(document.readyState === 'complete' || document.readyState === 'interactive'){
   updateCalc();
+  startGalHeroAutoRotate();
+  loadCityDistances().then(() => calculateTravelEstimate());
 }
 </script>
 {% endblock %}
