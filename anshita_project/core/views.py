@@ -1454,21 +1454,7 @@ def admin_service_manage(request):
     return JsonResponse({'packages': pkgs})
 
 
-# ── API: Get current coupon (for frontend) ────────────────────
-def get_coupon_api(request):
-    site = get_site_settings()
-    coupon = get_active_coupon(site)
-    exit_coupon = {
-        'code': site.exit_coupon_code,
-        'discount': site.exit_coupon_discount_percent,
-        'label': site.exit_coupon_label,
-        'active': site.exit_coupon_active,
-    } if site.exit_coupon_active else None
-    return JsonResponse({
-        'ok': True,
-        'coupon': coupon,
-        'exit_coupon': exit_coupon
-    })
+
 
 
 # ── API: Customer Review Submission (Public) ──────────────────

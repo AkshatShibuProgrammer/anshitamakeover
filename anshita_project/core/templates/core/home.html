@@ -1046,7 +1046,7 @@
 
     <div class="gal-grid rev d2">
       {% for grp in look_groups %}
-      <div class="gal-item" data-cat="{{ grp.category }}" onclick="openLookbook('{{ grp.id }}')" style="cursor:pointer">
+      <div class="gal-item lg-card-{{ grp.id }}" id="lookgroup-{{ grp.id }}" data-lg-id="{{ grp.id }}" data-cat="{{ grp.category }}" onclick="openLookbook('{{ grp.id }}')" style="cursor:pointer">
         <img src="{{ grp.display_cover }}" alt="{{ grp.name }}" loading="lazy">
         
         <!-- Person & Makeup Type Folder Badges -->
@@ -2031,7 +2031,7 @@
     <div class="reels-grid">
       <!-- Dynamically Added Admin Media (Instagram Reels / YouTube Videos) -->
       {% for m in media_reels %}
-      <div class="reel-card rev d1" onclick="openReelModal('{% if m.video_file %}{{ m.video_file.url }}{% elif m.embed_code %}{{ m.embed_code }}{% else %}{{ m.external_url }}{% endif %}', '{{ m.title|escapejs }}', '{{ m.caption|escapejs }}', '{{ m.display_thumb }}', '{{ m.media_type }}', '{{ m.external_url|escapejs }}')">
+      <div class="reel-card reel-item-{{ m.id }} rev d1" id="media-reel-{{ m.id }}" data-media-id="{{ m.id }}" onclick="openReelModal('{% if m.video_file %}{{ m.video_file.url }}{% elif m.embed_code %}{{ m.embed_code }}{% else %}{{ m.external_url }}{% endif %}', '{{ m.title|escapejs }}', '{{ m.caption|escapejs }}', '{{ m.display_thumb }}', '{{ m.media_type }}', '{{ m.external_url|escapejs }}')">
         <div class="reel-thumb-wrap">
           <img src="{{ m.display_thumb }}" alt="{{ m.title }}" class="reel-thumb">
           <div class="reel-play-btn"><span>▶</span></div>

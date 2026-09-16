@@ -960,25 +960,90 @@ body.mode-full-editor .visualizer-pane { display: none; }
         </h3>
         <div class="items-list">
           {% for lg in look_groups %}
-          <div class="item-row" id="lg-item-{{ lg.id }}">
-            <div class="item-details">
-              <div class="item-title-wrap">
-                <strong>{{ lg.name }}</strong>
-                <span class="item-badge">{{ lg.category }}</span>
-                <span class="item-badge" style="background:rgba(255,255,255,0.06); color:var(--cream)">{{ lg.media_items.count }} Media Items</span>
+          <div class="item-row" id="lg-item-{{ lg.id }}" style="flex-direction:column; align-items:stretch; gap:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+              <div class="item-details" style="display:flex; align-items:center; gap:12px;">
+                <img src="{{ lg.display_cover }}" alt="{{ lg.name }}" style="width:48px; height:48px; border-radius:8px; object-fit:cover; border:1px solid rgba(212,175,55,0.3);">
+                <div>
+                  <div class="item-title-wrap">
+                    <strong>{{ lg.name }}</strong>
+                    <span class="item-badge">{{ lg.category }}</span>
+                    <span class="item-badge" style="background:rgba(255,255,255,0.06); color:var(--cream)">{{ lg.media_items.count }} Media Items</span>
+                  </div>
+                  <p class="item-subtext" style="margin-top:2px;">Client: {{ lg.client_name|default:'Editorial' }} · Style: {{ lg.makeup_type }}</p>
+                </div>
               </div>
-              <p class="item-subtext">Client: {{ lg.client_name|default:'Editorial' }} · Style: {{ lg.makeup_type }}</p>
+              <div class="item-actions" style="display:flex; gap:6px; align-items:center;">
+                <button class="btn-focus-card" title="Spotlight this look group card in gallery" onclick="focusElementInPreview('#gallery', 'lookgroup-{{ lg.id }}', '{{ lg.name|escapejs }}')">
+                  👁️ Focus Card
+                </button>
+                <button class="btn-secondary" style="padding:5px 9px; font-size:0.72rem; color:var(--gold);" title="Open this Lookbook folder in preview" onclick="openLookbookInPreview('{{ lg.id }}', '{{ lg.name|escapejs }}')">
+                  📖 Open Lookbook
+                </button>
+                <button class="btn-secondary" style="padding:5px 9px; font-size:0.72rem;" onclick="openAddMediaToGroup({{ lg.id }}, '{{ lg.name|escapejs }}')">
+                  ➕ Add Media
+                </button>
+                <button class="btn-danger" title="Delete Folder" onclick="deleteLookGroup({{ lg.id }})">🗑️</button>
+              </div>
             </div>
-            <div class="item-actions">
-              <button class="btn-focus-card" onclick="focusElementInPreview('#gallery')">
-                👁️ Focus
+
+            <!-- Attached Media Items List with Individual Focus -->
+            {% if lg.media_items.all %}
+            <div style="background:rgba(0,0,0,0.25); border-radius:6px; padding:8px 12px; border:1px solid rgba(255,255,255,0.05);">
+              <div style="font-size:0.7rem; color:rgba(245,237,214,0.6); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px;">Attached Media Items:</div>
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                {% for itm in lg.media_items.all %}
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; background:rgba(255,255,255,0.02); padding:4px 8px; border-radius:4px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <img src="{{ itm.display_thumb }}" alt="thumb" style="width:28px; height:28px; border-radius:4px; object-fit:cover;">
+                    <span>
+                      <strong style="color:var(--gold);">{{ itm.get_media_type_display }}:</strong>
+                      {{ itm.caption|default:itm.title|default:'Look item'|truncatechars:35 }}
+                    </span>
+                  </div>
+                  <div style="display:flex; gap:6px; align-items:center;">
+                    <button class="btn-focus-card" style="padding:2px 8px; font-size:0.68rem;" title="Focus this media in Lookbook" onclick="openLookbookInPreview('{{ lg.id }}', '{{ itm.caption|default:lg.name|escapejs }}')">
+                      👁️ Focus Media
+                    </button>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Standalone Reels & Media Showcase Items -->
+        <h3 style="color:var(--gold); font-size:0.85rem; letter-spacing:1.5px; margin-top:24px; margin-bottom:12px; text-transform:uppercase;">
+          Studio Reels & Video Motion Items ({{ media_items|length }})
+        </h3>
+        <div class="items-list">
+          {% for m in media_items %}
+          <div class="item-row" id="media-row-{{ m.id }}" style="align-items:center;">
+            <div class="item-details" style="display:flex; align-items:center; gap:12px;">
+              <img src="{{ m.display_thumb }}" alt="{{ m.title }}" style="width:48px; height:48px; border-radius:8px; object-fit:cover; border:1px solid rgba(212,175,55,0.3);">
+              <div>
+                <div class="item-title-wrap">
+                  <strong>{{ m.title }}</strong>
+                  <span class="item-badge">{{ m.get_media_type_display }}</span>
+                  <span class="item-badge" style="background:rgba(255,255,255,0.06); color:var(--cream)">{{ m.get_section_display }}</span>
+                </div>
+                <p class="item-subtext" style="margin-top:2px;">{{ m.caption|default:'Studio Artistry in Motion'|truncatewords:10 }}</p>
+              </div>
+            </div>
+            <div class="item-actions" style="display:flex; gap:6px; align-items:center;">
+              <button class="btn-focus-card" title="Spotlight this reel or video in the live preview" onclick="focusElementInPreview('{% if m.section == 'gallery' %}#gallery{% else %}#reels{% endif %}', 'media-reel-{{ m.id }}', '{{ m.title|escapejs }}')">
+                👁️ Focus Reel
               </button>
-              <button class="btn-secondary" style="padding:5px 10px; font-size:0.72rem;" onclick="openAddMediaToGroup({{ lg.id }}, '{{ lg.name|escapejs }}')">
-                ➕ Add Media
+              <button class="btn-secondary" style="padding:5px 9px; font-size:0.72rem; color:var(--gold);" title="Play this reel in live modal" onclick="openReelInPreview('{{ m.id }}', '{{ m.title|escapejs }}')">
+                ▶ Play Live
               </button>
-              <button class="btn-danger" onclick="deleteLookGroup({{ lg.id }})">🗑️</button>
             </div>
           </div>
+          {% empty %}
+          <p style="color:rgba(245,237,214,0.4); font-size:0.8rem;">No standalone media items found.</p>
           {% endfor %}
         </div>
       </div>
@@ -1719,6 +1784,36 @@ function focusElementInPreview(sectionSelector, elementId, label){
     }, '*');
   }
   showToast('👁️ Focused ' + (label ? label : 'section') + ' on live preview!');
+}
+
+function openLookbookInPreview(groupKey, label){
+  if(document.body.classList.contains('mode-full-editor')){
+    setViewMode('split');
+  }
+  const win = getVisualizerIframe();
+  if(win){
+    win.postMessage({
+      action: 'open_lookbook',
+      groupKey: groupKey,
+      label: label || ''
+    }, '*');
+  }
+  showToast('📖 Opened ' + (label ? label : 'Lookbook') + ' in live preview!');
+}
+
+function openReelInPreview(mediaId, label){
+  if(document.body.classList.contains('mode-full-editor')){
+    setViewMode('split');
+  }
+  const win = getVisualizerIframe();
+  if(win){
+    win.postMessage({
+      action: 'open_reel',
+      mediaId: mediaId,
+      label: label || ''
+    }, '*');
+  }
+  showToast('▶ Opened ' + (label ? label : 'Reel') + ' in live preview!');
 }
 
 function refreshVisualizer(){

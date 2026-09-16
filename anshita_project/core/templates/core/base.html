@@ -4317,9 +4317,16 @@ function copyCoupon(){const c=document.getElementById('cb-code').textContent;nav
 })();
 
 /* ── Gallery Filter ── */
-function filterGal(cat){
+function filterGal(cat, clickedBtn){
   document.querySelectorAll('.gf-btn').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
+  if (clickedBtn) {
+    clickedBtn.classList.add('active');
+  } else if (typeof event !== 'undefined' && event && event.target && event.target.classList && event.target.classList.contains('gf-btn')) {
+    event.target.classList.add('active');
+  } else {
+    const defaultBtn = Array.from(document.querySelectorAll('.gf-btn')).find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${cat}'`));
+    if(defaultBtn) defaultBtn.classList.add('active');
+  }
   document.querySelectorAll('.gal-item').forEach(item=>{
     const c=item.dataset.cat||'all';
     item.style.display=(cat==='all'||c===cat)?'':'none';
@@ -5340,16 +5347,33 @@ window.addEventListener('message', function(e) {
   if (action === 'scroll_to') {
     let el = null;
     if (highlightId) {
+      // If it's a lookgroup card, make sure it's not hidden by an active gallery filter
+      if (highlightId.startsWith('lookgroup-') || highlightId.startsWith('lg-card-')) {
+        if (typeof filterGal === 'function') {
+          // Reset to 'all' or show all items so targeted lookgroup is visible
+          filterGal('all');
+        }
+      }
+
       el = document.getElementById(highlightId) ||
            document.getElementById(highlightId.replace('svc-card-', 'studio-svc-')) ||
            document.getElementById(highlightId.replace('studio-svc-', 'svc-card-')) ||
+           document.getElementById(highlightId.replace('lookgroup-', 'lg-item-')) ||
+           document.getElementById(highlightId.replace('media-reel-', 'reel-item-')) ||
            document.querySelector(`[data-svc-id="${highlightId.replace(/[^0-9]/g, '')}"]`) ||
+           document.querySelector(`[data-lg-id="${highlightId.replace(/[^0-9]/g, '')}"]`) ||
+           document.querySelector(`[data-media-id="${highlightId.replace(/[^0-9]/g, '')}"]`) ||
+           document.querySelector(`.${highlightId}`) ||
            document.querySelector(`[id*="${highlightId}"]`);
     }
     if (!el && target) {
       el = document.querySelector(target);
     }
     if (el) {
+      // Ensure element is visible if display was none
+      if (el.style.display === 'none') {
+        el.style.display = '';
+      }
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       document.querySelectorAll('.visualizer-spotlight').forEach(s => s.classList.remove('visualizer-spotlight'));
       document.querySelectorAll('.visualizer-focus-badge').forEach(b => b.remove());
@@ -5362,6 +5386,27 @@ window.addEventListener('message', function(e) {
       el.style.position = 'relative';
       el.appendChild(badge);
       setTimeout(() => { badge.style.opacity = '0'; setTimeout(() => badge.remove(), 400); }, 7000);
+  } else if (action === 'open_lookbook') {
+    if (typeof filterGal === 'function') {
+      filterGal('all');
+    }
+    const galSec = document.getElementById('gallery');
+    if (galSec) galSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (typeof openLookbook === 'function' && e.data.groupKey) {
+      openLookbook(e.data.groupKey);
+    }
+  } else if (action === 'open_reel') {
+    const reelsSec = document.getElementById('reels');
+    if (reelsSec) reelsSec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (e.data.mediaId) {
+      const reelEl = document.getElementById('media-reel-' + e.data.mediaId) ||
+                     document.querySelector(`[data-media-id="${e.data.mediaId}"]`);
+      if (reelEl) {
+        reelEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.querySelectorAll('.visualizer-spotlight').forEach(s => s.classList.remove('visualizer-spotlight'));
+        reelEl.classList.add('visualizer-spotlight');
+        setTimeout(() => reelEl.click(), 400);
+      }
     }
   } else if (action === 'reload') {
     window.location.reload();
