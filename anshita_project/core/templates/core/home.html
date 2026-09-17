@@ -790,7 +790,7 @@
       <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia & Emerald Palace Bride with Royal Polki">
     </div>
     <div class="hero-slide" data-slide="3" data-group="maroon_velvet">
-      <img src="{% static 'core/images/curated/dsc09702.jpg' %}" alt="Palace Maroon Velvet Heritage Bride in Zardozi Lehenga">
+      <img src="{% static 'core/images/curated/dsc09702.jpg' %}?v=2" alt="Palace Maroon Velvet Heritage Bride in Zardozi Lehenga">
     </div>
 
     <!-- Minimalist Floating Counter & Progress Indicator -->
@@ -803,7 +803,7 @@
         <span class="hero-slider-dot" onclick="setHeroSlide(3)"></span>
       </div>
       <span class="hero-view-gallery-hint" onclick="onHeroSlideClick(window.currentHeroSlide || 0)">
-        <span>🔍</span> View Gallery ↓
+        <span>✦</span> View Lookbook ↓
       </span>
     </div>
   </div>
@@ -821,28 +821,36 @@
     <!-- Refined Editorial Accolade Badges -->
     <div class="hero-accolades">
       <div class="hero-accolade-item">
-        <span class="hero-accolade-icon">👑</span>
+        <span class="hero-accolade-icon" style="color:var(--gold);font-size:1.1rem;line-height:1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5z"/><path d="M5 19h14"/></svg>
+        </span>
         <div class="hero-accolade-text">
           <strong>500+ Brides</strong>
           <span>Royal Celebrations</span>
         </div>
       </div>
       <div class="hero-accolade-item">
-        <span class="hero-accolade-icon">✨</span>
+        <span class="hero-accolade-icon" style="color:var(--gold);font-size:1.1rem;line-height:1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+        </span>
         <div class="hero-accolade-text">
           <strong>8+ Years</strong>
           <span>Couture Mastery</span>
         </div>
       </div>
       <div class="hero-accolade-item">
-        <span class="hero-accolade-icon">💎</span>
+        <span class="hero-accolade-icon" style="color:var(--gold);font-size:1.1rem;line-height:1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </span>
         <div class="hero-accolade-text">
           <strong>Dior & CT Kit</strong>
           <span>Ultra-Luxury Formula</span>
         </div>
       </div>
       <div class="hero-accolade-item">
-        <span class="hero-accolade-icon">✈️</span>
+        <span class="hero-accolade-icon" style="color:var(--gold);font-size:1.1rem;line-height:1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </span>
         <div class="hero-accolade-text">
           <strong>Pan-India</strong>
           <span>Palace Destinations</span>
@@ -853,13 +861,13 @@
     <!-- Editorial Call to Action Deck -->
     <div class="hero-editorial-ctas">
       <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita!%20I%20would%20like%20to%20reserve%20a%20bridal%20consultation." target="_blank" class="btn-p">
-        💬 {{ t.btn_reserve|default:'Reserve Appointment' }}
+        Reserve Consultation
       </a>
-      <button onclick="openPeekGallery(0)" class="btn-o">
-        🖼️ View Lookbook
-      </button>
+      <a href="/#gallery" class="btn-o">
+        View Lookbook
+      </a>
       <a href="/academy/" class="btn-o" style="border-color:rgba(212,175,55,0.3)">
-        🎓 Academy
+        Haute Academy
       </a>
     </div>
   </div>
@@ -878,13 +886,13 @@
     <!-- Multi-Event & Package Privilege Notice Banner -->
     <div class="svc-package-privilege-banner rev d1">
       <div class="sppb-left">
-        <div class="sppb-icon">💎</div>
+        <div class="sppb-icon" style="color:var(--gold)">✦</div>
         <div class="sppb-text">
-          <h4>Looking for Multiple Functions or a Complete Wedding Celebration?</h4>
-          <p>The individual services below represent standalone a-la-carte rates. When you book 2 or more services or choose our curated Wedding Celebration Packages, overall prices are discounted by 25%–30% with bundled savings up to ₹27,000!</p>
+          <h4>Multi-Event Celebrations & Bespoke Packages</h4>
+          <p>The individual disciplines below represent standalone a-la-carte rates. When reserving two or more events or selecting our curated Wedding Celebration Suites, rates reflect privileged package pricing with bundled courtesies up to ₹27,000.</p>
         </div>
       </div>
-      <a href="#packages" class="sppb-btn">View Bundled Packages & Save ↓</a>
+      <a href="#packages" class="sppb-btn">Explore Wedding Suites & Inclusions ↓</a>
     </div>
 
     <div class="svc-split-list" style="margin-top:40px">
@@ -937,7 +945,7 @@
 
           <div class="svc-split-actions" style="margin-top:20px">
             <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20reserve%20{{ svc.title|urlencode }}." target="_blank" class="btn-wa" style="padding:11px 26px;font-size:0.78rem">
-              💬 Reserve {{ svc.title }}
+              Reserve {{ svc.title }}
             </a>
           </div>
         </div>
@@ -967,7 +975,7 @@
         <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah Royal Crimson Bride" class="gal-slide-img">
         <div class="gal-slide-overlay"></div>
         <div class="gal-slide-caption">
-          <span class="gal-slide-badge">👑 Signature Discipline 01 · 4 Angles</span>
+          <span class="gal-slide-badge">Signature Discipline 01 · 4 Angles</span>
           <h3>Imperial Bridal Couture & Airbrush Artistry</h3>
           <p>Micro-buffed HD & atomized TEMPTU airbrush bases ensuring 18+ hour cry-proof and sweat resilience for royal pheras.</p>
         </div>
@@ -977,7 +985,7 @@
         <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Christian Bridal Couture Suite" class="gal-slide-img">
         <div class="gal-slide-overlay"></div>
         <div class="gal-slide-caption">
-          <span class="gal-slide-badge">🕊️ Signature Discipline 02 · Couture Suite</span>
+          <span class="gal-slide-badge">Signature Discipline 02 · Couture Suite</span>
           <h3>Christian Bridal Couture & Cathedral Veil</h3>
           <p>Bespoke church ceremony styling featuring luminous porcelain HD airbrush, off-shoulder ivory gown framing, and multi-tier cathedral veil anchoring.</p>
         </div>
@@ -987,17 +995,17 @@
         <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia & Emerald Palace Bride" class="gal-slide-img">
         <div class="gal-slide-overlay"></div>
         <div class="gal-slide-caption">
-          <span class="gal-slide-badge">👑 Signature Discipline 03 · 4K Recreated</span>
+          <span class="gal-slide-badge">Signature Discipline 03 · 4K Recreated</span>
           <h3>Imperial Fuchsia Silk & Emerald Palace Suite</h3>
           <p>Majestic heritage styling with rose-dew HD radiance, gilded cut-crease eye artistry, and Zambian emerald choker settings.</p>
         </div>
       </div>
       <!-- Slide 4: Palace Maroon Velvet Heritage (Telegram DSLR Shoot) -->
       <div class="gal-slide" data-slide="3" onclick="openLookbook('maroon_velvet')" style="cursor:pointer">
-        <img src="{% static 'core/images/curated/dsc09702.jpg' %}" alt="Palace Maroon Velvet Heritage" class="gal-slide-img">
+        <img src="{% static 'core/images/curated/dsc09702.jpg' %}?v=2" alt="Palace Maroon Velvet Heritage" class="gal-slide-img">
         <div class="gal-slide-overlay"></div>
         <div class="gal-slide-caption">
-          <span class="gal-slide-badge">👑 Authentic DSLR Shoot · 6 Angles</span>
+          <span class="gal-slide-badge">Authentic DSLR Shoot · 6 Angles</span>
           <h3>Palace Maroon Velvet Heritage Couture</h3>
           <p>Deep wine velvet lehenga, hand-embroidered gold zardozi, antique polki nath, and double royal veil architecture.</p>
         </div>
@@ -1007,7 +1015,7 @@
         <img src="{% static 'core/images/curated/ig_post_DRP0QCODVfD.jpg' %}" alt="Ring Ceremony Sheer Maroon Veil Bride" class="gal-slide-img">
         <div class="gal-slide-overlay"></div>
         <div class="gal-slide-caption">
-          <span class="gal-slide-badge">💍 Signature Discipline 05 · Ring Ceremony</span>
+          <span class="gal-slide-badge">Signature Discipline 05 · Ring Ceremony</span>
           <h3>Ring Ceremony & Sheer Maroon Veil Radiance</h3>
           <p>Enchanting sheer gold-bordered veil framing, warm smokey cut-crease eyes, and delicate maang tikka alignment.</p>
         </div>
@@ -1017,7 +1025,7 @@
         <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Traditional Bengali Mukut & Chandan" class="gal-slide-img">
         <div class="gal-slide-overlay"></div>
         <div class="gal-slide-caption">
-          <span class="gal-slide-badge">🌸 Cultural Specialty Heritage · 4 Photos</span>
+          <span class="gal-slide-badge">Cultural Specialty Heritage · 4 Photos</span>
           <h3>Traditional Kolkata Banarasi & Chandan Art</h3>
           <p>Intricate forehead sandalwood artwork, artisanal glitter cut-crease eye makeup, and pure silk Banarasi draping with sacred alta grace.</p>
         </div>
@@ -1036,18 +1044,18 @@
 
     <!-- LAYER 2: Filterable Masonry Real-Brides Gallery Grid -->
     <div class="gal-filters rev d2" style="margin-top:10px">
-      <button class="gf-btn active" onclick="filterGal('all')">✨ All Disciplines</button>
-      <button class="gf-btn" onclick="filterGal('bridal')">👰 Bridal Suites</button>
-      <button class="gf-btn" onclick="filterGal('engagement')">💍 Engagement / Roka</button>
-      <button class="gf-btn" onclick="filterGal('hair')">💇 Hair & Draping</button>
-      <button class="gf-btn" onclick="filterGal('nails')">💅 Nail Artistry</button>
-      <button class="gf-btn" onclick="filterGal('party')">💃 Party & Side Glam</button>
+      <button class="gf-btn active" onclick="filterGal('all')">All Disciplines</button>
+      <button class="gf-btn" onclick="filterGal('bridal')">Bridal Suites</button>
+      <button class="gf-btn" onclick="filterGal('engagement')">Engagement & Roka</button>
+      <button class="gf-btn" onclick="filterGal('hair')">Hair & Draping</button>
+      <button class="gf-btn" onclick="filterGal('nails')">Nail Artistry</button>
+      <button class="gf-btn" onclick="filterGal('party')">Party & Side Glam</button>
     </div>
 
     <div class="gal-grid rev d2">
       {% for grp in look_groups %}
       <div class="gal-item lg-card-{{ grp.id }}" id="lookgroup-{{ grp.id }}" data-lg-id="{{ grp.id }}" data-cat="{{ grp.category }}" onclick="openLookbook('{{ grp.id }}')" style="cursor:pointer">
-        <img src="{{ grp.display_cover }}" alt="{{ grp.name }}" loading="lazy">
+        <img src="{{ grp.display_cover }}?v=2" alt="{{ grp.name }}" loading="lazy">
         
         <!-- Person & Makeup Type Folder Badges -->
         <div style="position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:center;z-index:3;pointer-events:none">
@@ -1082,13 +1090,13 @@
       </div>
       <div class="gal-action-btns">
         <button class="btn-comp-trigger" onclick="openServiceCompareModal()">
-          ⚡ Compare Studio Services
+          Compare Studio Services
         </button>
         <button class="btn-comp-trigger" style="background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#000" onclick="openPackageCompareModal()">
-          ⚖️ Compare Bridal Suites
+          Compare Bridal Suites
         </button>
         <a href="#packages" class="btn-comp-trigger" style="background:transparent;border-color:rgba(212,175,55,0.4)">
-          View All Packages ↓
+          View All Suites ↓
         </a>
       </div>
     </div>
@@ -1109,10 +1117,10 @@
 
     <!-- Filter Chips inside Modal -->
     <div class="comp-selector-chips" style="margin-bottom:16px">
-      <button class="comp-chip active" onclick="filterServiceComp('all')">✨ All Services</button>
-      <button class="comp-chip" onclick="filterServiceComp('bridal')">👰 Bridal Artistry</button>
-      <button class="comp-chip" onclick="filterServiceComp('side')">💃 Party & Side Makeup</button>
-      <button class="comp-chip" onclick="filterServiceComp('hair-skin')">💇 Hair & Skin Therapy</button>
+      <button class="comp-chip active" onclick="filterServiceComp('all')">All Services</button>
+      <button class="comp-chip" onclick="filterServiceComp('bridal')">Bridal Artistry</button>
+      <button class="comp-chip" onclick="filterServiceComp('side')">Party & Side Makeup</button>
+      <button class="comp-chip" onclick="filterServiceComp('hair-skin')">Hair & Skin Therapy</button>
     </div>
 
     <div class="comp-table-responsive">
@@ -1237,20 +1245,20 @@
           <tr>
             <th style="min-width:180px">Deliverables & Features</th>
             <th style="min-width:200px;text-align:center;border-top:3px solid var(--gold)">
-              <div class="comp-prod-title" style="color:var(--gold)">👑 Master Airbrush Suite</div>
+              <div class="comp-prod-title" style="color:var(--gold)">Master Airbrush Suite</div>
               <small style="color:rgba(245,237,214,0.6)">The Ultimate Wedding Day Artistry</small>
             </th>
             <th style="min-width:200px;text-align:center;border-top:3px solid #e07a5f">
-              <div class="comp-prod-title" style="color:#e07a5f">⭐ Imperial Royal HD</div>
+              <div class="comp-prod-title" style="color:#e07a5f">Imperial Royal HD</div>
               <small style="color:rgba(245,237,214,0.6)">High-Definition Satin Radiance</small>
             </th>
             <th style="min-width:190px;text-align:center">
-              <div class="comp-prod-title">💍 Engagement / Roka</div>
+              <div class="comp-prod-title">Engagement & Roka</div>
               <small style="color:rgba(245,237,214,0.6)">Dewy Glass-Skin Glam</small>
             </th>
             <th style="min-width:180px;text-align:center">
-              <div class="comp-prod-title">✨ Side / Bridesmaids</div>
-              <small style="color:rgba(245,237,214,0.6)">Per Person Family Suite</small>
+              <div class="comp-prod-title">Family & Bridesmaids</div>
+              <small style="color:rgba(245,237,214,0.6)">Per Person Entourage Suite</small>
             </th>
           </tr>
         </thead>
@@ -1353,9 +1361,9 @@
         <div class="pkg-bundle-media" onclick="openLookbook('maroon_bride')">
           <img src="{% static 'core/images/curated/maroon_20251109_191223_p30.jpg' %}" alt="Grand Royal Vivah Celebration - Palace Deep Maroon Velvet Bride">
           <div class="pkg-bundle-overlay"></div>
-          <span class="pkg-bundle-badge">👑 Flagship 3-Event Suite</span>
+          <span class="pkg-bundle-badge">Flagship 3-Event Suite</span>
           <div class="pkg-bundle-tag-bottom">
-            <span>✨ Authentic Velvet Bride (Telegram Shoot)</span>
+            <span>Authentic Velvet Bride (Editorial Shoot)</span>
             <span style="color:var(--gold)">View 2 HD Angles ↗</span>
           </div>
         </div>
@@ -1364,12 +1372,12 @@
           <p class="pkg-bundle-tagline">Complete 3-Event Bridal Journey · Sacred Pheras, Evening Reception & Pre-Wedding Glam + 2 Free Side Makeups</p>
 
           <div class="pkg-bundled-box">
-            <div class="pkg-bundled-heading"><span>✨</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
+            <div class="pkg-bundled-heading"><span>✦</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
             <ul class="pkg-bundled-list">
-              <li class="pkg-bundled-item"><span class="icon">👑</span> <strong>Event 1 (Main Wedding Day):</strong> Imperial Royal HD/Airbrush Bridal Makeover & Sacred Pheras Artistry</li>
-              <li class="pkg-bundled-item"><span class="icon">🍸</span> <strong>Event 2 (Evening Party):</strong> High-Glam Reception or Cocktail Evening Makeover (Luminous Glass Skin)</li>
-              <li class="pkg-bundled-item"><span class="icon">💍</span> <strong>Event 3 (Ritual):</strong> Engagement Ceremony or Sangeet Night Glamour</li>
-              <li class="pkg-bundled-item"><span class="icon">🎁</span> <strong>VIP Entourage Bonus:</strong> 2 Free Side Makeups for Mother & Sister of Bride (Value ₹13,000)</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 1 (Main Wedding Day):</strong> Imperial Royal HD/Airbrush Bridal Makeover & Sacred Pheras Artistry</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 2 (Evening Party):</strong> High-Glam Reception or Cocktail Evening Makeover (Luminous Glass Skin)</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 3 (Ritual):</strong> Engagement Ceremony or Sangeet Night Glamour</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>VIP Entourage Bonus:</strong> 2 Free Side Makeups for Mother & Sister of Bride (Value ₹13,000)</li>
             </ul>
           </div>
 
@@ -1395,10 +1403,10 @@
 
           <div class="pkg-bundle-actions">
             <button onclick="openLookbook('maroon_bride')" class="pkg-bundle-btn sec">
-              📸 Explore Look
+              Explore Look
             </button>
             <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20The%20Grand%20Royal%20Vivah%20Celebration%20Package%20(3-Event%20Suite%20%2B%202%20Free%20Sides%20for%20₹58,000)." target="_blank" class="pkg-bundle-btn primary">
-              💬 Reserve Grand Vivah
+              Reserve Grand Vivah
             </a>
           </div>
         </div>
@@ -1409,9 +1417,9 @@
         <div class="pkg-bundle-media" onclick="openLookbook('bridal')">
           <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah and Reception Duo">
           <div class="pkg-bundle-overlay"></div>
-          <span class="pkg-bundle-badge" style="background:linear-gradient(135deg,#e07a5f,#d4af37)">⭐ Most Loved Bridal Duo</span>
+          <span class="pkg-bundle-badge" style="background:linear-gradient(135deg,#e07a5f,#d4af37)">Most Loved Bridal Duo</span>
           <div class="pkg-bundle-tag-bottom">
-            <span>✨ Pheras Day + Evening Reception</span>
+            <span>Pheras Day + Evening Reception</span>
             <span style="color:var(--gold)">View Lookbook ↗</span>
           </div>
         </div>
@@ -1420,12 +1428,12 @@
           <p class="pkg-bundle-tagline">The Essential Two Major Milestones · Pheras Day & High-Definition Evening Reception Glam</p>
 
           <div class="pkg-bundled-box">
-            <div class="pkg-bundled-heading"><span>✨</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
+            <div class="pkg-bundled-heading"><span>✦</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
             <ul class="pkg-bundled-list">
-              <li class="pkg-bundled-item"><span class="icon">👰</span> <strong>Event 1 (Sacred Pheras):</strong> Imperial Royal HD / Airbrush Bridal Couture & Symmetrical Mathapatti Setting</li>
-              <li class="pkg-bundled-item"><span class="icon">✨</span> <strong>Event 2 (Reception Party):</strong> Reception & Cocktail Evening Glam (Luminous Glass Skin & Shimmer Eyes)</li>
-              <li class="pkg-bundled-item"><span class="icon">💇</span> <strong>2 Couture Hairstyles:</strong> Royal Traditional Floral Updo + Hollywood Glam Waves</li>
-              <li class="pkg-bundled-item"><span class="icon">🥻</span> <strong>Complete Draping:</strong> Double Dupatta Balancing + Evening Gown/Saree Pleating</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 1 (Sacred Pheras):</strong> Imperial Royal HD / Airbrush Bridal Couture & Symmetrical Mathapatti Setting</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 2 (Reception Party):</strong> Reception & Cocktail Evening Glam (Luminous Glass Skin & Shimmer Eyes)</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>2 Couture Hairstyles:</strong> Royal Traditional Floral Updo + Hollywood Glam Waves</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Complete Draping:</strong> Double Dupatta Balancing + Evening Gown/Saree Pleating</li>
             </ul>
           </div>
 
@@ -1450,10 +1458,10 @@
 
           <div class="pkg-bundle-actions">
             <button onclick="openLookbook('cocktail')" class="pkg-bundle-btn sec">
-              📸 Explore Looks
+              Explore Looks
             </button>
             <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Sacred%20Vivah%20%26%20Reception%20Duo%20Package%20(₹45,000)." target="_blank" class="pkg-bundle-btn primary">
-              💬 Reserve Vivah Duo
+              Reserve Vivah Duo
             </a>
           </div>
         </div>
@@ -1464,9 +1472,9 @@
         <div class="pkg-bundle-media" onclick="openLookbook('engagement')">
           <img src="{% static 'core/images/curated/ig_post_DSrKrDHiLNPGzQHnwZkcRe3YUoC5fCc24nWZjQ0.jpg' %}" alt="Pre-Wedding Rites and Festivities Trio">
           <div class="pkg-bundle-overlay"></div>
-          <span class="pkg-bundle-badge" style="background:linear-gradient(135deg,#c084fc,#7e22ce);color:#fff">🌸 Pre-Wedding Trio</span>
+          <span class="pkg-bundle-badge" style="background:linear-gradient(135deg,#c084fc,#7e22ce);color:#fff">Pre-Wedding Trio</span>
           <div class="pkg-bundle-tag-bottom">
-            <span>💍 Ring Ceremony + Sangeet + Gel Nails</span>
+            <span>Ring Ceremony + Sangeet + Gel Nails</span>
             <span style="color:var(--gold)">View Lookbook ↗</span>
           </div>
         </div>
@@ -1475,12 +1483,12 @@
           <p class="pkg-bundle-tagline">Youthful, Radiant & Long-Wear Coverage Across Ring Ceremony, Sangeet & Bridal Nails</p>
 
           <div class="pkg-bundled-box">
-            <div class="pkg-bundled-heading"><span>✨</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
+            <div class="pkg-bundled-heading"><span>✦</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
             <ul class="pkg-bundled-list">
-              <li class="pkg-bundled-item"><span class="icon">💍</span> <strong>Event 1 (Ring Ceremony):</strong> Engagement / Roka Ceremonial Glow (Dewy Glass Skin)</li>
-              <li class="pkg-bundled-item"><span class="icon">💃</span> <strong>Event 2 (Music Night):</strong> Sangeet / Mehendi High-Energy Glam (Dance-Resistant Base)</li>
-              <li class="pkg-bundled-item"><span class="icon">💅</span> <strong>Artisanal Nail Couture:</strong> Full Set Gel/Acrylic Extensions with Swarovski Crystal Embellishments</li>
-              <li class="pkg-bundled-item"><span class="icon">🥻</span> <strong>Styling & Draping:</strong> 3 Thermal Hairstyles & Outfit Draping for All 3 Functions</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 1 (Ring Ceremony):</strong> Engagement / Roka Ceremonial Glow (Dewy Glass Skin)</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 2 (Music Night):</strong> Sangeet / Mehendi High-Energy Glam (Dance-Resistant Base)</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Artisanal Nail Couture:</strong> Full Set Gel/Acrylic Extensions with Swarovski Crystal Embellishments</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Styling & Draping:</strong> 3 Thermal Hairstyles & Outfit Draping for All 3 Functions</li>
             </ul>
           </div>
 
@@ -1504,11 +1512,11 @@
           </ul>
 
           <div class="pkg-bundle-actions">
-            <button onclick="openLookbook('sangeet')" class="pkg-bundle-btn sec">
-              📸 Explore Looks
+            <button onclick="openLookbook('engagement')" class="pkg-bundle-btn sec">
+              Explore Looks
             </button>
             <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Pre-Wedding%20Rites%20%26%20Festivities%20Trio%20(₹34,000)." target="_blank" class="pkg-bundle-btn primary">
-              💬 Reserve Pre-Wedding Trio
+              Reserve Pre-Wedding Trio
             </a>
           </div>
         </div>
@@ -1519,23 +1527,23 @@
         <div class="pkg-bundle-media" onclick="openLookbook('bridesmaids')">
           <img src="{% static 'core/images/curated/ig_post_DVTThv0CI_psJjhtWi0TP5npf_Crqxgeq7JBTE0.jpg' %}" alt="Royal Family & Bridesmaids Ensemble">
           <div class="pkg-bundle-overlay"></div>
-          <span class="pkg-bundle-badge" style="background:linear-gradient(135deg,#c2607a,#7b1c2e);color:#fff">👭 Entourage Ensemble</span>
+          <span class="pkg-bundle-badge" style="background:linear-gradient(135deg,#c2607a,#7b1c2e);color:#fff">Entourage Ensemble</span>
           <div class="pkg-bundle-tag-bottom">
-            <span>✨ Mother, Sisters & Bridesmaids (4 Guests)</span>
+            <span>Mother, Sisters & Bridesmaids (4 Guests)</span>
             <span style="color:var(--gold)">View Lookbook ↗</span>
           </div>
         </div>
         <div class="pkg-bundle-body">
           <h3 class="pkg-bundle-title">Royal Family & Bridesmaids Ensemble</h3>
-          <p class="pkg-bundle-tagline">Coordinated Bridal Entourage · Mothers, Sisters & Bridesmaids (Buy 3, Get 4th Person FREE!)</p>
+          <p class="pkg-bundle-tagline">Coordinated Bridal Entourage · Mothers, Sisters & Bridesmaids (Complimentary 4th Guest Privilege)</p>
 
           <div class="pkg-bundled-box">
-            <div class="pkg-bundled-heading"><span>✨</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
+            <div class="pkg-bundled-heading"><span>✦</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
             <ul class="pkg-bundled-list">
-              <li class="pkg-bundled-item"><span class="icon">👭</span> <strong>4 Complete HD Makeovers:</strong> Camera-Ready Long-Wear Base Tailored to Each Face Shape</li>
-              <li class="pkg-bundled-item"><span class="icon">💇</span> <strong>4 Customized Hairstyles:</strong> Textured Waves, Sleek Chignons or Festive Floral Buns</li>
-              <li class="pkg-bundled-item"><span class="icon">🥻</span> <strong>4 Draping Sessions:</strong> Saree Pleating, Dupatta Pinning & Jewellery Alignment for All 4 Guests</li>
-              <li class="pkg-bundled-item"><span class="icon">⚡</span> <strong>Synchronized Execution:</strong> Dedicated Studio Team Ensuring Zero Delays on Wedding Morning</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>4 Complete HD Makeovers:</strong> Camera-Ready Long-Wear Base Tailored to Each Face Shape</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>4 Customized Hairstyles:</strong> Textured Waves, Sleek Chignons or Festive Floral Buns</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>4 Draping Sessions:</strong> Saree Pleating, Dupatta Pinning & Jewellery Alignment for All 4 Guests</li>
+              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Synchronized Execution:</strong> Dedicated Studio Team Ensuring Zero Delays on Wedding Morning</li>
             </ul>
           </div>
 
@@ -1546,9 +1554,9 @@
             </div>
             <div class="pkg-calc-row final">
               <span>Bundled Package Investment:</span>
-              <span class="pkg-bundle-rate">₹19,500 <small style="font-size:0.75rem;color:rgba(245,237,214,0.6)">(₹4,875 / Head)</small></span>
+              <span class="pkg-bundle-rate">₹19,500 <small style="font-size:0.75rem;color:rgba(245,237,214,0.6)">(₹4,875 / Guest)</small></span>
             </div>
-            <div class="pkg-savings-pill">✦ Total Savings: Save ₹6,500 (Buy 3, Get 4th Person Free!) ✦</div>
+            <div class="pkg-savings-pill">✦ Total Savings: Save ₹6,500 (4th Guest Complimentary) ✦</div>
           </div>
 
           <ul class="pkg-bundle-inclusions">
@@ -1560,10 +1568,10 @@
 
           <div class="pkg-bundle-actions">
             <button onclick="openLookbook('bridesmaids')" class="pkg-bundle-btn sec">
-              📸 Explore Looks
+              Explore Looks
             </button>
             <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Royal%20Family%20%26%20Bridesmaids%20Ensemble%20(4%20Persons%20for%20₹19,500)." target="_blank" class="pkg-bundle-btn primary">
-              💬 Reserve Family Ensemble
+              Reserve Family Ensemble
             </a>
           </div>
         </div>
@@ -1573,16 +1581,16 @@
     <!-- Action Bar for Packages Section -->
     <div class="pkg-docked-bar rev d2">
       <button class="pkg-docked-btn primary" onclick="openPackageCompareModal()">
-        ⚖️ Compare Packages Modal
+        Compare Packages Matrix
       </button>
       <a href="#bundle-builder" class="pkg-docked-btn">
-        ✨ Build Your Look
+        Build Your Look
       </a>
       <a href="#travel-widget" class="pkg-docked-btn">
-        🚗 Travel & Distance Calculator
+        Travel & Distance Estimator
       </a>
       <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita!%20I%20would%20like%20to%20discuss%20a%20tailored%20bridal%20package." target="_blank" class="pkg-docked-btn">
-        💬 Direct WhatsApp
+        WhatsApp Concierge
       </a>
     </div>
 
@@ -1590,7 +1598,7 @@
     <div id="bundle-builder" class="bundle-builder-card rev d3">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
         <div>
-          <span class="gal-slide-badge">👑 Custom Curation</span>
+          <span class="gal-slide-badge">Bespoke Curation</span>
           <h3 style="font-family:var(--font-h);font-size:1.6rem;color:#fff">Build Your Bespoke Look & Package</h3>
           <p style="font-size:0.82rem;color:rgba(245,237,214,0.7)">Select multiple services to assemble your dream trousseau with live transparent pricing.</p>
         </div>
@@ -1603,7 +1611,7 @@
       <div class="bundle-grid">
         <div class="bundle-item" data-price="24500" data-name="Imperial Royal HD Bridal" onclick="toggleBundleItem(this)">
           <div class="bundle-item-header">
-            <span class="bundle-item-title">👰 Imperial Royal HD Bridal</span>
+            <span class="bundle-item-title">Imperial Royal HD Bridal</span>
             <input type="checkbox" style="accent-color:var(--gold)">
           </div>
           <p style="font-size:0.72rem;color:rgba(245,237,214,0.6);margin-bottom:8px">18-hr HD base, couture hairdo & dupatta pinning</p>
@@ -1612,7 +1620,7 @@
 
         <div class="bundle-item" data-price="31500" data-name="Master Airbrush Bridal Suite" onclick="toggleBundleItem(this)">
           <div class="bundle-item-header">
-            <span class="bundle-item-title">👑 Master Airbrush Suite</span>
+            <span class="bundle-item-title">Master Airbrush Suite</span>
             <input type="checkbox" style="accent-color:var(--gold)">
           </div>
           <p style="font-size:0.72rem;color:rgba(245,237,214,0.6);margin-bottom:8px">24-hr cry-proof TEMPTU airbrush & deluxe touchup</p>
@@ -1621,7 +1629,7 @@
 
         <div class="bundle-item" data-price="12600" data-name="Engagement & Roka Glam" onclick="toggleBundleItem(this)">
           <div class="bundle-item-header">
-            <span class="bundle-item-title">💍 Engagement & Roka</span>
+            <span class="bundle-item-title">Engagement & Roka</span>
             <input type="checkbox" style="accent-color:var(--gold)">
           </div>
           <p style="font-size:0.72rem;color:rgba(245,237,214,0.6);margin-bottom:8px">Luminous glass-skin glow & textured curls</p>
@@ -1630,7 +1638,7 @@
 
         <div class="bundle-item" data-price="15000" data-name="Reception Statement Glam" onclick="toggleBundleItem(this)">
           <div class="bundle-item-header">
-            <span class="bundle-item-title">🌟 Reception Red Carpet</span>
+            <span class="bundle-item-title">Reception Red Carpet</span>
             <input type="checkbox" style="accent-color:var(--gold)">
           </div>
           <p style="font-size:0.72rem;color:rgba(245,237,214,0.6);margin-bottom:8px">Smokey eyes, Hollywood waves & concept drape</p>
@@ -1639,7 +1647,7 @@
 
         <div class="bundle-item" data-price="4550" data-name="Bridesmaid / Sister HD" onclick="toggleBundleItem(this)">
           <div class="bundle-item-header">
-            <span class="bundle-item-title">👭 Bridesmaid / Sister (Per Person)</span>
+            <span class="bundle-item-title">Family & Entourage (Per Person)</span>
             <input type="checkbox" style="accent-color:var(--gold)">
           </div>
           <p style="font-size:0.72rem;color:rgba(245,237,214,0.6);margin-bottom:8px">Camera-ready HD party glam & dupatta setting</p>
@@ -1648,7 +1656,7 @@
 
         <div class="bundle-item" data-price="3500" data-name="Bridal Nail Extensions & Swarovski Art" onclick="toggleBundleItem(this)">
           <div class="bundle-item-header">
-            <span class="bundle-item-title">💅 Bridal Nail Extensions & Art</span>
+            <span class="bundle-item-title">Bridal Nail Extensions & Art</span>
             <input type="checkbox" style="accent-color:var(--gold)">
           </div>
           <p style="font-size:0.72rem;color:rgba(245,237,214,0.6);margin-bottom:8px">Gel extension, Swarovski stones & ombré art</p>
@@ -1661,15 +1669,17 @@
           Select services above to configure your custom package.
         </div>
         <button class="btn-p" onclick="sendBundleToWhatsApp()" style="padding:10px 22px">
-          💬 Reserve Custom Bundle on WhatsApp →
+          Reserve Custom Bundle on WhatsApp →
         </button>
       </div>
     </div>
 
     <!-- ═══ TRAVEL & CITY DISTANCE SURCHARGE CALCULATOR WIDGET ═══ -->
     <div id="travel-widget" class="travel-widget-box rev d3">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-        <span style="font-size:1.4rem">🚗</span>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <span style="color:var(--gold);font-size:1.1rem;line-height:1">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        </span>
         <div>
           <h3 style="font-family:var(--font-h);font-size:1.5rem;color:#fff">Pan-India Travel & Outstation Distance Estimator</h3>
           <p style="font-size:0.8rem;color:rgba(245,237,214,0.7)">Select your wedding destination city to check distance from Jabalpur studio and approximate travel fee.</p>
@@ -1739,7 +1749,7 @@
 
       <div style="text-align:right;margin-top:14px">
         <button class="btn-wa" onclick="sendTravelQuoteWhatsApp()" style="padding:9px 18px;font-size:0.78rem">
-          💬 Connect on WhatsApp for Exact Travel Quotation →
+          Connect on WhatsApp for Exact Travel Quotation →
         </button>
       </div>
     </div>
@@ -1796,7 +1806,7 @@
 
       <!-- Right: Interactive Live Calculator -->
       <div class="calc-card rev-r">
-        <div class="calc-badge">⚡ {{ t.calc_badge|default:'Interactive Pricing Estimator' }}</div>
+        <div class="calc-badge">✦ {{ t.calc_badge|default:'Interactive Investment Estimator' }}</div>
         <h3 class="calc-title">{{ t.calc_title|default:'Bridal & Outstation Investment Estimator' }}</h3>
         <p class="calc-sub">{{ t.calc_sub|default:'Calculate estimated costs for your destination wedding or local venue booking with transparent industry standards.' }}</p>
 
@@ -1814,7 +1824,7 @@
           <select class="calc-select" id="calc-pkg" onchange="updateCalc()">
             <option value="35000" data-is-bridal="true" selected>Imperial Royal HD Bridal Suite (₹35,000)</option>
             <option value="45000" data-is-bridal="true">Master Airbrush Bridal Suite (₹45,000)</option>
-            <option value="50000" data-is-combo="true" data-is-bridal="true">👑 Grand Royal Heritage Suite: Bridal + Engagement Bundle (₹50,000 VIP Rate)</option>
+            <option value="50000" data-is-combo="true" data-is-bridal="true">Grand Royal Heritage Suite: Bridal + Engagement Bundle (₹50,000 VIP Rate)</option>
             <option value="18000">Engagement & Roka Luminescence (₹18,000)</option>
             <option value="22000">Reception Statement Glamour (₹22,000)</option>
           </select>
@@ -1863,7 +1873,7 @@
             Bridal Suite: ₹35,000 · 2 Side Makeups: FREE (VIP Privilege)
           </div>
           <div id="calc-savings-badge" style="display:inline-block;background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;padding:4px 10px;border-radius:12px;font-size:.72rem;font-weight:700;margin-top:6px;letter-spacing:.5px">
-            ✨ VIP Savings Applied: 2 Free Side Makeups Included
+            ✦ VIP Savings Applied: 2 Free Side Makeups Included
           </div>
           <p class="calc-note" id="calc-note-text" style="margin-top:8px">
             *Note: Outstation travel (return flight/train tickets + cabs) & hotel stay with meals for Anshita + 1 assistant provided by client.
@@ -1871,7 +1881,7 @@
         </div>
 
         <button class="btn-wa calc-cta" id="calc-wa-btn" onclick="sendCalculatedQuote()">
-          💬 Reserve Dates & Send Estimated Quote on WhatsApp
+          Reserve Dates & Send Estimated Quote on WhatsApp
         </button>
       </div>
     </div>
@@ -1950,7 +1960,7 @@
       <!-- Photography Premium -->
       <div class="evt-card feat rev d1">
         <div class="evt-top">
-          <div class="evt-icon">📸</div>
+          <div class="evt-icon" style="font-size:1rem;color:var(--gold);font-family:var(--font-h);letter-spacing:1px">✦ CINEMA</div>
           <p class="evt-name">Royal Premium Collection</p>
           <p style="font-size:.78rem;color:rgba(245,237,214,.5);margin-top:4px">Full Day Cinematic Coverage · All Inclusions</p>
           <div class="evt-price-badge">{% if photo_premium %}{{ photo_premium.display_price }}{% else %}₹1,20,000{% endif %}</div>
@@ -1974,7 +1984,7 @@
       <!-- Photography Standard -->
       <div class="evt-card rev d2">
         <div class="evt-top">
-          <div class="evt-icon">🎥</div>
+          <div class="evt-icon" style="font-size:1rem;color:var(--gold);font-family:var(--font-h);letter-spacing:1px">✦ PHOTO</div>
           <p class="evt-name">Signature Standard Collection</p>
           <p style="font-size:.78rem;color:rgba(245,237,214,.5);margin-top:4px">Comprehensive Coverage · Exceptional Finesse</p>
           <div class="evt-price-badge">{% if photo_standard %}{{ photo_standard.display_price }}{% else %}₹90,000{% endif %}</div>
@@ -1997,7 +2007,7 @@
       {% if ep.package_type == 'custom' or ep.package_type == 'full_event' %}
       <div class="evt-card rev d3">
         <div class="evt-top">
-          <div class="evt-icon">🎊</div>
+          <div class="evt-icon" style="font-size:1rem;color:var(--gold);font-family:var(--font-h);letter-spacing:1px">✦ BESPOKE</div>
           <p class="evt-name">{{ ep.name }}</p>
           {% if ep.description %}<p style="font-size:.78rem;color:rgba(245,237,214,.5);margin-top:4px">{{ ep.description }}</p>{% endif %}
           <div class="evt-price-badge">{{ ep.display_price }}</div>
@@ -2012,7 +2022,7 @@
     </div>
     <div class="evt-custom-note rev d4">
       <p>{{ t.events_custom_note|default:'Seeking a harmonious combination of Bridal Couture & Wedding Cinematography? Consult our concierge for a bespoke wedding itinerary tailored to your celebration.' }}</p>
-      <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20request%20a%20combined%20proposal%20for%20Bridal%20Makeup%20and%20Wedding%20Event%20Production." target="_blank" class="btn-wa">{{ t.btn_custom_event_proposal|default:'💬 Request Custom Production Proposal' }}</a>
+      <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20request%20a%20combined%20proposal%20for%20Bridal%20Makeup%20and%20Wedding%20Event%20Production." target="_blank" class="btn-wa">{{ t.btn_custom_event_proposal|default:'Request Custom Production Proposal' }}</a>
     </div>
   </div>
 </section>
@@ -2035,13 +2045,13 @@
         <div class="reel-thumb-wrap">
           <img src="{{ m.display_thumb }}" alt="{{ m.title }}" class="reel-thumb">
           <div class="reel-play-btn"><span>▶</span></div>
-          <div class="reel-badge">{% if m.media_type == 'youtube' %}▶️ YOUTUBE{% elif m.media_type == 'instagram' %}📸 INSTAGRAM{% else %}🎥 VIDEO{% endif %}</div>
-          <div class="reel-views">👁 {{ m.views_count }}</div>
+          <div class="reel-badge">{% if m.media_type == 'youtube' %}YOUTUBE{% elif m.media_type == 'instagram' %}INSTAGRAM{% else %}MOTION{% endif %}</div>
+          <div class="reel-views">{{ m.views_count }} Views</div>
         </div>
         <div class="reel-info">
           <h4>{{ m.title }}</h4>
           <p>{{ m.caption|truncatewords:14 }}</p>
-          <span class="reel-link-text">▶ Watch {% if m.media_type == 'youtube' %}YouTube Video{% elif m.media_type == 'instagram' %}Instagram Reel{% else %}Video{% endif %}</span>
+          <span class="reel-link-text">Watch {% if m.media_type == 'youtube' %}YouTube Video{% elif m.media_type == 'instagram' %}Instagram Reel{% else %}Video{% endif %} ↗</span>
         </div>
       </div>
       {% endfor %}
@@ -2051,13 +2061,13 @@
         <div class="reel-thumb-wrap">
           <img src="{% static 'core/images/curated/ig_reel_Dap4JkvKL1E.jpg' %}" alt="Instagram Paan Leaf Reel" class="reel-thumb">
           <div class="reel-play-btn"><span>▶</span></div>
-          <div class="reel-badge">📸 INSTAGRAM SPOTLIGHT</div>
-          <div class="reel-views">👁 28.7K+ views</div>
+          <div class="reel-badge">INSTAGRAM SPOTLIGHT</div>
+          <div class="reel-views">28.7K+ Views</div>
         </div>
         <div class="reel-info">
           <h4>Sacred Reveal Spotlight — Bengali Bride</h4>
           <p>Viral Instagram reel: sacred Subho Drishti moment and intricate forehead chandan.</p>
-          <span class="reel-link-text">▶ Watch Instagram Reel</span>
+          <span class="reel-link-text">Watch Instagram Reel ↗</span>
         </div>
       </div>
 
@@ -2066,13 +2076,13 @@
         <div class="reel-thumb-wrap">
           <img src="{% static 'core/images/curated/ig_reel_DWwjKABgtXH.jpg' %}" alt="Instagram Bridal Reel" class="reel-thumb">
           <div class="reel-play-btn"><span>▶</span></div>
-          <div class="reel-badge">📸 INSTAGRAM REEL</div>
-          <div class="reel-views">👁 14.2K+ views</div>
+          <div class="reel-badge">INSTAGRAM REEL</div>
+          <div class="reel-views">14.2K+ Views</div>
         </div>
         <div class="reel-info">
           <h4>Live Studio Touch-up — Signature Look</h4>
           <p>Published on @anshitamakeover21: precision contouring & bridal lip sculpting.</p>
-          <span class="reel-link-text">▶ Watch Instagram Reel</span>
+          <span class="reel-link-text">Watch Instagram Reel ↗</span>
         </div>
       </div>
 
@@ -2081,13 +2091,13 @@
         <div class="reel-thumb-wrap">
           <img src="{% static 'core/images/curated/ig_reel_DQ9YYAUjKFW.jpg' %}" alt="Crimson Royal Couture" class="reel-thumb">
           <div class="reel-play-btn"><span>▶</span></div>
-          <div class="reel-badge">👑 BRIDAL COUTURE</div>
-          <div class="reel-views">👁 33.4K+ views</div>
+          <div class="reel-badge">BRIDAL COUTURE</div>
+          <div class="reel-views">33.4K+ Views</div>
         </div>
         <div class="reel-info">
           <h4>Crimson Royal Couture — Golden Hour Glow</h4>
           <p>Regal bridal radiance with signature smokey eyes and bespoke dupatta styling.</p>
-          <span class="reel-link-text">▶ Watch Instagram Reel</span>
+          <span class="reel-link-text">Watch Instagram Reel ↗</span>
         </div>
       </div>
 
@@ -2096,8 +2106,8 @@
         <div class="reel-thumb-wrap">
           <img src="{% static 'core/images/curated/anshita_artistry_brush_action.jpg' %}" alt="Anshita in Studio Action" class="reel-thumb">
           <div class="reel-play-btn"><span>▶</span></div>
-          <div class="reel-badge">🎥 STUDIO MASTERPIECE</div>
-          <div class="reel-views">👁 18.4K+ views</div>
+          <div class="reel-badge">STUDIO MASTERPIECE</div>
+          <div class="reel-views">18.4K+ Views</div>
         </div>
         <div class="reel-info">
           <h4>Studio Master Stroke — Bridal Transformation</h4>
@@ -2111,8 +2121,8 @@
         <div class="reel-thumb-wrap">
           <img src="{% static 'core/images/royal_maroon_bride.jpg' %}" alt="Imperial Royal Velvet Bride" class="reel-thumb">
           <div class="reel-play-btn"><span>▶</span></div>
-          <div class="reel-badge">✨ 4K CINEMATIC</div>
-          <div class="reel-views">👁 31.8K+ views</div>
+          <div class="reel-badge">4K CINEMATIC</div>
+          <div class="reel-views">31.8K+ views</div>
         </div>
         <div class="reel-info">
           <h4>Imperial Velvet Bride — Royal Motion</h4>
@@ -2169,7 +2179,7 @@
       </div>
       <div class="about-card-action">
         <button class="btn-p" onclick="openAboutModal()">
-          {{ t.about_card_btn|default:'✨ View Complete Journey & Credentials' }}
+          {{ t.about_card_btn|default:'View Complete Journey & Credentials' }}
         </button>
       </div>
     </div>
@@ -2187,7 +2197,7 @@
       <h4 style="font-family:var(--font-h);color:var(--gold);font-size:1.25rem;margin-bottom:4px">Anshita</h4>
       <p style="font-size:.72rem;letter-spacing:1.5px;color:rgba(245,237,214,.6);text-transform:uppercase">Master Bridal Couturier & Specialist</p>
       <a href="https://www.instagram.com/anshitamakeover21/" target="_blank" style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);color:var(--gold);padding:6px 14px;border-radius:18px;font-size:.7rem;text-decoration:none">
-        📸 @anshitamakeover21
+        @anshitamakeover21
       </a>
     </div>
     <div class="about-modal-right">
@@ -2204,10 +2214,10 @@
 
       <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px">
         <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20ji!%20I%20would%20like%20to%20book%20a%20personal%20bridal%20consultation." target="_blank" class="btn-p">
-          📱 Book Master Consultation
+          Book Master Consultation
         </a>
         <a href="https://www.instagram.com/anshitamakeover21/" target="_blank" class="btn-o">
-          📸 Explore Instagram Reels
+          Explore Instagram Reels
         </a>
       </div>
     </div>
@@ -2220,7 +2230,7 @@
     <button class="rev-modal-close" onclick="closeReviewModal()">✕</button>
     <p class="sl">Verified Testimonial</p>
     <h3 class="sh" style="font-size:1.4rem;margin-bottom:6px">Share Your Bridal Experience</h3>
-    <p style="color:rgba(245,237,214,.5);font-size:.78rem;margin-bottom:18px">Your words inspire future brides across India. Thank you for celebrating with Anshita Makeover! ✨</p>
+    <p style="color:rgba(245,237,214,.5);font-size:.78rem;margin-bottom:18px">Your words inspire future brides across India. Thank you for celebrating with Anshita Makeover.</p>
 
     <div class="calc-row">
       <label class="calc-label" for="rev-name">Your Full Name *</label>
@@ -2261,7 +2271,7 @@
     </div>
 
     <button class="btn-p" style="width:100%;margin-top:14px" onclick="submitReviewAjax()">
-      Submit Verified Review ✨
+      Submit Verified Review
     </button>
   </div>
 </div>
@@ -2272,13 +2282,13 @@
   <div class="sw" style="text-align:center;padding:60px 28px">
     <div class="rev">
       <p class="sl" style="justify-content:center">{{ t.academy_sl|default:'Anshita Academy' }}</p>
-      <h2 class="sh" style="text-align:center">{{ t.academy_cta_title|default:'Shape Your Future in Professional Artistry 🎓' }}</h2>
+      <h2 class="sh" style="text-align:center">{{ t.academy_cta_title|default:'Shape Your Future in Professional Artistry' }}</h2>
       <p style="color:rgba(245,237,214,.6);max-width:540px;margin:0 auto 28px;line-height:1.8;font-size:.9rem">
         {{ t.academy_cta_desc|default:'Our signature Professional Makeup Artist Masterclass — 4 weeks, 3 hrs/day. Master international techniques, bridal aesthetics, and launch your certified career across India at ₹35,400.' }}
       </p>
       <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-        <a href="/academy/" class="btn-p">{{ t.btn_academy_cta|default:'🎓 Explore Academy' }}</a>
-        <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20inquire%20about%20the%20upcoming%20Academy%20Masterclass." target="_blank" class="btn-wa">{{ t.btn_academy_inquire|default:'💬 Masterclass Inquiry' }}</a>
+        <a href="/academy/" class="btn-p">{{ t.btn_academy_cta|default:'Explore Academy' }}</a>
+        <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20inquire%20about%20the%20upcoming%20Academy%20Masterclass." target="_blank" class="btn-wa">{{ t.btn_academy_inquire|default:'Masterclass Inquiry' }}</a>
       </div>
     </div>
   </div>
@@ -2299,14 +2309,14 @@
     <a href="/#gallery">{{ t.nav_gallery|default:'Gallery' }}</a>
   </div>
   <div class="f-socials">
-    <a href="https://www.instagram.com/anshitamakeover21/" target="_blank" class="soc-btn" title="Instagram">📸</a>
-    <a href="https://wa.me/{{ whatsapp }}" target="_blank" class="soc-btn" title="WhatsApp">💬</a>
-    <a href="#" class="soc-btn" title="Facebook">📘</a>
-    <a href="#" class="soc-btn" title="YouTube">▶️</a>
+    <a href="https://www.instagram.com/anshitamakeover21/" target="_blank" class="soc-btn" title="Instagram">IG</a>
+    <a href="https://wa.me/{{ whatsapp }}" target="_blank" class="soc-btn" title="WhatsApp">WA</a>
+    <a href="#" class="soc-btn" title="Facebook">FB</a>
+    <a href="#" class="soc-btn" title="YouTube">YT</a>
   </div>
   <!-- Multilingual Switcher in Footer -->
   <div style="margin:20px 0 24px;display:flex;flex-direction:column;align-items:center;gap:10px">
-    <span style="font-size:0.75rem;letter-spacing:2px;color:rgba(212,175,55,0.75);text-transform:uppercase">🌐 Select Language / भाषा चुनें:</span>
+    <span style="font-size:0.75rem;letter-spacing:2px;color:rgba(212,175,55,0.75);text-transform:uppercase">✦ Select Language / भाषा चुनें:</span>
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
       <button class="lang-btn {% if lang == 'english' or not lang %}active{% endif %}" onclick="setLang('english')" style="border:1px solid rgba(212,175,55,.3);padding:6px 14px;border-radius:20px">English (EN)</button>
       <button class="lang-btn {% if lang == 'hindi' or lang == 'hinglish' %}active{% endif %}" onclick="setLang('hindi')" style="border:1px solid rgba(212,175,55,.3);padding:6px 14px;border-radius:20px">हिन्दी (Hindi)</button>
@@ -3100,7 +3110,7 @@ function updateCalc(){
   if(savingsBadge){
     if(totalSavings > 0){
       savingsBadge.style.display = 'inline-block';
-      savingsBadge.innerText = `✨ Total VIP Privilege Savings: ₹${totalSavings.toLocaleString('en-IN')} Applied!`;
+      savingsBadge.innerText = `✦ Total VIP Privilege Savings: ₹${totalSavings.toLocaleString('en-IN')} Applied!`;
     } else {
       savingsBadge.style.display = 'none';
     }
@@ -3125,13 +3135,13 @@ function sendCalculatedQuote(){
   const engCb = document.getElementById('calc-add-engagement');
   const hasEng = engCb && engCb.checked ? 'Yes (with Combo Privilege Discount)' : 'No';
 
-  const msg = `Namaste Anshita Makeover! ✨\nI would like to check availability and book a consultation with current Privilege Offers:\n` +
-    `📍 Location: ${locText}\n` +
-    `👰 Suite: ${pkgText}\n` +
-    `💍 Add Engagement & Roka: ${hasEng}\n` +
-    `📅 Event Days: ${days} Day(s)\n` +
-    `👭 Side Makeups: ${sides} Person(s) (2 FREE + next 2 @ discounted rate)\n` +
-    `💰 Estimated Budget: ${total}\n\n` +
+  const msg = `Namaste Anshita Makeover!\nI would like to check availability and book a consultation with current Privilege Offers:\n` +
+    `• Location: ${locText}\n` +
+    `• Suite: ${pkgText}\n` +
+    `• Add Engagement & Roka: ${hasEng}\n` +
+    `• Event Days: ${days} Day(s)\n` +
+    `• Side Makeups: ${sides} Person(s) (2 FREE + next 2 @ discounted rate)\n` +
+    `• Estimated Budget: ${total}\n\n` +
     `My Wedding Dates: [Please specify dates here]`;
 
   window.open(`https://wa.me/{{ whatsapp }}?text=${encodeURIComponent(msg)}`, '_blank');
@@ -3207,7 +3217,7 @@ async function submitReviewAjax(){
     });
     const data = await res.json();
     if(data.ok){
-      alert('Thank you! Your verified bridal review has been submitted. ✨');
+      alert('Thank you! Your verified bridal review has been submitted.');
       closeReviewModal();
       location.reload();
     } else {
@@ -3460,7 +3470,7 @@ function switchBridalPreview(look){
 
   if(look === 'maroon'){
     if(imgEl) imgEl.src = '/static/core/images/curated/maroon_20251109_191223_p30.jpg';
-    if(badgeEl) badgeEl.textContent = '👑 Palace Velvet Bride (Telegram Shoot) · Click to Explore';
+    if(badgeEl) badgeEl.textContent = 'Palace Velvet Bride (Editorial Shoot) · Click to Explore';
     if(hintEl) hintEl.innerHTML = '<span>✦ Deep Wine Velvet Lehenga & Polki Nath</span><span style="color:var(--gold)">View 2 HD Angles ↗</span>';
     if(cardLeft) cardLeft.onclick = () => openLookbook('maroon_bride');
     btnCrimson?.classList.remove('active');
@@ -3519,7 +3529,7 @@ function sendBundleToWhatsApp(){
   }
   const total = selectedBundleItems.reduce((sum, i) => sum + i.price, 0);
   const itemsText = selectedBundleItems.map(i => `• ${i.name} (₹${i.price.toLocaleString('en-IN')})`).join('%0A');
-  const text = `Namaste Anshita Makeover! ✨%0AI would like to reserve a bespoke customized look package:%0A%0A${itemsText}%0A%0AEstimated Total: ₹${total.toLocaleString('en-IN')}%0APlease let me know the availability and procedure to book.`;
+  const text = `Namaste Anshita Makeover!%0AI would like to reserve a bespoke customized look package:%0A%0A${itemsText}%0A%0AEstimated Total: ₹${total.toLocaleString('en-IN')}%0APlease let me know the availability and procedure to book.`;
   window.open(`https://wa.me/{{ whatsapp }}?text=${text}`, '_blank');
 }
 
@@ -3565,7 +3575,7 @@ function calculateTravelEstimate(){
     // Local zone
     if(badgeEl){
       badgeEl.className = 'travel-badge-pill travel-badge-local';
-      badgeEl.textContent = '📍 Studio Flagship Territory (Local)';
+      badgeEl.textContent = 'Studio Flagship Territory (Local)';
     }
     if(feeDisplayEl){
       feeDisplayEl.textContent = '₹0 (Zero Surcharge)';
@@ -3578,7 +3588,7 @@ function calculateTravelEstimate(){
     const estFee = nearMin * days;
     if(badgeEl){
       badgeEl.className = 'travel-badge-pill travel-badge-near';
-      badgeEl.textContent = '🚗 Regional MP Zone (~' + dist + ' Km)';
+      badgeEl.textContent = 'Regional MP Zone (~' + dist + ' Km)';
     }
     if(feeDisplayEl){
       feeDisplayEl.textContent = `~₹${(nearMin*days).toLocaleString('en-IN')} – ₹${(nearMax*days).toLocaleString('en-IN')}`;
@@ -3590,7 +3600,7 @@ function calculateTravelEstimate(){
     // Far Pan-India Destination
     if(badgeEl){
       badgeEl.className = 'travel-badge-pill travel-badge-far';
-      badgeEl.textContent = '✈️ Pan-India Destination (~' + dist + ' Km)';
+      badgeEl.textContent = 'Pan-India Destination (~' + dist + ' Km)';
     }
     if(feeDisplayEl){
       feeDisplayEl.textContent = `~₹${(farMin*days).toLocaleString('en-IN')} / Day Surcharge`;
@@ -3605,7 +3615,7 @@ function sendTravelQuoteWhatsApp(){
   const city = document.getElementById('travelCitySelect')?.value || 'Jabalpur';
   const days = document.getElementById('travelDaysSelect')?.value || '1';
   const dist = cityDistances[city] !== undefined ? cityDistances[city] : 350;
-  const text = `Namaste Anshita Makeover! ✨%0AI would like to inquire about wedding makeup booking in *${city}* (Approx ${dist} Km from Jabalpur) for ${days} day(s).%0APlease provide available dates and exact conveyance / travel terms.`;
+  const text = `Namaste Anshita Makeover!%0AI would like to inquire about wedding makeup booking in *${city}* (Approx ${dist} Km from Jabalpur) for ${days} day(s).%0APlease provide available dates and exact conveyance / travel terms.`;
   window.open(`https://wa.me/{{ whatsapp }}?text=${text}`, '_blank');
 }
 

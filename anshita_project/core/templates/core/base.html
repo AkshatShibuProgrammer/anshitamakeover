@@ -8,6 +8,40 @@
 <title>{% block title %}Anshita Makeover — India's Premier Bridal Studio{% endblock %}</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+  window.dismissPreloader = function() {
+    if (window._preloaderDone) return;
+    window._preloaderDone = true;
+    try { sessionStorage.setItem('anshita_preloader_seen', 'true'); } catch(e){}
+    document.documentElement.classList.add('preloader-skipped');
+    var pl = document.getElementById('preloader');
+    if (pl) {
+      pl.classList.add('curtains-open');
+      setTimeout(function() {
+        try {
+          pl.style.display = 'none';
+          if (typeof initReveal === 'function') initReveal();
+          if (typeof countUp === 'function') countUp();
+        } catch(e){}
+      }, 400);
+    } else {
+      if (typeof initReveal === 'function') initReveal();
+      if (typeof countUp === 'function') countUp();
+    }
+  };
+
+  try {
+    if (sessionStorage.getItem('anshita_preloader_seen') === 'true') {
+      document.documentElement.classList.add('preloader-skipped');
+      window._preloaderDone = true;
+    }
+  } catch(e){}
+
+  // Bulletproof safety timeout: preloader auto-dismisses after 1.5s max so website is never blocked
+  setTimeout(function() {
+    window.dismissPreloader();
+  }, 1500);
+</script>
 
 <style>
 /* ═══════════════════════════════════════════════════
@@ -50,7 +84,7 @@
 
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;font-size:16px;overflow-x:hidden;max-width:100vw;width:100%}
-body{background:var(--bg-main);color:var(--text-main);font-family:var(--font-b);overflow-x:hidden;max-width:100vw;width:100%;position:relative;cursor:none;transition:background-color .35s ease, color .35s ease}
+body{background:var(--bg-main);color:var(--text-main);font-family:var(--font-b);overflow-x:hidden;max-width:100vw;width:100%;position:relative;cursor:auto;transition:background-color .35s ease, color .35s ease}
 [data-theme="light"] nav#mnav{background:rgba(250,247,242,0.92)!important;border-bottom:1px solid rgba(154,123,28,0.25)!important;box-shadow:0 8px 24px rgba(0,0,0,0.06)!important}
 [data-theme="light"] .nlinks a, [data-theme="light"] .nav-drop-btn{color:#2a241e!important}
 [data-theme="light"] .nlinks a:hover, [data-theme="light"] .nav-drop-btn:hover{color:#000!important}
@@ -58,13 +92,12 @@ body{background:var(--bg-main);color:var(--text-main);font-family:var(--font-b);
 [data-theme="light"] .sh, [data-theme="light"] .sh-main{color:#1a1410!important}
 [data-theme="light"] .ss{color:var(--text-sub)!important}
 body.admin-open{overflow:hidden}
-@media(max-width:768px){body{cursor:auto}}
 img{max-width:100%;display:block}
 a{text-decoration:none;color:inherit}
 button{cursor:pointer;font-family:var(--font-b)}
 
 /* ═══ CURSOR ═══ */
-#cur-dot,#cur-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%)}
+#cur-dot,#cur-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:999999;border-radius:50%;transform:translate(-50%,-50%)}
 #cur-dot{width:8px;height:8px;background:var(--gold)}
 #cur-ring{width:34px;height:34px;border:1.5px solid var(--gold);opacity:.7;transition:transform .15s,border-color .2s}
 @media(max-width:768px){#cur-dot,#cur-ring{display:none}}
@@ -3575,14 +3608,14 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
 </div>
 
 <!-- PRELOADER (ARCHITECTURAL DUAL-CURTAIN & HAUTE COUTURE VECTOR CREST) -->
-<div id="preloader">
+<div id="preloader" onclick="window.dismissPreloader && dismissPreloader()">
   <div class="preloader-curtain curtain-left"></div>
   <div class="preloader-curtain curtain-right"></div>
   <div class="preloader-stage">
     <div class="crest-svg-container">
       {% include "core/includes/anshita_crest.html" %}
     </div>
-    <button class="pl-skip" onclick="dismissPreloader()" title="Press Escape or Click to Enter">Enter Studio →</button>
+    <button type="button" class="pl-skip" onclick="event.stopPropagation(); dismissPreloader();" title="Press Escape or Click to Enter">Enter Studio →</button>
   </div>
 </div>
 
@@ -3595,7 +3628,7 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
 {% if default_coupon and default_coupon.active %}
 <div class="today-vip-ribbon" id="today-vip-ribbon">
   <div style="max-width:1200px;margin:0 auto;padding:7px 16px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;font-size:.78rem">
-    <span class="vip-ribbon-badge">⚡ TODAY'S SPECIAL DEAL</span>
+    <span class="vip-ribbon-badge">✦ TODAY'S SPECIAL PRIVILEGE</span>
     <span class="vip-ribbon-text">{{ default_coupon.badge }}</span>
     <span class="vip-ribbon-code">AUTO-APPLIED: <strong>{{ default_coupon.code }}</strong> (Extra {{ default_coupon.discount }}{% if default_coupon.type == 'percent' %}%{% else %}₹{% endif %} OFF)</span>
   </div>
@@ -3641,10 +3674,10 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
         {{ t.nav_services|default:'Services' }} <span style="font-size:.65rem;opacity:.7">▾</span>
       </a>
       <div class="nav-dropdown-menu">
-        <a href="/#services"><span>💄 {{ t.svc_makeup_title|default:'Signature Services' }}</span></a>
-        <a href="/#packages"><span>👑 {{ t.nav_packages|default:'Bridal Suites & Packages' }}</span></a>
-        <a href="/#service-compare"><span>⚡ Compare Services</span> <span class="nav-badge-pill">NEW</span></a>
-        <a href="/#package-compare"><span>⚖️ Compare Suites</span> <span class="nav-badge-pill">LIVE</span></a>
+        <a href="/#services"><span>✦ {{ t.svc_makeup_title|default:'Signature Services' }}</span></a>
+        <a href="/#packages"><span>✦ {{ t.nav_packages|default:'Bridal Suites & Packages' }}</span></a>
+        <a href="/#service-compare"><span>✦ Compare Services</span> <span class="nav-badge-pill">NEW</span></a>
+        <a href="/#package-compare"><span>✦ Compare Suites</span> <span class="nav-badge-pill">LIVE</span></a>
       </div>
     </li>
 
@@ -3654,9 +3687,9 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
         Compare <span class="nav-badge-pill">MATRIX</span> <span style="font-size:.65rem;opacity:.7">▾</span>
       </a>
       <div class="nav-dropdown-menu">
-        <a href="/#service-compare"><span>⚡ Compare All Services</span></a>
-        <a href="/#package-compare"><span>⚖️ Compare Bridal Suites</span></a>
-        <a href="/#calc-section"><span>🧮 Budget Estimator</span></a>
+        <a href="/#service-compare"><span>✦ Compare All Services</span></a>
+        <a href="/#package-compare"><span>✦ Compare Bridal Suites</span></a>
+        <a href="/#calc-section"><span>✦ Budget Estimator</span></a>
       </div>
     </li>
 
@@ -3669,14 +3702,14 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
   <!-- Right: Minimalist Language Pill & Mobile View Simulator & Concierge -->
   <div class="nav-right-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0">
     <button class="theme-toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle Dark / Light Mode" style="background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.3);color:var(--gold);padding:6px 11px;border-radius:20px;font-size:0.75rem;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-weight:600;transition:all 0.3s ease">
-      <span id="theme-icon">🌙</span> <span id="theme-label" style="font-size:0.68rem;letter-spacing:1px;text-transform:uppercase">Dark</span>
+      <span id="theme-icon">☽</span> <span id="theme-label" style="font-size:0.68rem;letter-spacing:1px;text-transform:uppercase">Dark</span>
     </button>
     <button class="mobile-sim-toggle-btn" id="nav-sim-toggle" onclick="toggleMobileSimulator()" title="Toggle Mobile Phone Mode Viewport (390×844)">
-      📱 <span class="sim-label-text">Mobile View</span>
+      ✦ <span class="sim-label-text">Mobile View</span>
     </button>
-    <a href="https://wa.me/{{ whatsapp }}" target="_blank" class="nav-wa">💬 {{ t.nav_concierge|default:'Concierge' }}</a>
+    <a href="https://wa.me/{{ whatsapp }}" target="_blank" class="nav-wa">✦ {{ t.nav_concierge|default:'Concierge' }}</a>
     <div class="nav-lang" title="Select Language / भाषा चुनें">
-      <span style="font-size:.72rem;padding-left:4px;color:var(--gold);line-height:1">🌐</span>
+      <span style="font-size:.72rem;padding-left:4px;color:var(--gold);line-height:1">✦</span>
       <button class="lang-btn {% if lang == 'english' or not lang %}active{% endif %}" onclick="setLang('english')" title="English">EN</button>
       <button class="lang-btn {% if lang == 'hindi' or lang == 'hinglish' %}active{% endif %}" onclick="setLang('hindi')" title="हिन्दी (Hindi)">हिन्दी</button>
       <button class="lang-btn {% if lang == 'marathi' %}active{% endif %}" onclick="setLang('marathi')" title="मराठी (Marathi)">मराठी</button>
@@ -3729,7 +3762,7 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
       Founder & Celebrity Makeup Artist: Anshita Sinha
     </div>
     <a href="https://wa.me/{{ whatsapp }}" target="_blank" class="btn-wa" style="text-align:center;padding:12px;font-size:.78rem">
-      💬 Reserve VIP Consultation
+      Reserve VIP Consultation
     </a>
   </div>
 </aside>
@@ -3743,21 +3776,21 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
       <div class="chat-hdr-info">
         <img src="{% static 'core/images/logo.jpeg' %}" alt="Bot">
         <div>
-          <h4>Anshita Concierge ✨</h4>
+          <h4>Anshita Concierge</h4>
           <p>Online & At Your Service</p>
         </div>
       </div>
       <button class="chat-close" onclick="toggleChat()">✕</button>
     </div>
     <div class="chat-msgs" id="chat-msgs">
-      <div class="msg bot">Namaste and welcome to Anshita Makeover! ✨ How may I assist you with our bespoke bridal, hair, nail artistry, or academy masterclass today? 💄</div>
+      <div class="msg bot">Namaste and welcome to Anshita Makeover. How may I assist you with our bespoke bridal, hair, nail artistry, or academy masterclass today?</div>
     </div>
     <div class="chat-inp-row">
       <input class="chat-inp" id="chat-inp" placeholder="Type your inquiry here..." onkeydown="chatKey(event)">
       <button class="chat-send" onclick="sendChat()">➤</button>
     </div>
   </div>
-  <button class="chat-toggle" onclick="toggleChat()">💬</button>
+  <button class="chat-toggle" onclick="toggleChat()">✦</button>
 </div>
 
 <!-- ADMIN LOGIN MODAL -->
@@ -3773,8 +3806,8 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
     <input class="adm-inp" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
     <button class="adm-btn" id="login-submit-btn" onclick="doLogin()" style="margin-top:12px">Login as Admin</button>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:.72rem">
-      <button type="button" onclick="document.getElementById('login-user').value='akshat';document.getElementById('login-pass').value='Anshita@2026';doLogin();" style="background:none;border:none;color:var(--gold);cursor:pointer;padding:0;letter-spacing:.5px;text-decoration:underline">⚡ Quick Auto-Fill (akshat)</button>
-      <a href="/django-admin/password_reset/" style="color:rgba(232,164,184,.7);text-decoration:none">🔑 Reset</a>
+      <button type="button" onclick="document.getElementById('login-user').value='akshat';document.getElementById('login-pass').value='Anshita@2026';doLogin();" style="background:none;border:none;color:var(--gold);cursor:pointer;padding:0;letter-spacing:.5px;text-decoration:underline">Auto-Fill Credentials (akshat)</button>
+      <a href="/django-admin/password_reset/" style="color:rgba(232,164,184,.7);text-decoration:none">Reset Password</a>
     </div>
   </div>
 </div>
@@ -3783,57 +3816,43 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
 <div class="reel-modal" id="reel-modal" onclick="if(event.target===this)closeReelModal()">
   <div class="reel-modal-container">
     <div class="reel-modal-header">
-      <div class="reel-modal-user">
-        <img src="{% static 'core/images/anshita_front.jpg' %}" class="reel-modal-avatar" alt="Anshita Makeover">
-        <div class="reel-modal-meta">
-          <strong id="reel-modal-user-tag">@anshitamakeover21 ✓</strong>
-          <small id="reel-modal-user-sub">Anshita Makeover · Reel & Video Spotlight</small>
-        </div>
-      </div>
+      <div class="reel-modal-title" id="reel-modal-title">Instagram Reel</div>
       <button class="reel-modal-close" onclick="closeReelModal()">✕</button>
     </div>
-    <div class="reel-modal-video-wrap" id="reel-modal-video-wrap">
-      <video id="reel-modal-vid" class="reel-modal-video" playsinline loop onclick="toggleReelPlay()">
-        Your browser does not support the video tag.
-      </video>
-      <iframe id="reel-modal-iframe" class="reel-modal-video" style="display:none;border:none;width:100%;height:100%" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      <div id="reel-modal-embed-box" style="display:none;width:100%;height:100%;overflow-y:auto"></div>
-      <button class="reel-sound-btn" id="reel-sound-btn" onclick="toggleReelSound()" title="Toggle Sound">🔇</button>
+    <div class="reel-modal-body">
+      <div class="reel-iframe-wrap">
+        <iframe id="reel-iframe" src="" allowfullscreen></iframe>
+        <div id="reel-embed-box"></div>
+        <video id="reel-video" playsinline controls loop></video>
+      </div>
     </div>
     <div class="reel-modal-footer">
-      <div class="reel-modal-title" id="reel-modal-title">Bridal Reel</div>
-      <div class="reel-modal-caption" id="reel-modal-caption">Authentic bridal makeover and artistry.</div>
-      <div class="reel-modal-actions">
-        <span id="reel-audio-tag" style="font-size:.7rem;color:rgba(245,237,214,.5)">🎵 Original Bridal Symphony · Anshita</span>
-        <a id="reel-external-link" href="https://www.instagram.com/anshitamakeover21/" target="_blank" class="reel-ig-btn">
-          <span id="reel-link-label">Watch on Instagram</span> ↗
-        </a>
+      <div class="reel-footer-info">
+        <span class="reel-user" id="reel-user">@anshitamakeover21</span>
+        <span class="reel-audio" id="reel-audio">Instagram Reel Spotlight</span>
       </div>
+      <a id="reel-ext-link" href="#" target="_blank" class="reel-ext-btn">
+        <span id="reel-ext-label">Open in Instagram</span> ↗
+      </a>
     </div>
   </div>
 </div>
 
-<!-- ═══ INTERACTIVE EDITORIAL PEEK MODAL GALLERY (EVAGHER STYLE) ═══ -->
-<div class="peek-gallery-modal" id="editorial-peek-gallery" onclick="if(event.target===this)closePeekGallery()">
-  <button class="peek-gallery-close" onclick="closePeekGallery()" aria-label="Close Lookbook">✕</button>
+<!-- EDITORIAL PEEK GALLERY (FULLSCREEN OVERLAY) -->
+<div class="peek-gallery-modal" id="peek-gallery-modal">
+  <div class="peek-header-bar">
+    <div class="peek-brand-mark">
+      <span class="pbm-accent">HAUTE COUTURE</span>
+      <span class="pbm-title">EDITORIAL LOOKBOOK</span>
+    </div>
+    <button class="peek-close-btn" onclick="closePeekGallery()" title="Close Lookbook (ESC)">
+      <span>CLOSE</span> ✕
+    </button>
+  </div>
   
-  <button class="peek-arrow peek-arrow-prev" onclick="prevPeekImage()" aria-label="Previous Image">❮</button>
-  <button class="peek-arrow peek-arrow-next" onclick="nextPeekImage()" aria-label="Next Image">❯</button>
-
-  <div class="peek-stage-track" id="peek-stage-track">
-    <!-- Left Margin Peek Image -->
-    <div class="peek-slide-prev" id="peek-slide-prev" onclick="prevPeekImage()">
-      <img id="peek-img-prev" src="" alt="Previous Look">
-    </div>
-
-    <!-- Main Centered Active Image -->
-    <div class="peek-slide-frame" id="peek-slide-frame">
-      <img id="peek-img-active" src="" alt="Active Couture Look">
-    </div>
-
-    <!-- Right Margin Peek Image -->
-    <div class="peek-slide-next" id="peek-slide-next" onclick="nextPeekImage()">
-      <img id="peek-img-next" src="" alt="Next Look">
+  <div class="peek-cards-viewport" id="peek-cards-viewport">
+    <div class="peek-cards-strip" id="peek-cards-strip">
+      <!-- Injected dynamically via JS -->
     </div>
   </div>
 
@@ -3846,10 +3865,10 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
     </div>
     <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
       <a id="peek-ig-view" href="https://www.instagram.com/anshitamakeover21/" target="_blank" class="peek-ig-link">
-        <span id="peek-link-label">📸 View Media</span> ↗
+        <span id="peek-link-label">View Media</span> ↗
       </a>
       <a id="peek-wa-inquire" href="https://wa.me/{{ whatsapp }}" target="_blank" class="btn-wa" style="padding:6px 14px;font-size:.68rem">
-        💬 Inquire Look
+        Inquire Look
       </a>
     </div>
   </div>
@@ -3868,7 +3887,7 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
         <div class="lightbox-cat" id="lightbox-cat">Bridal Suite</div>
       </div>
       <button class="btn-wa" id="lightbox-wa-btn" style="padding:8px 18px;font-size:.75rem">
-        💬 Inquire This Look on WhatsApp
+        Inquire This Look on WhatsApp
       </button>
     </div>
   </div>
@@ -3879,7 +3898,7 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
 <div class="exit-modal" id="exit-modal" onclick="if(event.target===this)closeExitModal()">
   <div class="exit-box">
     <button class="exit-close" onclick="closeExitModal()">✕</button>
-    <div class="exit-sparkle">👑</div>
+    <div class="exit-sparkle">✦</div>
     <p class="exit-sl">✦ EXCLUSIVE SECRET PRIVILEGE ✦</p>
     <h3 class="exit-title">Wait! A Special Bridal Privilege For You</h3>
     <p class="exit-sub">
@@ -3891,12 +3910,12 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
         <span class="exit-cpn-code" id="exit-cpn-code">{{ exit_coupon.code }}</span>
         <span class="exit-cpn-desc">{{ exit_coupon.label }}</span>
       </div>
-      <button class="exit-copy-badge">Claim Privilege 🏷️</button>
+      <button class="exit-copy-badge">Claim Privilege ✦</button>
     </div>
 
     <div class="exit-actions">
       <button class="btn-p exit-claim-btn" onclick="claimExitCoupon()">
-        ✨ Apply Extra {{ exit_coupon.discount }}% Privilege & Reserve
+        Apply Extra {{ exit_coupon.discount }}% Privilege & Reserve
       </button>
       <button class="exit-dismiss-btn" onclick="closeExitModal()">
         No thanks, continue browsing
@@ -4280,11 +4299,11 @@ function applyTheme(theme){
   const label = document.getElementById('theme-label');
   if(theme === 'light'){
     root.setAttribute('data-theme', 'light');
-    if(icon) icon.textContent = '☀️';
+    if(icon) icon.textContent = '☼';
     if(label) label.textContent = 'Day';
   } else {
     root.removeAttribute('data-theme');
-    if(icon) icon.textContent = '🌙';
+    if(icon) icon.textContent = '☽';
     if(label) label.textContent = 'Night';
   }
   localStorage.setItem('anshita_theme', theme);
@@ -4313,7 +4332,7 @@ function copyCoupon(){const c=document.getElementById('cb-code').textContent;nav
 (function startTimer(){
   const t=document.getElementById('cb-timer');if(!t)return;
   const now=new Date(),end=new Date(now.getFullYear(),now.getMonth()+1,1);
-  setInterval(()=>{const d=end-new Date();if(d<=0)return;const dd=Math.floor(d/864e5),hh=Math.floor(d%864e5/36e5),mm=Math.floor(d%36e5/6e4),ss=Math.floor(d%6e4/1e3);t.textContent=`⏰ ${dd}d ${hh}h ${mm}m ${ss}s`;},1000);
+  setInterval(()=>{const d=end-new Date();if(d<=0)return;const dd=Math.floor(d/864e5),hh=Math.floor(d%864e5/36e5),mm=Math.floor(d%36e5/6e4),ss=Math.floor(d%6e4/1e3);t.textContent=`${dd}d ${hh}h ${mm}m ${ss}s remaining`;},1000);
 })();
 
 /* ── Gallery Filter ── */
@@ -4446,7 +4465,7 @@ function openReelModal(videoUrl, title, caption, posterUrl, mediaType, externalU
       if(extLbl) extLbl.textContent = 'Open Reel in Instagram';
     }
     if(userTag) userTag.textContent = '@anshitamakeover21 ✓';
-    if(audioTag) audioTag.textContent = '📸 Instagram Reel Spotlight';
+    if(audioTag) audioTag.textContent = 'Instagram Reel Spotlight';
 
   } else {
     // Fallback standard video
@@ -4653,13 +4672,13 @@ window.lookbookGroups = {
     category: 'Palace Bridal Couture',
     items: [
       {
-        src: '/static/core/images/curated/dsc09702.jpg',
+        src: '/static/core/images/curated/dsc09702.jpg?v=2',
         caption: 'Palace Maroon Velvet Heritage · Deep Wine Velvet Zardozi Lehenga with Polki Nath & Double Dupatta',
         category: 'Palace Bridal Couture',
         instagram: 'https://www.instagram.com/anshitamakeover21/'
       },
       {
-        src: '/static/core/images/curated/dsc09712.jpg',
+        src: '/static/core/images/curated/dsc09712.jpg?v=2',
         caption: 'Palace Maroon Velvet · Close-Up Sheer Veil Framing & Antique Polki Nath',
         category: 'Palace Bridal Couture',
         instagram: 'https://www.instagram.com/anshitamakeover21/'
@@ -4847,8 +4866,8 @@ window.openLookbook = function(key){
     'cocktail_gown': 'lavender_cocktail',
     'engagement': 'lilac_ruffle',
     'engagement_pastel': 'lilac_ruffle',
-    'sangeet': 'yellow_haldi',
-    'haldi': 'yellow_haldi',
+    'sangeet': 'lilac_ruffle',
+    'haldi': 'lilac_ruffle',
     'sangeet_yellow': 'yellow_haldi',
     'saree': 'silk_saree',
     'hair': 'silk_saree',
@@ -4857,7 +4876,18 @@ window.openLookbook = function(key){
     'party': 'bridesmaids_gold',
     'bridesmaids_gold': 'bridesmaids_gold',
     'bengali': 'bengali_heritage',
-    'bengali_heritage': 'bengali_heritage',
+    '1': 'bengali_heritage',
+    '2': 'maroon_velvet',
+    '3': 'christian_ivory',
+    '4': 'fuchsia_palace',
+    '5': 'royal_crimson',
+    '6': 'maroon_veil',
+    '7': 'lavender_cocktail',
+    '8': 'lilac_ruffle',
+    '9': 'yellow_haldi',
+    '10': 'silk_saree',
+    '11': 'bridesmaids_gold',
+    '12': 'studio_session',
     'studio': 'studio_session',
     'studio_session': 'studio_session'
   };
@@ -4927,13 +4957,13 @@ function updatePeekStage(){
       if(linkLabel) linkLabel.textContent = '▶ Watch on YouTube';
     } else if(curr.media_type === 'instagram' || curr.instagram){
       igBtn.href = curr.instagram || curr.external_url;
-      if(linkLabel) linkLabel.textContent = '📸 View on Instagram';
+      if(linkLabel) linkLabel.textContent = 'View on Instagram';
     } else if(curr.external_url){
       igBtn.href = curr.external_url;
-      if(linkLabel) linkLabel.textContent = '↗ View Source';
+      if(linkLabel) linkLabel.textContent = 'View Source';
     } else {
       igBtn.href = curr.src;
-      if(linkLabel) linkLabel.textContent = '🔍 High-Res View';
+      if(linkLabel) linkLabel.textContent = 'High-Res View';
     }
   }
 }
@@ -5169,13 +5199,13 @@ function claimExitCoupon(){
       if(cta){
         const pkgName = card.querySelector('.pkg-name')?.textContent || 'Bridal Suite';
         cta.onclick = () => {
-          window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(`Namaste Anshita Makeover! ✨\nI have unlocked Secret Privilege Code: ${code} (+${extraDisc}% Extra Discount)!\nI would like to reserve the ${pkgName} at the VIP price of ₹${finalPrice.toLocaleString('en-IN')}.`), '_blank');
+          window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(`Namaste Anshita Makeover!\nI have unlocked Secret Privilege Code: ${code} (+${extraDisc}% Extra Discount)!\nI would like to reserve the ${pkgName} at the VIP price of ₹${finalPrice.toLocaleString('en-IN')}.`), '_blank');
         };
       }
     }
   });
 
-  alert(`🎉 Secret Privilege Activated!\n\nCoupon Code: ${code} (+${extraDisc}% EXTRA DISCOUNT)\nYour bridal package prices have been upgraded with the secret discount! ✨`);
+  alert(`✦ Secret Privilege Activated\n\nCoupon Code: ${code} (+${extraDisc}% Extra Discount)\nYour bridal package rates have been updated with this privilege.`);
 }
 
 /* ── Chatbot ── */
@@ -5256,7 +5286,7 @@ function renderMarkdownToHtml(md){
   html = html.replace(/(https:\/\/wa\.me\/[^\s\<\>"\']+)/g, function(url) {
     return `<div style="margin: 10px 0 6px 0; text-align: center;">
       <a href="${url}" target="_blank" class="btn-wa" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;font-size:0.75rem;font-weight:700;border-radius:20px;text-decoration:none;box-shadow:0 4px 15px rgba(37,211,102,0.35);animation:pulseWa 2s infinite;">
-        <span>💬 Lock Privilege on WhatsApp</span> ↗
+        <span>Lock Privilege on WhatsApp</span> ↗
       </a>
     </div>`;
   });
@@ -5386,6 +5416,7 @@ window.addEventListener('message', function(e) {
       el.style.position = 'relative';
       el.appendChild(badge);
       setTimeout(() => { badge.style.opacity = '0'; setTimeout(() => badge.remove(), 400); }, 7000);
+    }
   } else if (action === 'open_lookbook') {
     if (typeof filterGal === 'function') {
       filterGal('all');
