@@ -8,6 +8,45 @@
 <title>{% block title %}Anshita Makeover — India's Premier Bridal Studio{% endblock %}</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.12.0/headroom.min.js"></script>
+<link rel="stylesheet" href="{% static 'core/css/animations.css' %}">
+<script>
+(function() {
+  try {
+    if (sessionStorage.getItem('anshita_preloader_seen') === 'true') {
+      document.documentElement.classList.add('preloader-skipped');
+    }
+  } catch(e) {}
+})();
+
+window.toggleSideDrawer = function(){
+  const d = document.getElementById('side-drawer');
+  const b = document.getElementById('side-drawer-backdrop');
+  const t = document.getElementById('nav-menu-trigger');
+  if(!d) return;
+  const isOpen = d.classList.contains('open');
+  if(isOpen){
+    window.closeSideDrawer();
+  } else {
+    d.classList.add('open');
+    if(b) b.classList.add('open');
+    if(t) t.classList.add('active');
+    document.body.classList.add('menu-open');
+    document.body.style.overflow = 'hidden';
+  }
+};
+
+window.closeSideDrawer = function(){
+  const d = document.getElementById('side-drawer');
+  const b = document.getElementById('side-drawer-backdrop');
+  const t = document.getElementById('nav-menu-trigger');
+  if(d) d.classList.remove('open');
+  if(b) b.classList.remove('open');
+  if(t) t.classList.remove('active');
+  document.body.classList.remove('menu-open');
+  document.body.style.overflow = '';
+};
+</script>
 
 <style>
 /* ═══════════════════════════════════════════════════
@@ -50,7 +89,7 @@
 
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;font-size:16px;overflow-x:hidden;max-width:100vw;width:100%}
-body{background:var(--bg-main);color:var(--text-main);font-family:var(--font-b);overflow-x:hidden;max-width:100vw;width:100%;position:relative;cursor:none;transition:background-color .35s ease, color .35s ease}
+body{background:var(--bg-main);color:var(--text-main);font-family:var(--font-b);overflow-x:hidden;max-width:100vw;width:100%;position:relative;cursor:none;padding-top:var(--nav-h);transition:background-color .35s ease, color .35s ease}
 [data-theme="light"] nav#mnav{background:rgba(250,247,242,0.92)!important;border-bottom:1px solid rgba(154,123,28,0.25)!important;box-shadow:0 8px 24px rgba(0,0,0,0.06)!important}
 [data-theme="light"] .nlinks a, [data-theme="light"] .nav-drop-btn{color:#2a241e!important}
 [data-theme="light"] .nlinks a:hover, [data-theme="light"] .nav-drop-btn:hover{color:#000!important}
@@ -230,6 +269,12 @@ button{cursor:pointer;font-family:var(--font-b)}
 }
 
 /* Parting Doors Animation */
+#preloader.curtains-open{
+  pointer-events:none !important;
+}
+#preloader.curtains-open .preloader-curtain{
+  pointer-events:none !important;
+}
 #preloader.curtains-open .curtain-left{
   transform:translateX(-100%);
 }
@@ -256,9 +301,9 @@ button{cursor:pointer;font-family:var(--font-b)}
 .cb-timer{font-size:.7rem;color:var(--rose)}
 @media(max-width:600px){.cb-txt{display:none}.cb-code{font-size:.75rem}}
 
-/* ═══ CHARISMATIC LUXURY LIQUID GLASS NAV ═══ */
+/* ═══ CHARISMATIC LUXURY LIQUID GLASS NAV WITH HEADROOM ═══ */
 nav#mnav{
-  position:sticky;top:0;z-index:700;
+  position:fixed;top:0;left:0;right:0;z-index:700;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 24px;height:var(--nav-h);
   background:rgba(8,8,8,.85);
@@ -266,8 +311,18 @@ nav#mnav{
   -webkit-backdrop-filter:blur(24px) saturate(180%);
   border-bottom:1px solid rgba(212,175,55,.18);
   box-shadow:0 8px 32px rgba(0,0,0,.45);
-  transition:all .45s cubic-bezier(.16,1,.3,1);
+  transition:transform .4s cubic-bezier(.16,1,.3,1), background .35s ease, height .35s ease, box-shadow .35s ease;
+  will-change:transform;
   gap:16px;
+}
+nav#mnav.headroom--pinned{
+  transform:translateY(0%);
+}
+nav#mnav.headroom--unpinned{
+  transform:translateY(-105%);
+}
+nav#mnav.headroom--top{
+  box-shadow:0 4px 20px rgba(0,0,0,.2);
 }
 nav#mnav::before{
   content:'';position:absolute;top:0;left:0;right:0;height:1px;
@@ -3613,152 +3668,13 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
   </div>
 </div>
 
-<!-- NAV -->
-<nav id="mnav">
-  <!-- Left: Minimalist Menu Trigger (Evagher Style) -->
-  <button class="nav-menu-trigger" id="nav-menu-trigger" onclick="toggleSideDrawer()" aria-label="Open Navigation">
-    <div class="trigger-icon">
-      <span></span><span></span><span></span>
-    </div>
-    <span>MENU</span>
-  </button>
-
-  <!-- Center: Brand Emblem & Monogram -->
-  <a href="/" class="nl">
-    <div class="nl-glow"></div>
-    <img src="{% static 'core/images/brand/anshita_haute_emblem.png' %}" alt="Anshita Makeover" style="height:44px;width:auto;object-fit:contain;filter:drop-shadow(0 0 10px rgba(212,175,55,0.4));">
-    <div class="nl-brand-txt">
-      <span class="nl-brand-title">ANSHITA</span>
-      <span class="nl-brand-sub">MAKEOVER</span>
-    </div>
-  </a>
-
-  <!-- Desktop Minimal Quick Links (Hidden on small viewports) -->
-  <ul class="nlinks" id="nlinks">
-    <!-- Services & Suites Dropdown -->
-    <li class="nav-dropdown">
-      <a href="/#services" class="nav-drop-btn">
-        {{ t.nav_services|default:'Services' }} <span style="font-size:.65rem;opacity:.7">▾</span>
-      </a>
-      <div class="nav-dropdown-menu">
-        <a href="/#services"><span>💄 {{ t.svc_makeup_title|default:'Signature Services' }}</span></a>
-        <a href="/#packages"><span>👑 {{ t.nav_packages|default:'Bridal Suites & Packages' }}</span></a>
-        <a href="/#service-compare"><span>⚡ Compare Services</span> <span class="nav-badge-pill">NEW</span></a>
-        <a href="/#package-compare"><span>⚖️ Compare Suites</span> <span class="nav-badge-pill">LIVE</span></a>
-      </div>
-    </li>
-
-    <!-- Compare Matrix Quick Link -->
-    <li class="nav-dropdown">
-      <a href="/#service-compare" class="nav-drop-btn">
-        Compare <span class="nav-badge-pill">MATRIX</span> <span style="font-size:.65rem;opacity:.7">▾</span>
-      </a>
-      <div class="nav-dropdown-menu">
-        <a href="/#service-compare"><span>⚡ Compare All Services</span></a>
-        <a href="/#package-compare"><span>⚖️ Compare Bridal Suites</span></a>
-        <a href="/#calc-section"><span>🧮 Budget Estimator</span></a>
-      </div>
-    </li>
-
-    <li><a href="/#outstation">{{ t.nav_outstation|default:'Destinations' }}</a></li>
-    <li><a href="/#gallery">{{ t.nav_gallery|default:'Gallery' }}</a></li>
-    <li><a href="/academy/">{{ t.nav_academy|default:'Academy' }}</a></li>
-    <li><a href="/#about">{{ t.nav_about|default:'About' }}</a></li>
-  </ul>
-
-  <!-- Right: Minimalist Language Pill & Mobile View Simulator & Concierge -->
-  <div class="nav-right-actions" style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-    <button class="theme-toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle Dark / Light Mode" style="background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.3);color:var(--gold);padding:6px 11px;border-radius:20px;font-size:0.75rem;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-weight:600;transition:all 0.3s ease">
-      <span id="theme-icon">🌙</span> <span id="theme-label" style="font-size:0.68rem;letter-spacing:1px;text-transform:uppercase">Dark</span>
-    </button>
-    <button class="mobile-sim-toggle-btn" id="nav-sim-toggle" onclick="toggleMobileSimulator()" title="Toggle Mobile Phone Mode Viewport (390×844)">
-      📱 <span class="sim-label-text">Mobile View</span>
-    </button>
-    <a href="https://wa.me/{{ whatsapp }}" target="_blank" class="nav-wa">💬 {{ t.nav_concierge|default:'Concierge' }}</a>
-    <div class="nav-lang" title="Select Language / भाषा चुनें">
-      <span style="font-size:.72rem;padding-left:4px;color:var(--gold);line-height:1">🌐</span>
-      <button class="lang-btn {% if lang == 'english' or not lang %}active{% endif %}" onclick="setLang('english')" title="English">EN</button>
-      <button class="lang-btn {% if lang == 'hindi' or lang == 'hinglish' %}active{% endif %}" onclick="setLang('hindi')" title="हिन्दी (Hindi)">हिन्दी</button>
-      <button class="lang-btn {% if lang == 'marathi' %}active{% endif %}" onclick="setLang('marathi')" title="मराठी (Marathi)">मराठी</button>
-      <button class="lang-btn {% if lang == 'bundelkhandi' %}active{% endif %}" onclick="setLang('bundelkhandi')" title="बुंदेलखंडी (Bundelkhandi)">बुंदेलखंडी</button>
-    </div>
-  </div>
-</nav>
-
-<!-- ARCHITECTURAL LEFT SIDE DRAWER (EVAGHER STYLE) -->
-<div class="side-drawer-backdrop" id="side-drawer-backdrop" onclick="closeSideDrawer()"></div>
-<aside class="side-drawer" id="side-drawer" aria-label="Main Navigation Drawer">
-  <div>
-    <div class="side-drawer-hdr">
-      <div style="display:flex;align-items:center;gap:10px">
-        <img src="{% static 'core/images/brand/anshita_haute_emblem.png' %}" alt="Emblem" style="height:38px;width:auto">
-        <div style="display:flex;flex-direction:column;line-height:1.1">
-          <span style="font-family:var(--font-h);font-size:1rem;color:var(--white);letter-spacing:2px">ANSHITA</span>
-          <span style="font-size:.56rem;letter-spacing:2px;color:var(--gold)">MAKEOVER</span>
-        </div>
-      </div>
-      <button class="side-drawer-close" onclick="closeSideDrawer()" aria-label="Close Navigation">✕</button>
-    </div>
-
-    <ul class="side-nav-links">
-      <li><a href="/#hero" onclick="closeSideDrawer()"><span class="nav-idx">01</span> {{ t.nav_home|default:'Home & Couture' }}</a></li>
-      <li><a href="/#services" onclick="closeSideDrawer()"><span class="nav-idx">02</span> {{ t.nav_services|default:'Signature Artistry' }}</a></li>
-      <li><a href="/#packages" onclick="closeSideDrawer()"><span class="nav-idx">03</span> {{ t.nav_packages|default:'Bridal Packages' }}</a></li>
-      <li><a href="/#package-compare" onclick="closeSideDrawer()"><span class="nav-idx">04</span> Compare Suites Matrix</a></li>
-      <li><a href="/#calc-section" onclick="closeSideDrawer()"><span class="nav-idx">05</span> Budget Estimator</a></li>
-      <li><a href="/#gallery" onclick="closeSideDrawer()"><span class="nav-idx">06</span> {{ t.nav_gallery|default:'Editorial Gallery' }}</a></li>
-      <li><a href="/#outstation" onclick="closeSideDrawer()"><span class="nav-idx">07</span> {{ t.nav_outstation|default:'Pan-India Destinations' }}</a></li>
-      <li><a href="/academy/" onclick="closeSideDrawer()"><span class="nav-idx">08</span> {{ t.nav_academy|default:'Haute Academy' }}</a></li>
-      <li><a href="/#about" onclick="closeSideDrawer()"><span class="nav-idx">09</span> {{ t.nav_about|default:'The Couturier' }}</a></li>
-      <li><a href="/#reviews" onclick="closeSideDrawer()"><span class="nav-idx">10</span> {{ t.nav_reviews|default:'Bride Testimonials' }}</a></li>
-    </ul>
-  </div>
-
-  <div class="side-drawer-footer">
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <span style="font-size:0.68rem;letter-spacing:2px;color:rgba(212,175,55,0.75);text-transform:uppercase">LANGUAGE / भाषा:</span>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="lang-btn {% if lang == 'english' or not lang %}active{% endif %}" onclick="setLang('english')">EN</button>
-        <button class="lang-btn {% if lang == 'hindi' or lang == 'hinglish' %}active{% endif %}" onclick="setLang('hindi')">हिन्दी</button>
-        <button class="lang-btn {% if lang == 'marathi' %}active{% endif %}" onclick="setLang('marathi')">मराठी</button>
-        <button class="lang-btn {% if lang == 'bundelkhandi' %}active{% endif %}" onclick="setLang('bundelkhandi')">बुंदेलखंडी</button>
-      </div>
-    </div>
-    <div class="side-drawer-info">
-      <strong>Private Studio Jabalpur · Destination Bookings</strong><br>
-      Founder & Celebrity Makeup Artist: Anshita Sinha
-    </div>
-    <a href="https://wa.me/{{ whatsapp }}" target="_blank" class="btn-wa" style="text-align:center;padding:12px;font-size:.78rem">
-      💬 Reserve VIP Consultation
-    </a>
-  </div>
-</aside>
+<!-- MODULAR REUSABLE COMPONENTS -->
+{% include 'components/header_nav.html' %}
+{% include 'components/side_drawer.html' %}
 
 {% block content %}{% endblock %}
 
-<!-- CHATBOT -->
-<div id="chatbot">
-  <div class="chat-box" id="chat-box">
-    <div class="chat-hdr">
-      <div class="chat-hdr-info">
-        <img src="{% static 'core/images/logo.jpeg' %}" alt="Bot">
-        <div>
-          <h4>Anshita Concierge ✨</h4>
-          <p>Online & At Your Service</p>
-        </div>
-      </div>
-      <button class="chat-close" onclick="toggleChat()">✕</button>
-    </div>
-    <div class="chat-msgs" id="chat-msgs">
-      <div class="msg bot">Namaste and welcome to Anshita Makeover! ✨ How may I assist you with our bespoke bridal, hair, nail artistry, or academy masterclass today? 💄</div>
-    </div>
-    <div class="chat-inp-row">
-      <input class="chat-inp" id="chat-inp" placeholder="Type your inquiry here..." onkeydown="chatKey(event)">
-      <button class="chat-send" onclick="sendChat()">➤</button>
-    </div>
-  </div>
-  <button class="chat-toggle" onclick="toggleChat()">💬</button>
-</div>
+{% include 'components/chatbot_modal.html' %}
 
 <!-- ADMIN LOGIN MODAL -->
 <div class="adm-login-modal" id="adm-login-modal">
@@ -4181,11 +4097,31 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-/* ── Scroll ── */
+/* ── Scroll & Headroom Fallback Dynamics ── */
+let lastScrollY = window.scrollY;
 window.addEventListener('scroll',()=>{
-  document.getElementById('mnav').classList.toggle('scrolled',scrollY>50);
+  const currY = window.scrollY;
+  const nav = document.getElementById('mnav');
+  if(nav){
+    nav.classList.toggle('scrolled', currY > 50);
+    nav.classList.toggle('headroom--top', currY <= 50);
+    nav.classList.toggle('headroom--not-top', currY > 50);
+
+    // Directional scroll behavior fallback
+    if(currY > 100 && currY > lastScrollY + 5){
+      if(!document.body.classList.contains('menu-open') && !document.body.classList.contains('admin-open')){
+        nav.classList.remove('headroom--pinned');
+        nav.classList.add('headroom--unpinned');
+      }
+    } else if(currY < lastScrollY - 5 || currY <= 50){
+      nav.classList.remove('headroom--unpinned');
+      nav.classList.add('headroom--pinned');
+    }
+  }
+  lastScrollY = currY;
+
   const tot=document.documentElement.scrollHeight-innerHeight;
-  const pct=tot>0?scrollY/tot:0;
+  const pct=tot>0?currY/tot:0;
   const d=119.4;
   const pr = document.querySelector('#scr .pr');
   if(pr) pr.style.strokeDashoffset=d-d*pct;
@@ -4240,31 +4176,33 @@ function countUp(){
 }
 
 /* ── Evagher-Style Side Navigation Drawer Controls ── */
-function toggleSideDrawer(){
+window.toggleSideDrawer = function(){
   const d = document.getElementById('side-drawer');
   const b = document.getElementById('side-drawer-backdrop');
   const t = document.getElementById('nav-menu-trigger');
   if(!d) return;
   const isOpen = d.classList.contains('open');
   if(isOpen){
-    closeSideDrawer();
+    window.closeSideDrawer();
   } else {
     d.classList.add('open');
     if(b) b.classList.add('open');
     if(t) t.classList.add('active');
+    document.body.classList.add('menu-open');
     document.body.style.overflow = 'hidden';
   }
-}
+};
 
-function closeSideDrawer(){
+window.closeSideDrawer = function(){
   const d = document.getElementById('side-drawer');
   const b = document.getElementById('side-drawer-backdrop');
   const t = document.getElementById('nav-menu-trigger');
   if(d) d.classList.remove('open');
   if(b) b.classList.remove('open');
   if(t) t.classList.remove('active');
+  document.body.classList.remove('menu-open');
   document.body.style.overflow = '';
-}
+};
 
 // Backward compatibility for legacy callers
 function toggleMob(){ toggleSideDrawer(); }
@@ -5436,6 +5374,40 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   if (new URLSearchParams(window.location.search).get('admin') === '1') {
     window.location.href = '/admin-portal/';
+  }
+
+  // ── Headroom.js Initialization for Liquid Glass Nav ──
+  const navElement = document.getElementById('mnav');
+  if (navElement && typeof Headroom !== 'undefined') {
+    const headroomInstance = new Headroom(navElement, {
+      offset: 80,
+      tolerance: {
+        up: 8,
+        down: 4
+      },
+      classes: {
+        initial: "headroom",
+        pinned: "headroom--pinned",
+        unpinned: "headroom--unpinned",
+        top: "headroom--top",
+        notTop: "headroom--not-top",
+        bottom: "headroom--bottom",
+        notBottom: "headroom--not-bottom"
+      },
+      onPin: function() {
+        navElement.classList.remove('headroom--unpinned');
+        navElement.classList.add('headroom--pinned');
+      },
+      onUnpin: function() {
+        // Do not unpin if mobile drawer or search is actively open
+        if (document.body.classList.contains('menu-open') || document.body.classList.contains('admin-open')) {
+          return;
+        }
+        navElement.classList.remove('headroom--pinned');
+        navElement.classList.add('headroom--unpinned');
+      }
+    });
+    headroomInstance.init();
   }
 });
 

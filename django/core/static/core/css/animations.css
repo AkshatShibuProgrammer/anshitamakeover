@@ -1,0 +1,94 @@
+/* ══════════════════════════════════════════════════════════════════════
+   HIGH PERFORMANCE GPU-ACCELERATED ANIMATIONS & MICRO-INTERACTIONS
+   Designed for Anshita Haute Couture Editorial Experience
+   Zero layout thrashing (FLIP): uses only transform and opacity
+══════════════════════════════════════════════════════════════════════ */
+
+/* 1. Metallic Gold Shimmer Sweep */
+@keyframes goldShimmerSweep {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.gold-shimmer-fx {
+  background: linear-gradient(
+    90deg,
+    rgba(212, 175, 55, 0) 0%,
+    rgba(255, 246, 214, 0.45) 50%,
+    rgba(212, 175, 55, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: goldShimmerSweep 3.5s infinite ease-in-out;
+  will-change: background-position;
+}
+
+/* 2. Haute Couture Radial Pulse Glow */
+@keyframes coutureAuraPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.15), 0 0 30px rgba(123, 28, 46, 0.1);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.35), 0 0 50px rgba(123, 28, 46, 0.25);
+    transform: scale(1.02);
+  }
+}
+
+.couture-pulse {
+  animation: coutureAuraPulse 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
+}
+
+/* 3. Smooth Hardware-Accelerated Split Reveal */
+.split-reveal {
+  opacity: 0;
+  transform: translateY(24px) scale(0.98);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.split-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* 4. Editorial Floating Micro-Float for Badges */
+@keyframes floatMicro {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.floating-badge {
+  animation: floatMicro 3s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* 5. Preloader Optimized Velvet Curtains */
+.curtain-smooth {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* 6. Accessible Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  .gold-shimmer-fx,
+  .couture-pulse,
+  .floating-badge {
+    animation: none !important;
+  }
+  .split-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

@@ -847,11 +847,30 @@ Please mention code **{today_code}** when booking on WhatsApp at +91 {wa_number}
 
 
 # ── API: Set Language ─────────────────────────────────────────
+@csrf_exempt
 def set_language(request):
-    lang = request.GET.get('lang', 'hinglish')
+    if request.method == 'POST':
+        try:
+            body = json.loads(request.body.decode('utf-8'))
+            lang = body.get('language') or body.get('lang', 'hinglish')
+        except Exception:
+            lang = request.POST.get('language') or request.POST.get('lang', 'hinglish')
+        
+        is_json = (
+            request.headers.get('x-requested-with') == 'XMLHttpRequest' or
+            'application/json' in request.headers.get('accept', '') or
+            request.content_type == 'application/json'
+        )
+        if is_json:
+            res = JsonResponse({'status': 'ok', 'language': lang})
+            res.set_cookie('lang', lang, max_age=365*24*3600)
+            return res
+
+    lang = request.GET.get('lang') or request.POST.get('lang', 'hinglish')
     response = redirect(request.META.get('HTTP_REFERER', '/'))
     response.set_cookie('lang', lang, max_age=365*24*3600)
     return response
+
 
 
 # ── Admin Login/Logout ────────────────────────────────────────
