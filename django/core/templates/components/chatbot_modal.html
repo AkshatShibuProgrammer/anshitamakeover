@@ -1,0 +1,24 @@
+{% load static %}
+<!-- CHATBOT CONCIERGE COMPONENT -->
+<div id="chatbot">
+  <div class="chat-box" id="chat-box">
+    <div class="chat-hdr">
+      <div class="chat-hdr-info">
+        <img src="{% static 'core/images/logo.jpeg' %}" alt="Bot">
+        <div>
+          <h4>Anshita Concierge ✨</h4>
+          <p>Online & At Your Service</p>
+        </div>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="msg bot">Namaste and welcome to Anshita Makeover! ✨ How may I assist you with our bespoke bridal, hair, nail artistry, or academy masterclass today? 💄</div>
+    </div>
+    <div class="chat-inp-row">
+      <input class="chat-inp" id="chat-inp" placeholder="Type your inquiry here..." onkeydown="chatKey(event)">
+      <button class="chat-send" onclick="sendChat()">➤</button>
+    </div>
+  </div>
+  <button class="chat-toggle" onclick="toggleChat()">💬</button>
+</div>

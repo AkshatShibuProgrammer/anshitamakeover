@@ -47,3 +47,9 @@ distortion_1.jpg
 Thumbs.db
 .vscode/
 .idea/
+
+# Test automation artifacts
+testenv/
+testing/reports/
+testing/e2e/test-results/
+testing/**/.pytest_cache/

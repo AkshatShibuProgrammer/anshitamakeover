@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: anshitamakeover
+    env: python
+    region: singapore
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput"
+    startCommand: "gunicorn anshita_project.wsgi:application --workers 2 --threads 2 --worker-class gthread --timeout 60"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.8
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        value: ".onrender.com,localhost,127.0.0.1"

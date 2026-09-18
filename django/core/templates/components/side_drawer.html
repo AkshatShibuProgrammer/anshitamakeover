@@ -1,0 +1,49 @@
+{% load static %}
+<!-- ARCHITECTURAL LEFT SIDE DRAWER COMPONENT (EVAGHER HAUTE STYLE) -->
+<div class="side-drawer-backdrop" id="side-drawer-backdrop" onclick="closeSideDrawer()"></div>
+<aside class="side-drawer" id="side-drawer" aria-label="Main Navigation Drawer">
+  <div>
+    <div class="side-drawer-hdr">
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="{% static 'core/images/brand/anshita_haute_emblem.png' %}" alt="Emblem" style="height:38px;width:auto">
+        <div style="display:flex;flex-direction:column;line-height:1.1">
+          <span style="font-family:var(--font-h);font-size:1rem;color:var(--white);letter-spacing:2px">ANSHITA</span>
+          <span style="font-size:.56rem;letter-spacing:2px;color:var(--gold)">MAKEOVER</span>
+        </div>
+      </div>
+      <button class="side-drawer-close" onclick="closeSideDrawer()" aria-label="Close Navigation">✕</button>
+    </div>
+
+    <ul class="side-nav-links">
+      <li><a href="/#hero" onclick="closeSideDrawer()"><span class="nav-idx">01</span> {{ t.nav_home|default:'Home & Couture' }}</a></li>
+      <li><a href="/#services" onclick="closeSideDrawer()"><span class="nav-idx">02</span> {{ t.nav_services|default:'Signature Artistry' }}</a></li>
+      <li><a href="/#packages" onclick="closeSideDrawer()"><span class="nav-idx">03</span> {{ t.nav_packages|default:'Bridal Packages' }}</a></li>
+      <li><a href="/#package-compare" onclick="closeSideDrawer()"><span class="nav-idx">04</span> Compare Suites Matrix</a></li>
+      <li><a href="/#calc-section" onclick="closeSideDrawer()"><span class="nav-idx">05</span> Budget Estimator</a></li>
+      <li><a href="/#gallery" onclick="closeSideDrawer()"><span class="nav-idx">06</span> {{ t.nav_gallery|default:'Editorial Gallery' }}</a></li>
+      <li><a href="/#outstation" onclick="closeSideDrawer()"><span class="nav-idx">07</span> {{ t.nav_outstation|default:'Pan-India Destinations' }}</a></li>
+      <li><a href="/academy/" onclick="closeSideDrawer()"><span class="nav-idx">08</span> {{ t.nav_academy|default:'Haute Academy' }}</a></li>
+      <li><a href="/#about" onclick="closeSideDrawer()"><span class="nav-idx">09</span> {{ t.nav_about|default:'The Couturier' }}</a></li>
+      <li><a href="/#reviews" onclick="closeSideDrawer()"><span class="nav-idx">10</span> {{ t.nav_reviews|default:'Bride Testimonials' }}</a></li>
+    </ul>
+  </div>
+
+  <div class="side-drawer-footer">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span style="font-size:0.68rem;letter-spacing:2px;color:rgba(212,175,55,0.75);text-transform:uppercase">LANGUAGE / भाषा:</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="lang-btn {% if lang == 'english' or not lang %}active{% endif %}" onclick="setLang('english')">EN</button>
+        <button class="lang-btn {% if lang == 'hindi' or lang == 'hinglish' %}active{% endif %}" onclick="setLang('hindi')">हिन्दी</button>
+        <button class="lang-btn {% if lang == 'marathi' %}active{% endif %}" onclick="setLang('marathi')">मराठी</button>
+        <button class="lang-btn {% if lang == 'bundelkhandi' %}active{% endif %}" onclick="setLang('bundelkhandi')">बुंदेलखंडी</button>
+      </div>
+    </div>
+    <div class="side-drawer-info">
+      <strong>Private Studio Jabalpur · Destination Bookings</strong><br>
+      Founder & Celebrity Makeup Artist: Anshita Sinha
+    </div>
+    <a href="https://wa.me/{{ whatsapp }}" target="_blank" class="btn-wa" style="text-align:center;padding:12px;font-size:.78rem">
+      💬 Reserve VIP Consultation
+    </a>
+  </div>
+</aside>

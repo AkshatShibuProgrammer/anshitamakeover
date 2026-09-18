@@ -1,0 +1,129 @@
+name: Regression Suite
+
+# Runs the complete automated testing hub (testing/) on every push / PR.
+# Each job invokes the MASTER TEST PROGRAM for one suite type:
+#   unit  → testing/unit    (Django unit & regression + coverage)
+#   api   → testing/api     (pytest + requests + pytest-html)
+#   e2e   → testing/e2e     (Playwright chromium + screenshots/traces)
+#   bdd   → testing/bdd     (Karate, Maven + Java)
+#   smoke → testing/smoke   (HTTP probes)
+#   perf  → testing/perf    (concurrency & latency budgets)
+#
+# Every job writes detailed reports into testing/reports/ (JUnit XML,
+# HTML reports, coverage) and uploads them as workflow artifacts.
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  unit:
+    name: Unit testing (228 Django tests + coverage)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '${{ env.PYTHON_VERSION }}', cache: pip }
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install "Django>=5.0,<7.0" Pillow requests python-dotenv pytest-html unittest-xml-reporting coverage
+      - name: Master program — unit suite
+        run: python testing/run_all.py --suite unit
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unit-reports
+          path: testing/reports/
+          if-no-files-found: ignore
+
+  api:
+    name: API contract testing (pytest + requests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '${{ env.PYTHON_VERSION }}', cache: pip }
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install "Django>=5.0,<7.0" Pillow requests python-dotenv pytest pytest-html
+      - name: Master program — api suite
+        run: python testing/run_all.py --suite api
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-reports
+          path: testing/reports/
+          if-no-files-found: ignore
+
+  e2e:
+    name: E2E testing (Playwright chromium)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '${{ env.PYTHON_VERSION }}', cache: pip }
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install "Django>=5.0,<7.0" Pillow requests python-dotenv pytest pytest-playwright pytest-html
+      - name: Install Chromium + system deps
+        run: python -m playwright install --with-deps chromium
+      - name: Master program — e2e suite
+        run: python testing/run_all.py --suite e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-reports
+          path: |
+            testing/reports/
+            testing/e2e/test-results/
+          if-no-files-found: ignore
+
+  bdd:
+    name: BDD testing (Karate + Maven)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '${{ env.PYTHON_VERSION }}' }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17', cache: maven }
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install "Django>=5.0,<7.0" Pillow requests python-dotenv
+      - name: Master program — bdd suite
+        run: python testing/run_all.py --suite bdd
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: karate-report
+          path: testing/bdd/target/karate-reports/
+          if-no-files-found: ignore
+
+  smoke-perf:
+    name: Smoke + Performance testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '${{ env.PYTHON_VERSION }}', cache: pip }
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install "Django>=5.0,<7.0" Pillow requests python-dotenv
+      - name: Master program — smoke + perf suites
+        run: python testing/run_all.py --suite smoke perf
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-perf-reports
+          path: testing/reports/
+          if-no-files-found: ignore

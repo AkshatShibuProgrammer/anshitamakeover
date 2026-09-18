@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Sinha Family Group — Luxury Logo Visualizer & Prompt Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D4AF37;
+    --gold-light: #F7E7A9;
+    --gold-dark: #9C721D;
+    --black: #080707;
+    --card-bg: #120F11;
+    --border: rgba(212, 175, 55, 0.25);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(circle at top, #181215 0%, #080707 100%);
+    color: #F5EDD6;
+    font-family: 'Montserrat', sans-serif;
+    padding: 60px 24px;
+    min-height: 100vh;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 50px; }
+  .header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 2.4rem;
+    letter-spacing: 6px;
+    background: linear-gradient(135deg, #FFF 20%, var(--gold) 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+  }
+  .header p {
+    color: rgba(245, 237, 214, 0.65);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+  }
+  .logo-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+    transition: transform 0.4s ease, border-color 0.4s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .logo-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold);
+  }
+  .img-wrapper {
+    position: relative;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    background: #000;
+  }
+  .img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+  .logo-card:hover .img-wrapper img {
+    transform: scale(1.04);
+  }
+  .badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: rgba(8, 7, 7, 0.85);
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    font-size: 0.68rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+  }
+  .content {
+    padding: 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .logo-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.25rem;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  .logo-desc {
+    font-size: 0.82rem;
+    color: rgba(245, 237, 214, 0.7);
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+  .prompt-box {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px dashed rgba(212, 175, 55, 0.3);
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 0.76rem;
+    color: rgba(245, 237, 214, 0.85);
+    line-height: 1.4;
+    margin-bottom: 16px;
+    position: relative;
+    user-select: all;
+  }
+  .prompt-label {
+    display: block;
+    font-size: 0.62rem;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .copy-btn {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+  }
+  .copy-btn:hover {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+    transform: translateY(-1px);
+  }
+  .footer-note {
+    text-align: center;
+    padding: 30px;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: rgba(245, 237, 214, 0.6);
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>THE SINHA FAMILY GROUP</h1>
+    <p>Luxury Corporate Identity & Emblem Design Concepts</p>
+  </div>
+
+  <!-- NEW SECTION: PORTRAIT & FACE-BASED SVG INSIGNIAS -->
+  <div style="margin: 40px 0 24px; text-align: center;">
+    <span style="font-size:0.75rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;font-weight:700">✦ NEW HERITAGE PORTRAIT CONCEPTS ✦</span>
+    <h2 style="font-family:'Cinzel',serif;font-size:1.8rem;margin:8px 0 10px;background:linear-gradient(135deg,#FFF,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent">
+      The Sinha Family Elders — Bespoke Vector Crests
+    </h2>
+    <p style="font-size:0.85rem;color:rgba(245,237,214,0.7);max-width:700px;margin:0 auto">
+      Designed directly from your shared photograph. Rendered in precision vector linework with high-contrast metallic gold that effortlessly blends into any dark, light, or transparent website background.
+    </p>
+  </div>
+
+  <!-- REFERENCE PHOTO & TRUE LIKENESS NOTICE -->
+  <div style="background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.25);border-radius:20px;padding:24px;margin-bottom:36px;display:flex;align-items:center;gap:24px;flex-wrap:wrap">
+    <div style="width:110px;height:140px;border-radius:12px;overflow:hidden;border:2px solid var(--gold);flex-shrink:0;box-shadow:0 8px 24px rgba(0,0,0,0.6)">
+      <img src="/static/core/images/brand/sinha_reference_photo.png" alt="Original Reference Photo" style="width:100%;height:100%;object-fit:cover;object-position:center 20%">
+    </div>
+    <div style="flex:1;min-width:260px">
+      <span style="font-size:0.72rem;letter-spacing:2px;color:var(--gold);text-transform:uppercase;font-weight:700">📸 SOURCE REFERENCE PHOTOGRAPH IDENTIFIER</span>
+      <h3 style="font-family:'Cinzel',serif;font-size:1.3rem;color:#FFF;margin:4px 0 8px">True Facial Likeness Vectorization</h3>
+      <p style="font-size:0.82rem;color:rgba(245,237,214,0.75);line-height:1.6">
+        The vector portraits below are mapped directly from your real photograph: preserving the gentleman's exact smile, distinctive mustache, hair volume & parting, and forehead tilak; alongside the lady's gentle eye contours, warm smile, delicate nose pin, bindi, and graceful saree drape.
+      </p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- Concept 4: True Likeness Royal Heritage Crest -->
+    <div class="logo-card">
+      <div class="img-wrapper">
+        <span class="badge">Concept 04 — True Royal Heritage Crest</span>
+        <img src="/static/core/images/brand/sinha_true_heritage_vector.jpg" alt="True Likeness Royal Heritage Crest">
+      </div>
+      <div class="content">
+        <div>
+          <h3 class="logo-title">Royal Lotus & Peacock Heritage Crest</h3>
+          <p class="logo-desc">Direct portrait vector matching both facial structures authentically, enclosed in an auspicious Indian royal heraldry with peacock arch, sacred lotus motifs, and royal elephants.</p>
+        </div>
+        <div>
+          <div class="prompt-box">
+            <span class="prompt-label">Key Features Captured:</span>
+            • Exact facial proportions, mustache shape, and smile lines<br>
+            • Red tilak on gentleman & red bindi on lady<br>
+            • Royal Indian heritage frame with lotuses and elephants
+          </div>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText('High fidelity vector portrait logo of the actual Sinha elders in royal gold linework on black.'); alert('Concept details copied!');">Select Concept 04</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Concept 5: True Likeness Minimalist Contour (Original Beautiful Artwork + Multi-Background Showcase) -->
+    <div class="logo-card" style="border: 2px solid var(--gold); box-shadow: 0 0 30px rgba(212,175,55,0.25);">
+      <div class="img-wrapper">
+        <span class="badge" style="background:linear-gradient(135deg,var(--gold),#9C721D);color:#000;font-weight:700">★ Concept 05 — True Likeness Minimal Line Art</span>
+        <img src="/static/core/images/brand/sinha_true_minimal_lineart.jpg" alt="True Likeness Minimal Line Art">
+      </div>
+      <div class="content">
+        <div>
+          <h3 class="logo-title" style="color:var(--gold)">Minimalist Continuous Gold Contour</h3>
+          <p class="logo-desc">Ultra-clean, crisp vector contours preserving their facial likeness, jawlines, and gentle expressions inside a modern luxury circular frame. Designed specifically to blend onto ANY background color without artifacts.</p>
+        </div>
+        <div>
+          <div class="prompt-box">
+            <span class="prompt-label">Key Features Captured:</span>
+            • Clean continuous single-weight vector contours<br>
+            • Exact facial recognition and friendly expressions<br>
+            • Blends seamlessly as favicon, navbar badge, or watermark
+          </div>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText('Clean minimalist gold contour portrait vector for The Sinha Family Group.'); alert('Concept details copied!');">Select Concept 05</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Concept 6: True Likeness Minted Cameo Medallion -->
+    <div class="logo-card">
+      <div class="img-wrapper">
+        <span class="badge">Concept 06 — Minted Royal Cameo Seal</span>
+        <img src="/static/core/images/brand/sinha_true_cameo_gold.jpg" alt="True Likeness Minted Cameo">
+      </div>
+      <div class="content">
+        <div>
+          <h3 class="logo-title">Minted Royal Cameo Medallion</h3>
+          <p class="logo-desc">Three-dimensional minted gold coin medallion with deep relief shading. Portrays both elders with dignity, crowned with imperial coronet and beaded rim.</p>
+        </div>
+        <div>
+          <div class="prompt-box">
+            <span class="prompt-label">Key Features Captured:</span>
+            • Sculpted metallic bas-relief effect<br>
+            • Detailed collar, saree, and necklace details<br>
+            • Imperial crown and beaded luxury coin border
+          </div>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText('Minted gold cameo medallion logo for The Sinha Family Group.'); alert('Concept details copied!');">Select Concept 06</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- DEDICATED SHOWCASE: CONCEPT 05 ACROSS DIFFERENT WEBSITE BACKGROUNDS -->
+  <div style="margin: 50px 0 24px; text-align: center;">
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;background:rgba(212,175,55,0.1);border:1px solid var(--gold);color:var(--gold);font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;font-weight:700">
+      ✦ Vector Adaptability ✦
+    </div>
+    <h2 style="font-family:'Cinzel',serif;font-size:2rem;margin:12px 0 10px;background:linear-gradient(135deg,#FFF,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent">
+      Concept 05 in Different Website Backgrounds
+    </h2>
+    <p style="font-size:0.88rem;color:rgba(245,237,214,0.75);max-width:760px;margin:0 auto;line-height:1.6">
+      Because Concept 05 is a <strong>pure vector SVG</strong> (not a raster image), there is no background clipping, no pixelation, and no need to generate separate images. The exact same SVG code seamlessly blends into any website palette, header, or footer.
+    </p>
+  </div>
+
+  <!-- 6-CARD SIMULTANEOUS MULTI-BACKGROUND SHOWCASE GRID -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:24px;margin-bottom:40px">
+    
+    <!-- 1. Obsidian Black & 24K Gold (Luxury Web Header / Dark Mode) -->
+    <div style="background:#070707;border:1px solid rgba(212,175,55,0.3);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.6);display:flex;flex-direction:column">
+      <div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:0.75rem;font-weight:700;letter-spacing:1px;color:#D4AF37">01. LUXURY OBSIDIAN & GOLD</span>
+        <span style="font-size:0.68rem;padding:3px 8px;border-radius:8px;background:rgba(212,175,55,0.15);color:#F7E7A9">Dark Mode / Footer</span>
+      </div>
+      <div style="background:#080707;padding:30px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
+        <img src="/static/core/images/brand/sinha_c5_gold_transparent.png" alt="Concept 05 on Obsidian Black" style="width:200px;height:auto;max-width:100%;filter:drop-shadow(0 4px 15px rgba(212,175,55,0.25))">
+      </div>
+      <div style="padding:12px 16px;background:rgba(255,255,255,0.02);font-size:0.72rem;color:rgba(245,237,214,0.6);border-top:1px solid rgba(255,255,255,0.06)">
+        Ideal for high-end luxury dark websites (like Anshita Makeover), black tie corporate portals, and gold-foil stationery.
+      </div>
+    </div>
+
+    <!-- 2. Minimalist Clean White (Modern Corporate / Tech / Agency) -->
+    <div style="background:#FFFFFF;border:1px solid #E5E5E5;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.15);display:flex;flex-direction:column">
+      <div style="padding:14px 18px;border-bottom:1px solid #ECECEC;display:flex;justify-content:space-between;align-items:center;background:#FAFAFA">
+        <span style="font-size:0.75rem;font-weight:700;letter-spacing:1px;color:#1A1A1A">02. MINIMALIST EXECUTIVE WHITE</span>
+        <span style="font-size:0.68rem;padding:3px 8px;border-radius:8px;background:#EAEAEA;color:#333">Light Mode / Header</span>
+      </div>
+      <div style="background:#FFFFFF;padding:30px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
+        <img src="/static/core/images/brand/sinha_c5_charcoal_transparent.png" alt="Concept 05 on Clean White" style="width:200px;height:auto;max-width:100%">
+      </div>
+      <div style="padding:12px 16px;background:#F8F8F8;font-size:0.72rem;color:#666;border-top:1px solid #ECECEC">
+        Crisp, ultra-sharp rendering for light corporate websites, clean investor decks, white letterheads, and official documentation.
+      </div>
+    </div>
+
+    <!-- 3. Royal Velvet Maroon (Indian Heritage, Hospitality & Wedding) -->
+    <div style="background:#1B0910;border:1px solid rgba(247,231,169,0.25);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(27,9,16,0.6);display:flex;flex-direction:column">
+      <div style="padding:14px 18px;border-bottom:1px solid rgba(247,231,169,0.15);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:0.75rem;font-weight:700;letter-spacing:1px;color:#F7E7A9">03. ROYAL VELVET MAROON</span>
+        <span style="font-size:0.68rem;padding:3px 8px;border-radius:8px;background:rgba(247,231,169,0.15);color:#F7E7A9">Heritage Velvet</span>
+      </div>
+      <div style="background:#1E0B12;padding:30px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
+        <img src="/static/core/images/brand/sinha_c5_gold_transparent.png" alt="Concept 05 on Royal Maroon" style="width:200px;height:auto;max-width:100%;filter:brightness(1.1) drop-shadow(0 4px 15px rgba(247,231,169,0.2))">
+      </div>
+      <div style="padding:12px 16px;background:rgba(255,255,255,0.02);font-size:0.72rem;color:rgba(247,231,169,0.7);border-top:1px solid rgba(247,231,169,0.15)">
+        Rich heritage atmosphere evoking traditional Indian royal celebrations, bespoke family invitations, and royal hospitality.
+      </div>
+    </div>
+
+    <!-- 4. Deep Royal Emerald (Private Wealth & Family Office) -->
+    <div style="background:#061811;border:1px solid rgba(167,243,208,0.25);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(6,24,17,0.6);display:flex;flex-direction:column">
+      <div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:0.75rem;font-weight:700;letter-spacing:1px;color:#A7F3D0">04. DEEP EMERALD & PALE GOLD</span>
+        <span style="font-size:0.68rem;padding:3px 8px;border-radius:8px;background:rgba(167,243,208,0.15);color:#A7F3D0">Family Office</span>
+      </div>
+      <div style="background:#072117;padding:30px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
+        <img src="/static/core/images/brand/sinha_c5_gold_transparent.png" alt="Concept 05 on Deep Emerald" style="width:200px;height:auto;max-width:100%;filter:drop-shadow(0 4px 15px rgba(212,175,55,0.2))">
+      </div>
+      <div style="padding:12px 16px;background:rgba(255,255,255,0.02);font-size:0.72rem;color:rgba(167,243,208,0.7);border-top:1px solid rgba(255,255,255,0.06)">
+        Timeless British-racing green / Mayfair luxury aesthetic suited for wealth management, trust assets, and real estate holdings.
+      </div>
+    </div>
+
+    <!-- 5. Modern Frosted Glassmorphism (Web3, SaaS & Dynamic Hero) -->
+    <div style="background:linear-gradient(135deg, #1f1c2c, #928DAB);border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.4);display:flex;flex-direction:column;position:relative">
+      <div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.15);display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.25)">
+        <span style="font-size:0.75rem;font-weight:700;letter-spacing:1px;color:#FFF">05. FROSTED GLASS OVER GRADIENT</span>
+        <span style="font-size:0.68rem;padding:3px 8px;border-radius:8px;background:rgba(255,255,255,0.2);color:#FFF">Modern Web UI</span>
+      </div>
+      <div style="padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
+        <div style="background:rgba(255,255,255,0.12);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.25);border-radius:16px;padding:20px;display:flex;flex-direction:column;align-items:center;box-shadow:0 8px 32px 0 rgba(0,0,0,0.37);width:85%">
+          <img src="/static/core/images/brand/sinha_c5_gold_transparent.png" alt="Concept 05 on Frosted Glass" style="width:190px;height:auto;max-width:100%;filter:drop-shadow(0 4px 20px rgba(255,255,255,0.2))">
+        </div>
+      </div>
+      <div style="padding:12px 16px;background:rgba(0,0,0,0.3);font-size:0.72rem;color:rgba(255,255,255,0.75);border-top:1px solid rgba(255,255,255,0.1)">
+        Transparency allows the artwork to float effortlessly over dynamic image sliders, hero videos, or CSS backdrop blurs without jagged edges.
+      </div>
+    </div>
+
+    <!-- 6. Artisanal Warm Linen & Bronze (Editorial & Stationery) -->
+    <div style="background:#F4EFEB;border:1px solid #E1D7CD;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.12);display:flex;flex-direction:column">
+      <div style="padding:14px 18px;border-bottom:1px solid #E5DBD0;display:flex;justify-content:space-between;align-items:center;background:#EFE8E2">
+        <span style="font-size:0.75rem;font-weight:700;letter-spacing:1px;color:#785738">06. WARM LINEN & BRONZE</span>
+        <span style="font-size:0.68rem;padding:3px 8px;border-radius:8px;background:#DFD4C8;color:#573C23">Stationery / Parchment</span>
+      </div>
+      <div style="background:#F6F1EC;padding:30px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1">
+        <img src="/static/core/images/brand/sinha_c5_charcoal_transparent.png" alt="Concept 05 on Warm Linen" style="width:200px;height:auto;max-width:100%;opacity:0.85">
+      </div>
+      <div style="padding:12px 16px;background:#EDE4DB;font-size:0.72rem;color:#6E5136;border-top:1px solid #DFD4C8">
+        Perfect for natural kraft paper, cotton-embossed business cards, luxury seal wax stamps, and heritage book prints.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROYAL IMPERIAL HERALDRY (CONCEPT 02 + UPLOADED ZXiXi01 FACES) -->
+  <div style="margin: 60px 0 28px; text-align: center;">
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 18px;border-radius:20px;background:rgba(212,175,55,0.15);border:1px solid var(--gold);color:var(--gold);font-size:0.78rem;letter-spacing:3px;text-transform:uppercase;font-weight:700">
+      👑 Concept 02 Royal Vector Crest (With ZXiXi01.svg) 👑
+    </div>
+    <h2 style="font-family:'Cinzel',serif;font-size:2.2rem;margin:12px 0 10px;background:linear-gradient(135deg,#FFF,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent">
+      Authentic Faces in Royal Concept 02 Heraldry
+    </h2>
+    <p style="font-size:0.92rem;color:rgba(245,237,214,0.85);max-width:860px;margin:0 auto;line-height:1.7">
+      Built using the <strong>exact same vector contours from your uploaded <code>ZXiXi01.svg</code></strong>, framed within the majestic <strong>Concept 02 style</strong> (imperial arch crown, baroque acanthus flourishes, and laurel wreath). Straight luxury serif typography &mdash; <em>no curved ribbons, no curved SINHA, and no EST year</em>.
+    </p>
+  </div>
+
+  <!-- 4-GRID ROYAL CREST SHOWCASE -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:24px;margin-bottom:50px">
+    
+    <!-- 1. Obsidian Black Royal Silk -->
+    <div style="background:#070707;border:2px solid var(--gold);border-radius:20px;overflow:hidden;box-shadow:0 12px 36px rgba(0,0,0,0.8);display:flex;flex-direction:column">
+      <div style="padding:14px 18px;border-bottom:1px solid rgba(212,175,55,0.25);display:flex;justify-content:space-between;align-items:center;background:rgba(212,175,55,0.08)">
+        <span style="font-size:0.75rem;font-weight:700;letter-spacing:1px;color:#D4AF37">👑 01. ROYAL OBSIDIAN & 24K GOLD</span>
+        <a href="/static/core/images/brand/sinha_c2_obsidian.svg" download style="font-size:0.68rem;padding:3px 8px;border-radius:8px;background:rgba(212,175,55,0.2);color:#FFF;text-decoration:none;border:1px solid rgba(212,175,55,0.4)">Download SVG</a>
+      </div>
+      <div style="padding:20px;background:#050505;display:flex;align-items:center;justify-content:center;flex:1">
+        <img src="/static/core/images/brand/sinha_c2_obsidian.png" alt="Concept 02 ZXiXi01 Crest on Obsidian" style="width:100%;height:auto;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.7)">
+      </div>
+      <div style="padding:14px 18px;font-size:0.75rem;color:rgba(245,237,214,0.7);border-top:1px solid rgba(255,255,255,0.06)">
+        Exact ZXiXi01 elder faces inside the Concept 02 imperial crown & acanthus heraldry on deep midnight obsidian black.
+      </div>
+    </div>
+
+    <!-- 2. Royal Velvet Maroon -->
+    <div style="background:#1B0910;border:2px solid rgba(247,231,169,0.4);border-radius:20px;overflow:hidden;box-shadow:0 12px 36px rgba(27,9,16,0.8);display:flex;flex-direction:column">
+      <div style="padding:14px 18px;border-bottom:1px solid rgba(247,231,169,0.25);display:flex;justify-content:space-between;align-items:center;background:rgba(247,231,169,0.08)">
+        <span style="font-size:0.75rem;font-weight:700;letter-spacing:1px;color:#F7E7A9">🍷 02. ROYAL VELVET MAROON</span>
+        <a href="/static/core/images/brand/sinha_c2_maroon.svg" download style="font-size:0.68rem;padding:3px 8px;border-radius:8px;background:rgba(247,231,169,0.2);color:#FFF;text-decoration:none;border:1px solid rgba(247,231,169,0.4)">Download SVG</a>
+      </div>
+      <div style="padding:20px;background:#18060E;display:flex;align-items:center;justify-content:center;flex:1">
+        <img src="/static/core/images/brand/sinha_c2_maroon.png" alt="Concept 02 ZXiXi01 Crest on Maroon" style="width:100%;height:auto;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.7)">
+      </div>
+      <div style="padding:14px 18px;font-size:0.75rem;color:rgba(247,231,169,0.75);border-top:1px solid rgba(247,231,169,0.15)">
+        Imperial Indian wedding & hospitality aesthetic with authentic faces on traditional royal maroon velvet.
+      </div>
+    </div>
+
+    <!-- 3. Deep Royal Emerald -->
+    <div style="background:#061811;border:2px solid rgba(167,243,208,0.4);border-radius:20px;overflow:hidden;box-shadow:0 12px 36px rgba(6,24,17,0.8);display:flex;flex-direction:column">
+      <div style="padding:14px 18px;border-bottom:1px solid rgba(167,243,208,0.25);display:flex;justify-content:space-between;align-items:center;background:rgba(167,243,208,0.08)">
+        <span style="font-size:0.75rem;font-weight:700;letter-spacing:1px;color:#A7F3D0">🌲 03. DEEP EMERALD & GOLD</span>
+        <a href="/static/core/images/brand/sinha_c2_emerald.svg" download style="font-size:0.68rem;padding:3px 8px;border-radius:8px;background:rgba(167,243,208,0.2);color:#FFF;text-decoration:none;border:1px solid rgba(167,243,208,0.4)">Download SVG</a>
+      </div>
+      <div style="padding:20px;background:#05140E;display:flex;align-items:center;justify-content:center;flex:1">
+        <img src="/static/core/images/brand/sinha_c2_emerald.png" alt="Concept 02 ZXiXi01 Crest on Emerald" style="width:100%;height:auto;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.7)">
+      </div>
+      <div style="padding:14px 18px;font-size:0.75rem;color:rgba(167,243,208,0.75);border-top:1px solid rgba(167,243,208,0.15)">
+        Prestigious Mayfair / private asset trust atmosphere on British racing emerald.
+      </div>
+    </div>
+
+    <!-- 4. Pure Clean White / Ivory Parchment -->
+    <div style="background:#FFFFFF;border:2px solid #D5C29D;border-radius:20px;overflow:hidden;box-shadow:0 12px 36px rgba(0,0,0,0.18);display:flex;flex-direction:column">
+      <div style="padding:14px 18px;border-bottom:1px solid #EAE0D0;display:flex;justify-content:space-between;align-items:center;background:#FAF8F4">
+        <span style="font-size:0.75rem;font-weight:700;letter-spacing:1px;color:#785A28">☀️ 04. EXECUTIVE CLEAN WHITE</span>
+        <a href="/static/core/images/brand/sinha_c2_white.svg" download style="font-size:0.68rem;padding:3px 8px;border-radius:8px;background:#E8DCBE;color:#333;text-decoration:none;border:1px solid #CCC">Download SVG</a>
+      </div>
+      <div style="padding:20px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;flex:1">
+        <img src="/static/core/images/brand/sinha_c2_white.png" alt="Concept 02 ZXiXi01 Crest on White" style="width:100%;height:auto;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.08)">
+      </div>
+      <div style="padding:14px 18px;font-size:0.75rem;color:#666;border-top:1px solid #EAE0D0">
+        Clean black line-art vector for executive letterheads, legal trusts, investor kits, and light mode websites.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- INTERACTIVE PLAYGROUND FOR CONCEPT 02 ROYAL CREST -->
+  <div style="background:rgba(212,175,55,0.05);border:1px solid rgba(212,175,55,0.3);border-radius:24px;padding:32px;margin-bottom:60px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:20px;margin-bottom:24px">
+      <div>
+        <h3 style="font-family:'Cinzel',serif;color:#FFF;font-size:1.3rem;margin:0 0 6px">Interactive Concept 02 Vector Crest Simulator</h3>
+        <p style="font-size:0.82rem;color:rgba(245,237,214,0.65);margin:0">Test any background color or scale in real-time. This is pure, responsive SVG code rendered directly in your browser.</p>
+      </div>
+
+      <!-- Quick Background Buttons -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="setSimBg('#080707', '#D4AF37')" style="background:#080707;color:#D4AF37;border:1px solid #D4AF37;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:0.75rem;font-weight:600">🌙 Obsidian</button>
+        <button onclick="setSimBg('#1E0B12', '#F7E7A9')" style="background:#1E0B12;color:#F7E7A9;border:1px solid #F7E7A9;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:0.75rem;font-weight:600">🍷 Maroon</button>
+        <button onclick="setSimBg('#072117', '#E6D5AC')" style="background:#072117;color:#E6D5AC;border:1px solid #E6D5AC;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:0.75rem;font-weight:600">🌲 Emerald</button>
+        <button onclick="setSimBg('#FFFFFF', '#18181B')" style="background:#FFFFFF;color:#18181B;border:1px solid #CCC;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:0.75rem;font-weight:600">☀️ White</button>
+        <button onclick="setSimBg('#0B1E28', '#64D2FF')" style="background:#0B1E28;color:#64D2FF;border:1px solid #64D2FF;padding:8px 14px;border-radius:20px;cursor:pointer;font-size:0.75rem;font-weight:600">🌊 Sapphire</button>
+      </div>
+    </div>
+
+    <!-- Size Controls -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;background:rgba(0,0,0,0.3);padding:10px 18px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);flex-wrap:wrap">
+      <span style="font-size:0.75rem;color:var(--gold);font-weight:600;letter-spacing:1px">LOGO SCALE:</span>
+      <button onclick="setLogoSize(48)" style="padding:4px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:#FFF;font-size:0.75rem;cursor:pointer">Favicon / Header (48px)</button>
+      <button onclick="setLogoSize(100)" style="padding:4px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:#FFF;font-size:0.75rem;cursor:pointer">Mobile Nav (100px)</button>
+      <button onclick="setLogoSize(160)" style="padding:4px 12px;border-radius:8px;border:1px solid var(--gold);background:rgba(212,175,55,0.15);color:var(--gold);font-size:0.75rem;cursor:pointer">Desktop Hero (160px)</button>
+      <button onclick="setLogoSize(240)" style="padding:4px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:#FFF;font-size:0.75rem;cursor:pointer">Presentation (240px)</button>
+    </div>
+
+    <!-- Live Preview Stage -->
+    <div id="sim-stage" style="background:#080707;border-radius:18px;padding:40px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .4s ease;min-height:300px;border:1px solid rgba(255,255,255,0.08)">
+      
+      <!-- Pure Vector SVG Emblem (True Likeness) -->
+      <div id="svg-container" style="width:280px;height:auto;margin-bottom:14px;transition:all .3s ease">
+        <svg viewBox="0 0 1000 1020" xmlns="http://www.w3.org/2000/svg">
+  <!-- IMPERIAL ROYAL CROWN (CONCEPT 02 STYLE) -->
+  <g id="imperial-crown">
+    <!-- Finial Cross & Orb -->
+    <path d="M 500 85 L 500 118 M 485 100 L 515 100" stroke="currentColor" stroke-width="4.5" stroke-linecap="square"/>
+    <circle cx="500" cy="122" r="6.5" fill="currentColor"/>
+    
+    <!-- Velvety Cap Lining -->
+    <path d="M 500 126 C 452 134, 410 170, 416 226 C 448 221, 478 219, 500 219 C 522 219, 552 221, 584 226 C 590 170, 548 134, 500 126 Z" fill="none" stroke="currentColor" stroke-width="2" opacity="0.35"/>
+    
+    <!-- Outer Ribbed Arches -->
+    <path d="M 500 126 C 455 150, 422 188, 416 226" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M 500 126 C 545 150, 578 188, 584 226" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+    <!-- Inner Ribbed Arches -->
+    <path d="M 500 126 C 476 156, 460 192, 460 226" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M 500 126 C 524 156, 540 192, 540 226" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="500" y1="126" x2="500" y2="226" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+
+    <!-- Pearls on central arch -->
+    <circle cx="500" cy="142" r="3" fill="currentColor"/>
+    <circle cx="500" cy="158" r="3" fill="currentColor"/>
+    <circle cx="500" cy="174" r="3" fill="currentColor"/>
+    <circle cx="500" cy="190" r="3" fill="currentColor"/>
+    <circle cx="500" cy="206" r="3" fill="currentColor"/>
+    
+    <!-- Fleur-de-lis and Trefoils -->
+    <path d="M 500 198 C 496 208, 491 214, 486 219 C 493 220, 500 220, 507 219 C 502 214, 497 208, 500 198 Z" fill="currentColor"/>
+    <path d="M 500 198 C 489 204, 479 206, 476 216 C 484 216, 491 213, 496 208 Z" fill="currentColor"/>
+    <path d="M 500 198 C 511 204, 521 206, 524 216 C 516 216, 509 213, 504 208 Z" fill="currentColor"/>
+    
+    <path d="M 430 208 C 428 215, 425 219, 422 222 C 427 223, 432 223, 438 222 C 434 219, 431 215, 430 208 Z" fill="currentColor"/>
+    <circle cx="430" cy="204" r="2.8" fill="currentColor"/>
+
+    <path d="M 570 208 C 572 215, 575 219, 578 222 C 573 223, 568 223, 562 222 C 566 219, 569 215, 570 208 Z" fill="currentColor"/>
+    <circle cx="570" cy="204" r="2.8" fill="currentColor"/>
+
+    <circle cx="462" cy="216" r="3.5" fill="currentColor"/>
+    <circle cx="538" cy="216" r="3.5" fill="currentColor"/>
+
+    <!-- Crown Circlet Band -->
+    <path d="M 408 228 C 445 221, 555 221, 592 228 L 590 243 C 555 236, 445 236, 410 243 Z" fill="currentColor"/>
+    <path d="M 407 246 C 445 239, 555 239, 593 246" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    
+    <!-- Gemstone Cutouts -->
+    <circle cx="424" cy="235" r="3.2" fill="#080707" stroke="currentColor" stroke-width="1.2"/>
+    <polygon points="448,230 454,235 448,240 442,235" fill="#080707" stroke="currentColor" stroke-width="1.2"/>
+    <circle cx="472" cy="235" r="3.2" fill="#080707" stroke="currentColor" stroke-width="1.2"/>
+    <polygon points="500,229 507,235 500,241 493,235" fill="#080707" stroke="currentColor" stroke-width="1.2"/>
+    <circle cx="528" cy="235" r="3.2" fill="#080707" stroke="currentColor" stroke-width="1.2"/>
+    <polygon points="552,230 558,235 552,240 546,235" fill="#080707" stroke="currentColor" stroke-width="1.2"/>
+    <circle cx="576" cy="235" r="3.2" fill="#080707" stroke="currentColor" stroke-width="1.2"/>
+  </g>
+  <!-- BAROQUE ACANTHUS SCROLLWORK FLOURISHES -->
+  <g id="baroque-scrollwork">
+    <g id="flourish-half">
+      <!-- Upper Flourish Cresting -->
+      <path d="M 408 240 C 365 218, 315 224, 290 262 C 274 288, 280 325, 308 342 C 332 355, 360 345, 366 328 C 372 312, 356 298, 340 302 C 326 306, 322 320, 332 328 C 322 328, 312 316, 314 300 C 319 272, 354 255, 394 266" fill="none" stroke="currentColor" stroke-width="4.2" stroke-linecap="round"/>
+      
+      <!-- Middle Acanthus Leaf Cascade -->
+      <path d="M 290 262 C 255 256, 212 284, 206 324 C 215 315, 229 313, 242 318 C 228 330, 219 346, 222 372 C 234 358, 251 352, 265 358 C 249 375, 245 398, 253 424 C 268 404, 287 398, 302 406 C 285 428, 287 455, 299 482 C 314 458, 333 454, 351 460 C 333 482, 335 514, 353 544 C 367 516, 387 510, 404 516" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+      
+      <!-- Lower Volute Curls -->
+      <path d="M 206 324 C 182 346, 176 386, 193 416 C 206 438, 236 448, 252 431 C 263 419, 259 398, 244 397 C 230 396, 220 409, 227 419" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
+      <path d="M 193 416 C 164 448, 160 498, 182 540 C 202 574, 242 588, 276 569 C 295 558, 298 535, 281 526 C 267 518, 253 529, 259 543" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
+      <path d="M 182 540 C 157 582, 163 644, 202 688 C 236 726, 292 743, 342 721 C 370 706, 376 682, 357 671 C 339 660, 324 673, 332 691" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+    </g>
+    <use href="#flourish-half" transform="translate(1000, 0) scale(-1, 1)"/>
+  </g>
+  <!-- LAUREL WREATH CRADLING THE MEDALLION BASE -->
+  <g id="laurel-wreath">
+    <!-- Nadir Ribbon Knot -->
+    <path d="M 492 762 C 484 772, 474 778, 464 774 C 454 770, 458 758, 470 756 C 484 754, 492 758, 498 762" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M 508 762 C 516 772, 526 778, 536 774 C 546 770, 542 758, 530 756 C 516 754, 508 758, 502 762" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="500" cy="762" r="4.5" fill="currentColor"/>
+      <g transform="translate(573.33, 766.56) rotate(-15.38)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="570.94" cy="757.88" r="2.4" fill="currentColor"/>
+      <g transform="translate(596.75, 759.47) rotate(-20.45)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="593.61" cy="751.04" r="2.4" fill="currentColor"/>
+      <g transform="translate(619.50, 750.32) rotate(-25.52)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="615.62" cy="742.20" r="2.4" fill="currentColor"/>
+      <g transform="translate(641.38, 739.19) rotate(-30.59)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="636.80" cy="731.44" r="2.4" fill="currentColor"/>
+      <g transform="translate(662.23, 726.13) rotate(-35.66)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="656.98" cy="718.82" r="2.4" fill="currentColor"/>
+      <g transform="translate(681.87, 711.27) rotate(-40.72)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="676.00" cy="704.45" r="2.4" fill="currentColor"/>
+      <g transform="translate(700.16, 694.70) rotate(-45.79)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="693.71" cy="688.42" r="2.4" fill="currentColor"/>
+      <g transform="translate(716.93, 676.54) rotate(-50.86)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="709.95" cy="670.86" r="2.4" fill="currentColor"/>
+      <g transform="translate(732.07, 656.95) rotate(-55.93)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="724.61" cy="651.90" r="2.4" fill="currentColor"/>
+      <g transform="translate(745.43, 636.05) rotate(-61.00)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="737.56" cy="631.69" r="2.4" fill="currentColor"/>
+      <g transform="translate(756.91, 614.03) rotate(-66.07)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="748.68" cy="610.38" r="2.4" fill="currentColor"/>
+      <g transform="translate(766.41, 591.03) rotate(-71.13)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="757.90" cy="588.12" r="2.4" fill="currentColor"/>
+      <g transform="translate(426.67, 766.56) rotate(195.38)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="429.06" cy="757.88" r="2.4" fill="currentColor"/>
+      <g transform="translate(403.25, 759.47) rotate(200.45)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="406.39" cy="751.04" r="2.4" fill="currentColor"/>
+      <g transform="translate(380.50, 750.32) rotate(205.52)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="384.38" cy="742.20" r="2.4" fill="currentColor"/>
+      <g transform="translate(358.62, 739.19) rotate(210.59)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="363.20" cy="731.44" r="2.4" fill="currentColor"/>
+      <g transform="translate(337.77, 726.13) rotate(215.66)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="343.02" cy="718.82" r="2.4" fill="currentColor"/>
+      <g transform="translate(318.13, 711.27) rotate(220.72)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="324.00" cy="704.45" r="2.4" fill="currentColor"/>
+      <g transform="translate(299.84, 694.70) rotate(225.79)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="306.29" cy="688.42" r="2.4" fill="currentColor"/>
+      <g transform="translate(283.07, 676.54) rotate(230.86)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="290.05" cy="670.86" r="2.4" fill="currentColor"/>
+      <g transform="translate(267.93, 656.95) rotate(235.93)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="275.39" cy="651.90" r="2.4" fill="currentColor"/>
+      <g transform="translate(254.57, 636.05) rotate(241.00)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="262.44" cy="631.69" r="2.4" fill="currentColor"/>
+      <g transform="translate(243.09, 614.03) rotate(246.07)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="251.32" cy="610.38" r="2.4" fill="currentColor"/>
+      <g transform="translate(233.59, 591.03) rotate(251.13)"><path d="M 0 0 C -7 -14, -1 -24, 0 -30 C 1 -24, 7 -14, 0 0 Z" fill="currentColor" opacity="0.95"/></g>
+      <circle cx="242.10" cy="588.12" r="2.4" fill="currentColor"/>
+  </g>
+  <!-- COMPLETE AUTHENTIC MEDALLION FROM USER SVG (ZXIXI01) -->
+  <g id="zxixi-medallion" transform="translate(500, 500) scale(1.20) translate(-300, -310)">
+    <g transform="translate(0,600) scale(0.1,-0.1)" fill="currentColor" stroke="none">
+<path d="M2775 5440 c-27 -5 -81 -12 -120 -16 -38 -3 -73 -10 -76 -16 -3 -5
+-10 -8 -15 -7 -13 4 -102 -11 -128 -21 -11 -4 -48 -16 -81 -25 -33 -10 -80
+-26 -105 -35 -62 -25 -83 -33 -100 -36 -8 -2 -16 -8 -18 -13 -2 -6 -10 -11
+-18 -11 -8 0 -44 -16 -81 -35 -37 -19 -71 -35 -75 -35 -9 0 -101 -60 -128 -82
+-8 -7 -17 -13 -20 -13 -3 0 -4 -3 -3 -7 2 -5 0 -7 -5 -6 -9 3 -84 -42 -94 -56
+-4 -6 -8 -7 -8 -2 0 4 -12 -5 -27 -20 -16 -16 -40 -35 -56 -43 -15 -8 -47 -36
+-72 -63 -24 -27 -48 -49 -52 -51 -5 -1 -7 -5 -6 -9 2 -5 -4 -8 -12 -8 -8 0
+-15 -5 -15 -10 0 -6 -11 -16 -25 -22 -17 -8 -24 -17 -20 -27 3 -8 3 -12 0 -9
+-4 4 -28 -17 -53 -45 -25 -29 -53 -58 -61 -65 -13 -11 -13 -12 -1 -7 8 4 6 -2
+-5 -12 -18 -16 -83 -101 -125 -163 -8 -12 -23 -33 -33 -45 -9 -13 -17 -26 -17
+-30 0 -3 -11 -21 -24 -38 -27 -37 -122 -228 -118 -239 1 -5 -2 -8 -8 -8 -6 0
+-9 -3 -8 -7 2 -10 -7 -35 -31 -88 -10 -22 -22 -56 -26 -75 -4 -19 -11 -37 -15
+-40 -4 -3 -14 -34 -24 -70 -9 -36 -23 -90 -31 -120 -30 -108 -63 -425 -59
+-565 4 -124 42 -425 54 -425 4 0 7 -10 7 -22 -1 -13 5 -41 11 -63 7 -22 20
+-65 29 -95 18 -62 17 -60 68 -185 48 -120 125 -275 136 -275 5 0 9 -4 9 -10 0
+-13 85 -151 109 -177 12 -12 21 -27 21 -33 0 -6 13 -23 30 -36 16 -14 29 -29
+27 -33 -1 -3 13 -22 30 -41 18 -19 64 -68 103 -109 38 -41 67 -79 63 -84 -3
+-6 -1 -7 5 -3 6 4 24 -7 40 -24 16 -16 33 -30 37 -30 4 0 15 -8 24 -18 24 -26
+88 -72 101 -72 6 0 9 -4 6 -8 -3 -5 26 -28 65 -52 38 -24 69 -47 69 -52 0 -4
+5 -8 12 -8 6 0 23 -10 36 -23 14 -12 21 -15 17 -7 -5 8 7 3 26 -11 33 -25 94
+-56 114 -59 6 -1 17 -7 25 -14 8 -6 26 -17 40 -23 14 -6 51 -23 83 -38 33 -14
+75 -29 94 -32 25 -4 31 -8 21 -15 -9 -7 -8 -8 6 -4 10 4 25 1 32 -5 8 -6 21
+-9 29 -5 8 3 15 2 15 -2 0 -9 108 -42 138 -42 11 0 31 -4 44 -9 97 -38 436
+-57 648 -36 36 3 85 8 109 10 24 2 73 11 108 20 35 9 68 13 75 9 7 -4 8 -3 4
+4 -5 8 1 12 18 12 35 0 126 22 126 31 0 4 19 10 41 14 23 4 58 14 78 22 86 36
+128 55 151 69 14 8 41 22 60 30 67 28 85 38 119 63 19 13 31 18 26 10 -4 -8 6
+-1 23 14 16 16 33 29 36 28 19 -3 26 0 21 9 -6 9 8 14 28 11 5 -1 6 3 3 8 -3
+5 5 12 19 15 14 4 25 10 25 15 0 5 14 14 30 21 17 7 28 15 25 18 -4 5 26 28
+79 59 12 7 17 13 13 13 -4 0 -2 6 5 14 7 8 16 13 19 13 3 -1 24 17 48 40 23
+24 46 43 52 43 6 0 8 4 5 8 -3 5 17 26 45 47 45 36 66 65 37 50 -7 -4 -4 1 6
+9 11 9 24 16 29 16 4 0 6 4 2 9 -3 5 3 16 13 23 10 7 31 31 47 53 31 41 48 63
+78 98 10 12 28 37 40 57 11 19 27 41 34 48 7 7 13 20 13 28 0 8 5 14 10 14 6
+0 10 5 10 12 0 6 11 26 25 44 14 18 25 36 25 39 0 4 14 37 31 74 97 208 126
+280 120 305 -1 4 2 13 7 20 19 23 72 259 88 388 27 215 10 587 -35 763 -41
+163 -75 268 -120 368 -16 37 -28 67 -26 67 7 0 -67 145 -77 151 -5 3 -9 10 -9
+15 1 17 -10 44 -20 44 -5 0 -9 5 -9 11 0 13 -120 193 -132 197 -4 2 -8 8 -8
+13 0 10 -19 35 -68 88 -21 23 -30 42 -27 56 3 11 2 14 -1 7 -6 -14 -201 175
+-196 191 1 5 -1 6 -6 3 -8 -4 -50 26 -132 94 -56 47 -73 60 -79 60 -3 0 -19
+11 -35 25 -16 14 -35 25 -43 25 -7 0 -13 4 -13 8 0 5 -18 17 -40 28 -22 10
+-40 23 -40 27 0 5 -4 5 -10 2 -5 -3 -10 -3 -10 2 0 4 -28 21 -63 38 -34 16
+-65 34 -69 40 -4 5 -8 7 -8 3 0 -4 -26 6 -57 21 -32 16 -73 32 -90 36 -18 3
+-33 11 -33 17 0 6 -9 8 -21 5 -12 -3 -18 -3 -15 1 14 13 -219 70 -419 102 -90
+15 -455 22 -520 10z m480 -30 c303 -35 655 -162 915 -331 552 -357 912 -922
+1012 -1584 19 -132 17 -481 -5 -620 -73 -466 -270 -866 -598 -1209 -617 -646
+-1551 -857 -2364 -534 -752 299 -1280 969 -1397 1773 -20 136 -16 484 6 620
+64 394 208 729 443 1038 348 455 876 763 1443 842 116 16 422 19 545 5z
+m-1874 -3727 c13 -16 12 -17 -3 -4 -10 7 -18 15 -18 17 0 8 8 3 21 -13z"/><path d="M2810 5364 c-519 -61 -930 -252 -1288 -599 -362 -349 -588 -805 -653
+-1315 -16 -123 -16 -389 0 -510 25 -193 85 -416 157 -586 l26 -61 136 70 c75
+38 145 77 156 86 21 18 61 96 100 190 30 74 70 131 93 131 9 0 13 6 9 15 -3 9
+-11 45 -18 81 -11 62 -13 64 -27 46 -34 -42 -94 -34 -127 16 -9 14 -25 73 -35
+131 -10 58 -25 138 -33 176 -18 82 -21 194 -5 228 6 14 22 31 35 38 16 8 23
+18 18 28 -9 24 -28 330 -27 456 0 128 23 208 93 325 128 217 309 304 499 240
+l64 -21 21 20 c74 69 223 84 396 38 231 -62 395 -161 495 -301 109 -153 177
+-394 141 -504 -8 -26 -22 -92 -30 -147 -9 -55 -20 -116 -26 -135 -5 -19 -10
+-36 -10 -37 0 -2 9 -3 20 -3 44 0 53 -92 20 -227 -11 -45 -24 -130 -30 -188
+-5 -58 -16 -118 -25 -134 -15 -30 -47 -47 -64 -36 -6 3 -13 -11 -16 -32 -19
+-114 -70 -242 -121 -302 -24 -29 -25 -35 -14 -56 35 -66 66 -83 323 -174 214
+-76 347 -134 347 -151 0 -6 -3 -10 -7 -8 -78 39 -177 80 -298 123 -237 84
+-268 97 -297 117 -16 11 -28 17 -28 15 0 -3 14 -35 30 -72 31 -69 182 -488
+194 -538 12 -49 -18 -44 -92 16 -37 30 -78 67 -91 81 -36 39 -67 34 -82 -11
+-19 -59 -35 -78 -113 -132 -86 -59 -120 -96 -175 -188 -67 -114 -85 -180 -84
+-312 0 -79 4 -115 13 -121 24 -15 233 -61 343 -75 143 -19 431 -19 567 0 568
+81 1079 390 1437 868 102 137 100 132 54 146 -49 14 -126 82 -153 134 -29 58
+-49 186 -47 299 2 54 0 100 -3 103 -3 3 -11 -24 -18 -61 -43 -226 -306 -505
+-547 -581 -70 -21 -97 -25 -171 -21 -56 3 -99 11 -120 22 l-34 17 8 -23 c23
+-73 35 -131 41 -200 7 -92 -14 -268 -32 -268 -10 0 -10 13 1 63 16 75 18 192
+4 273 -16 86 -17 88 -36 69 -27 -27 -141 -80 -279 -129 -172 -62 -302 -126
+-371 -182 -55 -45 -85 -53 -48 -13 56 62 234 153 439 223 98 34 212 86 244
+113 19 16 22 25 17 50 -6 24 -21 39 -66 67 -106 65 -176 158 -285 376 -77 154
+-77 155 -86 380 -4 113 -11 275 -15 361 -8 176 3 262 42 349 49 108 109 160
+230 200 48 16 64 26 64 40 0 29 22 70 37 70 7 0 16 -13 20 -30 7 -35 1 -34 71
+-14 90 26 166 15 277 -40 132 -65 180 -120 237 -269 l42 -112 102 -100 c76
+-74 108 -114 126 -155 46 -103 87 -107 158 -15 26 33 58 67 72 75 56 31 108
+-30 108 -127 0 -73 -45 -313 -68 -365 -24 -55 -60 -82 -109 -80 l-36 1 5 -122
+c4 -92 11 -139 29 -192 22 -64 27 -70 54 -73 110 -13 197 79 231 245 26 126 2
+224 -76 309 -45 49 -44 46 -26 167 16 108 7 219 -35 432 -64 322 -153 482
+-333 603 -146 98 -297 143 -476 144 -284 0 -568 -120 -705 -299 -82 -107 -145
+-285 -160 -448 -9 -94 8 -210 45 -325 34 -102 38 -147 26 -280 l-8 -85 41 -80
+c50 -97 49 -122 -3 -37 -51 85 -63 149 -47 250 15 89 12 111 -29 232 -40 118
+-54 242 -40 356 30 244 124 426 282 546 88 67 151 100 266 137 130 43 222 54
+374 48 175 -7 291 -43 428 -131 114 -75 193 -163 254 -285 49 -98 71 -169 106
+-346 38 -189 48 -343 30 -461 l-13 -83 43 -48 c65 -73 83 -123 84 -223 1 -197
+-87 -339 -221 -358 l-48 -7 30 -21 c17 -12 50 -31 74 -44 54 -27 47 -35 135
+140 220 434 284 925 185 1415 -60 296 -220 643 -407 885 -336 434 -818 722
+-1362 815 -91 16 -440 28 -520 19z m469 -40 c35 -8 73 -12 85 -9 17 5 18 4 6
+-4 -12 -8 -9 -10 15 -9 17 0 41 -3 55 -6 14 -4 34 -9 45 -11 11 -2 41 -10 68
+-19 26 -8 47 -12 47 -9 0 3 7 0 15 -7 8 -7 15 -9 15 -5 0 4 6 2 14 -4 8 -7 20
+-11 28 -9 7 1 36 -8 63 -21 59 -28 80 -37 118 -51 15 -5 27 -14 27 -20 0 -6 4
+-9 9 -5 9 5 150 -63 180 -88 9 -7 28 -18 44 -25 15 -6 27 -16 27 -22 0 -5 6
+-10 14 -10 15 0 142 -92 169 -123 9 -11 17 -16 17 -11 0 5 12 -4 26 -19 14
+-15 30 -24 36 -21 6 4 8 3 5 -3 -7 -12 16 -36 26 -28 4 3 5 2 3 -1 -3 -3 38
+-49 90 -102 52 -53 94 -101 94 -107 0 -6 9 -17 20 -25 11 -8 20 -20 20 -26 0
+-7 7 -15 16 -18 9 -4 14 -9 11 -12 -3 -3 11 -22 31 -41 21 -20 30 -32 22 -28
+-8 5 -6 -2 6 -16 50 -57 168 -264 159 -279 -3 -5 1 -14 8 -22 38 -39 155 -378
+171 -498 3 -19 12 -80 20 -135 25 -164 17 -540 -14 -640 -5 -16 -12 -50 -15
+-75 -7 -66 -34 -162 -56 -204 -8 -14 -8 -16 3 -10 10 6 11 5 1 -8 -7 -8 -9
+-19 -5 -23 4 -5 2 -5 -4 -2 -6 4 -16 -14 -23 -44 -7 -28 -16 -47 -19 -44 -3 3
+-6 47 -7 98 0 107 -22 167 -82 229 l-36 37 8 68 c16 141 10 259 -21 418 -31
+157 -32 166 -33 193 -1 13 -4 21 -8 19 -5 -3 -9 8 -10 23 -3 40 -78 219 -97
+232 -6 4 -8 8 -4 8 5 0 -13 28 -38 63 -48 65 -63 82 -49 57 5 -8 -10 5 -33 30
+-23 25 -42 49 -42 54 0 4 -6 6 -14 3 -8 -3 -16 -3 -18 1 -5 11 -115 82 -128
+82 -6 0 -28 9 -48 20 -20 11 -71 30 -112 42 -65 20 -96 23 -230 23 -136 -1
+-168 -4 -265 -29 -60 -16 -112 -31 -115 -35 -3 -3 -12 -7 -20 -9 -37 -7 -190
+-89 -196 -105 -3 -9 -9 -15 -14 -12 -5 3 -16 -5 -25 -17 -8 -13 -18 -21 -21
+-19 -8 4 -134 -149 -134 -162 0 -5 -9 -21 -19 -35 -10 -15 -19 -31 -19 -35 0
+-4 -12 -36 -26 -71 -14 -35 -31 -94 -37 -130 -11 -60 -29 -82 -29 -35 0 10 -5
+19 -10 19 -6 0 -9 6 -8 13 2 6 -2 11 -9 10 -15 -3 -11 42 18 198 29 160 33
+214 19 292 -11 63 -45 161 -73 212 -6 11 -12 26 -13 33 -1 8 -10 22 -18 31 -9
+10 -14 20 -11 23 3 3 -18 32 -47 64 -59 66 -140 142 -143 134 0 -3 -16 7 -34
+23 -18 15 -40 27 -50 27 -9 0 -27 9 -39 21 -12 11 -27 17 -32 14 -6 -3 -10 -2
+-10 3 0 5 -6 9 -12 10 -7 0 -60 17 -118 37 -92 32 -120 37 -227 41 -78 3 -124
+1 -128 -6 -3 -5 -16 -10 -28 -10 -12 0 -33 -12 -46 -25 -12 -14 -26 -23 -30
+-21 -4 3 -13 1 -21 -4 -7 -4 -24 -4 -37 1 -50 19 -213 34 -213 20 0 -5 -9 -7
+-20 -4 -11 3 -20 1 -20 -4 0 -5 -10 -9 -22 -10 -11 -1 -24 -6 -27 -10 -3 -4
+-12 -9 -20 -11 -44 -10 -146 -107 -195 -186 -17 -28 -30 -52 -28 -54 1 -1 -4
+-9 -12 -17 -26 -27 -76 -176 -85 -257 -5 -45 -5 -109 0 -148 4 -38 11 -134 14
+-214 5 -141 4 -147 -17 -177 -31 -41 -36 -152 -13 -274 10 -50 18 -103 19
+-120 2 -35 15 -104 23 -125 4 -8 7 -17 8 -20 10 -28 21 -46 32 -53 7 -5 10
+-13 7 -19 -4 -7 -2 -8 4 -4 7 4 12 3 12 -1 0 -16 55 -30 85 -22 16 5 30 7 31
+6 6 -6 11 -87 6 -83 -4 2 -13 -2 -20 -10 -7 -8 -10 -14 -6 -14 4 0 -5 -12 -20
+-26 -14 -15 -26 -31 -26 -36 0 -9 -24 -63 -78 -176 -14 -30 -32 -57 -41 -60
+-9 -3 -31 -17 -48 -30 -18 -13 -33 -21 -33 -18 0 4 -13 -2 -29 -13 -16 -12
+-34 -21 -40 -21 -16 0 -100 -47 -96 -54 3 -3 -1 -1 -9 6 -7 7 -21 36 -31 63
+-10 28 -25 66 -34 85 -8 19 -14 41 -12 48 1 6 -2 12 -6 12 -5 0 -10 11 -11 26
+-1 14 -6 33 -11 42 -8 16 -34 122 -46 187 -17 92 -35 307 -35 425 1 162 28
+379 65 510 9 30 20 72 25 93 26 98 155 393 208 471 17 26 32 51 32 55 0 4 8
+16 18 27 9 10 35 45 56 77 22 31 43 57 48 57 4 0 8 6 8 13 0 8 11 24 25 37 14
+13 25 27 25 32 0 12 72 74 83 70 4 -1 6 2 2 7 -3 6 5 20 19 32 14 12 23 26 20
+31 -3 5 -2 7 3 6 4 -2 17 6 29 17 53 51 100 89 107 87 5 -1 6 2 2 8 -3 6 3 14
+14 18 10 4 34 20 53 35 68 57 111 87 124 87 8 0 14 4 14 10 0 5 19 19 43 31
+23 12 45 27 49 33 4 6 8 7 8 2 0 -5 7 -3 16 4 8 8 35 23 60 35 24 12 42 24 38
+27 -3 4 6 5 20 4 14 -2 26 0 26 4 0 4 28 19 63 34 34 15 69 31 77 35 9 5 41
+14 73 21 31 7 54 17 50 23 -3 5 0 7 8 5 8 -3 34 1 59 9 43 13 113 30 155 38
+11 2 20 4 20 5 0 3 93 12 123 12 18 0 30 3 27 7 -9 15 435 11 504 -5z m826
+-1280 c28 -4 55 -7 62 -6 6 2 14 -2 18 -7 3 -6 12 -8 20 -4 8 3 15 0 15 -7 0
+-6 4 -9 9 -6 4 3 45 -12 89 -34 45 -22 87 -40 93 -40 7 0 9 -3 6 -7 -7 -6 23
+-27 55 -39 10 -3 15 -10 12 -15 -3 -5 -2 -9 3 -9 4 0 28 -18 52 -40 24 -22 40
+-40 36 -40 -4 0 6 -15 23 -34 16 -19 42 -60 56 -92 15 -33 32 -68 38 -79 10
+-17 32 -96 42 -150 2 -11 13 -60 24 -110 11 -49 18 -94 15 -98 -3 -4 1 -14 7
+-22 10 -12 10 -15 -1 -15 -11 0 -11 -2 1 -10 13 -8 12 -10 -5 -11 -18 -1 -32
+-2 -86 -7 -9 -1 -27 -17 -40 -36 -13 -19 -27 -32 -31 -30 -5 3 -7 2 -6 -3 5
+-16 -38 -61 -62 -65 -20 -2 -28 5 -50 48 -14 28 -32 60 -40 70 -13 16 -13 17
+0 10 8 -4 -5 11 -30 34 -25 22 -44 45 -42 51 1 6 -2 8 -7 4 -19 -11 -115 100
+-134 156 -28 81 -78 180 -108 213 -15 16 -25 35 -22 43 3 8 0 11 -8 8 -8 -3
+-31 11 -51 30 -38 36 -54 44 -43 23 4 -7 1 -6 -7 3 -11 13 -40 28 -68 34 -3 1
+-23 9 -45 19 -52 23 -141 29 -203 12 -47 -12 -50 -11 -69 12 -25 30 -60 23
+-69 -14 -3 -13 -10 -22 -15 -19 -4 3 -6 -3 -4 -14 3 -15 -6 -23 -36 -35 -22
+-9 -45 -16 -53 -16 -7 0 -24 -9 -38 -19 -13 -11 -36 -23 -50 -26 -13 -3 -32
+-19 -42 -35 -9 -16 -22 -35 -29 -42 -23 -24 -50 -71 -36 -63 8 5 6 -1 -4 -12
+-9 -11 -23 -44 -31 -74 -16 -63 -27 -370 -15 -413 5 -16 5 -35 1 -43 -7 -12
+-36 62 -59 149 -12 47 -14 226 -3 278 6 30 12 64 14 75 2 11 9 33 15 48 6 16
+9 32 6 37 -3 5 -1 11 5 15 5 3 10 12 10 20 0 20 81 156 111 187 15 15 30 24
+34 20 5 -4 5 -2 2 5 -8 12 89 103 110 103 7 0 13 3 13 8 0 7 92 62 105 62 3 0
+4 -4 0 -9 -3 -5 16 2 42 16 27 14 49 25 51 24 3 -2 55 10 72 17 8 3 26 7 40 9
+14 2 48 7 75 11 62 9 193 8 260 -4z m-755 -408 c0 -2 -8 -10 -17 -17 -16 -13
+-17 -12 -4 4 13 16 21 21 21 13z m-286 -433 c6 -75 10 -100 18 -123 19 -48 58
+-189 59 -210 1 -14 -4 -66 -10 -117 -10 -83 -9 -97 8 -143 10 -27 17 -50 14
+-50 -3 0 7 -13 20 -30 14 -16 28 -39 32 -50 6 -18 19 -24 52 -23 7 0 15 -9 19
+-21 3 -11 18 -36 31 -54 14 -18 23 -36 19 -39 -3 -3 13 -33 36 -66 22 -33 36
+-57 29 -53 -6 4 -11 3 -11 -3 0 -7 -10 -6 -30 0 -16 6 -30 15 -30 19 0 5 -14
+12 -32 15 -18 4 -39 12 -48 16 -8 5 -40 18 -70 28 -30 10 -79 28 -109 40 -30
+11 -58 18 -64 14 -6 -3 -7 -2 -4 3 3 6 -15 16 -41 23 -26 7 -55 17 -64 22 -10
+5 -25 9 -33 9 -8 0 -15 5 -15 10 0 6 -6 10 -13 10 -7 0 -19 9 -27 19 -7 11
+-18 17 -23 14 -6 -3 -7 -2 -4 3 3 6 2 16 -3 23 -5 9 4 33 27 69 19 30 43 73
+53 96 18 40 23 56 36 121 3 17 8 37 11 45 4 8 5 18 5 23 -1 4 6 7 15 7 26 1
+47 20 64 58 7 17 17 32 21 32 3 0 5 16 3 37 -5 73 29 293 46 293 4 0 10 -30
+13 -67z m149 -528 c3 -60 2 -65 -8 -40 -6 17 -9 55 -7 85 6 63 9 53 15 -45z
+m1604 58 c-9 -8 13 -34 23 -28 9 6 63 -103 56 -113 -2 -4 0 -27 4 -52 13 -67
+-23 -219 -59 -247 -8 -7 -12 -13 -8 -13 5 0 -2 -11 -15 -24 -41 -43 -152 -66
+-156 -33 -1 7 -8 37 -17 67 -9 30 -17 98 -18 150 l-2 94 35 10 c19 5 38 14 41
+19 3 5 10 8 15 6 5 -1 20 21 34 48 14 28 32 59 40 69 8 10 10 15 5 12 -6 -4
+-11 2 -11 12 0 10 4 17 7 14 4 -2 10 0 14 6 3 5 9 10 12 10 4 0 3 -3 0 -7z
+m-255 -360 c1 -27 1 -58 0 -70 0 -13 3 -23 9 -23 5 0 9 -8 9 -17 1 -45 87
+-173 116 -173 8 0 14 -4 14 -9 0 -5 15 -15 34 -22 32 -12 38 -31 16 -49 -3 -3
+-26 -34 -51 -70 -24 -36 -54 -74 -65 -85 -12 -11 -29 -33 -39 -48 -11 -17 -24
+-26 -32 -23 -8 3 -12 2 -9 -2 2 -4 -13 -27 -35 -50 -21 -24 -39 -47 -39 -52 0
+-5 -9 -12 -20 -15 -11 -4 -18 -11 -15 -16 4 -5 1 -9 -4 -9 -6 0 -23 -13 -37
+-30 -15 -16 -31 -27 -35 -24 -5 3 -9 1 -9 -5 0 -6 -16 -21 -35 -34 -19 -13
+-32 -27 -27 -32 4 -5 2 -5 -5 -2 -6 4 -21 -5 -32 -19 -12 -15 -21 -24 -21 -20
+0 8 -51 -24 -68 -44 -12 -13 -13 -13 -7 0 4 8 -2 5 -13 -7 -11 -13 -23 -23
+-26 -23 -8 0 -87 -51 -104 -67 -7 -7 -20 -9 -30 -6 -9 3 -14 2 -9 -2 7 -9 -77
+-55 -100 -55 -6 0 -18 -7 -26 -15 -9 -8 -37 -22 -64 -31 -26 -9 -66 -24 -88
+-34 -55 -24 -171 -60 -195 -60 -10 0 -21 -4 -25 -9 -3 -6 -13 -9 -23 -9 -9 1
+-44 -4 -77 -11 -229 -46 -606 -47 -773 -2 -21 6 -53 13 -72 15 -19 2 -48 9
+-63 15 -15 6 -31 10 -35 10 -21 -3 -51 16 -56 34 -10 37 -7 172 5 208 62 191
+144 302 272 368 15 8 27 18 27 23 0 5 5 6 12 2 6 -4 8 -3 4 4 -3 6 5 22 19 36
+14 14 25 34 25 46 0 32 25 34 57 3 17 -15 47 -42 69 -60 101 -82 103 -83 125
+-56 16 18 21 81 8 89 -5 3 -9 13 -9 23 0 15 -10 43 -55 156 -8 21 -13 36 -18
+58 -1 6 -5 17 -9 22 -3 6 -10 26 -16 45 -9 30 -44 126 -68 184 -6 17 -4 18 22
+12 16 -4 31 -11 34 -16 3 -5 19 -12 35 -16 17 -4 35 -11 42 -16 7 -5 17 -7 23
+-3 5 3 10 2 10 -3 0 -5 19 -12 43 -16 23 -4 51 -13 62 -20 11 -7 37 -16 58
+-20 20 -4 37 -10 37 -15 0 -4 23 -14 50 -21 28 -7 50 -17 50 -22 0 -4 5 -8 10
+-8 6 0 28 -8 49 -18 31 -15 39 -16 49 -5 15 15 32 17 32 3 0 -11 101 -110 113
+-110 5 0 5 -4 2 -10 -3 -5 0 -10 8 -10 8 0 24 -9 37 -20 13 -11 27 -20 31 -20
+5 0 8 -11 7 -25 -1 -14 -8 -25 -15 -25 -7 0 -13 -4 -13 -10 0 -5 -5 -10 -10
+-10 -6 0 -33 -11 -62 -25 -28 -14 -58 -25 -65 -25 -7 0 -13 -5 -13 -11 0 -5
+-4 -8 -8 -5 -5 3 -21 -1 -36 -9 -15 -8 -51 -22 -79 -30 -72 -21 -161 -58 -169
+-70 -4 -5 -8 -6 -8 -2 0 8 -10 3 -65 -33 -16 -11 -36 -23 -44 -27 -8 -3 -22
+-14 -31 -22 -8 -9 -32 -29 -53 -45 -41 -33 -44 -43 -22 -72 12 -16 16 -17 24
+-5 5 8 18 12 28 9 12 -3 20 0 20 8 0 7 -5 10 -11 7 -6 -4 -5 1 3 10 7 9 19 17
+25 17 7 0 28 15 48 34 20 19 38 32 41 29 3 -2 13 0 24 6 51 28 160 76 173 77
+8 1 30 9 47 18 18 9 36 15 40 14 10 -3 67 18 106 38 15 9 27 12 27 7 0 -4 4
+-3 8 3 4 5 28 18 55 28 26 10 45 22 42 27 -4 5 1 6 9 3 8 -3 18 -18 21 -33 11
+-50 8 -205 -5 -263 -11 -46 -10 -59 1 -74 14 -19 45 -33 35 -15 -3 5 1 12 10
+15 8 3 13 10 10 15 -4 5 -1 11 5 13 16 5 25 266 11 320 -20 76 -19 93 3 90 85
+-14 193 -13 228 1 21 9 45 13 55 10 9 -3 14 -2 9 2 -7 9 57 44 81 45 6 0 12 5
+12 10 0 6 8 10 18 10 20 0 144 95 135 104 -4 3 1 6 10 6 20 0 138 130 130 144
+-3 6 -3 8 2 4 10 -9 82 88 96 129 15 47 29 41 31 -14z m338 -137 c0 -2 -8 -10
+-17 -17 -16 -13 -17 -12 -4 4 13 16 21 21 21 13z m-37 -60 c-19 -31 -56 -76
+-65 -76 -5 0 -6 5 -2 12 5 8 0 9 -14 6 -12 -4 -20 -2 -16 3 3 5 -1 9 -8 9 -7
+1 3 9 23 20 19 10 41 25 48 34 14 17 45 10 34 -8z"/><path d="M2999 1633 c-13 -17 -13 -17 6 -3 11 8 22 16 24 17 2 2 0 3 -6 3 -6
+0 -17 -8 -24 -17z"/><path d="M2118 4587 c-25 -8 -67 -27 -93 -44 l-47 -30 -61 19 c-88 28 -192 21
+-271 -17 -122 -61 -253 -250 -291 -420 -14 -60 -16 -100 -11 -169 3 -50 11
+-161 16 -246 l9 -155 33 -27 c18 -15 36 -28 39 -28 11 0 59 -97 67 -136 l9
+-39 7 50 c21 157 29 193 54 238 15 28 46 66 70 86 69 58 76 74 82 188 5 94 7
+104 36 140 19 24 61 54 116 83 100 52 126 73 144 117 12 29 12 36 -5 65 -39
+67 -65 198 -42 213 26 16 81 -116 81 -194 0 -39 5 -53 27 -76 61 -60 159 -91
+328 -104 261 -21 376 -113 395 -318 6 -65 13 -91 34 -123 28 -43 51 -124 62
+-225 4 -33 9 -53 12 -45 2 8 14 35 25 60 11 25 30 108 44 185 13 77 28 150 34
+162 27 51 -11 224 -81 370 -41 87 -61 115 -128 182 -68 68 -95 87 -193 135
+-183 89 -395 133 -501 103z m247 -41 c88 -19 120 -30 245 -89 47 -22 89 -39
+93 -38 5 1 7 -2 5 -6 -4 -8 38 -53 48 -52 10 1 69 -56 95 -91 54 -75 88 -140
+82 -156 -4 -10 -2 -15 3 -11 19 11 55 -135 58 -231 1 -50 -1 -93 -5 -94 -4 -2
+-10 -25 -14 -53 -3 -27 -10 -68 -15 -90 -5 -22 -10 -54 -10 -71 0 -31 -26 -80
+-28 -53 -3 50 -15 88 -46 147 -25 47 -37 85 -40 127 -6 68 -28 140 -54 169
+-12 14 -13 17 -2 11 29 -16 -66 71 -100 92 -75 46 -142 65 -243 69 -54 2 -108
+6 -120 9 -106 23 -145 38 -199 78 -22 16 -28 29 -28 58 0 53 -36 163 -65 197
+-22 26 -23 31 -10 42 8 7 15 9 15 4 0 -5 4 -3 8 4 5 7 29 21 55 30 58 22 164
+22 272 -2z m-450 -40 c20 -9 42 -13 49 -9 6 3 3 -3 -6 -14 -14 -15 -17 -30
+-12 -68 5 -48 39 -150 56 -171 14 -19 -25 -94 -49 -94 -5 0 -17 -8 -27 -18 -9
+-11 -33 -24 -54 -31 -61 -19 -114 -62 -141 -116 -21 -40 -26 -64 -27 -130 -1
+-80 -8 -115 -25 -115 -5 0 -9 -7 -9 -15 0 -8 -3 -15 -8 -15 -9 0 -63 -50 -77
+-72 -5 -8 -18 -27 -28 -40 -10 -14 -20 -35 -22 -48 -2 -12 -7 -30 -10 -41 -4
+-10 -8 -31 -9 -46 -4 -32 -23 -42 -33 -16 -4 10 -15 25 -25 34 -10 9 -14 20
+-10 24 4 5 2 5 -4 2 -20 -11 -41 26 -53 93 -7 36 -13 166 -14 290 l-2 225 29
+65 c37 84 101 184 142 226 18 17 30 35 27 38 -4 3 0 6 8 6 9 0 24 8 35 18 18
+17 34 25 59 32 6 2 25 8 43 14 45 16 150 11 197 -8z"/><path d="M1996 4388 c7 -35 20 -79 29 -98 l16 -35 -5 55 c-5 55 -33 140 -46
+140 -4 0 -2 -28 6 -62z"/><path d="M2029 4166 c-21 -34 -43 -51 -110 -85 -144 -74 -169 -109 -169 -231
+0 -45 -5 -91 -11 -103 -7 -12 -40 -51 -74 -87 -78 -82 -93 -110 -106 -207 -20
+-149 -24 -166 -36 -170 -13 -5 -18 5 -48 90 -35 99 -121 148 -152 87 -20 -39
+-15 -150 11 -273 13 -61 27 -134 31 -162 8 -59 28 -101 54 -115 29 -15 39 -13
+65 14 23 22 24 28 18 111 -3 57 -2 86 5 82 5 -4 13 -42 16 -87 8 -101 42 -250
+73 -315 52 -113 199 -247 354 -325 194 -98 387 -114 538 -45 114 52 250 182
+302 290 62 127 100 368 101 633 1 203 -13 289 -58 370 -27 50 -36 79 -43 146
+-9 93 -31 143 -81 194 -66 68 -153 96 -322 107 -138 9 -246 44 -307 100 l-25
+23 -26 -42z m83 -30 c4 3 8 0 8 -6 0 -6 5 -8 10 -5 6 3 10 2 10 -3 0 -11 45
+-32 71 -32 11 0 18 -4 15 -9 -6 -9 160 -35 174 -26 8 5 75 -4 160 -21 14 -3
+30 -6 37 -6 7 -1 10 -5 7 -10 -3 -4 3 -8 14 -8 10 0 29 -11 42 -25 12 -13 27
+-22 33 -18 6 3 7 1 3 -5 -4 -7 -4 -12 1 -12 24 0 54 -71 63 -151 6 -46 13 -91
+17 -99 3 -8 7 -17 8 -20 2 -3 6 -15 10 -27 4 -13 12 -20 19 -16 6 3 8 3 4 -2
+-4 -4 -3 -15 2 -25 15 -28 1 -30 -44 -6 -38 20 -56 23 -142 21 -145 -4 -210
+-27 -218 -79 -1 -9 -13 -27 -26 -41 -13 -14 -20 -25 -15 -25 5 0 1 -6 -8 -12
+-14 -11 -16 -27 -13 -98 2 -47 11 -116 20 -153 20 -87 20 -130 -1 -170 -9 -18
+-16 -35 -15 -38 0 -4 -12 -6 -28 -5 -17 0 -30 3 -30 6 0 3 -16 16 -35 28 -41
+29 -92 35 -100 13 -6 -14 -8 -14 -20 2 -21 28 -1 65 31 59 14 -2 24 0 24 7 0
+7 4 10 8 7 4 -2 8 4 8 14 0 23 -39 41 -78 36 -26 -3 -108 -77 -108 -97 0 -6
+-5 -7 -12 -3 -6 4 -8 3 -5 -3 4 -6 -5 -21 -18 -33 -14 -13 -25 -29 -25 -36 0
+-6 -7 -17 -15 -24 -8 -7 -15 -19 -15 -27 0 -8 -6 -21 -14 -28 -15 -15 -31
+-153 -22 -183 4 -10 18 -25 31 -32 21 -11 29 -11 51 1 15 7 29 21 33 30 4 12
+12 14 29 8 12 -5 22 -13 22 -19 0 -5 7 -10 15 -10 8 0 15 -4 15 -10 0 -5 7 -7
+15 -4 8 4 15 1 15 -5 0 -6 8 -11 19 -11 10 0 24 -7 31 -15 7 -8 20 -15 29 -15
+9 -1 1 -7 -17 -15 -35 -15 -37 -30 -10 -56 17 -16 68 -15 68 0 0 4 6 8 13 9 6
+1 24 3 39 6 16 2 30 1 33 -4 3 -4 15 -6 27 -2 14 3 19 1 14 -6 -4 -7 3 -9 21
+-7 16 2 31 4 34 4 4 1 9 10 12 21 4 15 -2 24 -21 34 l-27 14 28 11 c16 6 33
+11 38 11 5 0 21 11 35 25 14 14 30 22 36 19 7 -4 8 -2 4 5 -15 24 24 22 54 -2
+38 -33 60 -29 83 16 18 35 18 38 1 89 -10 29 -18 63 -19 76 0 13 -6 26 -12 30
+-7 4 -17 19 -23 32 -12 28 -50 85 -74 113 -9 9 -14 17 -11 17 3 0 -6 12 -20
+27 -14 15 -25 32 -25 36 0 5 -9 6 -19 2 -15 -5 -20 0 -24 22 -29 150 -30 164
+-21 173 7 7 15 1 24 -17 19 -38 61 -83 77 -83 7 0 13 -4 13 -10 0 -5 4 -10 9
+-10 5 0 22 -5 38 -12 32 -13 134 -18 127 -6 -3 4 6 8 20 8 28 0 49 29 40 55
+-5 13 -14 15 -38 10 -49 -12 -116 -14 -110 -4 3 5 23 9 46 9 33 0 88 20 108
+40 3 3 16 7 29 8 13 2 31 10 38 18 8 8 15 14 17 14 1 0 3 -44 4 -97 3 -106
+-10 -245 -34 -388 -9 -49 -17 -102 -19 -117 -5 -36 -54 -156 -74 -181 -9 -11
+-26 -30 -38 -42 -13 -12 -23 -26 -23 -30 0 -4 -12 -19 -26 -32 -19 -17 -30
+-21 -37 -14 -18 18 -44 12 -69 -16 -45 -52 -66 -64 -130 -77 -54 -11 -198 -12
+-263 -2 -34 5 -85 27 -85 38 0 5 -4 7 -9 4 -5 -3 -20 5 -35 19 -14 13 -26 21
+-26 18 0 -3 -6 0 -14 6 -21 17 -44 3 -41 -25 2 -24 2 -24 -18 -7 -11 10 -17
+12 -13 6 4 -7 -13 -1 -38 15 -30 18 -44 32 -40 42 3 8 2 11 -2 8 -10 -10 -55
+16 -81 46 -13 14 -28 26 -35 26 -6 0 -9 2 -6 5 3 3 -11 23 -31 43 -20 20 -38
+40 -39 44 -2 4 -14 31 -27 61 -28 60 -72 257 -74 332 -1 40 -6 54 -29 75 -33
+30 -36 85 -6 107 43 30 64 57 64 82 0 30 8 126 11 126 1 0 3 9 4 20 6 42 36
+109 59 130 14 13 22 26 18 31 -4 4 -2 4 4 1 10 -6 78 58 79 73 1 3 7 16 15 30
+9 16 14 57 15 112 1 67 5 92 18 106 9 10 15 21 12 24 -4 3 8 10 24 16 17 6 31
+13 31 16 0 3 -8 3 -17 -1 -10 -3 -15 -2 -10 2 4 5 15 9 25 10 34 2 152 68 168
+93 31 47 37 50 58 31 10 -10 23 -16 28 -13z m658 -556 c45 -23 65 -55 75 -121
+10 -65 -6 -93 -49 -86 -24 4 -35 1 -44 -13 -6 -11 -30 -24 -53 -30 -35 -10
+-58 -8 -140 11 -62 14 -99 27 -99 35 0 19 105 66 159 72 48 4 93 -11 163 -55
+35 -22 52 -8 50 42 -4 94 -79 126 -212 90 -30 -8 -81 -17 -112 -21 -50 -6 -57
+-9 -63 -32 -9 -35 9 -50 38 -32 115 73 214 73 289 -2 22 -22 37 -43 33 -46 -3
+-4 -17 8 -30 25 -14 17 -43 38 -65 47 -64 25 -110 20 -185 -20 -37 -19 -74
+-33 -81 -30 -8 3 -14 20 -14 38 0 31 -1 31 -17 15 -25 -25 -22 -146 6 -270 21
+-88 21 -97 7 -132 -9 -21 -16 -39 -16 -40 0 -1 11 0 25 3 19 3 25 0 25 -14 1
+-18 1 -18 15 0 21 28 19 82 -5 106 -10 10 -15 22 -10 25 5 3 20 -10 34 -28 22
+-29 24 -38 16 -69 -11 -39 -23 -52 -58 -63 -21 -6 -23 -4 -17 14 8 27 5 27
+-40 -9 -49 -39 -89 -39 -135 0 -41 36 -85 41 -75 10 10 -32 -31 -25 -67 10
+-26 27 -30 36 -25 68 l6 37 -19 -25 c-37 -46 -87 -124 -116 -179 -15 -30 -30
+-49 -32 -42 -7 20 80 161 136 222 56 61 79 74 112 64 31 -10 24 -25 -9 -19
+-22 5 -32 1 -45 -17 -22 -32 -20 -75 4 -99 23 -23 42 -26 34 -6 -7 18 28 30
+59 20 12 -4 37 -20 55 -35 53 -46 82 -38 119 34 27 55 27 64 -1 192 -9 39 -16
+105 -16 148 0 74 2 80 30 109 17 16 30 37 30 47 0 46 66 68 203 70 70 1 96 -3
+127 -19z m0 -90 c0 -5 6 -7 14 -4 7 3 16 -2 19 -10 10 -27 -11 -27 -31 -1 -11
+14 -24 25 -29 24 -4 -1 -15 -1 -23 0 -13 1 -13 3 -1 10 16 10 51 -3 51 -19z
+m-270 -14 c0 -3 -4 -8 -10 -11 -5 -3 -10 -1 -10 4 0 6 5 11 10 11 6 0 10 -2
+10 -4z m-1103 -50 c46 -39 86 -121 78 -159 -9 -40 -9 -101 0 -148 9 -50 -9
+-59 -45 -23 -15 16 -38 36 -50 45 -19 12 -23 24 -23 70 0 63 21 161 33 154 4
+-2 1 -31 -6 -62 -25 -105 -16 -155 30 -167 14 -3 28 -15 31 -26 7 -22 25 -27
+25 -7 -1 6 -7 23 -15 37 -18 32 -19 71 -1 106 13 24 13 32 0 63 -20 48 -62
+108 -81 115 -27 11 -34 -5 -33 -77 2 -89 0 -101 -10 -62 -12 45 -11 124 0 146
+14 25 32 24 67 -5z m1043 -30 c0 -2 -7 -7 -16 -10 -8 -3 -12 -2 -9 4 6 10 25
+14 25 6z m138 -120 c38 -20 120 -23 150 -7 25 13 32 14 32 3 0 -31 -117 -42
+-177 -17 -44 19 -103 62 -103 76 0 6 15 -1 33 -14 17 -14 47 -32 65 -41z
+m-1152 -36 c-8 -27 -12 -50 -10 -53 3 -3 0 -8 -7 -13 -7 -4 -10 -3 -5 4 3 6 3
+13 -2 15 -9 6 -7 71 3 88 6 8 4 10 -5 4 -14 -8 -8 6 14 33 19 26 27 -26 12
+-78z m-1 -164 c9 -13 24 -26 34 -29 15 -4 18 -13 17 -48 -2 -39 -25 -103 -26
+-71 0 7 -4 10 -10 7 -5 -3 -10 -1 -10 6 0 7 -3 9 -7 6 -12 -13 -34 47 -36 100
+-3 59 11 70 38 29z m1177 -118 c22 -38 38 -71 36 -74 -6 -5 -118 171 -118 184
+1 13 41 -41 82 -110z m-518 35 c0 -19 2 -20 20 -11 19 9 20 9 6 -6 -9 -9 -35
+-19 -59 -22 -46 -6 -46 -8 -11 44 18 27 45 24 44 -5z m450 -5 c-3 -5 1 -11 9
+-14 21 -8 17 -32 -5 -26 -32 8 -47 48 -18 48 10 0 16 -4 14 -8z m-251 -29 c42
+-21 46 -21 77 -5 40 19 67 20 100 3 14 -7 51 -23 83 -36 88 -36 131 -102 108
+-164 -13 -33 -28 -34 -51 -4 -17 22 -24 23 -117 20 -139 -4 -170 -4 -328 -1
+l-140 3 -28 -29 c-24 -25 -30 -27 -42 -15 -28 29 -22 96 13 137 21 25 52 41
+137 71 61 22 118 40 127 40 10 1 37 -9 61 -20z m-134 -226 c50 -25 67 -28 161
+-28 91 0 110 3 143 23 47 27 55 28 32 2 -59 -65 -296 -58 -386 11 -35 27 -14
+23 50 -8z m126 8 c37 -8 36 -9 -22 -9 -35 1 -60 5 -57 9 6 11 26 11 79 0z
+m145 1 c0 -5 -21 -9 -47 -9 -42 -1 -44 0 -18 7 42 11 65 11 65 2z m-7 -117 c9
+-4 17 -11 17 -16 0 -12 -17 -12 -25 0 -12 20 -113 24 -166 7 -54 -18 -76 -16
+-39 4 49 26 152 28 213 5z m146 -209 c-71 -67 -107 -77 -280 -79 -126 -2 -137
+0 -191 25 -63 29 -128 75 -128 90 0 5 19 -4 43 -20 107 -74 118 -77 282 -77
+169 0 209 11 275 80 19 19 39 35 44 35 6 -1 -14 -25 -45 -54z"/><path d="M2310 3809 c0 -5 -4 -8 -9 -5 -12 8 -40 -96 -45 -166 -3 -46 0 -62
+15 -79 27 -31 68 -31 97 0 22 24 24 32 18 97 -6 80 -37 164 -61 164 -8 0 -15
+-5 -15 -11z m44 -85 c18 -71 20 -117 6 -143 -22 -43 -74 -32 -85 18 -6 28 13
+127 35 186 14 37 21 27 44 -61z"/><path d="M1856 3651 c-3 -5 -25 -19 -48 -31 -24 -12 -52 -30 -64 -41 -11 -11
+-24 -17 -27 -14 -4 3 -5 2 -3 -1 2 -3 -2 -20 -9 -37 -11 -26 -10 -33 1 -45 12
+-11 20 -11 49 -1 19 7 35 16 35 20 0 6 54 29 68 29 2 0 -1 -6 -8 -14 -6 -8
+-19 -12 -27 -9 -11 4 -14 2 -9 -5 4 -7 1 -12 -9 -12 -10 0 -13 -5 -9 -12 4 -7
+4 -10 0 -6 -5 4 -22 -8 -38 -25 -17 -18 -28 -27 -24 -21 7 15 -37 24 -57 12
+-17 -9 -13 -72 6 -95 16 -21 76 -9 97 19 3 4 18 1 33 -7 15 -7 27 -11 27 -7 0
+4 4 3 8 -3 16 -23 53 -33 106 -31 31 2 59 0 61 -4 2 -4 -1 -7 -8 -8 -7 -1 -30
+-5 -52 -9 -26 -6 -60 -3 -98 6 -51 12 -60 12 -68 0 -15 -24 -10 -37 16 -43 14
+-4 23 -10 21 -15 -7 -11 43 -21 100 -21 46 0 135 26 145 42 3 5 10 8 14 6 4
+-1 22 14 39 35 23 29 27 40 17 46 -10 6 -9 10 4 15 9 3 14 10 11 14 -8 13 28
+11 36 -2 4 -6 6 4 4 22 -2 24 0 32 9 28 10 -3 10 5 3 36 -7 32 -5 44 7 58 9
+10 13 24 9 35 -6 14 -4 16 7 10 8 -4 -2 8 -20 28 -19 21 -40 36 -45 35 -6 -1
+-29 4 -51 10 -52 15 -252 25 -259 13z m223 -31 c41 -6 85 -17 98 -25 29 -19
+31 -61 4 -70 -18 -5 -19 -8 -5 -40 15 -36 11 -60 -10 -68 -14 -5 -22 -1 -99
+46 -29 18 -66 30 -99 34 -45 4 -61 1 -107 -24 -29 -15 -61 -39 -69 -52 -15
+-21 -12 -20 28 8 59 41 131 51 197 26 63 -24 128 -65 117 -74 -5 -4 -43 -15
+-85 -25 -97 -24 -166 -18 -211 16 -34 26 -34 26 -68 7 -19 -10 -48 -18 -65
+-18 -27 1 -26 2 14 15 24 7 47 16 50 20 3 4 -4 4 -15 0 -25 -8 -74 9 -74 24 0
+7 6 8 19 0 33 -17 61 -11 87 19 42 50 104 74 184 69 59 -3 76 -8 122 -41 59
+-40 78 -45 78 -22 0 16 -27 75 -34 75 -2 0 -54 11 -116 25 -108 25 -114 25
+-167 10 -31 -9 -73 -27 -94 -40 -21 -14 -40 -21 -44 -16 -8 14 102 110 138
+120 43 12 135 13 226 1z m48 -135 c0 -8 -4 -12 -9 -9 -4 3 -8 9 -8 15 0 5 4 9
+8 9 5 0 9 -7 9 -15z m-17 -170 c-6 -8 -37 -27 -69 -41 -66 -32 -159 -36 -211
+-9 -42 22 -34 28 15 10 76 -27 148 -16 225 33 47 30 62 33 40 7z"/><path d="M1890 3611 c-44 -9 -90 -33 -113 -59 -18 -20 -18 -20 24 1 61 30 130
+33 226 8 86 -22 148 -27 158 -12 8 14 -21 39 -52 45 -33 7 -195 27 -203 25 -3
+-1 -21 -4 -40 -8z"/><path d="M1890 3432 c0 -22 30 -52 53 -52 21 0 47 27 47 51 0 16 -7 19 -50 19
+-42 0 -50 -3 -50 -18z"/><path d="M1843 3428 c-30 -14 -29 -19 10 -44 46 -31 91 -36 156 -20 31 8 70
+16 86 18 29 3 29 4 -23 31 -30 16 -55 27 -55 25 -27 -56 -34 -63 -67 -66 -41
+-3 -70 15 -73 46 -1 25 -3 25 -34 10z"/><path d="M2572 3580 c-69 -8 -122 -29 -122 -50 0 -16 73 -11 162 10 100 24
+124 25 162 5 41 -22 44 -11 4 13 -41 25 -110 33 -206 22z"/><path d="M2580 3411 c0 -21 25 -51 41 -51 25 0 49 23 49 45 0 23 -4 25 -45 25
+-38 0 -45 -3 -45 -19z"/><path d="M2515 3397 l-40 -21 40 -7 c22 -4 53 -12 68 -18 44 -17 108 -13 145
+9 17 11 32 22 32 25 0 5 -55 35 -65 35 -3 0 -5 -8 -5 -18 0 -24 -31 -52 -57
+-52 -35 0 -55 12 -67 40 l-11 28 -40 -21z"/><path d="M2154 2941 c-23 -10 -66 -26 -95 -34 -84 -25 -127 -77 -114 -139 l7
+-29 39 36 c21 19 49 35 62 35 12 0 60 11 108 25 78 23 89 24 124 12 32 -11 45
+-12 70 -1 25 10 37 10 70 -3 22 -8 66 -22 97 -32 31 -9 67 -26 81 -39 27 -25
+37 -20 37 17 0 55 -32 85 -136 128 -91 38 -100 40 -126 27 -34 -18 -76 -17
+-108 1 -34 19 -67 18 -116 -4z m118 -25 c20 -10 42 -15 47 -11 6 3 11 1 11 -5
+0 -7 9 -5 22 4 12 9 31 16 41 16 12 0 16 4 11 13 -4 6 2 4 13 -5 11 -10 25
+-18 31 -18 7 0 20 -4 30 -9 78 -39 105 -50 112 -46 4 3 6 -4 3 -15 -6 -24 -1
+-23 -53 -5 -24 8 -45 13 -48 10 -3 -3 -13 1 -21 9 -9 8 -32 18 -51 21 -19 3
+-36 8 -39 11 -2 2 -12 -3 -22 -12 -15 -14 -23 -14 -66 -1 -28 8 -59 11 -75 7
+-15 -5 -29 -5 -32 -2 -3 3 -6 -1 -6 -8 0 -7 -3 -11 -6 -7 -3 3 -31 -3 -61 -14
+-63 -22 -77 -23 -68 -9 3 6 1 10 -4 10 -6 0 -11 -4 -11 -8 0 -5 -14 -19 -31
+-31 -18 -13 -28 -17 -23 -10 5 8 9 20 11 28 4 26 22 37 76 45 10 1 22 8 27 15
+4 8 13 10 19 7 6 -4 11 -2 11 4 0 6 4 9 9 5 6 -3 24 3 40 13 36 22 54 22 103
+-2z"/><path d="M2218 2835 c-2 -3 -38 -14 -79 -25 l-74 -19 105 -1 c58 0 119 -1 135
+-2 55 -4 210 4 195 9 -8 2 -37 13 -63 24 -41 17 -53 18 -82 7 -28 -9 -42 -9
+-68 0 -35 13 -60 15 -69 7z"/><path d="M3675 3732 c-46 -16 -50 -20 -53 -52 -4 -55 -54 -70 -60 -17 -2 15
+-5 27 -7 27 -28 0 -155 -61 -188 -90 -93 -82 -127 -193 -127 -422 l0 -146 28
+28 c33 32 87 50 153 50 73 0 103 -15 140 -73 29 -44 34 -63 37 -122 2 -40 -3
+-109 -12 -158 -16 -82 -16 -90 0 -123 30 -63 86 -85 149 -59 18 8 18 7 6 -8
+-17 -22 -88 -23 -118 -2 -16 11 -22 12 -25 3 -4 -10 -10 -10 -31 -1 -29 14
+-46 58 -28 76 8 8 11 5 11 -13 0 -14 5 -32 10 -40 9 -13 11 -13 19 -1 6 10 5
+22 -5 35 -16 24 -18 83 -3 146 16 67 14 191 -2 225 -14 29 -18 30 -108 39
+-111 11 -156 2 -185 -37 -19 -25 -20 -39 -18 -205 2 -122 8 -194 18 -232 17
+-59 124 -272 181 -357 39 -59 161 -175 177 -170 6 2 28 -9 49 -24 83 -60 195
+-60 322 0 54 25 155 112 155 133 0 4 5 8 10 8 40 0 -68 -113 -143 -149 -74
+-36 -60 -41 22 -7 163 66 378 270 450 427 31 67 61 192 61 256 0 48 18 32 22
+-21 4 -54 43 -84 86 -67 45 19 69 74 97 225 33 179 33 255 2 292 -20 23 -28
+26 -53 19 l-29 -9 28 -4 c54 -7 72 -96 41 -203 -9 -30 -20 -58 -25 -64 -13
+-13 -11 2 6 59 30 98 15 196 -29 196 -14 0 -48 -35 -64 -66 -10 -19 -8 -22 16
+-27 35 -7 55 -43 56 -102 1 -37 -4 -50 -27 -73 -15 -15 -36 -38 -46 -52 -19
+-24 -21 -24 -37 -8 -17 16 -17 19 0 56 17 37 17 41 1 72 -17 33 -14 93 5 105
+6 4 7 -7 3 -25 -3 -17 0 -49 7 -71 11 -32 11 -46 0 -79 -7 -22 -10 -43 -5 -48
+4 -4 10 0 13 8 3 8 20 28 39 44 26 24 33 37 33 67 0 53 -16 83 -54 100 -30 14
+-35 14 -55 -2 -23 -19 -41 -91 -41 -165 0 -24 -4 -44 -10 -44 -18 0 -33 44
+-41 121 -10 105 -59 211 -125 270 -127 114 -140 131 -183 245 -63 163 -111
+216 -251 282 -93 43 -186 52 -265 24z m190 -22 c8 -7 19 -9 25 -5 5 3 10 1 10
+-5 0 -6 4 -9 9 -6 5 3 14 -1 21 -9 7 -8 20 -15 29 -15 10 0 27 -9 38 -20 12
+-11 28 -21 35 -22 38 -8 119 -136 133 -210 3 -12 9 -24 15 -26 6 -2 8 -8 4
+-13 -3 -5 4 -22 15 -38 12 -16 21 -34 21 -40 0 -5 8 -15 18 -20 9 -6 13 -11 8
+-11 -5 0 9 -17 31 -37 66 -61 93 -83 93 -77 0 13 51 -57 55 -75 2 -11 11 -31
+20 -45 9 -14 14 -29 11 -35 -3 -5 -2 -11 4 -13 6 -2 13 -35 16 -73 9 -114 38
+-160 84 -135 17 9 20 8 20 -10 0 -11 4 -20 9 -20 5 0 16 -3 25 -6 11 -4 31 9
+62 40 52 53 68 58 60 19 -3 -16 -8 -45 -12 -66 -7 -39 -11 -41 -55 -22 -11 4
+-24 -2 -38 -16 l-20 -22 -19 23 c-30 38 -48 20 -62 -59 -6 -39 -9 -75 -6 -80
+4 -5 2 -12 -4 -16 -5 -3 -10 -15 -10 -25 0 -36 -64 -160 -107 -209 -13 -14
+-23 -29 -23 -34 0 -4 -4 -5 -10 -2 -5 3 -10 1 -10 -4 0 -6 -13 -24 -30 -39
+-16 -16 -26 -33 -22 -37 4 -5 -1 -5 -10 -2 -13 4 -15 2 -11 -11 3 -9 3 -14 -1
+-10 -5 4 -18 -4 -31 -18 -12 -13 -27 -24 -34 -24 -6 0 -11 -4 -11 -9 0 -5 -7
+-12 -16 -15 -13 -5 -14 -4 -6 7 7 8 8 18 4 22 -4 5 -1 5 6 1 6 -4 12 -3 12 2
+0 5 -12 15 -26 23 -25 13 -28 12 -55 -21 -41 -48 -40 -47 -80 -78 -20 -16 -56
+-34 -80 -41 -24 -7 -51 -17 -60 -21 -23 -12 -158 -4 -175 11 -8 6 -14 8 -14 3
+-1 -5 -9 1 -19 13 -10 12 -21 20 -24 17 -3 -3 -11 5 -18 18 -17 33 -47 60 -59
+53 -6 -3 1 -18 15 -33 14 -15 25 -31 25 -37 -1 -5 -15 7 -33 28 -18 20 -38 37
+-45 37 -7 0 -10 5 -7 10 3 6 2 10 -4 10 -6 0 -21 16 -34 35 -13 19 -27 32 -32
+27 -5 -4 -5 -1 -1 6 5 8 0 22 -13 36 -11 12 -34 48 -50 79 -16 31 -32 53 -36
+49 -5 -4 -5 -1 -1 6 4 7 -2 25 -13 41 -12 16 -21 33 -21 39 0 5 -11 29 -24 53
+-30 54 -46 138 -46 237 0 66 3 77 24 97 18 17 28 20 42 12 28 -15 28 -15 14
+-32 -21 -26 5 -46 54 -41 51 5 73 13 113 43 l32 23 -4 -22 c-3 -13 -7 -34 -10
+-48 -3 -14 -8 -43 -10 -65 -3 -22 -10 -44 -15 -49 -6 -6 -10 -25 -10 -43 0
+-17 -4 -42 -9 -55 -5 -13 -19 -47 -31 -77 -12 -30 -22 -69 -22 -86 0 -43 27
+-92 54 -101 13 -4 27 -12 31 -18 6 -7 7 -4 3 6 -3 10 -1 20 5 23 5 4 7 11 4
+16 -13 21 7 7 45 -31 36 -36 46 -42 66 -39 4 0 10 -5 14 -12 7 -11 17 -13 63
+-18 4 -1 -4 -11 -18 -24 l-27 -22 21 -19 c19 -18 22 -18 56 -2 44 21 69 27
+120 29 32 2 41 6 43 23 2 14 -5 24 -23 32 -28 13 -34 32 -9 32 19 0 121 95
+129 121 4 11 10 19 15 19 5 0 22 12 38 28 l28 27 -20 22 c-17 17 -26 19 -46
+11 -43 -17 -63 -19 -130 -17 -107 4 -119 3 -138 -12 -23 -20 -69 -23 -89 -7
+-10 7 -14 8 -10 1 4 -7 -5 -15 -23 -21 -16 -6 -45 -22 -63 -36 -19 -14 -37
+-23 -40 -19 -4 3 -7 1 -7 -5 0 -16 -27 -15 -33 1 -5 15 23 100 35 108 6 3 9 9
+9 13 -4 29 1 37 22 35 12 -2 28 0 35 4 6 5 12 4 12 -1 0 -15 62 -23 98 -13 35
+10 65 35 55 45 -4 3 -1 6 6 6 7 0 9 5 5 13 -4 6 3 2 15 -11 19 -19 25 -20 44
+-10 12 7 24 12 27 11 3 0 16 13 30 30 14 17 18 27 10 23 -13 -8 -13 -7 -2 5
+11 12 16 10 34 -14 18 -25 116 -97 132 -97 14 0 33 -25 28 -39 -3 -8 0 -11 6
+-7 6 3 8 -7 5 -28 -3 -24 0 -35 12 -40 10 -3 13 -11 9 -18 -4 -7 5 -2 19 11
+18 16 27 35 27 54 0 35 -47 120 -61 112 -5 -4 -9 -3 -9 2 0 4 -15 14 -32 22
+-35 15 -80 49 -88 66 -3 6 -9 9 -13 7 -5 -1 -6 2 -3 7 8 12 -18 33 -29 23 -5
+-4 -5 -1 -1 6 4 7 0 15 -11 19 -10 4 -21 11 -25 17 -5 7 -8 6 -8 -3 0 -12 -3
+-11 -12 2 -14 18 -58 32 -58 18 0 -5 -12 -8 -27 -8 -30 0 -67 -38 -58 -60 3
+-7 8 -20 11 -28 4 -10 0 -15 -11 -15 -9 0 -13 -4 -10 -10 3 -5 2 -10 -3 -10
+-5 0 -19 -9 -31 -19 -38 -33 -83 -11 -97 46 -4 13 1 62 10 110 18 104 15 195
+-9 246 -18 39 -13 66 10 47 9 -7 16 -6 25 5 7 8 19 15 27 15 8 0 11 5 8 10 -3
+6 -1 10 4 10 17 0 12 43 -7 66 -19 22 -62 38 -62 22 0 -5 -4 -7 -9 -4 -12 8
+-41 -38 -41 -63 0 -11 7 -27 16 -36 9 -9 14 -19 10 -22 -3 -3 -14 3 -23 14
+-28 31 -65 50 -111 57 -47 7 -164 -13 -156 -26 3 -4 -3 -5 -12 -1 -13 5 -15 3
+-9 -8 4 -8 4 -11 0 -6 -14 12 -7 252 9 315 27 107 84 178 170 214 23 9 35 17
+27 17 -8 1 -12 3 -9 6 3 3 17 1 32 -5 18 -6 25 -6 21 0 -12 19 12 10 34 -14
+14 -14 30 -22 41 -19 18 5 53 65 53 90 0 6 7 9 15 5 10 -3 13 -1 8 6 -12 20
+165 22 189 2z m-215 -554 c19 -23 8 -61 -18 -64 -44 -7 -67 32 -36 62 19 20
+38 20 54 2z m1078 -134 l3 -42 -32 31 c-31 30 -32 32 -14 45 28 21 40 12 43
+-34z m-1189 -32 c18 -12 30 -24 27 -27 -3 -3 -17 4 -33 15 -60 42 -121 36
+-175 -16 -38 -35 -35 -50 3 -18 17 14 42 29 55 32 36 9 94 -2 124 -24 45 -34
+37 -47 -42 -70 -82 -25 -105 -27 -144 -12 -19 8 -30 8 -38 0 -13 -13 -46 -13
+-46 0 0 6 5 9 11 8 12 -3 18 6 42 64 32 75 144 100 216 48z m-212 -6 c-3 -3
+-12 -4 -19 -1 -8 3 -5 6 6 6 11 1 17 -2 13 -5z m1347 -69 c2 -21 -2 -36 -10
+-39 -8 -3 -13 -2 -12 2 2 4 -3 22 -11 40 -11 26 -11 35 0 48 11 14 13 14 22
+-1 5 -9 10 -32 11 -50z m-1364 46 c0 -6 -5 -13 -10 -16 -6 -4 -8 -11 -5 -16 4
+-5 1 -9 -4 -9 -6 0 -11 7 -11 15 0 8 6 15 13 15 8 0 7 4 -3 10 -13 8 -12 10 3
+10 9 0 17 -4 17 -9z m1272 -93 c-7 -7 -12 -8 -12 -2 0 6 3 14 7 17 3 4 9 5 12
+2 2 -3 -1 -11 -7 -17z m-1038 -3 c-12 -29 -88 -65 -135 -64 l-44 1 42 9 c54
+10 113 38 120 56 3 7 9 13 14 13 4 0 6 -7 3 -15z m1039 -30 c-3 -9 -8 -14 -10
+-11 -3 3 -2 9 2 15 9 16 15 13 8 -4z m-718 -105 c10 -11 22 -17 27 -14 5 3 39
+-23 76 -58 37 -35 88 -74 114 -87 36 -17 50 -31 62 -62 9 -22 13 -51 10 -64
+-9 -38 -23 -30 -17 10 7 47 -13 75 -81 113 -30 17 -80 57 -110 89 l-56 58 0
+-42 c0 -33 -5 -46 -22 -57 -31 -20 -64 -24 -60 -8 3 19 -33 14 -62 -9 -33 -26
+-45 -18 -17 10 27 27 88 32 102 9 9 -15 49 28 49 52 0 12 -11 32 -25 46 -14
+14 -25 27 -25 29 0 11 18 3 35 -15z m-55 -30 c0 -13 -7 -20 -20 -20 -13 0 -20
+7 -20 20 0 13 7 20 20 20 13 0 20 -7 20 -20z m886 -36 c5 -19 1 -31 -14 -47
+-21 -20 -22 -20 -42 -2 -35 32 -20 75 27 75 16 0 25 -8 29 -26z m-843 9 c9 -9
+-13 -34 -24 -27 -14 8 -11 34 4 34 8 0 17 -3 20 -7z m-347 -208 l-26 -67 20
+-46 c23 -52 21 -65 -4 -27 -28 43 -30 87 -8 138 11 25 24 60 28 78 6 26 9 29
+12 13 1 -11 -8 -51 -22 -89z m572 4 c-2 -6 -22 -21 -44 -33 -22 -12 -39 -27
+-37 -33 6 -17 -83 -99 -135 -124 -67 -33 -148 -37 -198 -10 -50 27 -79 49 -72
+57 4 3 25 -8 49 -25 36 -27 51 -31 103 -31 38 0 77 8 103 20 41 18 148 109
+139 117 -4 4 -86 -18 -178 -48 -69 -23 -280 -25 -271 -3 2 7 11 10 19 7 7 -3
+32 10 55 28 35 27 51 33 93 34 31 0 61 8 78 19 23 15 39 17 115 11 69 -6 96
+-4 123 8 43 19 63 21 58 6z m-173 -115 c-44 -35 -110 -58 -163 -56 -30 1 -61
+7 -70 13 -13 8 -9 9 20 5 21 -2 52 0 70 6 18 5 47 11 63 12 17 1 44 10 60 19
+38 21 46 21 20 1z m5 -141 c0 -5 -24 -8 -53 -8 -34 -1 -68 -9 -95 -23 -23 -12
+-42 -17 -42 -11 0 19 84 49 138 49 28 0 52 -3 52 -7z"/><path d="M3918 3243 c-18 -6 -44 -12 -58 -13 -35 -1 -136 -52 -133 -67 2 -7
+-2 -13 -8 -13 -5 0 -9 -8 -7 -17 1 -10 -1 -23 -5 -30 -4 -6 -3 -14 3 -18 5 -3
+10 -3 10 1 0 3 12 -1 26 -11 15 -9 24 -12 20 -7 -6 10 8 10 57 3 4 0 3 -10 -3
+-21 -7 -14 -8 -26 0 -39 7 -13 7 -22 0 -26 -19 -12 56 -89 99 -102 56 -18 112
+-16 140 4 18 12 22 13 16 2 -5 -9 -1 -7 12 4 11 9 24 17 30 17 17 0 23 28 13
+56 -13 33 -13 33 10 31 11 -1 20 -4 20 -8 0 -4 25 -6 56 -3 39 3 61 9 70 21 7
+10 9 20 5 23 -4 3 -13 20 -20 38 -8 17 -18 32 -23 32 -5 0 -6 -6 -2 -12 4 -7
+4 -10 0 -6 -5 4 -19 2 -33 -3 -20 -7 -29 -6 -40 8 -8 10 -12 12 -8 6 3 -7 2
+-13 -3 -13 -6 0 -13 7 -16 16 -3 8 -10 13 -15 10 -5 -3 -12 1 -15 10 -3 9 -11
+12 -18 8 -10 -5 -10 -4 -2 5 8 9 20 7 50 -6 114 -50 146 -2 47 71 -26 20 -66
+41 -88 48 -53 15 -146 16 -187 1z m182 -28 c43 -15 145 -84 137 -92 -3 -2 -40
+8 -83 22 -101 34 -168 31 -276 -14 -87 -37 -131 -38 -136 -4 -4 29 30 51 127
+79 89 27 172 30 231 9z m-32 -106 c13 -5 43 -23 67 -39 49 -34 63 -36 91 -15
+23 18 37 19 32 3 -2 -6 -20 -18 -39 -25 l-34 -13 49 6 c33 4 46 2 41 -5 -10
+-18 -90 -13 -146 9 -28 12 -53 19 -54 18 -1 -2 -6 -14 -10 -28 l-8 -24 28 18
+c18 12 26 13 23 5 -10 -29 -79 -52 -174 -57 -110 -6 -117 2 -56 60 59 58 126
+73 202 44 19 -7 44 -17 55 -21 11 -4 4 4 -15 18 -99 70 -220 56 -269 -30 -5
+-10 -12 -15 -16 -11 -10 9 22 54 53 74 50 33 114 37 180 13z m27 -139 c-3 -5
+-12 -10 -18 -10 -7 0 -6 4 3 10 19 12 23 12 15 0z m30 -29 c-3 -5 -28 -17 -56
+-26 -55 -19 -132 -17 -183 4 -39 16 -26 26 15 12 43 -15 137 -13 174 4 36 16
+58 19 50 6z"/><path d="M3954 3210 c-93 -14 -204 -58 -204 -81 0 -23 34 -18 121 17 107 42
+191 49 267 21 59 -23 52 -11 -10 18 -65 28 -108 35 -174 25z"/><path d="M3960 3042 c0 -50 72 -65 89 -19 12 31 5 37 -45 37 -36 0 -44 -3 -44
+-18z m45 -20 c-3 -3 -11 0 -18 7 -9 10 -8 11 6 5 10 -3 15 -9 12 -12z"/><path d="M3894 3015 l-39 -34 64 -1 c55 0 62 2 47 13 -9 7 -18 22 -19 35 -2
+29 -7 28 -53 -13z"/><path d="M3410 2941 c0 -22 25 -51 44 -51 20 0 49 38 43 55 -4 10 -20 15 -47
+15 -33 0 -40 -3 -40 -19z m57 -7 c-3 -3 -12 -4 -19 -1 -8 3 -5 6 6 6 11 1 17
+-2 13 -5z"/><path d="M3357 2922 l-28 -29 23 -7 c13 -3 36 -6 52 -6 26 0 28 2 13 13 -9 6
+-20 22 -24 35 l-9 23 -27 -29z"/><path d="M3508 2925 c-5 -26 -1 -29 26 -19 21 8 20 21 -3 33 -16 9 -20 7 -23
+-14z"/><path d="M4651 2671 c-17 -11 -10 -46 9 -46 17 0 26 33 13 46 -4 4 -14 4 -22
+0z"/><path d="M3781 2423 c-15 -10 -41 -15 -69 -14 -35 1 -55 -5 -84 -25 -21 -15
+-38 -28 -38 -29 0 -10 194 11 230 25 25 9 70 23 100 30 93 21 89 28 -16 29
+-77 1 -105 -3 -123 -16z m29 -17 c0 -2 -7 -7 -16 -10 -8 -3 -12 -2 -9 4 6 10
+25 14 25 6z"/><path d="M2956 3431 c-28 -31 -46 -108 -46 -200 0 -69 -15 -280 -23 -325 -1
+-6 6 -11 15 -14 31 -6 51 43 59 151 5 56 17 140 29 187 29 125 25 220 -10 220
+-4 0 -15 -9 -24 -19z m44 -30 c0 -5 -7 -12 -15 -15 -31 -11 -47 -75 -40 -151
+7 -73 -8 -165 -27 -165 -6 0 -7 7 -2 18 5 9 9 67 10 127 1 111 9 149 39 178
+18 18 35 22 35 8z m-23 -101 c-1 -11 -5 -20 -9 -20 -10 0 -10 4 -2 24 8 22 13
+20 11 -4z"/><path d="M3323 3079 c-34 -10 -73 -51 -73 -78 0 -11 5 -9 16 8 29 41 75 52
+174 45 66 -5 90 -4 90 5 0 28 -133 41 -207 20z"/><path d="M4507 2956 c11 -113 15 -131 23 -111 4 11 10 45 13 75 5 51 3 56 -18
+66 -22 11 -23 10 -18 -30z"/><path d="M1511 2723 c-17 -21 -31 -41 -31 -46 0 -4 -25 -63 -56 -130 -56 -120
+-56 -122 -51 -196 3 -58 22 -130 79 -306 41 -126 83 -262 93 -302 l18 -71 70
+36 c38 21 112 72 165 114 53 43 109 80 124 84 16 3 28 8 28 10 0 3 -26 35 -58
+72 -169 198 -344 446 -366 523 -25 82 -21 159 9 203 28 41 29 46 16 46 -5 0
+-23 -17 -40 -37z m-24 -128 c-7 -16 19 -114 34 -129 5 -6 9 -17 9 -26 0 -9 9
+-25 20 -35 12 -10 19 -24 16 -31 -6 -14 18 -37 27 -27 4 3 7 -3 7 -14 0 -11
+10 -31 23 -45 12 -13 33 -40 47 -60 13 -20 29 -34 34 -31 5 3 6 1 2 -5 -3 -6
+10 -28 29 -49 19 -21 35 -41 35 -44 0 -15 58 -78 65 -71 5 4 6 2 2 -3 -3 -6
+10 -28 29 -49 36 -41 42 -56 21 -56 -8 0 -25 -9 -38 -21 -13 -12 -41 -35 -63
+-52 -21 -18 -43 -37 -50 -42 -21 -20 -119 -80 -124 -77 -2 2 -8 -2 -13 -9 -4
+-8 -11 -10 -15 -7 -5 6 -62 186 -79 248 -2 8 -4 16 -4 18 -1 1 -1 3 -1 5 0 1
+-12 34 -26 72 -85 236 -95 329 -48 436 16 35 32 67 37 70 5 3 9 10 9 15 1 14
+10 34 15 34 3 0 3 -7 0 -15z"/><path d="M1550 2705 c-25 -31 -25 -126 1 -202 l24 -68 3 112 c1 62 -1 127 -5
+144 -8 29 -10 30 -23 14z"/><path d="M1597 2541 l2 -135 67 -96 c90 -125 297 -382 334 -414 17 -13 56 -32
+87 -41 65 -19 96 -43 123 -96 11 -20 39 -60 65 -90 49 -57 95 -140 95 -173 1
+-12 16 24 35 80 35 106 66 173 134 289 63 106 78 158 105 352 14 98 30 193 35
+211 l10 33 -27 -21 c-15 -12 -45 -35 -67 -52 -187 -144 -468 -135 -721 23 -99
+62 -216 166 -253 225 l-26 40 2 -135z m86 -14 c28 -28 78 -70 110 -91 31 -22
+57 -43 57 -47 0 -4 13 -10 30 -14 16 -4 32 -11 35 -15 8 -13 101 -59 128 -64
+12 -2 42 -10 67 -17 56 -15 106 -21 191 -20 78 0 99 4 159 26 25 9 53 19 63
+22 9 3 17 9 17 14 0 5 6 9 14 9 7 0 25 11 39 24 30 28 50 16 42 -25 -3 -13
+-10 -60 -16 -104 -12 -88 -13 -92 -24 -150 -14 -76 -36 -130 -90 -221 -30 -50
+-55 -95 -55 -101 0 -6 -10 -23 -22 -39 -13 -15 -17 -25 -11 -21 6 4 3 -10 -6
+-30 -10 -21 -22 -49 -27 -62 -10 -24 -11 -24 -43 23 -18 26 -47 63 -64 83 -16
+19 -40 53 -52 76 -25 46 -91 98 -114 89 -10 -4 -12 -1 -6 7 6 10 2 11 -15 6
+-14 -4 -20 -3 -16 3 3 5 0 10 -7 9 -42 -1 -53 10 -205 197 -18 23 -41 50 -50
+61 -9 11 -30 39 -46 63 -16 23 -33 42 -38 42 -5 0 -7 4 -4 9 3 5 -7 21 -22 37
+-58 62 -75 103 -77 192 -1 45 0 82 2 82 2 0 27 -24 56 -53z"/><path d="M2702 2445 c-13 -60 -26 -143 -47 -292 -20 -142 -41 -203 -116 -330
+-54 -91 -129 -259 -129 -287 0 -6 15 15 32 47 37 68 105 140 180 190 67 44 75
+54 97 114 15 42 21 48 49 51 26 3 41 -5 84 -45 80 -74 130 -115 134 -110 4 3
+-31 105 -127 372 -28 77 -72 185 -98 240 l-48 100 -11 -50z m33 -56 c-4 -5 -2
+-9 3 -9 6 0 13 -11 16 -24 3 -14 20 -54 36 -89 17 -36 30 -71 30 -77 0 -7 6
+-26 14 -43 15 -34 50 -128 51 -137 2 -17 29 -87 39 -99 9 -12 8 -13 -3 -7 -8
+6 -7 -1 4 -18 27 -41 11 -41 -26 -1 -19 20 -49 46 -68 57 -34 21 -81 32 -81
+19 0 -4 -11 -13 -25 -19 -14 -6 -24 -15 -23 -19 8 -37 -55 -123 -89 -123 -8 0
+-11 -5 -7 -12 4 -6 3 -8 -3 -5 -9 6 -22 -2 -71 -44 -10 -9 -13 -7 -10 7 2 11
+8 24 15 29 38 33 125 237 136 320 3 22 8 51 11 65 2 14 10 66 16 115 14 113
+20 136 31 129 5 -3 7 -10 4 -15z"/><path d="M1333 2419 c-6 -8 -70 -43 -142 -79 l-130 -64 47 -91 c200 -378 525
+-701 913 -904 102 -54 305 -141 327 -141 5 0 5 26 0 58 -8 59 -4 124 13 203
+16 72 -25 169 -112 266 -21 22 -46 58 -57 80 -28 54 -51 72 -122 93 -35 10
+-72 28 -84 39 -19 18 -24 18 -60 6 -21 -7 -55 -27 -75 -45 -131 -112 -280
+-200 -299 -177 -6 7 -18 41 -27 77 -9 36 -50 169 -91 295 -58 177 -77 249 -82
+314 -6 66 -9 81 -19 70z m40 -274 c22 -58 68 -197 70 -215 2 -8 12 -44 25 -80
+12 -36 24 -80 26 -99 2 -18 9 -37 16 -41 9 -5 8 -9 -3 -13 -17 -6 -37 10 -37
+31 0 7 -4 10 -10 7 -5 -3 -10 -2 -10 3 0 5 -16 27 -35 48 -54 59 -135 166
+-151 197 -8 15 -18 27 -23 27 -4 0 -16 18 -26 40 -10 21 -25 47 -34 58 -23 26
+-96 166 -82 158 6 -4 11 -3 11 2 0 9 131 77 160 84 8 2 21 9 29 17 13 12 18 1
+37 -85 11 -55 28 -117 37 -139z m624 -305 c19 -11 54 -25 78 -31 49 -12 93
+-47 98 -77 3 -20 10 -29 74 -100 24 -26 43 -53 43 -59 0 -7 4 -13 9 -13 17 0
+41 -104 35 -150 -4 -25 -8 -84 -11 -132 -5 -96 -13 -106 -59 -81 -16 8 -38 16
+-49 18 -11 1 -24 3 -28 4 -5 0 -5 6 -2 11 3 6 -4 10 -15 10 -12 0 -35 9 -51
+21 -16 11 -29 17 -29 14 0 -3 -13 3 -29 14 -16 12 -36 21 -45 21 -9 0 -16 5
+-16 11 0 5 -4 8 -9 5 -5 -4 -11 -3 -13 2 -1 4 -40 30 -85 56 -44 26 -90 56
+-102 67 -11 10 -25 19 -31 19 -5 0 -10 3 -10 8 0 10 -72 58 -83 54 -5 -1 -6 2
+-3 7 4 5 -9 19 -28 31 -19 11 -38 30 -41 40 -4 12 -12 17 -23 14 -9 -3 10 9
+43 26 33 17 66 37 74 43 12 10 13 9 6 -3 -8 -13 29 14 164 123 61 49 91 55
+138 27z"/>
+    </g>
+    <!-- Authentic Forehead Tilak & Bindi in Red -->
+    <path d="M 233 226 C 230 236, 230 248, 233 255 C 237 248, 237 236, 233 226 Z" fill="#D9383A"/>
+    <circle cx="363" cy="288" r="4.2" fill="#D9383A"/>
+  </g>
+  <!-- LUXURY STRAIGHT TYPOGRAPHY (NO CURVE, NO SINHA RIBBON, NO EST YEAR) -->
+  <g id="brand-typography">
+    <!-- Star Insignia Divider -->
+    <path d="M 500 863 L 503 872 L 512 875 L 503 878 L 500 887 L 497 878 L 488 875 L 497 872 Z" fill="currentColor"/>
+    <line x1="320" y1="875" x2="475" y2="875" stroke="currentColor" stroke-width="1.6" opacity="0.65"/>
+    <line x1="525" y1="875" x2="680" y2="875" stroke="currentColor" stroke-width="1.6" opacity="0.65"/>
+    <circle cx="320" cy="875" r="2.8" fill="currentColor"/>
+    <circle cx="680" cy="875" r="2.8" fill="currentColor"/>
+
+    <!-- Primary Brand Title Centered at x=500 -->
+    <text x="500" y="915" text-anchor="middle" font-family="'Cinzel', 'Trajan Pro', 'Baskerville', serif" font-size="34" font-weight="700" letter-spacing="10" fill="currentColor">THE SINHA FAMILY GROUP</text>
+
+    <!-- Subtitle Line Centered at x=500 -->
+    <text x="500" y="946" text-anchor="middle" font-family="'Montserrat', 'Helvetica Neue', sans-serif" font-size="13" font-weight="500" letter-spacing="6" fill="currentColor" opacity="0.85">HERITAGE · TRANSCENDENCE · UNITY</text>
+    <line x1="410" y1="964" x2="590" y2="964" stroke="currentColor" stroke-width="1.2" opacity="0.45"/>
+  </g>
+</svg>
+      </div>
+
+    </div>
+
+    <!-- Live Code Copy Box -->
+    <div style="margin-top:24px;background:rgba(0,0,0,0.4);border:1px solid rgba(212,175,55,0.2);border-radius:12px;padding:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:0.75rem;color:var(--gold);letter-spacing:1px;font-weight:600">📋 READY-TO-EMBED VECTOR SVG CODE:</span>
+        <button class="copy-btn" style="margin:0;padding:5px 14px;font-size:0.72rem" onclick="copySvgCode()">Copy Clean SVG Code</button>
+      </div>
+      <p style="font-size:0.75rem;color:rgba(245,237,214,0.55);line-height:1.5">
+        This pure SVG uses <code>stroke="currentColor"</code> and <code>fill="currentColor"</code>, meaning it automatically inherits whatever CSS color you define in any stylesheet, without needing to create or render image files!
+      </p>
+    </div>
+  </div>
+
+  <script>
+  function setSimBg(bg, fg){
+    const stage = document.getElementById('sim-stage');
+    const svgWrap = document.getElementById('svg-container');
+    const textWrap = document.getElementById('sim-text');
+    if(stage){ stage.style.backgroundColor = bg; }
+    if(svgWrap){ svgWrap.style.color = fg; }
+    if(textWrap){ textWrap.style.color = fg; }
+  }
+
+  function setLogoSize(px){
+    const svgWrap = document.getElementById('svg-container');
+    if(svgWrap){
+      svgWrap.style.width = px + 'px';
+      svgWrap.style.height = px + 'px';
+    }
+  }
+
+  function copySvgCode(){
+    const svg = document.getElementById('svg-container').innerHTML.trim();
+    navigator.clipboard.writeText(svg);
+    alert('✅ Pure Vector SVG Code copied! Paste it directly into HTML, React, Next.js, Figma, or Adobe Illustrator.');
+  }
+  </script>
+
+  <!-- ORIGINAL PREVIOUS CONCEPTS PRESERVED BELOW -->
+  <div style="margin: 30px 0 20px; text-align: center;">
+    <span style="font-size:0.75rem;letter-spacing:2px;color:rgba(245,237,214,0.5);text-transform:uppercase">✦ PREVIOUS ABSTRACT & MONOGRAM CONCEPTS ✦</span>
+  </div>
+
+  <div class="grid">
+    <!-- Concept 1 -->
+    <div class="logo-card">
+      <div class="img-wrapper">
+        <span class="badge">Concept 01 — Haute Monogram</span>
+        <img src="/static/core/images/brand/sinha_family_crest.jpg" alt="Sinha Family Crest Monogram">
+      </div>
+      <div class="content">
+        <div>
+          <h3 class="logo-title">Royal SFG Calligraphy Medallion</h3>
+          <p class="logo-desc">Interlocking ornate royal calligraphy "SFG" enclosed within a fine-line architectural foliage wreath and royal crown crest.</p>
+        </div>
+        <div>
+          <div class="prompt-box">
+            <span class="prompt-label">Exact AI Generation Prompt:</span>
+            A luxurious, royal family crest and corporate emblem for 'The Sinha Family Group'. Minimalist haute couture aesthetic on deep obsidian black background. Interlocking royal gold calligraphy monogram 'SFG' enclosed within a delicate fine-line circular architectural medallion. High-end gold foil effect with subtle metallic beveling, regal symmetry, crisp vector feel, 8k luxury studio branding. No text artifacts, clean iconic emblem.
+          </div>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); alert('Prompt copied to clipboard!');">Copy Prompt</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Concept 2 -->
+    <div class="logo-card">
+      <div class="img-wrapper">
+        <span class="badge">Concept 02 — Heraldic Lion</span>
+        <img src="/static/core/images/brand/sinha_lion_crest.jpg" alt="Sinha Royal Lion Crest">
+      </div>
+      <div class="content">
+        <div>
+          <h3 class="logo-title">Imperial Crowned Lion (Sinha)</h3>
+          <p class="logo-desc">Drawing from the Sanskrit roots of "Sinha" (Lion), this concept combines a proud regal lion profile wearing a crown with Cartier-grade gold filigree.</p>
+        </div>
+        <div>
+          <div class="prompt-box">
+            <span class="prompt-label">Exact AI Generation Prompt:</span>
+            A heraldic royal family crest for 'The Sinha Family Group' (Sinha meaning lion in Sanskrit). Minimalist modern royal crest featuring a stylized imperial lion profile inside a gold circular crown medallion. Matte black luxury background, refined thin gold foil lines, Cartier / Rolex level luxury corporate identity. Symmetrical, elegant, haute couture.
+          </div>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); alert('Prompt copied to clipboard!');">Copy Prompt</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Concept 3 -->
+    <div class="logo-card">
+      <div class="img-wrapper">
+        <span class="badge">Concept 03 — Modern Architectural</span>
+        <img src="/static/core/images/brand/sinha_minimal_arch.jpg" alt="Sinha Minimal Shield">
+      </div>
+      <div class="content">
+        <div>
+          <h3 class="logo-title">Architectural Geometric Shield</h3>
+          <p class="logo-desc">Ultra-minimalist contemporary seal. A geometric gold faceted shield with modern serif typography, tailored for global enterprise branding.</p>
+        </div>
+        <div>
+          <div class="prompt-box">
+            <span class="prompt-label">Exact AI Generation Prompt:</span>
+            A modern architectural luxury seal and emblem for 'The Sinha Family Group'. Sleek fine-line geometric crest with a golden shield, subtle crown, and serif typography 'SINHA'. Ultra minimal, black tie elegance, Yves Saint Laurent and Armani Privé brand style, gold vector rendering on obsidian background. High resolution, perfectly centered.
+          </div>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText(this.previousElementSibling.innerText); alert('Prompt copied to clipboard!');">Copy Prompt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    👑 <strong>Next Step:</strong> Choose your favorite concept or copy the prompt into your preferred AI image generator (Midjourney, Flux, or Gemini) to iterate further. Once chosen, we will vectorize it and integrate it into the website footer!
+  </div>
+</div>
+
+</body>
+</html>

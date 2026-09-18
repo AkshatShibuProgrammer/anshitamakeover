@@ -1,0 +1,1290 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$8CoNDvxdrpDu1Y2Ztli37U$rw0RMqya70v7che9v+bgGrVrMWGtF7y1PalnINaIbwY=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "regadmin",
+    "first_name": "",
+    "last_name": "",
+    "email": "regadmin@anshitamakeover.test",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-09-18T05:41:50.048Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$X2Oe9EODGyPTQJEKh4osRn$THRMvTxly+PolZujnMLD2lv6cET5j3NH+MwG+xbfn7g=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "akshat",
+    "first_name": "",
+    "last_name": "",
+    "email": "akshat@anshitamakeover.test",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-09-18T05:41:50.388Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$QUMaTM8gzjVODMEhOCPGpi$9wzXW6qIZ07+X1jkezwr6sJIWcOi45gaR/7ZkxAihcg=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "client_user",
+    "first_name": "",
+    "last_name": "",
+    "email": "client_user@anshitamakeover.test",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-09-18T05:41:50.740Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "core.sitesettings",
+  "pk": 1,
+  "fields": {
+    "whatsapp_number": "917879223442",
+    "instagram_url": "https://www.instagram.com/anshitamakeover21/",
+    "coupon_active": true,
+    "coupon_code": "GLAMOUR30",
+    "coupon_discount_percent": 30,
+    "coupon_label": "Seasonal Privilege Offer on Bridal Suites & Packages",
+    "coupon_auto_by_date": false,
+    "exit_coupon_active": true,
+    "exit_coupon_code": "SECRET10",
+    "exit_coupon_discount_percent": 10,
+    "exit_coupon_label": "Exclusive Secret Privilege: Extra 10% Additional Discount",
+    "offer_bridal_free_sides": 2,
+    "offer_next_sides_discounted_price": "2500.00",
+    "offer_combo_discount_percent": 15,
+    "offer_grand_combo_bundle_price": "50000.00",
+    "offer_rules_active": true,
+    "travel_widget_active": true,
+    "travel_same_zone_km": 100,
+    "travel_near_label": "Nearby Cities (100–400 km)",
+    "travel_near_fee_min": 8000,
+    "travel_near_fee_max": 15000,
+    "travel_far_label": "Pan-India Destination (400+ km)",
+    "travel_far_fee_min": 20000,
+    "travel_far_fee_max": 40000,
+    "travel_custom_note": "Round-trip travel (train/air) + hotel accommodation + local transport for artist & 1 assistant provided by client. Minimum package value ₹50,000+ for outstation bookings.",
+    "default_auto_coupon_active": true,
+    "default_auto_coupon_code": "TODAYVIP",
+    "default_auto_coupon_discount": 15,
+    "default_auto_coupon_type": "percent",
+    "default_auto_coupon_badge": "⚡ TODAY'S EXCLUSIVE DEAL: Extra 15% VIP Privilege applied automatically today!",
+    "vip_generated_codes": "[]",
+    "ai_negotiation_enabled": true,
+    "ai_negotiation_min_floor_percent": 75,
+    "ai_max_discount_percent": 20,
+    "ai_negotiation_strategy": "balanced",
+    "ai_negotiation_instructions": "Offer complimentary side makeups first. If client asks for discount, offer 10% then up to 20% max with today-only urgency."
+  }
+},
+{
+  "model": "core.adminprofile",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "email": "regadmin@anshitamakeover.test",
+    "reset_token": "",
+    "reset_token_expiry": null
+  }
+},
+{
+  "model": "core.artist",
+  "pk": 1,
+  "fields": {
+    "name": "Anshita",
+    "slug": "anshita",
+    "photo": "",
+    "bio": "Founder & India Celebrated Bridal Couturier with 8+ years mastery and 500+ radiant brides.",
+    "specialities": "makeup,hair,draping",
+    "is_active": true,
+    "order": 0
+  }
+},
+{
+  "model": "core.artist",
+  "pk": 2,
+  "fields": {
+    "name": "Tejal Sinha",
+    "slug": "tejal-sinha",
+    "photo": "",
+    "bio": "Senior hair stylist specialising in bridal updos and vintage waves.",
+    "specialities": "hair,beauty",
+    "is_active": true,
+    "order": 1
+  }
+},
+{
+  "model": "core.artist",
+  "pk": 3,
+  "fields": {
+    "name": "Shristee",
+    "slug": "shristee",
+    "photo": "",
+    "bio": "Nail artist on sabbatical.",
+    "specialities": "nails",
+    "is_active": false,
+    "order": 2
+  }
+},
+{
+  "model": "core.academycourse",
+  "pk": 1,
+  "fields": {
+    "name": "Professional Makeup Artist Program",
+    "slug": "professional-makeup-artist-program",
+    "tagline": "Beginner to Professional Bridal Makeup Certification",
+    "duration_days": 28,
+    "duration_label": "4 Weeks",
+    "hours_per_day": 3,
+    "total_hours": 84,
+    "course_fee": "30000.00",
+    "gst_percent": 18,
+    "registration_fee": "5000.00",
+    "batch_start_note": "Last Batch of 2026 — Starts 27th July",
+    "is_active": true,
+    "is_featured": true,
+    "order": 0
+  }
+},
+{
+  "model": "core.academycourse",
+  "pk": 2,
+  "fields": {
+    "name": "Bridal Hair Masterclass",
+    "slug": "bridal-hair-masterclass",
+    "tagline": "Couture Updos, Waves & Traditional Buns",
+    "duration_days": 7,
+    "duration_label": "1 Week",
+    "hours_per_day": 4,
+    "total_hours": 28,
+    "course_fee": "12000.00",
+    "gst_percent": 18,
+    "registration_fee": "2000.00",
+    "batch_start_note": "Last Batch of 2026 — Starts 27th July",
+    "is_active": true,
+    "is_featured": false,
+    "order": 1
+  }
+},
+{
+  "model": "core.coursemodule",
+  "pk": 1,
+  "fields": {
+    "course": 1,
+    "order": 1,
+    "title": "Makeup Foundations",
+    "description": "Skin Prep, Face Shapes, Product Knowledge, Color Theory, Hygiene & Safety"
+  }
+},
+{
+  "model": "core.coursemodule",
+  "pk": 2,
+  "fields": {
+    "course": 1,
+    "order": 2,
+    "title": "Professional Makeup Techniques",
+    "description": "Base Application, Contouring, Concealing, Eye Makeup, Lash Application, Lip Art"
+  }
+},
+{
+  "model": "core.coursemodule",
+  "pk": 3,
+  "fields": {
+    "course": 1,
+    "order": 3,
+    "title": "Bridal Makeup Training",
+    "description": "HD Bridal, Engagement, Reception Looks, Luxury Finishing, Client Consultation"
+  }
+},
+{
+  "model": "core.coursemodule",
+  "pk": 4,
+  "fields": {
+    "course": 1,
+    "order": 4,
+    "title": "Advanced Makeup Looks",
+    "description": "Soft Glam, Party Makeup, Smokey Eye, Dewy Skin, Nude & Contemporary Editorial Looks"
+  }
+},
+{
+  "model": "core.coursemodule",
+  "pk": 5,
+  "fields": {
+    "course": 1,
+    "order": 5,
+    "title": "Bridal Styling & Draping",
+    "description": "Saree Draping, Dupatta Setting, Jewellery Placement & Bridal Styling"
+  }
+},
+{
+  "model": "core.coursemodule",
+  "pk": 6,
+  "fields": {
+    "course": 1,
+    "order": 6,
+    "title": "Social Media & Portfolio",
+    "description": "Instagram Reels, Personal Branding, Portfolio Building, Viral Content Strategy"
+  }
+},
+{
+  "model": "core.makeuppackage",
+  "pk": 1,
+  "fields": {
+    "name": "Imperial Royal HD Bridal Suite",
+    "package_type": "bridal",
+    "tagline": "The signature HD bridal transformation",
+    "price": "35000.00",
+    "price_label": "On Request",
+    "features": "High-definition luminous base\nCut-crease eye artistry\nDupatta & saree draping\n2 side makeups free",
+    "is_featured": true,
+    "is_active": true,
+    "order": 0,
+    "min_negotiated_price": "28000.00",
+    "max_discount_percent": 20,
+    "allow_ai_negotiation": true
+  }
+},
+{
+  "model": "core.makeuppackage",
+  "pk": 2,
+  "fields": {
+    "name": "Master Airbrush Bridal Suite",
+    "package_type": "bridal",
+    "tagline": "TEMPTU 24-hour cry-proof airbrush perfection",
+    "price": "45000.00",
+    "price_label": "On Request",
+    "features": "TEMPTU airbrush base\n24-hr cry-proof finish\nVanity setup at venue\n2 side makeups free",
+    "is_featured": true,
+    "is_active": true,
+    "order": 1,
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true
+  }
+},
+{
+  "model": "core.makeuppackage",
+  "pk": 3,
+  "fields": {
+    "name": "Grand Royal Heritage Bundle",
+    "package_type": "bridal",
+    "tagline": "Bridal + Engagement grand bundle",
+    "price": "50000.00",
+    "price_label": "On Request",
+    "features": "Bridal suite\nEngagement suite\n2 side makeups free\nPriority date lock",
+    "is_featured": true,
+    "is_active": true,
+    "order": 2,
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true
+  }
+},
+{
+  "model": "core.makeuppackage",
+  "pk": 4,
+  "fields": {
+    "name": "Engagement & Roka Glam",
+    "package_type": "engagement",
+    "tagline": "Glass-skin glow for your roka",
+    "price": "18000.00",
+    "price_label": "On Request",
+    "features": "Glass-skin base\nHair styling\nSaree draping",
+    "is_featured": false,
+    "is_active": true,
+    "order": 3,
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true
+  }
+},
+{
+  "model": "core.makeuppackage",
+  "pk": 5,
+  "fields": {
+    "name": "Reception Radiance Suite",
+    "package_type": "reception",
+    "tagline": "Evening glamour for the reception",
+    "price": "22000.00",
+    "price_label": "On Request",
+    "features": "Contour-heavy evening look\nGown draping assistance",
+    "is_featured": false,
+    "is_active": true,
+    "order": 4,
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true
+  }
+},
+{
+  "model": "core.makeuppackage",
+  "pk": 6,
+  "fields": {
+    "name": "Side & Family Artistry",
+    "package_type": "side_makeup",
+    "tagline": "Elegant glam for bridesmaids and family",
+    "price": "3500.00",
+    "price_label": "On Request",
+    "features": "Soft glam base\nBasic hair styling",
+    "is_featured": false,
+    "is_active": true,
+    "order": 5,
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true
+  }
+},
+{
+  "model": "core.makeuppackage",
+  "pk": 7,
+  "fields": {
+    "name": "Party Festive Glam",
+    "package_type": "party",
+    "tagline": "Festive shimmer for parties",
+    "price": "8000.00",
+    "price_label": "On Request",
+    "features": "Shimmer party look\nLash application",
+    "is_featured": false,
+    "is_active": true,
+    "order": 6,
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true
+  }
+},
+{
+  "model": "core.makeuppackage",
+  "pk": 8,
+  "fields": {
+    "name": "Haute Hair Couture",
+    "package_type": "hair",
+    "tagline": "Couture bridal hair artistry",
+    "price": "6000.00",
+    "price_label": "On Request",
+    "features": "Bridal updo\nAccessory placement",
+    "is_featured": false,
+    "is_active": true,
+    "order": 7,
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true
+  }
+},
+{
+  "model": "core.makeuppackage",
+  "pk": 9,
+  "fields": {
+    "name": "Bridal Nail Extensions",
+    "package_type": "nails",
+    "tagline": "Swarovski bridal nail art",
+    "price": "5500.00",
+    "price_label": "On Request",
+    "features": "Gel extensions\nBridal nail art",
+    "is_featured": false,
+    "is_active": true,
+    "order": 8,
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true
+  }
+},
+{
+  "model": "core.makeuppackage",
+  "pk": 10,
+  "fields": {
+    "name": "Pre-Bridal Skin Ritual",
+    "package_type": "beauty",
+    "tagline": "Hydra-glow pre-bridal prep",
+    "price": "9500.00",
+    "price_label": "On Request",
+    "features": "Hydra facial\nBrightening ritual",
+    "is_featured": false,
+    "is_active": true,
+    "order": 9,
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true
+  }
+},
+{
+  "model": "core.makeuppackage",
+  "pk": 11,
+  "fields": {
+    "name": "Bespoke Custom Couture",
+    "package_type": "custom",
+    "tagline": "Tailored couture quote",
+    "price": null,
+    "price_label": "On Request",
+    "features": "Consultation-led bespoke quote",
+    "is_featured": false,
+    "is_active": true,
+    "order": 10,
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true
+  }
+},
+{
+  "model": "core.makeuppackage",
+  "pk": 12,
+  "fields": {
+    "name": "Legacy Trial Package",
+    "package_type": "party",
+    "tagline": "Deprecated trial package",
+    "price": "4000.00",
+    "price_label": "On Request",
+    "features": "Should never appear on public pages",
+    "is_featured": false,
+    "is_active": false,
+    "order": 99,
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true
+  }
+},
+{
+  "model": "core.studioservice",
+  "pk": 1,
+  "fields": {
+    "title": "Imperial Bridal Couture & Airbrush",
+    "discipline": "SIGNATURE DISCIPLINE 01 · SACRED WEDDING DAY",
+    "category": "bridal",
+    "price": "35000.00",
+    "discount_price": "29750.00",
+    "bundle_note": "Save 15% with Wedding Package",
+    "description": "Full airbrush bridal couture with TEMPTU cry-proof base.",
+    "features": "TEMPTU airbrush base\nCut-crease artistry\nDupatta draping",
+    "image": "",
+    "image_url": "/static/core/images/curated/royal_crimson_bride_angle3.jpg",
+    "look_group_id": "bengali_bride",
+    "min_negotiated_price": "26250.00",
+    "max_discount_percent": 25,
+    "allow_ai_negotiation": true,
+    "order": 0,
+    "is_active": true,
+    "created_at": "2026-09-18T05:41:51.106Z"
+  }
+},
+{
+  "model": "core.studioservice",
+  "pk": 2,
+  "fields": {
+    "title": "Reception Cocktail Radiance",
+    "discipline": "SIGNATURE DISCIPLINE 02 · EVENING SOIRÉE",
+    "category": "reception",
+    "price": "22000.00",
+    "discount_price": null,
+    "bundle_note": "",
+    "description": "Evening contour glam for receptions and cocktail events.",
+    "features": "Contour-heavy base\nGown draping",
+    "image": "",
+    "image_url": "/static/core/images/anshita_front.jpg",
+    "look_group_id": "",
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true,
+    "order": 1,
+    "is_active": true,
+    "created_at": "2026-09-18T05:41:51.107Z"
+  }
+},
+{
+  "model": "core.studioservice",
+  "pk": 3,
+  "fields": {
+    "title": "Engagement Roka Glass-Skin",
+    "discipline": "SIGNATURE DISCIPLINE 03 · RING CEREMONY",
+    "category": "engagement",
+    "price": "18000.00",
+    "discount_price": "15300.00",
+    "bundle_note": "Combo 15% off with Bridal",
+    "description": "Dewy glass-skin engagement glam.",
+    "features": "Glass-skin finish\nSoft waves",
+    "image": "",
+    "image_url": "",
+    "look_group_id": "",
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true,
+    "order": 2,
+    "is_active": true,
+    "created_at": "2026-09-18T05:41:51.108Z"
+  }
+},
+{
+  "model": "core.studioservice",
+  "pk": 4,
+  "fields": {
+    "title": "Nail Couture Atelier",
+    "discipline": "SIGNATURE DISCIPLINE 04 · NAIL COUTURE",
+    "category": "nails",
+    "price": "5500.00",
+    "discount_price": null,
+    "bundle_note": "",
+    "description": "Swarovski bridal nail extensions and art.",
+    "features": "Gel extensions\nSwarovski art",
+    "image": "",
+    "image_url": "",
+    "look_group_id": "",
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": false,
+    "order": 3,
+    "is_active": true,
+    "created_at": "2026-09-18T05:41:51.109Z"
+  }
+},
+{
+  "model": "core.studioservice",
+  "pk": 5,
+  "fields": {
+    "title": "Retired Haldi Service",
+    "discipline": "SIGNATURE DISCIPLINE 99 · RETIRED",
+    "category": "sangeet",
+    "price": "7000.00",
+    "discount_price": null,
+    "bundle_note": "",
+    "description": "Retired haldi service — must not render publicly.",
+    "features": "",
+    "image": "",
+    "image_url": "",
+    "look_group_id": "",
+    "min_negotiated_price": null,
+    "max_discount_percent": 15,
+    "allow_ai_negotiation": true,
+    "order": 99,
+    "is_active": false,
+    "created_at": "2026-09-18T05:41:51.111Z"
+  }
+},
+{
+  "model": "core.serviceprice",
+  "pk": 1,
+  "fields": {
+    "service": "makeup_basic",
+    "price": "15000.00",
+    "price_label": "",
+    "is_on_request": false,
+    "is_active": true
+  }
+},
+{
+  "model": "core.serviceprice",
+  "pk": 2,
+  "fields": {
+    "service": "makeup_hd",
+    "price": "35000.00",
+    "price_label": "35,000 (Bridal HD Suite)",
+    "is_on_request": false,
+    "is_active": true
+  }
+},
+{
+  "model": "core.serviceprice",
+  "pk": 3,
+  "fields": {
+    "service": "makeup_airbrush",
+    "price": "45000.00",
+    "price_label": "45,000 (Master Airbrush Bridal Suite)",
+    "is_on_request": false,
+    "is_active": true
+  }
+},
+{
+  "model": "core.serviceprice",
+  "pk": 4,
+  "fields": {
+    "service": "hair_basic",
+    "price": "1500.00",
+    "price_label": "Starting ₹1,500",
+    "is_on_request": false,
+    "is_active": true
+  }
+},
+{
+  "model": "core.serviceprice",
+  "pk": 5,
+  "fields": {
+    "service": "hair_bridal",
+    "price": "3500.00",
+    "price_label": "Starting 3,500",
+    "is_on_request": false,
+    "is_active": true
+  }
+},
+{
+  "model": "core.serviceprice",
+  "pk": 6,
+  "fields": {
+    "service": "nails_basic",
+    "price": "1200.00",
+    "price_label": "",
+    "is_on_request": false,
+    "is_active": true
+  }
+},
+{
+  "model": "core.serviceprice",
+  "pk": 7,
+  "fields": {
+    "service": "nails_art",
+    "price": "2500.00",
+    "price_label": "",
+    "is_on_request": false,
+    "is_active": true
+  }
+},
+{
+  "model": "core.serviceprice",
+  "pk": 8,
+  "fields": {
+    "service": "nails_extension",
+    "price": "5500.00",
+    "price_label": "",
+    "is_on_request": false,
+    "is_active": true
+  }
+},
+{
+  "model": "core.serviceprice",
+  "pk": 9,
+  "fields": {
+    "service": "beauty_facial",
+    "price": "2500.00",
+    "price_label": "",
+    "is_on_request": false,
+    "is_active": true
+  }
+},
+{
+  "model": "core.serviceprice",
+  "pk": 10,
+  "fields": {
+    "service": "beauty_prebridal",
+    "price": "8000.00",
+    "price_label": "Starting 8,000",
+    "is_on_request": false,
+    "is_active": true
+  }
+},
+{
+  "model": "core.serviceprice",
+  "pk": 11,
+  "fields": {
+    "service": "tejal_makeup",
+    "price": "0.00",
+    "price_label": "On Request",
+    "is_on_request": true,
+    "is_active": true
+  }
+},
+{
+  "model": "core.serviceprice",
+  "pk": 12,
+  "fields": {
+    "service": "shristee_nails",
+    "price": "4500.00",
+    "price_label": "",
+    "is_on_request": false,
+    "is_active": true
+  }
+},
+{
+  "model": "core.eventpackage",
+  "pk": 1,
+  "fields": {
+    "name": "Royal Premium Photography",
+    "category": "photography",
+    "package_type": "photography_premium",
+    "description": "Full-day cinematic coverage with drone aerials.",
+    "vendor_cost": "90000.00",
+    "price": "120000.00",
+    "price_label": "On Request",
+    "features": "Candid + Traditional\nCinematic film\nDrone aerials\nPremium album",
+    "is_active": true,
+    "is_featured": true,
+    "order": 0,
+    "created_by": 1
+  }
+},
+{
+  "model": "core.eventpackage",
+  "pk": 2,
+  "fields": {
+    "name": "Standard Wedding Photography",
+    "category": "photography",
+    "package_type": "photography_standard",
+    "description": "Complete candid and traditional coverage.",
+    "vendor_cost": "70000.00",
+    "price": "90000.00",
+    "price_label": "On Request",
+    "features": "Candid + Traditional\n300+ edited portraits",
+    "is_active": true,
+    "is_featured": false,
+    "order": 1,
+    "created_by": 1
+  }
+},
+{
+  "model": "core.eventpackage",
+  "pk": 3,
+  "fields": {
+    "name": "Full Wedding Management",
+    "category": "full_event",
+    "package_type": "full_event",
+    "description": "End-to-end royal wedding management.",
+    "vendor_cost": "420000.00",
+    "price": "500000.00",
+    "price_label": "On Request",
+    "features": "Venue styling\nVendor orchestration\nDay-of coordination",
+    "is_active": true,
+    "is_featured": true,
+    "order": 2,
+    "created_by": 1
+  }
+},
+{
+  "model": "core.eventpackage",
+  "pk": 4,
+  "fields": {
+    "name": "Royal Stage Decor",
+    "category": "decor",
+    "package_type": "custom",
+    "description": "Bespoke stage and mandap decor.",
+    "vendor_cost": "60000.00",
+    "price": null,
+    "price_label": "On Request",
+    "features": "",
+    "is_active": true,
+    "is_featured": false,
+    "order": 3,
+    "created_by": 1
+  }
+},
+{
+  "model": "core.eventpackage",
+  "pk": 5,
+  "fields": {
+    "name": "Retired DJ Package",
+    "category": "dj",
+    "package_type": "custom",
+    "description": "Inactive DJ package.",
+    "vendor_cost": "20000.00",
+    "price": "30000.00",
+    "price_label": "On Request",
+    "features": "",
+    "is_active": false,
+    "is_featured": false,
+    "order": 99,
+    "created_by": 1
+  }
+},
+{
+  "model": "core.customerreview",
+  "pk": 1,
+  "fields": {
+    "client_name": "Priya Sharma",
+    "event_type": "Royal Bride",
+    "location": "Bhopal",
+    "rating": 5,
+    "review_text": "Anshita transformed me into a queen. The airbrush base survived every happy tear!",
+    "wedding_date": "Dec 2025",
+    "is_verified": true,
+    "avatar_url": "",
+    "is_active": true,
+    "order": 0,
+    "created_at": "2026-09-18T05:41:51.130Z"
+  }
+},
+{
+  "model": "core.customerreview",
+  "pk": 2,
+  "fields": {
+    "client_name": "Meera Verma",
+    "event_type": "Engagement Bride",
+    "location": "Indore",
+    "rating": 5,
+    "review_text": "Glass-skin glow that photographed like a dream. Highly recommended.",
+    "wedding_date": "Jan 2026",
+    "is_verified": true,
+    "avatar_url": "",
+    "is_active": true,
+    "order": 1,
+    "created_at": "2026-09-18T05:41:51.131Z"
+  }
+},
+{
+  "model": "core.customerreview",
+  "pk": 3,
+  "fields": {
+    "client_name": "Sneha Patel",
+    "event_type": "Reception Bride",
+    "location": "Bhopal",
+    "rating": 5,
+    "review_text": "The team handled my entire family of 8 sides flawlessly.",
+    "wedding_date": "Feb 2026",
+    "is_verified": true,
+    "avatar_url": "",
+    "is_active": true,
+    "order": 2,
+    "created_at": "2026-09-18T05:41:51.133Z"
+  }
+},
+{
+  "model": "core.customerreview",
+  "pk": 4,
+  "fields": {
+    "client_name": "Ritika Jain",
+    "event_type": "Party Glam",
+    "location": "Jabalpur",
+    "rating": 4,
+    "review_text": "Beautiful festive look, slight delay in start but worth it.",
+    "wedding_date": "Mar 2026",
+    "is_verified": true,
+    "avatar_url": "",
+    "is_active": true,
+    "order": 3,
+    "created_at": "2026-09-18T05:41:51.134Z"
+  }
+},
+{
+  "model": "core.customerreview",
+  "pk": 5,
+  "fields": {
+    "client_name": "Aishwarya Rao",
+    "event_type": "Royal Bride",
+    "location": "Nagpur",
+    "rating": 5,
+    "review_text": "Destination wedding done perfectly — artist travelled with full kit.",
+    "wedding_date": "Apr 2026",
+    "is_verified": true,
+    "avatar_url": "",
+    "is_active": true,
+    "order": 4,
+    "created_at": "2026-09-18T05:41:51.135Z"
+  }
+},
+{
+  "model": "core.customerreview",
+  "pk": 6,
+  "fields": {
+    "client_name": "Kavya Nair",
+    "event_type": "Royal Bride",
+    "location": "Bhopal",
+    "rating": 5,
+    "review_text": "Cry-proof indeed! 14 hours of flawless makeup.",
+    "wedding_date": "May 2026",
+    "is_verified": true,
+    "avatar_url": "",
+    "is_active": true,
+    "order": 5,
+    "created_at": "2026-09-18T05:41:51.137Z"
+  }
+},
+{
+  "model": "core.customerreview",
+  "pk": 7,
+  "fields": {
+    "client_name": "Divya Singh",
+    "event_type": "Engagement Bride",
+    "location": "Ujjain",
+    "rating": 4,
+    "review_text": "Loved the soft glam. The VIP coupon saved us a good amount too.",
+    "wedding_date": "Jun 2026",
+    "is_verified": true,
+    "avatar_url": "",
+    "is_active": true,
+    "order": 6,
+    "created_at": "2026-09-18T05:41:51.138Z"
+  }
+},
+{
+  "model": "core.customerreview",
+  "pk": 8,
+  "fields": {
+    "client_name": "Pooja Malhotra",
+    "event_type": "Academy Graduate",
+    "location": "Bhopal",
+    "rating": 5,
+    "review_text": "The masterclass changed my career. Hands-on training with real brides.",
+    "wedding_date": "Jul 2026",
+    "is_verified": true,
+    "avatar_url": "",
+    "is_active": true,
+    "order": 7,
+    "created_at": "2026-09-18T05:41:51.139Z"
+  }
+},
+{
+  "model": "core.customerreview",
+  "pk": 9,
+  "fields": {
+    "client_name": "Nisha Gupta",
+    "event_type": "Royal Bride",
+    "location": "Sehore",
+    "rating": 5,
+    "review_text": "Every bride deserves this studio. Chandan art was authentic and gorgeous.",
+    "wedding_date": "Aug 2026",
+    "is_verified": true,
+    "avatar_url": "",
+    "is_active": true,
+    "order": 8,
+    "created_at": "2026-09-18T05:41:51.141Z"
+  }
+},
+{
+  "model": "core.customerreview",
+  "pk": 10,
+  "fields": {
+    "client_name": "Hidden Reviewer",
+    "event_type": "Royal Bride",
+    "location": "Bhopal",
+    "rating": 1,
+    "review_text": "This review is moderated off and must never render publicly.",
+    "wedding_date": "",
+    "is_verified": true,
+    "avatar_url": "",
+    "is_active": false,
+    "order": 9,
+    "created_at": "2026-09-18T05:41:51.142Z"
+  }
+},
+{
+  "model": "core.lookgroup",
+  "pk": 1,
+  "fields": {
+    "name": "Kuhu — Traditional Kolkata Banarasi & Chandan Art",
+    "client_name": "Kuhu",
+    "makeup_type": "Traditional Bengali Mukut & Chandan",
+    "category": "bridal",
+    "cover_image": "",
+    "cover_image_url": "/static/core/images/authentic/bride_look1_portrait.jpg",
+    "description": "Authentic Bengali bridal with chandan art and shakha-pola.",
+    "order": 0,
+    "is_active": true,
+    "created_at": "2026-09-18T05:41:51.144Z"
+  }
+},
+{
+  "model": "core.lookgroup",
+  "pk": 2,
+  "fields": {
+    "name": "Miss Rajak — Mauve Shimmer Cut-Crease",
+    "client_name": "Miss Rajak",
+    "makeup_type": "Mauve Shimmer Cut-Crease",
+    "category": "reception",
+    "cover_image": "",
+    "cover_image_url": "",
+    "description": "Soft mauve reception glam. Cover intentionally left empty for auto-cover tests.",
+    "order": 1,
+    "is_active": true,
+    "created_at": "2026-09-18T05:41:51.145Z"
+  }
+},
+{
+  "model": "core.lookmediaitem",
+  "pk": 1,
+  "fields": {
+    "group": 1,
+    "media_type": "image",
+    "image_file": "",
+    "video_file": "",
+    "external_url": "",
+    "embed_code": "",
+    "thumbnail_url": "/static/core/images/authentic/bride_look1_portrait.jpg",
+    "title": "Kuhu Front Portrait",
+    "caption": "Chandan art close-up",
+    "order": 1,
+    "created_at": "2026-09-18T05:41:51.146Z"
+  }
+},
+{
+  "model": "core.lookmediaitem",
+  "pk": 2,
+  "fields": {
+    "group": 1,
+    "media_type": "instagram",
+    "image_file": "",
+    "video_file": "",
+    "external_url": "https://www.instagram.com/reel/Dap4JkvKL1E/",
+    "embed_code": "Dap4JkvKL1E",
+    "thumbnail_url": "https://example.test/ig/kahu.jpg",
+    "title": "Kuhu Reel — Shubho Drishti",
+    "caption": "",
+    "order": 2,
+    "created_at": "2026-09-18T05:41:51.148Z"
+  }
+},
+{
+  "model": "core.lookmediaitem",
+  "pk": 3,
+  "fields": {
+    "group": 1,
+    "media_type": "youtube",
+    "image_file": "",
+    "video_file": "",
+    "external_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "embed_code": "dQw4w9WgXcQ",
+    "thumbnail_url": "",
+    "title": "Kuhu Cinematic Film",
+    "caption": "",
+    "order": 3,
+    "created_at": "2026-09-18T05:41:51.149Z"
+  }
+},
+{
+  "model": "core.lookmediaitem",
+  "pk": 4,
+  "fields": {
+    "group": 2,
+    "media_type": "image",
+    "image_file": "",
+    "video_file": "",
+    "external_url": "",
+    "embed_code": "",
+    "thumbnail_url": "/static/core/images/authentic/bride_look1_side.jpg",
+    "title": "Rajak Side Profile",
+    "caption": "Mauve shimmer cut-crease",
+    "order": 1,
+    "created_at": "2026-09-18T05:41:51.150Z"
+  }
+},
+{
+  "model": "core.lookmediaitem",
+  "pk": 5,
+  "fields": {
+    "group": 2,
+    "media_type": "youtube",
+    "image_file": "",
+    "video_file": "",
+    "external_url": "https://youtu.be/aBcDeFgHiJk",
+    "embed_code": "aBcDeFgHiJk",
+    "thumbnail_url": "",
+    "title": "Rajak Reel Film",
+    "caption": "",
+    "order": 2,
+    "created_at": "2026-09-18T05:41:51.152Z"
+  }
+},
+{
+  "model": "core.mediaitem",
+  "pk": 1,
+  "fields": {
+    "title": "Shubho Drishti — Bengali Bridal Reel",
+    "media_type": "instagram",
+    "category": "bridal",
+    "section": "reels",
+    "caption": "Traditional Bengali reveal",
+    "image_file": "",
+    "video_file": "",
+    "thumbnail_url": "https://example.test/ig/shubho.jpg",
+    "external_url": "https://www.instagram.com/reel/Dap4JkvKL1E/",
+    "embed_code": "Dap4JkvKL1E",
+    "views_count": "128.4K+ views",
+    "is_featured": true,
+    "is_active": true,
+    "order": 0,
+    "created_at": "2026-09-18T05:41:51.153Z"
+  }
+},
+{
+  "model": "core.mediaitem",
+  "pk": 2,
+  "fields": {
+    "title": "Royal Reception Walk — YouTube",
+    "media_type": "youtube",
+    "category": "reception",
+    "section": "reels",
+    "caption": "Cinematic reception entry",
+    "image_file": "",
+    "video_file": "",
+    "thumbnail_url": "",
+    "external_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "embed_code": "dQw4w9WgXcQ",
+    "views_count": "54.2K+ views",
+    "is_featured": true,
+    "is_active": true,
+    "order": 1,
+    "created_at": "2026-09-18T05:41:51.154Z"
+  }
+},
+{
+  "model": "core.mediaitem",
+  "pk": 3,
+  "fields": {
+    "title": "Chandan Art Detail",
+    "media_type": "image",
+    "category": "bridal",
+    "section": "gallery",
+    "caption": "Authentic chandan detail shot",
+    "image_file": "",
+    "video_file": "",
+    "thumbnail_url": "/static/core/images/authentic/bride_look2_jewelry.jpg",
+    "external_url": "",
+    "embed_code": "",
+    "views_count": "25.4K+ views",
+    "is_featured": true,
+    "is_active": true,
+    "order": 2,
+    "created_at": "2026-09-18T05:41:51.155Z"
+  }
+},
+{
+  "model": "core.mediaitem",
+  "pk": 4,
+  "fields": {
+    "title": "Engagement Glass Skin",
+    "media_type": "image",
+    "category": "engagement",
+    "section": "both",
+    "caption": "",
+    "image_file": "",
+    "video_file": "",
+    "thumbnail_url": "/static/core/images/authentic/bride_look3_candid.jpg",
+    "external_url": "",
+    "embed_code": "",
+    "views_count": "25.4K+ views",
+    "is_featured": false,
+    "is_active": true,
+    "order": 3,
+    "created_at": "2026-09-18T05:41:51.156Z"
+  }
+},
+{
+  "model": "core.mediaitem",
+  "pk": 5,
+  "fields": {
+    "title": "Retired Trial Reel",
+    "media_type": "instagram",
+    "category": "party",
+    "section": "reels",
+    "caption": "",
+    "image_file": "",
+    "video_file": "",
+    "thumbnail_url": "",
+    "external_url": "https://www.instagram.com/p/DW0f_eHAecV/",
+    "embed_code": "DW0f_eHAecV",
+    "views_count": "25.4K+ views",
+    "is_featured": false,
+    "is_active": false,
+    "order": 99,
+    "created_at": "2026-09-18T05:41:51.157Z"
+  }
+},
+{
+  "model": "core.galleryimage",
+  "pk": 1,
+  "fields": {
+    "image": "",
+    "caption": "Royal Bengali Bride — Front",
+    "category": "bridal",
+    "artist": 1,
+    "instagram_url": "",
+    "is_active": true,
+    "order": 0,
+    "created_at": "2026-09-18T05:41:51.159Z",
+    "look_group_id": "bengali_bride",
+    "look_group_name": "Royal Bengali Bride (4 Looks)",
+    "is_group_cover": true
+  }
+},
+{
+  "model": "core.galleryimage",
+  "pk": 2,
+  "fields": {
+    "image": "",
+    "caption": "Royal Bengali Bride — Side",
+    "category": "bridal",
+    "artist": 1,
+    "instagram_url": "",
+    "is_active": true,
+    "order": 1,
+    "created_at": "2026-09-18T05:41:51.160Z",
+    "look_group_id": "bengali_bride",
+    "look_group_name": "Royal Bengali Bride (4 Looks)",
+    "is_group_cover": false
+  }
+},
+{
+  "model": "core.galleryimage",
+  "pk": 3,
+  "fields": {
+    "image": "",
+    "caption": "Reception Glow Solo",
+    "category": "reception",
+    "artist": 1,
+    "instagram_url": "",
+    "is_active": true,
+    "order": 2,
+    "created_at": "2026-09-18T05:41:51.162Z",
+    "look_group_id": "",
+    "look_group_name": "",
+    "is_group_cover": true
+  }
+},
+{
+  "model": "core.galleryimage",
+  "pk": 4,
+  "fields": {
+    "image": "",
+    "caption": "Hidden Gallery Shot",
+    "category": "bridal",
+    "artist": 1,
+    "instagram_url": "",
+    "is_active": false,
+    "order": 99,
+    "created_at": "2026-09-18T05:41:51.163Z",
+    "look_group_id": "",
+    "look_group_name": "",
+    "is_group_cover": true
+  }
+},
+{
+  "model": "core.chatmessage",
+  "pk": 1,
+  "fields": {
+    "session_id": "regression-session-0001",
+    "message": "Regression probe question 1",
+    "response": "Regression probe answer 1",
+    "created_at": "2026-09-18T05:41:51.164Z"
+  }
+},
+{
+  "model": "core.chatmessage",
+  "pk": 2,
+  "fields": {
+    "session_id": "regression-session-0001",
+    "message": "Regression probe question 2",
+    "response": "Regression probe answer 2",
+    "created_at": "2026-09-18T05:41:51.164Z"
+  }
+},
+{
+  "model": "core.chatmessage",
+  "pk": 3,
+  "fields": {
+    "session_id": "regression-session-0001",
+    "message": "Regression probe question 3",
+    "response": "Regression probe answer 3",
+    "created_at": "2026-09-18T05:41:51.164Z"
+  }
+}
+]

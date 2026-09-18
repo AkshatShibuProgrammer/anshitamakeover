@@ -11,12 +11,12 @@
 
 | Task ID | Component | Description | Status | Dependencies |
 | :--- | :--- | :--- | :--- | :--- |
-| **TSK-201** | Header & Nav | Implement Evagher-style top bar: Left `☰ MENU`, Center Logo, Right `{EN} / HI` toggle | `[TODO]` | None |
-| **TSK-202** | Side Drawer | Build architectural left collapsible navigation drawer with smooth expand/restore | `[TODO]` | TSK-201 |
-| **TSK-203** | Hero Section | Restructure `#hero` into Left 60% full-bleed sequential photo slider & Right 40% brand typography | `[TODO]` | None |
-| **TSK-204** | Photo Slider Logic | Add auto-advancing crossfade + Ken Burns zoom + fraction counter (`01 / 04`) | `[TODO]` | TSK-203 |
-| **TSK-205** | Peek Gallery Modal | Build full-viewport interactive gallery modal showing center active image with left/right peeks | `[TODO]` | None |
-| **TSK-206** | Gesture Engine | Implement wheel scroll (Down/Right = Next, Up/Left = Prev) and touch drag/swipe navigation | `[TODO]` | TSK-205 |
-| **TSK-207** | Package Deck | Present bridal packages sequentially (one by one) with large visuals and clear rates | `[TODO]` | None |
-| **TSK-208** | Quick Actions | Add floating / docked action bar: "Compare All", "Custom Package Builder", "WhatsApp" | `[TODO]` | TSK-207 |
-| **TSK-209** | Verification | QA in desktop and mobile viewports; verify gesture smoothness and clean Git tree | `[TODO]` | All |
+| **TSK-201** | Header & Nav | Implement Evagher-style top bar: Left `☰ MENU`, Center Logo, Right `{EN} / HI` toggle | `[DONE]` | None |
+| **TSK-202** | Side Drawer | Build architectural left collapsible navigation drawer with smooth expand/restore | `[DONE]` | TSK-201 |
+| **TSK-203** | Hero Section | Restructure `#hero` into Left 60% full-bleed sequential photo slider & Right 40% brand typography | `[DONE]` | None |
+| **TSK-204** | Photo Slider Logic | Add auto-advancing crossfade + Ken Burns zoom + fraction counter (`01 / 04`) | `[DONE]` | TSK-203 |
+| **TSK-205** | Peek Gallery Modal | Build full-viewport interactive gallery modal showing center active image with left/right peeks | `[DONE]` | None |
+| **TSK-206** | Gesture Engine | Implement wheel scroll (Down/Right = Next, Up/Left = Prev) and touch drag/swipe navigation | `[DONE]` | TSK-205 |
+| **TSK-207** | Package Deck | Present bridal packages sequentially (one by one) with large visuals and clear rates | `[DONE]` | None |
+| **TSK-208** | Quick Actions | Add floating / docked action bar: "Compare All", "Custom Package Builder", "WhatsApp" | `[DONE]` | TSK-207 |
+| **TSK-209** | Verification | QA in desktop and mobile viewports; verify gesture smoothness and clean Git tree | `[DONE]` | All |
