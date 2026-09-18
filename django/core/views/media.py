@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from .common import admin_required
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.conf import settings
@@ -28,7 +29,7 @@ from .common import get_site_settings, get_active_coupon
 
 
 # ── API: Admin Media Management (Upload Photos, Instagram Reels & YouTube) ──
-@login_required
+@admin_required
 def admin_media_manage(request):
     """
     Handle:
@@ -211,7 +212,7 @@ def admin_media_manage(request):
 
 
 # ── API: Admin Look Groups (Folders by Person / Makeup Type) ──────────
-@login_required
+@admin_required
 def admin_lookgroup_manage(request):
     """
     CRUD for Look Groups (Person / Client folders):
@@ -339,7 +340,7 @@ def admin_lookgroup_manage(request):
 
 
 # ── API: Admin Look Media (Add Photo, Video, Instagram, YouTube to Group) ──
-@login_required
+@admin_required
 def admin_lookmedia_manage(request):
     """Add or remove photos, video files, Instagram URLs, or YouTube links inside a LookGroup"""
     if request.method == 'POST':

@@ -60,8 +60,68 @@ def chatbot_api(request):
         return JsonResponse({'reply': 'We are temporarily unable to process your request. Please connect with us directly on WhatsApp at +91 78792 23442.', 'session_id': ''})
 
 
+# How many past exchanges are re-sent to Gemini as context (token budget!).
+GEMINI_HISTORY_TURNS = int(os.environ.get('GEMINI_HISTORY_TURNS', '5'))
+# Truncate each stored reply to this many chars when re-sending as context.
+GEMINI_HISTORY_CHARS = 500
+GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.5-flash')
+
+
+# Headroom (github.com/headroomlabs-ai/headroom) compresses the chat history
+# locally before it is billed by Gemini. Disable with CHATBOT_HEADROOM=0.
+HEADROOM_ENABLED = os.environ.get('CHATBOT_HEADROOM', '1') == '1'
+
+
+def headroom_compress_history(turns):
+    """Compress Gemini-format history turns with Headroom.
+
+    Returns the (possibly smaller) turns list. Any failure — Headroom not
+    installed, compression error — degrades silently to the raw history so
+    the concierge never breaks because of the optimiser.
+    """
+    if not turns or not HEADROOM_ENABLED:
+        return turns
+    try:
+        from headroom import compress as headroom_compress
+        to_openai = {'user': 'user', 'model': 'assistant'}
+        messages = [{'role': to_openai[t['role']], 'content': t['parts'][0]['text']}
+                    for t in turns]
+        result = headroom_compress(messages, model=GEMINI_MODEL)
+        compressed_msgs = getattr(result, 'messages', None)
+        if not compressed_msgs:
+            return turns
+        from_openai = {'user': 'user', 'assistant': 'model'}
+        compressed = [
+            {'role': from_openai.get(m.get('role'), 'user'),
+             'parts': [{'text': str(m.get('content') or '')}]}
+            for m in compressed_msgs
+        ]
+        return compressed or turns
+    except Exception:
+        return turns
+
+
+def conversation_history(session_id, limit=GEMINI_HISTORY_TURNS):
+    """Load the last `limit` exchanges for this session as Gemini `contents`.
+
+    Long past replies are truncated so context never blows up the token bill.
+    """
+    past = list(
+        ChatMessage.objects.filter(session_id=session_id)
+        .order_by('-created_at')[:limit]
+    )
+    turns = []
+    for row in reversed(past):
+        turns.append({'role': 'user', 'parts': [{'text': row.message}]})
+        prev_reply = (row.response or '').strip()[:GEMINI_HISTORY_CHARS]
+        if prev_reply:
+            turns.append({'role': 'model', 'parts': [{'text': prev_reply}]})
+    return turns
+
+
 def gemini_chat(api_key, user_msg, session_id):
-    """Client-facing AI Concierge using Google Gemini 2.5 Flash with live DB pricing, negotiation guardrails, and WhatsApp privilege hand-off"""
+    """Client-facing AI Concierge — Gemini with conversation memory, live DB
+    pricing, negotiation guardrails and a strict concise/plain-text style."""
     import requests
     site = get_site_settings()
     free_sides = site.offer_bridal_free_sides
@@ -71,86 +131,69 @@ def gemini_chat(api_key, user_msg, session_id):
     wa_number = site.whatsapp_number or "917879223442"
     today_code = site.default_auto_coupon_code if site.default_auto_coupon_active else "TODAYVIP"
     today_disc = site.default_auto_coupon_discount if site.default_auto_coupon_active else 15
-    today_badge = site.default_auto_coupon_badge if site.default_auto_coupon_active else "Extra 15% VIP Privilege applied automatically today!"
 
-    # Query active packages and services from database dynamically
     pkgs = list(MakeupPackage.objects.filter(is_active=True).order_by('order'))
-    pkg_rules = []
-    table_rows = []
-
     min_floor_pct = site.ai_negotiation_min_floor_percent or 75
     max_disc_pct = site.ai_max_discount_percent or 20
 
-    for p in pkgs:
-        std_val = float(p.price) if p.price else 0.0
-        # Calculate offer price based on site coupon if active
+    pkg_rules = []
+    for p_ in pkgs:
+        std_val = float(p_.price) if p_.price else 0.0
         offer_val = round(std_val * (100 - today_disc) / 100) if site.default_auto_coupon_active else round(std_val * (100 - site.coupon_discount_percent) / 100) if site.coupon_active and site.coupon_discount_percent else std_val
-        # Determine minimum negotiated floor price
-        floor_val = float(p.min_negotiated_price) if p.min_negotiated_price else round(std_val * min_floor_pct / 100)
-        
-        feats = ", ".join(p.get_features_list()[:3])
-        table_rows.append(f"| **{p.name}** | ₹{std_val:,.0f} | ₹{offer_val:,.0f} | {feats} |")
+        floor_val = float(p_.min_negotiated_price) if p_.min_negotiated_price else round(std_val * min_floor_pct / 100)
+        feats = ", ".join(p_.get_features_list()[:3])
         pkg_rules.append(
-            f"- {p.name}: Standard Rate ₹{std_val:,.0f}, Special Seasonal Rate ₹{offer_val:,.0f}. "
-            f"ABSOLUTE MINIMUM NEGOTIATED FLOOR PRICE: ₹{floor_val:,.0f}. "
-            f"Allowed to negotiate: {'YES' if (site.ai_negotiation_enabled and p.allow_ai_negotiation) else 'NO (Strict Fixed Rate)'}."
+            f"- {p_.name}: std ₹{std_val:,.0f}, offer ₹{offer_val:,.0f}, "
+            f"includes: {feats}. "
+            f"ABSOLUTE MINIMUM NEGOTIATED FLOOR: ₹{floor_val:,.0f} "
+            f"({'negotiable' if (site.ai_negotiation_enabled and p_.allow_ai_negotiation) else 'fixed rate'})."
         )
+    pkg_rules_text = "\n".join(pkg_rules) or "- No active packages."
 
-    pkg_rules_text = "\n".join(pkg_rules)
-    table_text = "\n".join(table_rows)
+    system_prompt = f"""You are Anshita Makeover's Luxury Concierge AI (bridal, hair, nails, academy).
 
-    system_prompt = f"""You are the Luxury Concierge AI for Anshita Makeover — India's premier bespoke bridal couture, hair, and beauty studio.
-Respond in a warm, dignified, respectful, and sophisticated tone. Use clear English or respectful, elegant Hindi/Hinglish when addressed in Hindi.
+CONVERSATION RULES:
+- This is an ongoing chat: you can see earlier messages above. Continue the conversation naturally — NEVER repeat the welcome greeting, NEVER re-introduce the studio, NEVER repeat offers/prices you already gave.
+- Answer the user's specific question directly in your FIRST sentence.
+- Mirror the user's language and register: Hinglish question → short warm Hinglish answer; English question → English.
 
-TODAY'S DEFAULT EXCLUSIVE VIP PRIVILEGE:
-- Default Auto Coupon: {today_code} ({today_disc}% Extra Discount)
-- Announcement: {today_badge}
+RESPONSE STYLE — STRICT (the chat widget cannot render tables):
+- MAX 90 words / MAX 8 short lines. Brevity beats completeness.
+- PLAIN TEXT ONLY: no markdown tables, no pipe "|" characters, no HTML (no <br>), no headings, no code blocks.
+- Lists = one short line each starting with ✦.
+- Show ONLY what was asked. Max 3 packages at once. Format per package: "✦ Name — ₹58,000 (today ₹49,300): 2-3 key inclusions".
+- Never cut off mid-sentence: if you are nearing the limit, stop after a complete line.
 
-REAL-TIME DATABASE PACKAGES & PRICING RULES:
+TODAY'S VIP PRIVILEGE: code {today_code} = extra {today_disc}% off (mention only once per conversation, or when relevant).
+
+PRICING (live from database — quote ONLY these, never invent prices):
 {pkg_rules_text}
 
-Active Studio Booking Privileges:
-- Bridal Booking: First {free_sides} Side Makeups are completely FREE (₹0).
-- Subsidized Family Sides: Next 2 Side Makeups at ₹{disc_sides_rate:,} each.
-- Bridal + Engagement Combo: Additional {combo_disc}% off.
-- Grand Royal Bundle: Flat ₹{combo_flat:,}.
+BOOKING PRIVILEGES: first {free_sides} side makeups FREE with bridal; next 2 at ₹{disc_sides_rate:,} each; bridal+engagement combo extra {combo_disc}% off; Grand Royal Bundle flat ₹{combo_flat:,}.
 
-AI NEGOTIATION RANGE & GUARDRAIL SETTINGS:
-- Negotiation Enabled: {'YES' if site.ai_negotiation_enabled else 'NO'}
-- Strategy: {site.ai_negotiation_strategy.upper()}
-- Max Negotiable Discount: {max_disc_pct}% off standard price
-- Min Allowed Price Floor: {min_floor_pct}% of standard price
-- Admin Directives: {site.ai_negotiation_instructions}
-
-CRITICAL PRICING & NEGOTIATION RULES:
-1. FACTUAL ACCURACY: You MUST quote exact rates from the database rules above. NEVER hallucinate or invent prices.
-2. DISCOUNTS & BARGAINING:
-   - When user asks to negotiate or gives a budget:
-     * If user gives a budget >= Floor Price: You may warmly accept and grant a "Special Concierge Privilege Rate" matching or approaching their budget, and issue VIP code '{today_code}'.
-     * If user gives a budget < Floor Price: State that due to 100% original international luxury products (TEMPTU, Charlotte Tilbury, MAC) and hygiene standards, our authorized minimum is ₹[Floor Price], but highlight that it includes {free_sides} FREE Side Makeups worth ₹7,000!
-     * NEVER quote a price below the ABSOLUTE MINIMUM NEGOTIATED FLOOR PRICE.
-3. WHATSAPP CONFIRMATION HAND-OFF:
-   - When offering a negotiated rate, instruct the user that this special privilege is locked exclusively via WhatsApp.
-   - WhatsApp link format: https://wa.me/{wa_number}?text=Namaste!%20AI%20Concierge%20has%20granted%20me%20a%20Special%20Privilege%20Rate%20of%20₹[Amount]%20with%20VIP%20code%20{today_code}.%20Please%20confirm%20my%20booking.
-
-FORMATTING REQUIREMENTS:
-- Structure package comparisons in clean markdown tables with bold highlights.
-- Keep responses elegant, structured with bullet points (✦), concise, and never cut off mid-sentence!
-
-Standard Pricing Reference Table:
-| Service / Package | Standard Rate | Special Privilege Rate | Key Inclusions |
-| :--- | :--- | :--- | :--- |
-{table_text}
+NEGOTIATION GUARDRAILS:
+- Enabled: {'YES' if site.ai_negotiation_enabled else 'NO'}. Strategy: {site.ai_negotiation_strategy.upper()}. Max discount {max_disc_pct}%; never quote below any package's ABSOLUTE MINIMUM NEGOTIATED FLOOR.
+- Budget >= floor: warmly grant a "Special Concierge Privilege Rate" near their budget, give code {today_code}, and hand off: WhatsApp https://wa.me/{wa_number}?text=Namaste!%20AI%20Concierge%20granted%20me%20a%20Special%20Privilege%20Rate%20of%20₹[Amount]%20with%20VIP%20code%20{today_code}.
+- Budget < floor: politely hold ₹[floor] as minimum (original luxury products + hygiene), highlight the free side makeups worth ₹7,000.
+- Admin directives: {site.ai_negotiation_instructions}
 """
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    history = headroom_compress_history(conversation_history(session_id))
+    contents = history + [{'role': 'user', 'parts': [{'text': user_msg}]}]
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={api_key}"
     payload = {
-        "contents": [{"parts": [{"text": user_msg}]}],
+        "contents": contents,
         "systemInstruction": {"parts": [{"text": system_prompt}]},
-        "generationConfig": {"temperature": 0.25, "maxOutputTokens": 800}
+        "generationConfig": {
+            "temperature": 0.25,
+            "maxOutputTokens": 600,
+            # No chain-of-thought tokens for a chat concierge — saves cost & latency.
+            "thinkingConfig": {"thinkingBudget": 0},
+        },
     }
-    
-    resp = requests.post(url, json=payload, timeout=6)
+
+    resp = requests.post(url, json=payload, timeout=15)
     if resp.status_code == 200:
         data = resp.json()
         return data['candidates'][0]['content']['parts'][0]['text']
@@ -473,12 +516,16 @@ Supported Action Schemas:
 
 
 def fallback_chatbot(msg):
+    """Deterministic concierge (no Gemini key / Gemini down).
+
+    Style mirrors the AI rules: short bullet lines, NO markdown tables,
+    NO html — the chat widget renders plain text with ✦ bullets.
+    """
     msg_lower = msg.lower()
     site = get_site_settings()
     wa_number = site.whatsapp_number or "917879223442"
     today_code = site.default_auto_coupon_code if site.default_auto_coupon_active else "TODAYVIP"
     today_disc = site.default_auto_coupon_discount if site.default_auto_coupon_active else 15
-    today_badge = site.default_auto_coupon_badge if site.default_auto_coupon_active else "Extra 15% VIP Privilege applied automatically today!"
 
     # ── 1. SMART AI PRICE NEGOTIATION & BUDGET MATCHING ──
     is_negotiation = any(k in msg_lower for k in [
@@ -489,7 +536,6 @@ def fallback_chatbot(msg):
     ])
 
     if is_negotiation and site.ai_negotiation_enabled:
-        # Extract potential budget amount from message (e.g. "28k", "₹28,000", "28000", "Rs. 25000")
         msg_clean = msg_lower.replace(',', '')
         budget = None
         m_k = re.search(r'(?:₹|rs\.?|inr)?\s*(\d+(?:\.\d+)?)\s*k\b', msg_clean)
@@ -500,114 +546,91 @@ def fallback_chatbot(msg):
             if m_num:
                 budget = float(m_num.group(1))
 
-        # Standard bridal package anchors
         hd_std = 35000.0
         air_std = 45000.0
         min_floor_pct = site.ai_negotiation_min_floor_percent or 75
-        max_disc_pct = site.ai_max_discount_percent or 20
-
-        hd_floor = round(hd_std * min_floor_pct / 100)   # e.g. ₹26,250
-        air_floor = round(air_std * min_floor_pct / 100) # e.g. ₹33,750
+        hd_floor = round(hd_std * min_floor_pct / 100)    # e.g. ₹26,250
+        air_floor = round(air_std * min_floor_pct / 100)  # e.g. ₹33,750
 
         if budget:
             if budget >= hd_floor:
-                # Accept and lock authorized concierge rate
                 target_suite = "Master Airbrush Bridal" if budget >= air_floor else "Imperial Royal HD Bridal"
                 std_ref = air_std if budget >= air_floor else hd_std
                 savings = int(std_ref - budget)
-                return f"""### ✨ Special AI Concierge Privilege Approved!
-
-Namaste! 🙏 We truly appreciate you sharing your planned budget with us.
-Because every bride deserves radiant perfection on her auspicious day, our studio management has **authorized your requested Special Rate of ₹{int(budget):,}** for the **{target_suite}**!
-
-✦ **Authorized Privilege Rate**: **₹{int(budget):,}** *(Standard: ₹{int(std_ref):,} — You save ₹{savings:,}!)*
-✦ **Complimentary VIP Privileges Included**:
-  • **2 Family/Side Makeups completely FREE (₹0)** *(Direct Value: ₹7,000)*
-  • TEMPTU 24-hr Cry-Proof Base & Cut-Crease Eye Artistry
-  • Designer Dupatta & Sabyasachi/Banarasi Lehenga Draping
-  • Premium Silk Eyelashes, Hair Accessories & Colored Lenses
-✦ **Exclusive VIP Code**: **`{today_code}`** *(Assigned to your date)*
-
-👉 **Lock This Negotiated Privilege on WhatsApp Before the Slot Closes**:
-[Click to Lock ₹{int(budget):,} on WhatsApp](https://wa.me/{wa_number}?text=Namaste!%20AI%20Concierge%20has%20authorized%20a%20Special%20Rate%20of%20₹{int(budget):,}%20with%20VIP%20code%20{today_code}.%20Please%20reserve%20my%20wedding%20date.)"""
-            else:
-                # Below floor: politely defend luxury standard while offering authorized floor rate
-                return f"""### ✦ Anshita Makeover Bespoke Concierge Advisory
-
-Namaste! 🙏 We completely respect and honor your planned budget of ₹{int(budget):,}.
-At Anshita Makeover, we exclusively utilize 100% original international luxury brands (TEMPTU USA Airbrush, Charlotte Tilbury, Huda Beauty, MAC, NARS) with dedicated single-bride attention and sterile medical-grade hygiene kits to guarantee a 24-hour cry-proof glow.
-
-To support your dream wedding while maintaining our certified artistry:
-✦ **Studio Authorized Best Floor Rate**: **₹{hd_floor:,}** for Imperial Royal HD Bridal *(Standard: ₹35,000)*
-✦ **Complimentary Inclusions**: Includes **2 Family/Side Makeups completely FREE (₹0)** worth ₹7,000!
-✦ **Today's Extra Privilege**: Apply VIP Code **`{today_code}`** today to lock this special concession.
-
-👉 [Connect with Anshita on WhatsApp to Finalize Your Plan](https://wa.me/{wa_number}?text=Namaste%20Anshita!%20My%20budget%20is%20around%20₹{int(budget):,}.%20Can%20we%20customize%20a%20bridal%20suite%20for%20my%20date?)"""
-
-        else:
-            # General negotiation / discount question
-            return f"""### ✦ AI Smart Concierge Negotiation & Exclusive Privileges
-
-Namaste! ✨ Yes, under our current Studio Privilege Policy, our AI Concierge is authorized to provide flexible custom pricing and privileges:
-
-✦ **⚡ Today's Default VIP Privilege**: Code **`{today_code}`** is active today, giving you an **extra {today_disc}% automatic savings** across all bridal suites!
-✦ **👑 Complimentary Family Inclusions**: First **2 Side Makeups are 100% FREE (₹0)** with any Bridal booking *(Direct savings of ₹7,000!)*.
-✦ **💍 Event Combo Savings**: Up to **20% OFF** when booking Engagement / Reception alongside Bridal.
-✦ **🤝 Flexible Budget Negotiation**: What is your **Wedding Date** and **Planned Target Budget**? Share your number and I will calculate the best authorized concession for you right now!
-
-Or lock your privileged booking directly with our bridal concierge on WhatsApp at **+91 {wa_number}**."""
+                wa_text = (f"Namaste! AI Concierge has authorized a Special Rate of "
+                           f"₹{int(budget):,} with VIP code {today_code}. Please reserve my wedding date.")
+                return (
+                    f"✨ Special AI Concierge Privilege Approved! 🙏\n"
+                    f"✦ Your authorized rate: ₹{int(budget):,} for the {target_suite} (standard ₹{int(std_ref):,} — you save ₹{savings:,})\n"
+                    f"✦ Included FREE: 2 side makeups worth ₹7,000\n"
+                    f"✦ VIP code for your date: {today_code}\n"
+                    f"👉 Lock this rate before the slot closes: https://wa.me/{wa_number}?text={urllib.parse.quote(wa_text)}"
+                )
+            return (
+                f"Namaste 🙏 We truly respect your budget of ₹{int(budget):,}.\n"
+                f"✦ Our authorized floor rate: ₹{hd_floor:,} for Imperial Royal HD Bridal (standard ₹35,000)\n"
+                f"✦ Why this floor: 100% original luxury products (TEMPTU, Charlotte Tilbury, MAC) + medical-grade hygiene\n"
+                f"✦ Included FREE: 2 side makeups worth ₹7,000\n"
+                f"✦ Use code {today_code} today for extra savings\n"
+                f"👉 Plan together on WhatsApp: https://wa.me/{wa_number}?text="
+                + urllib.parse.quote(f"Namaste Anshita! My budget is around ₹{int(budget):,}. Can we customize a bridal suite for my date?")
+            )
+        return (
+            f"✦ AI Concierge Negotiation & Privileges ✨\n"
+            f"✦ Today's auto VIP code {today_code}: extra {today_disc}% off all bridal suites\n"
+            f"✦ First 2 side makeups FREE (worth ₹7,000) with any bridal booking\n"
+            f"✦ Up to 20% off on Engagement/Reception combos\n"
+            f"Tell me your Wedding Date and target budget — I'll calculate your best authorized rate right now!\n"
+            f"Or WhatsApp us: +91 {wa_number}"
+        )
 
     # ── 2. BRIDAL INQUIRIES ──
     if any(w in msg_lower for w in ['bridal', 'wedding', 'shaadi', 'bride', 'dulhan']):
-        return f"""Namaste! ✨ We would be delighted to curate your dream bridal look.
-
-### 👑 Signature Bridal Suites & Booking Privileges
-
-| Package Suite | Investment | Special Inclusions |
-| :--- | :--- | :--- |
-| **Imperial Royal HD Suite** | ₹24,500 *(Offer)* | HD Base, Cut-Crease Eyes, Dupatta Draping, **2 Side Makeups FREE** |
-| **Master Airbrush Suite** | ₹31,500 *(Offer)* | TEMPTU 24-hr Cry-Proof, Vanity Setup, **2 Side Makeups FREE** |
-| **Grand Royal Heritage Suite** | ₹50,000 *(Bundle)* | **Bridal + Engagement Suite** + 2 Side Makeups FREE |
-
-✦ **⚡ Today's Deal**: Auto code **`{today_code}`** applies for extra savings today!
-✦ **VIP Booking Privilege**: First 2 Side Makeups are **FREE (₹0)**, and the next 2 at only **₹2,500 each**!
-✦ **Combo Privilege**: Up to 20% discount on Engagement & Roka when booked together!
-
-To reserve your auspicious date, please WhatsApp our bridal team at +91 {wa_number}."""
+        return (
+            f"Namaste! ✨ Here are our signature Bridal Suites:\n"
+            f"✦ Imperial Royal HD Suite — ₹35,000 (offer ₹24,500): HD base, cut-crease eyes, draping\n"
+            f"✦ Master Airbrush Suite — ₹45,000 (offer ₹31,500): TEMPTU 24-hr cry-proof base\n"
+            f"✦ Grand Royal Heritage Suite — ₹50,000 flat: bridal + engagement bundle\n"
+            f"✦ Privilege: first 2 side makeups completely FREE (₹0), next 2 at ₹2,500 each\n"
+            f"✦ Today's code {today_code} gives extra savings\n"
+            f"To reserve your date, WhatsApp +91 {wa_number} 💍"
+        )
 
     # ── 3. PRICING INQUIRIES ──
     if any(w in msg_lower for w in ['price', 'rate', 'cost', 'kitna', 'fees', 'charges', 'package', 'packages']):
-        return f"""### ✨ Anshita Makeover Curated Pricing Guide
-
-| Service / Suite | Investment | Privilege Benefits |
-| :--- | :--- | :--- |
-| **Imperial Royal HD Bridal** | ₹24,500 / ₹35,000 | 2 Side Makeups FREE |
-| **Master Airbrush Bridal** | ₹31,500 / ₹45,000 | TEMPTU 24-hr Cry-Proof, 2 FREE Sides |
-| **Engagement & Roka Glam** | ₹12,600 / ₹18,000 | Glass-Skin Glow & Hair Styling |
-| **Grand Royal Combo Suite** | ₹50,000 Flat | Bridal + Engagement + 2 Free Sides |
-| **Side & Family Artistry** | ₹2,500 (Subsidized) | Professional Glam & Draping |
-| **Academy Masterclass** | ₹35,400 | 4 Weeks Certified Hands-on Training |
-
-✦ **Today's Auto Privilege**: Extra {today_disc}% off with code **`{today_code}`**!
-✦ Connect with our concierge on WhatsApp at **+91 {wa_number}** for a tailored quote!"""
+        return (
+            f"✨ Anshita Makeover Pricing Guide (standard / today's offer):\n"
+            f"✦ Imperial Royal HD Bridal — ₹35,000 / ₹24,500\n"
+            f"✦ Master Airbrush Bridal — ₹45,000 / ₹31,500\n"
+            f"✦ Engagement & Roka Glam — ₹18,000 / ₹12,600\n"
+            f"✦ Grand Royal Combo (bridal + engagement) — ₹50,000 flat\n"
+            f"✦ Side & family makeup — ₹2,500 subsidized · Academy Masterclass — ₹35,400\n"
+            f"✦ Extra {today_disc}% off today with code {today_code}\n"
+            f"Want a tailored quote? WhatsApp +91 {wa_number}"
+        )
 
     if any(w in msg_lower for w in ['photo', 'photography', 'event', 'videography', 'camera']):
-        return f"Through Anshita Signature Events & Photography, we offer complete royal wedding coverage: 📸\n✦ Standard Collection: ₹90,000 (Candid + Traditional, 300+ edited portraits)\n✦ Royal Premium Collection: ₹1,20,000 (Full-day cinematic video, Drone aerials, Pre-wedding & Premium album)\nFor complete event management inquiries, please connect with us at +91 {wa_number}."
+        return (f"📸 Anshita Signature Events & Photography:\n"
+                f"✦ Standard Collection — ₹90,000 (candid + traditional, 300+ edited portraits)\n"
+                f"✦ Royal Premium Collection — ₹1,20,000 (cinematic video, drone, pre-wedding, premium album)\n"
+                f"For event management, WhatsApp +91 {wa_number}.")
 
     # ── 4. COUPON & CODE INQUIRIES ──
     if any(w in msg_lower for w in ['coupon', 'discount', 'offer', 'code', 'promo', 'vip']):
-        return f"""🎉 **Anshita Makeover Active Offers & VIP Codes**!
-✦ **Today's Auto Privilege**: Code **`{today_code}`** is active today for extra **{today_disc}% OFF**!
-✦ **Announcement**: {today_badge}
-✦ **VIP Booking Privilege**: First 2 Side Makeups are **100% FREE (₹0)** with any Bridal booking!
-Please mention code **{today_code}** when booking on WhatsApp at +91 {wa_number}."""
+        return (
+            f"🎉 Active offers at Anshita Makeover:\n"
+            f"✦ Today's auto code {today_code}: extra {today_disc}% off\n"
+            f"✦ First 2 side makeups 100% FREE with any bridal booking\n"
+            f"Mention {today_code} when booking on WhatsApp +91 {wa_number} ✨"
+        )
 
     if any(w in msg_lower for w in ['location', 'address', 'kahan', 'studio', 'city']):
-        return f"Anshita Makeover Studio is based in Jabalpur, Madhya Pradesh, catering to bridal appointments, destination weddings, and couture bookings nationwide. 📍\nTo reserve your date or book a consultation, please WhatsApp +91 {wa_number}."
+        return (f"Anshita Makeover Studio is based in Jabalpur, Madhya Pradesh 📍 — serving bridal, destination weddings and couture bookings nationwide.\n"
+                f"To reserve your date, WhatsApp +91 {wa_number}.")
 
     if any(w in msg_lower for w in ['hello', 'hi', 'namaste', 'hey', 'good morning', 'good afternoon', 'good evening']):
-        return f"Namaste and warm greetings from Anshita Makeover! 🙏✨\nWe are dedicated to crafting your most radiant and elegant moments across India — from royal bridal transformations to certified professional makeup education.\nToday's special privilege: Use code **`{today_code}`** for extra savings today!\nHow may we be at your service today? 💄"
+        return (f"Namaste from Anshita Makeover! 🙏✨ Bridal transformations, hair, nails & certified academy training.\n"
+                f"✦ Today's privilege: code {today_code} for extra savings\n"
+                f"How may I help you — packages, pricing or booking? 💄")
 
-    return f"Thank you for reaching out to Anshita Makeover. ✨ For immediate assistance, personalized packages, and appointment reservations across India, please WhatsApp our bridal concierge at +91 {wa_number}. We look forward to creating magic with you! 💍"
-
-
+    return f"Thank you for reaching out to Anshita Makeover ✨ For personalized help or bookings, WhatsApp our bridal concierge at +91 {wa_number}. We look forward to creating magic with you! 💍"

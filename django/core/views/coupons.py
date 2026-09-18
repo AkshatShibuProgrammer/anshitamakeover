@@ -1,6 +1,7 @@
 import json
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from core.views.common import admin_required
 from features.coupon_ops.coupon_service import (
     fetch_active_and_exit_coupons,
     update_or_generate_coupon
@@ -11,7 +12,7 @@ def get_coupon_api(request):
     result = fetch_active_and_exit_coupons()
     return JsonResponse(result)
 
-@login_required
+@admin_required
 def admin_coupon_update(request):
     """Orchestrator endpoint delegating to coupon_ops service"""
     if request.method == 'POST':

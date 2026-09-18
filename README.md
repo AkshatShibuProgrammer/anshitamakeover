@@ -367,11 +367,59 @@ Password: Anshita@2026
 ## 🤖 Chatbot Setup
 
 1. Get a free API key from: https://aistudio.google.com/app/apikey
-2. Open `anshita_project/gemini_api_key.txt`
+2. Open `django/gemini_api_key.txt`
 3. Replace `YOUR_GEMINI_API_KEY_HERE` with your key
 4. Restart the server — chatbot will now use Gemini AI
 
 **Without API key:** A smart rule-based fallback chatbot handles common queries (bridal pricing, artists, academy, coupons, location, WhatsApp).
+
+### How the concierge behaves
+
+- **Conversation memory** — the last 5 exchanges of the session are re-sent to
+  Gemini, so the bot answers follow-ups ("aur usme kya kya milega?") in context
+  instead of re-greeting. The session survives page reloads.
+- **Concise, readable replies** — the bot is instructed to reply in ≤ ~90 words
+  of plain-text ✦ bullets (no markdown tables, no HTML), matching the
+  customer's language (Hinglish ↔ Hinglish).
+- **Token savings** — [Headroom](https://github.com/headroomlabs-ai/headroom)
+  compresses chat history locally before it is billed by Gemini (install with
+  `pip install headroom-ai`; degrades silently if absent). Chain-of-thought
+  "thinking" tokens are disabled, history replies are truncated, and the
+  system prompt is kept compact.
+
+| Env override | Default | Purpose |
+|---|---|---|
+| `GEMINI_MODEL` | `gemini-2.5-flash` | e.g. `gemini-2.5-flash-lite` for a cheaper model |
+| `GEMINI_HISTORY_TURNS` | `5` | how many past exchanges are re-sent as context |
+| `CHATBOT_HEADROOM` | `1` | set `0` to bypass Headroom compression |
+
+---
+
+## 🧪 Automated Testing Hub (`testing/`)
+
+Every feature in this README is covered by a multi-framework automated suite
+organised in **one folder per testing type**, driven by **one master program**:
+
+```bash
+make venv                          # one-time: create testenv with all frameworks
+
+python testing/run_all.py          # ⭐ MASTER — runs every kind of testing
+python testing/run_all.py --list   # suites + runtime availability
+
+make unit    # unit testing   — 228 Django regression tests   (testing/unit)
+make api     # API testing    — 28 pytest+requests contracts  (testing/api)
+make e2e     # E2E testing    — 18 Playwright/chromium flows  (testing/e2e)
+make bdd     # BDD testing    — 30 Karate scenarios           (testing/bdd)
+make smoke   # smoke testing  — fast HTTP probes              (testing/smoke)
+make perf    # performance    — latency & concurrency budgets (testing/perf)
+```
+
+* Hub guide: [`testing/README.md`](testing/README.md)
+* Full test-case catalogue (TC ids, steps, expected results):
+  [`docs/testing/REGRESSION_TEST_PLAN.md`](docs/testing/REGRESSION_TEST_PLAN.md)
+* Test data: `testing/testdata/` (factories + JSON fixture), seeded anywhere
+  with `python manage.py seed_test_data`.
+* CI pipeline: `.github/workflows/regression.yml` (5 jobs per push/PR).
 
 ---
 

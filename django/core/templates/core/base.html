@@ -3839,7 +3839,8 @@ body.mobile-simulator-active > *:not(.mobile-sim-floating-btn):not(#cur-dot):not
 <script>
 const WA = '{{ whatsapp }}';
 const LANG = '{{ lang }}';
-let chatSessionId = Math.random().toString(36).substr(2,9);
+let chatSessionId = localStorage.getItem('anshita_chat_session') || Math.random().toString(36).substr(2,9);
+try{ localStorage.setItem('anshita_chat_session', chatSessionId); }catch(e){}
 let adminLoggedIn = {% if user.is_authenticated %}true{% else %}false{% endif %};
 
 /* ── Cursor ── */
@@ -5135,6 +5136,8 @@ async function sendChat(){
 }
 function renderMarkdownToHtml(md){
   if(!md) return '';
+  // AI replies are plain text — if the model ever emits <br>, treat it as a newline
+  md = md.replace(/<br\s*\/?>/gi, '\n');
   let escaped = md
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -5189,6 +5192,9 @@ function renderMarkdownToHtml(md){
 
   // Bullet items
   html = html.replace(/^[•✦\-] (.*$)/gim, '<div style="display:flex;gap:6px;margin:3px 0"><span style="color:var(--gold)">✦</span><span>$1</span></div>');
+
+  // Plain-text newlines must actually break lines in the bubble
+  html = html.replace(/\n/g, '<br>');
 
   // Convert WhatsApp links into animated luxury VIP buttons
   html = html.replace(/(https:\/\/wa\.me\/[^\s\<\>"\']+)/g, function(url) {

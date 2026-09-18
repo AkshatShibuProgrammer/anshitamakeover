@@ -1,13 +1,14 @@
 import json
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from .common import admin_required
 from features.artist_ops.artist_service import (
     save_artist_record,
     delete_artist_by_id,
     list_all_artists
 )
 
-@login_required
+@admin_required
 def admin_artist_manage(request):
     """Orchestrator endpoint delegating to artist_ops service"""
     if request.method == 'POST':

@@ -1,5 +1,19 @@
 from datetime import date
+
+from django.contrib.auth.decorators import user_passes_test
+
 from ..models import SiteSettings
+
+
+def _is_staff_member(user):
+    return user.is_authenticated and user.is_staff
+
+
+#: Gate for every admin-management API. ``login_required`` alone is NOT
+#: sufficient — any authenticated non-staff account would otherwise be able
+#: to modify prices, coupons and media (security defect found by the
+#: regression suite, see TC-PRC-002 / KD-005).
+admin_required = user_passes_test(_is_staff_member, login_url='/admin-login/')
 
 def get_site_settings():
     s, _ = SiteSettings.objects.get_or_create(id=1)

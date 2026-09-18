@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from .common import admin_required
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.conf import settings
@@ -28,7 +29,7 @@ from .common import get_site_settings, get_active_coupon
 
 
 # ── API: Admin Price Update ───────────────────────────────────
-@login_required
+@admin_required
 def admin_price_update(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -145,7 +146,11 @@ def admin_price_update(request):
 
         # Service price update
         is_on_request = data.get('is_on_request', False)
-        sp, _ = ServicePrice.objects.get_or_create(service=service)
+        # NULL-safe upsert: ServicePrice.price is NOT NULL, so a bare
+        # get_or_create() would 500 on brand-new service keys.
+        sp = ServicePrice.objects.filter(service=service).first()
+        if sp is None:
+            sp = ServicePrice(service=service, price=0)
         if price is not None and str(price).strip():
             sp.price = float(price)
         sp.is_on_request = is_on_request
@@ -155,7 +160,7 @@ def admin_price_update(request):
 
 
 # ── API: Admin Event & Add-on Package CRUD (Commission & ROI) ─────────────────
-@login_required
+@admin_required
 def admin_event_package(request):
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -224,7 +229,7 @@ def admin_event_package(request):
 
 
 # ── API: Admin Service / Package Management (CRUD) ────────────
-@login_required
+@admin_required
 def admin_service_manage(request):
     if request.method == 'POST':
         if request.content_type == 'application/json':
@@ -310,7 +315,7 @@ def admin_service_manage(request):
 
 
 # ── API: Admin Studio Service Management (Add, Edit, Delete, Inclusions) ──
-@login_required
+@admin_required
 def admin_studio_service_manage(request):
     """
     Full Admin CRUD for Studio Services:

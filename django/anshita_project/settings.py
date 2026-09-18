@@ -35,6 +35,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'anshita_project.urls'
 
+# Login target for @login_required — the studio uses its own branded login
+# page, not Django's default /accounts/login/ (which does not exist).
+LOGIN_URL = '/admin-login/'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -75,6 +79,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'core' / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Fixture discovery for the regression suite (testing/testdata/fixtures/)
+FIXTURE_DIRS = [BASE_DIR.parent / 'testing' / 'testdata' / 'fixtures']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
