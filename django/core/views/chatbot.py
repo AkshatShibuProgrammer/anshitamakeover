@@ -28,13 +28,37 @@ from .common import get_site_settings, get_active_coupon
 
 
 def get_gemini_api_key():
-    """Load Gemini API key from environment variable first, then fallback to local file.
-    Returns empty string if not configured or if placeholder."""
+    """Load Gemini API key from environment variable first, then check candidate file paths."""
     api_key = os.environ.get('GEMINI_API_KEY', '').strip()
     if not api_key:
-        key_file = Path(settings.BASE_DIR) / 'gemini_api_key.txt'
-        if key_file.exists():
-            api_key = key_file.read_text().strip()
+        base_path = Path(settings.BASE_DIR)
+        candidate_paths = [
+            base_path / 'gemini_api_key.txt',
+            base_path.parent / 'anshita_project' / 'gemini_api_key.txt',
+            base_path.parent / 'gemini_api_key.txt',
+            base_path / 'anshita_project' / 'gemini_api_key.txt',
+            # CFA / Learning tools fallback if present on machine
+            Path(r"F:\Code by Akshat\learning tools\AIDocumentMergerCreator\.env"),
+            Path(r"F:\Code by Akshat\learning tools\combined pdf\.env"),
+        ]
+        for p in candidate_paths:
+            if p.exists():
+                try:
+                    if p.name == '.env':
+                        for line in p.read_text(encoding='utf-8', errors='ignore').splitlines():
+                            if line.strip().startswith('GEMINI_API_KEY='):
+                                val = line.split('=', 1)[1].strip().strip('"\'')
+                                if val and val != 'YOUR_GEMINI_API_KEY_HERE':
+                                    api_key = val
+                                    break
+                    else:
+                        val = p.read_text(encoding='utf-8', errors='ignore').strip()
+                        if val and val != 'YOUR_GEMINI_API_KEY_HERE':
+                            api_key = val
+                    if api_key:
+                        break
+                except Exception:
+                    continue
     if api_key == 'YOUR_GEMINI_API_KEY_HERE':
         return ''
     return api_key
@@ -52,7 +76,7 @@ def chatbot_api(request):
         if not user_msg:
             return JsonResponse({'reply': 'Greetings! How may I assist you with our bridal and beauty services today? ✨', 'session_id': session_id})
 
-        # Load Gemini API key (env var priority, file fallback)
+        # Load Gemini API key (env var priority, candidate file fallback)
         api_key = get_gemini_api_key()
 
         if not api_key:
@@ -76,7 +100,8 @@ def chatbot_api(request):
 GEMINI_HISTORY_TURNS = int(os.environ.get('GEMINI_HISTORY_TURNS', '5'))
 # Truncate each stored reply to this many chars when re-sending as context.
 GEMINI_HISTORY_CHARS = 500
-GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.0-flash')
+GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.5-flash')
+
 
 
 # Headroom (github.com/headroomlabs-ai/headroom) compresses the chat history
