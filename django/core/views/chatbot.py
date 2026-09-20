@@ -33,6 +33,8 @@ def get_gemini_api_key():
     if not api_key:
         base_path = Path(settings.BASE_DIR)
         candidate_paths = [
+            base_path / '.env',
+            base_path.parent / '.env',
             base_path / 'gemini_api_key.txt',
             base_path.parent / 'anshita_project' / 'gemini_api_key.txt',
             base_path.parent / 'gemini_api_key.txt',
