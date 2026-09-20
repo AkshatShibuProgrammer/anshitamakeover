@@ -4,6 +4,9 @@ from . import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('academy/', views.academy, name='academy'),
+    path('travel-estimator/', views.travel_estimator, name='travel_estimator'),
+    path('cart/', views.cart_page, name='cart_page'),
+    path('chatbot/', views.chatbot_page, name='chatbot_page'),
     path('set-language/', views.set_language, name='set_language'),
     path('admin-login/', views.admin_login, name='admin_login'),
     path('admin-portal/', views.admin_portal, name='admin_portal'),
@@ -21,6 +24,9 @@ urlpatterns = [
     path('api/admin/studio-service/', views.admin_studio_service_manage, name='admin_studio_service'),
     path('api/admin/lookgroup/', views.admin_lookgroup_manage, name='admin_lookgroup'),
     path('api/admin/lookgroup/media/', views.admin_lookmedia_manage, name='admin_lookmedia'),
+    path('api/admin/ai/', views.admin_ai_command, name='admin_ai'),
+    path('api/admin/ai-command/', views.admin_ai_command, name='admin_ai_command'),
+    path('api/admin/ai-status/', views.admin_ai_status, name='admin_ai_status'),
     path('sinha-logos/', views.sinha_logo_studio, name='sinha_logo_studio'),
 ]
 

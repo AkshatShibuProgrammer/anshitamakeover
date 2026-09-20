@@ -27,6 +27,19 @@ from ..translations import get_translation, TRANSLATIONS
 from .common import get_site_settings, get_active_coupon
 
 
+def get_gemini_api_key():
+    """Load Gemini API key from environment variable first, then fallback to local file.
+    Returns empty string if not configured or if placeholder."""
+    api_key = os.environ.get('GEMINI_API_KEY', '').strip()
+    if not api_key:
+        key_file = Path(settings.BASE_DIR) / 'gemini_api_key.txt'
+        if key_file.exists():
+            api_key = key_file.read_text().strip()
+    if api_key == 'YOUR_GEMINI_API_KEY_HERE':
+        return ''
+    return api_key
+
+
 # ── API: Chatbot ──────────────────────────────────────────────
 @csrf_exempt
 @require_POST
@@ -39,18 +52,17 @@ def chatbot_api(request):
         if not user_msg:
             return JsonResponse({'reply': 'Greetings! How may I assist you with our bridal and beauty services today? ✨', 'session_id': session_id})
 
-        # Load Gemini API key
-        key_file = Path(settings.BASE_DIR) / 'gemini_api_key.txt'
-        api_key = ''
-        if key_file.exists():
-            api_key = key_file.read_text().strip()
+        # Load Gemini API key (env var priority, file fallback)
+        api_key = get_gemini_api_key()
 
-        if not api_key or api_key == 'YOUR_GEMINI_API_KEY_HERE':
+        if not api_key:
             reply = fallback_chatbot(user_msg)
         else:
             try:
                 reply = gemini_chat(api_key, user_msg, session_id)
             except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning("Gemini AI error (%s), activating fallback", e)
                 reply = fallback_chatbot(user_msg)
 
         ChatMessage.objects.create(session_id=session_id, message=user_msg, response=reply)
@@ -64,12 +76,12 @@ def chatbot_api(request):
 GEMINI_HISTORY_TURNS = int(os.environ.get('GEMINI_HISTORY_TURNS', '5'))
 # Truncate each stored reply to this many chars when re-sending as context.
 GEMINI_HISTORY_CHARS = 500
-GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.5-flash')
+GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.0-flash')
 
 
 # Headroom (github.com/headroomlabs-ai/headroom) compresses the chat history
-# locally before it is billed by Gemini. Disable with CHATBOT_HEADROOM=0.
-HEADROOM_ENABLED = os.environ.get('CHATBOT_HEADROOM', '1') == '1'
+# locally before it is billed by Gemini. Enable with CHATBOT_HEADROOM=1.
+HEADROOM_ENABLED = os.environ.get('CHATBOT_HEADROOM', '0') == '1'
 
 
 def headroom_compress_history(turns):
@@ -182,15 +194,17 @@ NEGOTIATION GUARDRAILS:
     contents = history + [{'role': 'user', 'parts': [{'text': user_msg}]}]
 
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={api_key}"
+    gen_config = {
+        "temperature": 0.4,
+        "maxOutputTokens": 600,
+    }
+    if "thinking" in GEMINI_MODEL.lower():
+        gen_config["thinkingConfig"] = {"thinkingBudget": 0}
+
     payload = {
         "contents": contents,
         "systemInstruction": {"parts": [{"text": system_prompt}]},
-        "generationConfig": {
-            "temperature": 0.25,
-            "maxOutputTokens": 600,
-            # No chain-of-thought tokens for a chat concierge — saves cost & latency.
-            "thinkingConfig": {"thinkingBudget": 0},
-        },
+        "generationConfig": gen_config,
     }
 
     resp = requests.post(url, json=payload, timeout=15)
@@ -219,10 +233,9 @@ def admin_ai_command(request):
         if not prompt:
             return JsonResponse({'ok': False, 'error': 'Please enter an instruction.'})
 
-        key_file = Path(settings.BASE_DIR) / 'gemini_api_key.txt'
-        api_key = key_file.read_text().strip() if key_file.exists() else ''
+        api_key = get_gemini_api_key()
         if not api_key:
-            return JsonResponse({'ok': False, 'error': 'Gemini API key not configured.'})
+            return JsonResponse({'ok': False, 'error': 'Gemini API key not configured. Set GEMINI_API_KEY environment variable or create django/gemini_api_key.txt.'})
 
         # Ask Gemini to return structured JSON action
         system_instruction = """You are the Dedicated Admin AI Co-Pilot for Anshita Makeover website management and database validation.
@@ -316,7 +329,7 @@ Supported Action Schemas:
 }
 """
         import requests
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={api_key}"
         payload = {
             "contents": [{"parts": [{"text": prompt}]}],
             "systemInstruction": {"parts": [{"text": system_instruction}]},
@@ -515,17 +528,58 @@ Supported Action Schemas:
         return JsonResponse({'ok': False, 'error': f"Failed to execute: {str(e)}"})
 
 
+@login_required
+def admin_ai_status(request):
+    """Return status of Gemini AI integration for Admin Dashboard."""
+    api_key = get_gemini_api_key()
+    source = 'none'
+    live = False
+    if api_key:
+        live = True
+        if os.environ.get('GEMINI_API_KEY', '').strip():
+            source = 'env'
+        else:
+            source = 'file'
+
+    return JsonResponse({
+        'ok': True,
+        'live': live,
+        'source': source,
+        'model': GEMINI_MODEL,
+        'status_text': f"Live ({source.upper()})" if live else "Offline (Smart Fallback Active)"
+    })
+
+
 def fallback_chatbot(msg):
     """Deterministic concierge (no Gemini key / Gemini down).
 
     Style mirrors the AI rules: short bullet lines, NO markdown tables,
     NO html — the chat widget renders plain text with ✦ bullets.
+    Enriched with live DB packages, active pricing, and WhatsApp settings.
     """
     msg_lower = msg.lower()
     site = get_site_settings()
     wa_number = site.whatsapp_number or "917879223442"
     today_code = site.default_auto_coupon_code if site.default_auto_coupon_active else "TODAYVIP"
     today_disc = site.default_auto_coupon_discount if site.default_auto_coupon_active else 15
+    free_sides = site.offer_bridal_free_sides
+    disc_sides_rate = int(site.offer_next_sides_discounted_price)
+    combo_disc = site.offer_combo_discount_percent
+    combo_flat = int(site.offer_grand_combo_bundle_price)
+
+    pkgs = list(MakeupPackage.objects.filter(is_active=True).order_by('order'))
+    min_floor_pct = site.ai_negotiation_min_floor_percent or 75
+
+    hd_pkg = next((p for p in pkgs if 'hd' in p.name.lower()), pkgs[0] if pkgs else None)
+    air_pkg = next((p for p in pkgs if 'airbrush' in p.name.lower()), (pkgs[1] if len(pkgs) > 1 else pkgs[0]) if pkgs else None)
+
+    hd_std = float(hd_pkg.price) if hd_pkg and hd_pkg.price else 35000.0
+    air_std = float(air_pkg.price) if air_pkg and air_pkg.price else 45000.0
+    hd_name = hd_pkg.name if hd_pkg else "Imperial Royal HD Bridal"
+    air_name = air_pkg.name if air_pkg else "Master Airbrush Bridal"
+
+    hd_floor = float(hd_pkg.min_negotiated_price) if (hd_pkg and hd_pkg.min_negotiated_price) else round(hd_std * min_floor_pct / 100)
+    air_floor = float(air_pkg.min_negotiated_price) if (air_pkg and air_pkg.min_negotiated_price) else round(air_std * min_floor_pct / 100)
 
     # ── 1. SMART AI PRICE NEGOTIATION & BUDGET MATCHING ──
     is_negotiation = any(k in msg_lower for k in [
@@ -546,15 +600,9 @@ def fallback_chatbot(msg):
             if m_num:
                 budget = float(m_num.group(1))
 
-        hd_std = 35000.0
-        air_std = 45000.0
-        min_floor_pct = site.ai_negotiation_min_floor_percent or 75
-        hd_floor = round(hd_std * min_floor_pct / 100)    # e.g. ₹26,250
-        air_floor = round(air_std * min_floor_pct / 100)  # e.g. ₹33,750
-
         if budget:
             if budget >= hd_floor:
-                target_suite = "Master Airbrush Bridal" if budget >= air_floor else "Imperial Royal HD Bridal"
+                target_suite = air_name if budget >= air_floor else hd_name
                 std_ref = air_std if budget >= air_floor else hd_std
                 savings = int(std_ref - budget)
                 wa_text = (f"Namaste! AI Concierge has authorized a Special Rate of "
@@ -562,15 +610,15 @@ def fallback_chatbot(msg):
                 return (
                     f"✨ Special AI Concierge Privilege Approved! 🙏\n"
                     f"✦ Your authorized rate: ₹{int(budget):,} for the {target_suite} (standard ₹{int(std_ref):,} — you save ₹{savings:,})\n"
-                    f"✦ Included FREE: 2 side makeups worth ₹7,000\n"
+                    f"✦ Included FREE: {free_sides} side makeups worth ₹7,000\n"
                     f"✦ VIP code for your date: {today_code}\n"
                     f"👉 Lock this rate before the slot closes: https://wa.me/{wa_number}?text={urllib.parse.quote(wa_text)}"
                 )
             return (
                 f"Namaste 🙏 We truly respect your budget of ₹{int(budget):,}.\n"
-                f"✦ Our authorized floor rate: ₹{hd_floor:,} for Imperial Royal HD Bridal (standard ₹35,000)\n"
+                f"✦ Our authorized floor rate: ₹{hd_floor:,.0f} for {hd_name} (standard ₹{hd_std:,.0f})\n"
                 f"✦ Why this floor: 100% original luxury products (TEMPTU, Charlotte Tilbury, MAC) + medical-grade hygiene\n"
-                f"✦ Included FREE: 2 side makeups worth ₹7,000\n"
+                f"✦ Included FREE: {free_sides} side makeups worth ₹7,000\n"
                 f"✦ Use code {today_code} today for extra savings\n"
                 f"👉 Plan together on WhatsApp: https://wa.me/{wa_number}?text="
                 + urllib.parse.quote(f"Namaste Anshita! My budget is around ₹{int(budget):,}. Can we customize a bridal suite for my date?")
@@ -578,36 +626,54 @@ def fallback_chatbot(msg):
         return (
             f"✦ AI Concierge Negotiation & Privileges ✨\n"
             f"✦ Today's auto VIP code {today_code}: extra {today_disc}% off all bridal suites\n"
-            f"✦ First 2 side makeups FREE (worth ₹7,000) with any bridal booking\n"
-            f"✦ Up to 20% off on Engagement/Reception combos\n"
+            f"✦ First {free_sides} side makeups FREE (worth ₹7,000) with any bridal booking\n"
+            f"✦ Up to {combo_disc}% off on Engagement/Reception combos\n"
             f"Tell me your Wedding Date and target budget — I'll calculate your best authorized rate right now!\n"
             f"Or WhatsApp us: +91 {wa_number}"
         )
 
     # ── 2. BRIDAL INQUIRIES ──
     if any(w in msg_lower for w in ['bridal', 'wedding', 'shaadi', 'bride', 'dulhan']):
-        return (
-            f"Namaste! ✨ Here are our signature Bridal Suites:\n"
-            f"✦ Imperial Royal HD Suite — ₹35,000 (offer ₹24,500): HD base, cut-crease eyes, draping\n"
-            f"✦ Master Airbrush Suite — ₹45,000 (offer ₹31,500): TEMPTU 24-hr cry-proof base\n"
-            f"✦ Grand Royal Heritage Suite — ₹50,000 flat: bridal + engagement bundle\n"
-            f"✦ Privilege: first 2 side makeups completely FREE (₹0), next 2 at ₹2,500 each\n"
-            f"✦ Today's code {today_code} gives extra savings\n"
-            f"To reserve your date, WhatsApp +91 {wa_number} 💍"
-        )
+        lines = ["Namaste! ✨ Here are our signature Bridal Suites:"]
+        if pkgs:
+            for p in pkgs[:3]:
+                std_p = float(p.price) if p.price else 0.0
+                off_p = round(std_p * (100 - today_disc) / 100)
+                feats = ", ".join(p.get_features_list()[:2]) or "luxury bridal finish"
+                lines.append(f"✦ {p.name} — ₹{std_p:,.0f} (today ₹{off_p:,.0f}): {feats}")
+            if combo_flat:
+                lines.append(f"✦ Grand Royal Heritage Suite — ₹{combo_flat:,.0f} flat: bridal + engagement bundle")
+        else:
+            lines.extend([
+                "✦ Imperial Royal HD Suite — ₹35,000 (offer ₹24,500): HD base, cut-crease eyes, draping",
+                "✦ Master Airbrush Suite — ₹45,000 (offer ₹31,500): TEMPTU 24-hr cry-proof base",
+                f"✦ Grand Royal Heritage Suite — ₹{combo_flat:,.0f} flat: bridal + engagement bundle"
+            ])
+        lines.append(f"✦ Privilege: first {free_sides} side makeups completely FREE (₹0), next 2 at ₹{disc_sides_rate:,} each")
+        lines.append(f"✦ Today's code {today_code} gives extra {today_disc}% savings")
+        lines.append(f"To reserve your date, WhatsApp +91 {wa_number} 💍")
+        return "\n".join(lines)
 
     # ── 3. PRICING INQUIRIES ──
     if any(w in msg_lower for w in ['price', 'rate', 'cost', 'kitna', 'fees', 'charges', 'package', 'packages']):
-        return (
-            f"✨ Anshita Makeover Pricing Guide (standard / today's offer):\n"
-            f"✦ Imperial Royal HD Bridal — ₹35,000 / ₹24,500\n"
-            f"✦ Master Airbrush Bridal — ₹45,000 / ₹31,500\n"
-            f"✦ Engagement & Roka Glam — ₹18,000 / ₹12,600\n"
-            f"✦ Grand Royal Combo (bridal + engagement) — ₹50,000 flat\n"
-            f"✦ Side & family makeup — ₹2,500 subsidized · Academy Masterclass — ₹35,400\n"
-            f"✦ Extra {today_disc}% off today with code {today_code}\n"
-            f"Want a tailored quote? WhatsApp +91 {wa_number}"
-        )
+        lines = ["✨ Anshita Makeover Pricing Guide (standard / today's offer):"]
+        if pkgs:
+            for p in pkgs[:4]:
+                std_p = float(p.price) if p.price else 0.0
+                off_p = round(std_p * (100 - today_disc) / 100)
+                lines.append(f"✦ {p.name} — ₹{std_p:,.0f} / ₹{off_p:,.0f}")
+        else:
+            lines.extend([
+                "✦ Imperial Royal HD Bridal — ₹35,000 / ₹24,500",
+                "✦ Master Airbrush Bridal — ₹45,000 / ₹31,500",
+                "✦ Engagement & Roka Glam — ₹18,000 / ₹12,600"
+            ])
+        if combo_flat:
+            lines.append(f"✦ Grand Royal Combo (bridal + engagement) — ₹{combo_flat:,.0f} flat")
+        lines.append(f"✦ Side & family makeup — ₹{disc_sides_rate:,} subsidized · Academy Masterclass — ₹35,400")
+        lines.append(f"✦ Extra {today_disc}% off today with code {today_code}")
+        lines.append(f"Want a tailored quote? WhatsApp +91 {wa_number}")
+        return "\n".join(lines)
 
     if any(w in msg_lower for w in ['photo', 'photography', 'event', 'videography', 'camera']):
         return (f"📸 Anshita Signature Events & Photography:\n"
@@ -620,7 +686,7 @@ def fallback_chatbot(msg):
         return (
             f"🎉 Active offers at Anshita Makeover:\n"
             f"✦ Today's auto code {today_code}: extra {today_disc}% off\n"
-            f"✦ First 2 side makeups 100% FREE with any bridal booking\n"
+            f"✦ First {free_sides} side makeups 100% FREE with any bridal booking\n"
             f"Mention {today_code} when booking on WhatsApp +91 {wa_number} ✨"
         )
 
@@ -634,3 +700,4 @@ def fallback_chatbot(msg):
                 f"How may I help you — packages, pricing or booking? 💄")
 
     return f"Thank you for reaching out to Anshita Makeover ✨ For personalized help or bookings, WhatsApp our bridal concierge at +91 {wa_number}. We look forward to creating magic with you! 💍"
+

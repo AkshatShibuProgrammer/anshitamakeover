@@ -1,6 +1,6 @@
 from .common import get_site_settings, get_active_coupon
-from .public import home, academy, set_language, sinha_logo_studio
-from .chatbot import chatbot_api, gemini_chat, admin_ai_command, fallback_chatbot
+from .public import home, academy, travel_estimator, cart_page, chatbot_page, set_language, sinha_logo_studio
+from .chatbot import chatbot_api, gemini_chat, admin_ai_command, fallback_chatbot, admin_ai_status, get_gemini_api_key
 from .auth import admin_login, admin_logout_view, admin_portal
 from .coupons import get_coupon_api, admin_coupon_update
 from .services_pricing import (
@@ -15,11 +15,16 @@ __all__ = [
     'get_active_coupon',
     'home',
     'academy',
+    'travel_estimator',
+    'cart_page',
+    'chatbot_page',
     'set_language',
     'sinha_logo_studio',
     'chatbot_api',
     'gemini_chat',
     'admin_ai_command',
+    'admin_ai_status',
+    'get_gemini_api_key',
     'fallback_chatbot',
     'admin_login',
     'admin_logout_view',

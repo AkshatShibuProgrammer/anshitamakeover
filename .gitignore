@@ -17,6 +17,9 @@ ENV/
 gemini_api_key.txt
 openai_api_key.txt
 *api_key*.txt
+**/gemini_api_key.txt
+django/gemini_api_key.txt
+
 
 # Media uploads (optional if large, but keep templates & static)
 # uploads/

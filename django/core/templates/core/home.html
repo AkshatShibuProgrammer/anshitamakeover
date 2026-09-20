@@ -240,8 +240,12 @@
           <span style="font-size:1.4rem">🤖</span>
           <div>
             <h4 style="margin:0;padding:0;border:none;color:var(--gold)">Admin AI Co-Pilot</h4>
-            <small style="color:rgba(245,237,214,.5)">Powered by Google Gemini 2.5 Flash</small>
+            <small style="color:rgba(245,237,214,.5)">Powered by Google Gemini 2.0 Flash</small>
           </div>
+        </div>
+        <div id="adm-ai-status-badge" style="display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border-radius:20px;font-size:0.75rem;font-weight:600;margin-bottom:12px;background:rgba(234,179,8,0.12);color:#eab308;border:1px solid rgba(234,179,8,0.3)">
+          <span id="adm-ai-status-dot" style="width:8px;height:8px;border-radius:50%;background:#eab308;display:inline-block"></span>
+          <span id="adm-ai-status-text">Checking Gemini AI Status...</span>
         </div>
         <p style="font-size:.76rem;color:rgba(245,237,214,.7);line-height:1.5;margin-bottom:14px">
           Speak or type in plain English or Hindi. The AI will parse your request and <strong>automatically save changes directly into the live website database</strong>!
@@ -914,14 +918,38 @@
           
           <!-- Clean Pricing Presentation (Actual Booking Price + Crossed-Out Original MRP + Bundle Note) -->
           <div class="svc-split-price-box" style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:10px 0 14px">
-            <span class="svc-split-price-val" style="font-size:1.45rem;font-weight:700;color:var(--gold)">
+            {% if svc.has_offer and svc.offer_price < svc.price %}
+            <!-- When active coupon/offer applies -->
+            <div style="display:flex;align-items:baseline;gap:8px">
+              <span class="svc-split-price-val" style="font-size:1.55rem;font-weight:800;color:var(--gold)">
+                ₹{{ svc.offer_price|floatformat:0 }}
+              </span>
+              <span style="text-decoration:line-through;color:rgba(245,237,214,0.5);font-size:1.05rem" title="Standard Service Price">
+                ₹{{ svc.price|floatformat:0 }}
+              </span>
+            </div>
+            <span style="background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:700;letter-spacing:0.5px">
+              {{ svc.discount_percent }}% OFF (Save ₹{{ svc.saving|floatformat:0 }})
+            </span>
+            {% elif svc.discount_price and svc.discount_price > svc.price %}
+            <!-- Standard pricing with higher MRP discount comparison -->
+            <div style="display:flex;align-items:baseline;gap:8px">
+              <span class="svc-split-price-val" style="font-size:1.55rem;font-weight:800;color:var(--gold)">
+                ₹{{ svc.price|floatformat:0 }}
+              </span>
+              <span style="text-decoration:line-through;color:rgba(245,237,214,0.5);font-size:1.05rem" title="Original Standard MRP">
+                ₹{{ svc.discount_price|floatformat:0 }}
+              </span>
+            </div>
+            <span style="background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.35);color:var(--gold);padding:3px 9px;border-radius:12px;font-size:0.7rem;font-weight:700">
+              Special Studio Rate
+            </span>
+            {% else %}
+            <span class="svc-split-price-val" style="font-size:1.55rem;font-weight:800;color:var(--gold)">
               ₹{{ svc.price|floatformat:0 }}
             </span>
-            {% if svc.discount_price and svc.discount_price > svc.price %}
-            <span style="text-decoration:line-through;color:rgba(245,237,214,0.45);font-size:1.02rem" title="Standard Regular Rate">
-              ₹{{ svc.discount_price|floatformat:0 }}
-            </span>
             {% endif %}
+
             {% if svc.bundle_note %}
             <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.35);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600;letter-spacing:0.5px">
               {{ svc.bundle_note }}
@@ -943,9 +971,15 @@
           </div>
           {% endif %}
 
-          <div class="svc-split-actions" style="margin-top:20px">
-            <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20reserve%20{{ svc.title|urlencode }}." target="_blank" class="btn-wa" style="padding:11px 26px;font-size:0.78rem">
-              Reserve {{ svc.title }}
+          <div class="svc-split-actions" style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <button class="btn-p" onclick="AnshitaCart.addItem({id: 'svc-{{ svc.id }}', title: '{{ svc.title|escapejs }}', price: {% if svc.has_offer %}{{ svc.offer_price }}{% else %}{{ svc.price }}{% endif %}, originalPrice: {{ svc.discount_price|default:svc.price }}, category: '{{ svc.category }}', image: '{{ svc.display_image|escapejs }}'})" style="padding:10px 20px;font-size:0.75rem;cursor:pointer">
+              🛍️ {{ t.btn_add_to_cart|default:'Add to Cart' }}
+            </button>
+            <button class="btn-o" onclick="openServiceComboModal('{{ svc.id }}', '{{ svc.title|escapejs }}', {% if svc.has_offer %}{{ svc.offer_price }}{% else %}{{ svc.price }}{% endif %}, {{ svc.discount_price|default:svc.price }}, '{{ svc.category }}')" style="padding:10px 18px;font-size:0.75rem;cursor:pointer;border-color:rgba(212,175,55,0.45);color:var(--gold-l)">
+              👑 {{ t.btn_combo_privileges|default:'Combo Privileges & Savings ✦' }}
+            </button>
+            <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20reserve%20{{ svc.title|urlencode }}." target="_blank" class="btn-wa" style="padding:10px 18px;font-size:0.75rem">
+              💬 {{ t.btn_reserve|default:'Reserve' }}
             </a>
           </div>
         </div>
@@ -1044,12 +1078,12 @@
 
     <!-- LAYER 2: Filterable Masonry Real-Brides Gallery Grid -->
     <div class="gal-filters rev d2" style="margin-top:10px">
-      <button class="gf-btn active" onclick="filterGal('all')">All Disciplines</button>
-      <button class="gf-btn" onclick="filterGal('bridal')">Bridal Suites</button>
-      <button class="gf-btn" onclick="filterGal('engagement')">Engagement & Roka</button>
-      <button class="gf-btn" onclick="filterGal('hair')">Hair & Draping</button>
-      <button class="gf-btn" onclick="filterGal('nails')">Nail Artistry</button>
-      <button class="gf-btn" onclick="filterGal('party')">Party & Side Glam</button>
+      <button class="gf-btn active" onclick="filterGal('all')">{{ t.gf_all|default:'All Disciplines' }}</button>
+      <button class="gf-btn" onclick="filterGal('bridal')">{{ t.gf_bridal|default:'Bridal Suites' }}</button>
+      <button class="gf-btn" onclick="filterGal('engagement')">{{ t.gf_engagement|default:'Engagement & Roka' }}</button>
+      <button class="gf-btn" onclick="filterGal('hair')">{{ t.gf_hair|default:'Hair & Draping' }}</button>
+      <button class="gf-btn" onclick="filterGal('nails')">{{ t.gf_nails|default:'Nail Artistry' }}</button>
+      <button class="gf-btn" onclick="filterGal('party')">{{ t.gf_party|default:'Party & Side Glam' }}</button>
     </div>
 
     <div class="gal-grid rev d2">
@@ -1085,18 +1119,18 @@
     <!-- LAYER 3: Action Row & Comparison Triggers (Replacing in-page clutter with modal precision) -->
     <div class="gal-action-row rev d3">
       <div>
-        <h4 style="font-family:var(--font-h);font-size:1.15rem;color:#fff;margin-bottom:4px">Coverage & Technical Specifications</h4>
-        <p style="font-size:0.8rem;color:rgba(245,237,214,0.7)">Compare vanity kits, longevity, and techniques side-by-side or customize your wedding day package.</p>
+        <h4 style="font-family:var(--font-h);font-size:1.15rem;color:#fff;margin-bottom:4px">{{ t.gal_specs_title|default:'Coverage & Technical Specifications' }}</h4>
+        <p style="font-size:0.8rem;color:rgba(245,237,214,0.7)">{{ t.gal_specs_desc|default:'Compare vanity kits, longevity, and techniques side-by-side or customize your wedding day package.' }}</p>
       </div>
       <div class="gal-action-btns">
         <button class="btn-comp-trigger" onclick="openServiceCompareModal()">
-          Compare Studio Services
+          {{ t.btn_comp_services|default:'⚡ Compare Studio Services' }}
         </button>
         <button class="btn-comp-trigger" style="background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#000" onclick="openPackageCompareModal()">
-          Compare Bridal Suites
+          {{ t.btn_comp_suites|default:'⚖️ Compare Bridal Suites' }}
         </button>
         <a href="#packages" class="btn-comp-trigger" style="background:transparent;border-color:rgba(212,175,55,0.4)">
-          View All Suites ↓
+          {{ t.btn_view_suites|default:'View All Suites ↓' }}
         </a>
       </div>
     </div>
@@ -1345,6 +1379,22 @@
   </div>
 </div>
 
+<!-- ═══ MODAL 3: SERVICE COMBO PRIVILEGE & SAVINGS POPUP MODAL ═══ -->
+<div class="combo-modal-overlay" id="serviceComboModal" onclick="if(event.target===this)closeServiceComboModal()">
+  <div class="combo-modal-box">
+    <button class="combo-modal-close" onclick="closeServiceComboModal()" aria-label="Close Combo Privileges">✕</button>
+    <div class="combo-badge-top">👑 {{ t.combo_badge_title|default:'Bespoke Multi-Service Privileges' }}</div>
+    <h3 class="combo-modal-title" id="scmServiceTitle">Signature Service Combos</h3>
+    <p class="combo-modal-sub" id="scmServiceDesc">
+      Combine this signature service with other bridal events to unlock up to 32% bundled discounts and complimentary family makeups.
+    </p>
+
+    <div class="combo-tiers-grid" id="scmTiersGrid">
+      <!-- Dynamically filled with interactive combo options -->
+    </div>
+  </div>
+</div>
+
 <!-- ═══ CURATED WEDDING CELEBRATION PACKAGES (MULTI-SERVICE BUNDLES) ═══ -->
 <section id="packages" style="background:var(--dark);position:relative">
   <div class="sw">
@@ -1401,12 +1451,15 @@
             <li>Cry-Proof & Sweat-Proof Formulation (18+ Hours Longevity)</li>
           </ul>
 
-          <div class="pkg-bundle-actions">
+          <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-grand-royal', title: 'The Grand Royal Vivah Celebration Suite', price: 58000, originalPrice: 85000, category: 'bridal', isCombo: true, image: '{% static 'core/images/curated/maroon_20251109_191223_p30.jpg' %}'})">
+              🛍️ {{ t.btn_add_bundle_cart|default:'Add Bundle to Cart' }}
+            </button>
             <button onclick="openLookbook('maroon_bride')" class="pkg-bundle-btn sec">
               Explore Look
             </button>
-            <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20The%20Grand%20Royal%20Vivah%20Celebration%20Package%20(3-Event%20Suite%20%2B%202%20Free%20Sides%20for%20₹58,000)." target="_blank" class="pkg-bundle-btn primary">
-              Reserve Grand Vivah
+            <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20The%20Grand%20Royal%20Vivah%20Celebration%20Package%20(3-Event%20Suite%20%2B%202%20Free%20Sides%20for%20₹58,000)." target="_blank" class="pkg-bundle-btn sec" style="border-color:rgba(212,175,55,0.4)">
+              Reserve on WhatsApp
             </a>
           </div>
         </div>
@@ -1456,12 +1509,15 @@
             <li>Complimentary Touchup Kit with Custom Lip Vial</li>
           </ul>
 
-          <div class="pkg-bundle-actions">
+          <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-vivah-duo', title: 'Sacred Vivah & Reception Duo Suite', price: 45000, originalPrice: 60000, category: 'bridal', isCombo: true, image: '{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}'})">
+              🛍️ {{ t.btn_add_bundle_cart|default:'Add Bundle to Cart' }}
+            </button>
             <button onclick="openLookbook('cocktail')" class="pkg-bundle-btn sec">
               Explore Looks
             </button>
-            <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Sacred%20Vivah%20%26%20Reception%20Duo%20Package%20(₹45,000)." target="_blank" class="pkg-bundle-btn primary">
-              Reserve Vivah Duo
+            <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Sacred%20Vivah%20%26%20Reception%20Duo%20Package%20(₹45,000)." target="_blank" class="pkg-bundle-btn sec" style="border-color:rgba(212,175,55,0.4)">
+              Reserve on WhatsApp
             </a>
           </div>
         </div>
@@ -1511,12 +1567,15 @@
             <li>Gown, Sharara & Pastel Lehenga Draping Included</li>
           </ul>
 
-          <div class="pkg-bundle-actions">
+          <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-pre-wedding-trio', title: 'Pre-Wedding Rites & Festivities Trio', price: 34000, originalPrice: 47500, category: 'engagement', isCombo: true, image: '{% static 'core/images/curated/ig_post_DSrKrDHiLNPGzQHnwZkcRe3YUoC5fCc24nWZjQ0.jpg' %}'})">
+              🛍️ {{ t.btn_add_bundle_cart|default:'Add Bundle to Cart' }}
+            </button>
             <button onclick="openLookbook('engagement')" class="pkg-bundle-btn sec">
               Explore Looks
             </button>
-            <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Pre-Wedding%20Rites%20%26%20Festivities%20Trio%20(₹34,000)." target="_blank" class="pkg-bundle-btn primary">
-              Reserve Pre-Wedding Trio
+            <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Pre-Wedding%20Rites%20%26%20Festivities%20Trio%20(₹34,000)." target="_blank" class="pkg-bundle-btn sec" style="border-color:rgba(212,175,55,0.4)">
+              Reserve on WhatsApp
             </a>
           </div>
         </div>
@@ -1566,12 +1625,15 @@
             <li>Iron-free saree box pleating & dupatta security</li>
           </ul>
 
-          <div class="pkg-bundle-actions">
+          <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-family-ensemble', title: 'Royal Family & Bridesmaids Ensemble (4 Guests)', price: 19500, originalPrice: 26000, category: 'party', isCombo: true, image: '{% static 'core/images/curated/ig_post_DVTThv0CI_psJjhtWi0TP5npf_Crqxgeq7JBTE0.jpg' %}'})">
+              🛍️ {{ t.btn_add_bundle_cart|default:'Add Bundle to Cart' }}
+            </button>
             <button onclick="openLookbook('bridesmaids')" class="pkg-bundle-btn sec">
               Explore Looks
             </button>
-            <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Royal%20Family%20%26%20Bridesmaids%20Ensemble%20(4%20Persons%20for%20₹19,500)." target="_blank" class="pkg-bundle-btn primary">
-              Reserve Family Ensemble
+            <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Royal%20Family%20%26%20Bridesmaids%20Ensemble%20(4%20Persons%20for%20₹19,500)." target="_blank" class="pkg-bundle-btn sec" style="border-color:rgba(212,175,55,0.4)">
+              Reserve on WhatsApp
             </a>
           </div>
         </div>
@@ -1598,13 +1660,14 @@
     <div id="bundle-builder" class="bundle-builder-card rev d3">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
         <div>
-          <span class="gal-slide-badge">Bespoke Curation</span>
-          <h3 style="font-family:var(--font-h);font-size:1.6rem;color:#fff">Build Your Bespoke Look & Package</h3>
-          <p style="font-size:0.82rem;color:rgba(245,237,214,0.7)">Select multiple services to assemble your dream trousseau with live transparent pricing.</p>
+          <span class="gal-slide-badge">{{ t.bundle_badge|default:'Bespoke Curation' }}</span>
+          <h3 style="font-family:var(--font-h);font-size:1.6rem;color:#fff">{{ t.bundle_heading|default:'Build Your Bespoke Look & Package' }}</h3>
+          <p style="font-size:0.82rem;color:rgba(245,237,214,0.7)">{{ t.bundle_sub|default:'Select multiple services to assemble your dream trousseau with live transparent pricing.' }}</p>
         </div>
         <div style="text-align:right">
-          <span style="font-size:0.75rem;color:rgba(245,237,214,0.6);text-transform:uppercase;letter-spacing:1px">Bundle Total</span>
+          <span style="font-size:0.75rem;color:rgba(245,237,214,0.6);text-transform:uppercase;letter-spacing:1px">{{ t.bundle_total_label|default:'Bundle Total' }}</span>
           <div id="bundleTotalDisplay" style="font-size:1.8rem;font-weight:800;color:var(--gold)">₹0</div>
+          <div id="bundleSavingsBadge" style="display:none;font-size:0.72rem;background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;padding:2px 8px;border-radius:10px;font-weight:700;margin-top:4px"></div>
         </div>
       </div>
 
@@ -1664,92 +1727,22 @@
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid rgba(212,175,55,0.15);padding-top:16px">
+      <!-- Bundle Promo Coupon Box -->
+      <div style="display:flex;align-items:center;gap:10px;margin-top:16px;background:rgba(212,175,55,0.06);padding:10px 14px;border-radius:12px;border:1px dashed rgba(212,175,55,0.25)">
+        <span style="font-size:0.75rem;font-weight:700;color:var(--gold);letter-spacing:0.5px">🎟️ {{ t.coupon_label_text|default:'VIP Privilege Coupon Code' }}:</span>
+        <input type="text" id="bundleCouponInput" placeholder="{% if coupon %}{{ coupon.code }}{% elif default_coupon %}{{ default_coupon.code }}{% else %}ENTER CODE{% endif %}" value="{% if coupon %}{{ coupon.code }}{% elif default_coupon %}{{ default_coupon.code }}{% endif %}" style="background:rgba(0,0,0,0.3);border:1px solid rgba(212,175,55,0.4);border-radius:6px;color:var(--gold-l);padding:4px 10px;font-size:0.75rem;font-weight:700;text-transform:uppercase;max-width:140px;outline:none">
+        <button type="button" onclick="applyBundleCoupon()" style="background:var(--gold);color:#000;border:none;border-radius:6px;padding:5px 12px;font-size:0.72rem;font-weight:700;cursor:pointer">
+          {{ t.coupon_apply_btn|default:'Apply' }}
+        </button>
+        <span id="bundleCouponStatus" style="font-size:0.72rem;color:#22c55e;font-weight:600"></span>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid rgba(212,175,55,0.15);padding-top:16px;margin-top:12px">
         <div id="bundleSummaryText" style="font-size:0.8rem;color:rgba(245,237,214,0.7)">
-          Select services above to configure your custom package.
+          {{ t.bundle_empty_hint|default:'Select services above to configure your custom package.' }}
         </div>
         <button class="btn-p" onclick="sendBundleToWhatsApp()" style="padding:10px 22px">
-          Reserve Custom Bundle on WhatsApp →
-        </button>
-      </div>
-    </div>
-
-    <!-- ═══ TRAVEL & CITY DISTANCE SURCHARGE CALCULATOR WIDGET ═══ -->
-    <div id="travel-widget" class="travel-widget-box rev d3">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
-        <span style="color:var(--gold);font-size:1.1rem;line-height:1">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-        </span>
-        <div>
-          <h3 style="font-family:var(--font-h);font-size:1.5rem;color:#fff">Pan-India Travel & Outstation Distance Estimator</h3>
-          <p style="font-size:0.8rem;color:rgba(245,237,214,0.7)">Select your wedding destination city to check distance from Jabalpur studio and approximate travel fee.</p>
-        </div>
-      </div>
-
-      <div class="travel-widget-inputs">
-        <div>
-          <label style="font-size:0.75rem;letter-spacing:1px;color:var(--gold);text-transform:uppercase;font-weight:700">Select Wedding City / Destination</label>
-          <select id="travelCitySelect" class="calc-select" onchange="calculateTravelEstimate()" style="margin-top:6px;width:100%">
-            <option value="Jabalpur" selected>Jabalpur (Studio Flagship · 0 Km)</option>
-            <option value="Katni">Katni (~95 Km)</option>
-            <option value="Damoh">Damoh (~105 Km)</option>
-            <option value="Narsinghpur">Narsinghpur (~85 Km)</option>
-            <option value="Mandla">Mandla (~95 Km)</option>
-            <option value="Seoni">Seoni (~140 Km)</option>
-            <option value="Sagar">Sagar (~165 Km)</option>
-            <option value="Satna">Satna (~180 Km)</option>
-            <option value="Rewa">Rewa (~220 Km)</option>
-            <option value="Bhopal">Bhopal (~295 Km)</option>
-            <option value="Indore">Indore (~485 Km)</option>
-            <option value="Ujjain">Ujjain (~450 Km)</option>
-            <option value="Gwalior">Gwalior (~460 Km)</option>
-            <option value="Nagpur">Nagpur (~275 Km)</option>
-            <option value="Raipur">Raipur (~350 Km)</option>
-            <option value="Varanasi">Varanasi (~450 Km)</option>
-            <option value="Prayagraj">Prayagraj (~360 Km)</option>
-            <option value="Lucknow">Lucknow (~520 Km)</option>
-            <option value="Delhi">Delhi / NCR (~820 Km)</option>
-            <option value="Jaipur">Jaipur (~690 Km)</option>
-            <option value="Udaipur">Udaipur (~780 Km)</option>
-            <option value="Mumbai">Mumbai (~980 Km)</option>
-            <option value="Pune">Pune (~920 Km)</option>
-            <option value="Kolkata">Kolkata (~1050 Km)</option>
-            <option value="Bengaluru">Bengaluru (~1320 Km)</option>
-            <option value="Other">Other Unlisted City / Destination...</option>
-          </select>
-        </div>
-
-        <div>
-          <label style="font-size:0.75rem;letter-spacing:1px;color:var(--gold);text-transform:uppercase;font-weight:700">Days of Service</label>
-          <select id="travelDaysSelect" class="calc-select" onchange="calculateTravelEstimate()" style="margin-top:6px;width:100%">
-            <option value="1" selected>1 Day</option>
-            <option value="2">2 Days</option>
-            <option value="3">3 Days (Multi-Function)</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Live Travel Estimate Output -->
-      <div id="travelResultPanel" class="travel-result-panel">
-        <span id="travelZoneBadge" class="travel-badge-pill travel-badge-local">📍 Studio Local Territory</span>
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-          <div>
-            <div style="font-size:0.85rem;color:var(--cream);font-weight:600" id="travelDistanceText">Distance from Jabalpur: 0 Km</div>
-            <div style="font-size:0.75rem;color:rgba(245,237,214,0.65);margin-top:2px" id="travelPolicyNotice">Within Jabalpur territory — Zero Outstation Surcharge.</div>
-          </div>
-          <div style="text-align:right">
-            <span style="font-size:0.7rem;color:rgba(245,237,214,0.6);text-transform:uppercase">Approx Travel Fee</span>
-            <div id="travelFeeDisplay" style="font-size:1.5rem;font-weight:800;color:var(--gold)">₹0 (Free Local)</div>
-          </div>
-        </div>
-        <p style="font-size:0.72rem;color:rgba(245,237,214,0.55);margin-top:10px;border-top:1px dashed rgba(212,175,55,0.2);padding-top:8px" id="travelTermsNotice">
-          *Note: For outstation destinations outside Jabalpur, return travel tickets (train/flight) and hotel stay with meals for artist + 1 assistant are provided by the client.
-        </p>
-      </div>
-
-      <div style="text-align:right;margin-top:14px">
-        <button class="btn-wa" onclick="sendTravelQuoteWhatsApp()" style="padding:9px 18px;font-size:0.78rem">
-          Connect on WhatsApp for Exact Travel Quotation →
+          {{ t.btn_reserve_bundle|default:'Reserve Custom Bundle on WhatsApp →' }}
         </button>
       </div>
     </div>
@@ -1772,7 +1765,7 @@
         <div class="out-tier-card">
           <span class="out-tier-badge">Option 1 · Studio Suite</span>
           <h4>Studio Jabalpur Experience</h4>
-          <p>Get styled at Anshita's flagship private bridal salon with zero travel surcharge, dedicated vanity lighting, and full pre-bridal facilities.</p>
+          <p>Get styled at Anshita's dedicated bridal studio in Jabalpur with zero travel surcharge, professional vanity lighting, and personalized care.</p>
           <ul class="out-tier-points">
             <li>Standard Bridal Package Rates Apply</li>
             <li>Zero Conveyance / Travel Fee</li>
@@ -1783,10 +1776,10 @@
         <div class="out-tier-card">
           <span class="out-tier-badge">Option 2 · Local Venue</span>
           <h4>Jabalpur & MP Venue On-Site Visit</h4>
-          <p>Anshita and senior team arrive at your wedding hotel, farmhouse, or banquet with full professional vanity setup.</p>
+          <p>Anshita and assistant arrive at your wedding hotel, farmhouse, or banquet with full professional vanity setup.</p>
           <ul class="out-tier-points">
             <li>Base Bridal Package Rate</li>
-            <li>Flat ₹2,500 Local Conveyance per day</li>
+            <li>Flat ₹1,000 Local Conveyance per day</li>
             <li>On-Time Morning & Evening Ritual Readiness</li>
           </ul>
         </div>
@@ -1794,12 +1787,12 @@
         <div class="out-tier-card" style="border-color:rgba(212,175,55,.45);background:linear-gradient(135deg,rgba(38,16,22,.6),rgba(14,7,12,.9))">
           <span class="out-tier-badge" style="background:var(--gold);color:var(--black);font-weight:700">Option 3 · Pan-India Destination</span>
           <h4>Pan-India Destination Wedding</h4>
-          <p>Anshita travels nationwide (Udaipur, Jaipur, Goa, Mumbai, Delhi, Kolkata, etc.) to deliver royalty for your multi-day ceremonies.</p>
+          <p>Anshita travels to your wedding venue across Madhya Pradesh and India (Udaipur, Jaipur, Goa, Bhopal, Raipur, etc.) with dedicated attention.</p>
           <ul class="out-tier-points">
-            <li>₹18,000 / Day Outstation Booking Surcharge</li>
+            <li>Realistic ₹5,000 / Day Outstation Booking Surcharge</li>
             <li>Return Flights/AC Train & Airport Cabs borne by Client</li>
-            <li>4/5-Star Hotel Accommodation & Meals for Artist + 1 Assistant</li>
-            <li>Minimum Booking Requirement: Bride + 2 or 3 Side Makeups</li>
+            <li>Hotel Accommodation & Meals for Artist + 1 Assistant</li>
+            <li>Minimum Booking Requirement: Bride + 2 Side Makeups</li>
           </ul>
         </div>
       </div>
@@ -1814,8 +1807,8 @@
           <label class="calc-label" for="calc-loc">Venue Location Type</label>
           <select class="calc-select" id="calc-loc" onchange="updateCalc()">
             <option value="studio">Studio Jabalpur (No Travel Fee)</option>
-            <option value="local">Jabalpur / MP Local Venue Visit (+₹2,500 conveyance/day)</option>
-            <option value="outstation" selected>Pan-India Destination Wedding (+₹18,000/day outstation fee)</option>
+            <option value="local">Jabalpur / MP Local Venue Visit (+₹1,000 conveyance/day)</option>
+            <option value="outstation" selected>Pan-India Destination Wedding (+₹5,000/day outstation fee)</option>
           </select>
         </div>
 
@@ -1861,6 +1854,16 @@
               <option value="8">8 Persons (Grand Entourage)</option>
             </select>
           </div>
+        </div>
+
+        <!-- Calculator Coupon Code Input -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;background:rgba(212,175,55,0.06);padding:10px 14px;border-radius:10px;border:1px dashed rgba(212,175,55,0.25)">
+          <span style="font-size:0.75rem;font-weight:700;color:var(--gold);letter-spacing:0.5px">🎟️ {{ t.coupon_label_text|default:'VIP Privilege Coupon Code' }}:</span>
+          <input type="text" id="calcCouponInput" placeholder="{% if coupon %}{{ coupon.code }}{% elif default_coupon %}{{ default_coupon.code }}{% else %}ENTER CODE{% endif %}" value="{% if coupon %}{{ coupon.code }}{% elif default_coupon %}{{ default_coupon.code }}{% endif %}" style="background:rgba(0,0,0,0.3);border:1px solid rgba(212,175,55,0.4);border-radius:6px;color:var(--gold-l);padding:4px 10px;font-size:0.75rem;font-weight:700;text-transform:uppercase;max-width:140px;outline:none">
+          <button type="button" onclick="applyCalcCoupon()" style="background:var(--gold);color:#000;border:none;border-radius:6px;padding:5px 12px;font-size:0.72rem;font-weight:700;cursor:pointer">
+            {{ t.coupon_apply_btn|default:'Apply' }}
+          </button>
+          <span id="calcCouponStatus" style="font-size:0.72rem;color:#22c55e;font-weight:600"></span>
         </div>
 
         <!-- Realtime Result Display -->
@@ -3005,6 +3008,90 @@ window.OFFER_CONFIG = {
   rulesActive: {% if site.offer_rules_active %}true{% else %}false{% endif %}
 };
 
+// Global active coupon store
+window.APPLIED_COUPON = {
+  code: "{% if coupon %}{{ coupon.code }}{% elif default_coupon %}{{ default_coupon.code }}{% else %}GLAM50{% endif %}",
+  discount: parseFloat("{% if coupon %}{{ coupon.discount }}{% elif default_coupon %}{{ default_coupon.discount }}{% else %}50{% endif %}") || 50,
+  type: "{% if coupon %}percent{% elif default_coupon %}{{ default_coupon.type|default:'percent' }}{% else %}percent{% endif %}"
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Sync inputs with active coupon and trigger live calculations
+  if(window.APPLIED_COUPON && window.APPLIED_COUPON.code){
+    const calcInp = document.getElementById('calcCouponInput');
+    if(calcInp && !calcInp.value) calcInp.value = window.APPLIED_COUPON.code;
+    const calcStat = document.getElementById('calcCouponStatus');
+    if(calcStat) {
+      calcStat.textContent = `✓ ${window.APPLIED_COUPON.code} applied (${window.APPLIED_COUPON.discount}% OFF)`;
+      calcStat.style.color = '#22c55e';
+    }
+
+    const bundleInp = document.getElementById('bundleCouponInput');
+    if(bundleInp && !bundleInp.value) bundleInp.value = window.APPLIED_COUPON.code;
+    const bundleStat = document.getElementById('bundleCouponStatus');
+    if(bundleStat) {
+      bundleStat.textContent = `✓ ${window.APPLIED_COUPON.code} applied (${window.APPLIED_COUPON.discount}% OFF)`;
+      bundleStat.style.color = '#22c55e';
+    }
+
+    if(typeof updateCalc === 'function') updateCalc();
+    if(typeof updateBundleDisplay === 'function') updateBundleDisplay();
+  }
+});
+
+async function verifyAndApplyCoupon(code, targetStatusId, onAppliedCallback){
+  if(!code || !code.trim()){
+    if(targetStatusId){
+      const el = document.getElementById(targetStatusId);
+      if(el) { el.textContent = 'Please enter a coupon code'; el.style.color = '#ef4444'; }
+    }
+    return;
+  }
+  const statusEl = document.getElementById(targetStatusId);
+  if(statusEl){
+    statusEl.textContent = 'Verifying...';
+    statusEl.style.color = 'var(--gold)';
+  }
+  try {
+    const res = await fetch(`/api/coupon/?code=${encodeURIComponent(code.trim())}`);
+    const data = await res.json();
+    if(data.valid){
+      window.APPLIED_COUPON = {
+        code: data.code,
+        discount: parseFloat(data.discount) || 0,
+        type: data.discount_type || 'percent'
+      };
+      if(statusEl){
+        statusEl.textContent = `✓ ${data.code} applied (${data.discount}% OFF)`;
+        statusEl.style.color = '#22c55e';
+      }
+      if(typeof onAppliedCallback === 'function') onAppliedCallback();
+    } else {
+      if(statusEl){
+        statusEl.textContent = `✗ ${data.error || 'Invalid Coupon'}`;
+        statusEl.style.color = '#ef4444';
+      }
+    }
+  } catch(e){
+    if(statusEl){
+      statusEl.textContent = 'Verification error';
+      statusEl.style.color = '#ef4444';
+    }
+  }
+}
+
+function applyCalcCoupon(){
+  const inp = document.getElementById('calcCouponInput');
+  const code = inp ? inp.value : '';
+  verifyAndApplyCoupon(code, 'calcCouponStatus', updateCalc);
+}
+
+function applyBundleCoupon(){
+  const inp = document.getElementById('bundleCouponInput');
+  const code = inp ? inp.value : '';
+  verifyAndApplyCoupon(code, 'bundleCouponStatus', updateBundleDisplay);
+}
+
 function updateCalc(){
   const locEl = document.getElementById('calc-loc');
   const pkgEl = document.getElementById('calc-pkg');
@@ -3038,10 +3125,10 @@ function updateCalc(){
   let locFee = 0;
   let locBreakdown = '';
   if(loc === 'outstation'){
-    locFee = 18000 * days;
+    locFee = 5000 * days;
     locBreakdown = `Outstation Surcharge (${days} Day${days>1?'s':''}): ₹${locFee.toLocaleString('en-IN')}`;
   } else if(loc === 'local'){
-    locFee = 2500 * days;
+    locFee = 1000 * days;
     locBreakdown = `Local Conveyance (${days} Day${days>1?'s':''}): ₹${locFee.toLocaleString('en-IN')}`;
   } else {
     locBreakdown = `Studio Jabalpur: ₹0 travel surcharge`;
@@ -3098,19 +3185,38 @@ function updateCalc(){
     totalSavings += 8000; // standard 35k + 18k + 5k = 58k value
   }
 
-  const grandTotal = bridalFee + comboFee + locFee + sideFee;
+  let grandTotal = bridalFee + comboFee + locFee + sideFee;
+
+  // Dynamic Coupon Discount Application
+  let couponDiscountAmount = 0;
+  if(window.APPLIED_COUPON && window.APPLIED_COUPON.discount > 0){
+    if(window.APPLIED_COUPON.type === 'percent'){
+      couponDiscountAmount = Math.round((grandTotal * window.APPLIED_COUPON.discount) / 100);
+    } else {
+      couponDiscountAmount = Math.min(grandTotal, window.APPLIED_COUPON.discount);
+    }
+    grandTotal = Math.max(0, grandTotal - couponDiscountAmount);
+    totalSavings += couponDiscountAmount;
+  }
 
   document.getElementById('calc-total-display').innerText = '₹' + grandTotal.toLocaleString('en-IN');
   
   let parts = [pkgBreakdown];
   if(locBreakdown) parts.push(locBreakdown);
   if(sideBreakdown) parts.push(sideBreakdown);
+  if(couponDiscountAmount > 0){
+    parts.push(`VIP Coupon (${window.APPLIED_COUPON.code}): -₹${couponDiscountAmount.toLocaleString('en-IN')}`);
+  }
   document.getElementById('calc-breakdown-text').innerText = parts.join(' · ');
 
   if(savingsBadge){
     if(totalSavings > 0){
       savingsBadge.style.display = 'inline-block';
-      savingsBadge.innerText = `✦ Total VIP Privilege Savings: ₹${totalSavings.toLocaleString('en-IN')} Applied!`;
+      let badgeText = `✦ Total VIP Privilege Savings: ₹${totalSavings.toLocaleString('en-IN')} Applied!`;
+      if(couponDiscountAmount > 0){
+        badgeText += ` (Includes ${window.APPLIED_COUPON.discount}% with Code: ${window.APPLIED_COUPON.code})`;
+      }
+      savingsBadge.innerText = badgeText;
     } else {
       savingsBadge.style.display = 'none';
     }
@@ -3135,12 +3241,18 @@ function sendCalculatedQuote(){
   const engCb = document.getElementById('calc-add-engagement');
   const hasEng = engCb && engCb.checked ? 'Yes (with Combo Privilege Discount)' : 'No';
 
+  let couponMsg = '';
+  if(window.APPLIED_COUPON && window.APPLIED_COUPON.discount > 0){
+    couponMsg = `• VIP Coupon Applied: ${window.APPLIED_COUPON.code} (${window.APPLIED_COUPON.discount}% OFF)\n`;
+  }
+
   const msg = `Namaste Anshita Makeover!\nI would like to check availability and book a consultation with current Privilege Offers:\n` +
     `• Location: ${locText}\n` +
     `• Suite: ${pkgText}\n` +
     `• Add Engagement & Roka: ${hasEng}\n` +
     `• Event Days: ${days} Day(s)\n` +
     `• Side Makeups: ${sides} Person(s) (2 FREE + next 2 @ discounted rate)\n` +
+    couponMsg +
     `• Estimated Budget: ${total}\n\n` +
     `My Wedding Dates: [Please specify dates here]`;
 
@@ -3413,6 +3525,37 @@ async function executeAdminAiCommand(){
   }
 }
 
+async function checkAdminAiStatus() {
+  const badge = document.getElementById('adm-ai-status-badge');
+  const dot = document.getElementById('adm-ai-status-dot');
+  const text = document.getElementById('adm-ai-status-text');
+  if(!badge || !dot || !text) return;
+  try {
+    const res = await fetch('/api/admin/ai-status/');
+    if(!res.ok) throw new Error('Status failed');
+    const data = await res.json();
+    if(data.live) {
+      badge.style.background = 'rgba(34,197,94,0.12)';
+      badge.style.borderColor = 'rgba(34,197,94,0.35)';
+      badge.style.color = '#4ade80';
+      dot.style.background = '#22c55e';
+      dot.style.boxShadow = '0 0 8px #22c55e';
+      text.textContent = `● Gemini AI Live (${data.model}) · Loaded via ${data.source.toUpperCase()}`;
+    } else {
+      badge.style.background = 'rgba(239,68,68,0.12)';
+      badge.style.borderColor = 'rgba(239,68,68,0.35)';
+      badge.style.color = '#f87171';
+      dot.style.background = '#ef4444';
+      dot.style.boxShadow = 'none';
+      text.textContent = '○ Gemini Key Missing · Fallback Mode Active (Set GEMINI_API_KEY)';
+    }
+  } catch(e) {
+    text.textContent = '○ AI Status Unavailable';
+  }
+}
+document.addEventListener('DOMContentLoaded', checkAdminAiStatus);
+
+
 // ═══ 3-LAYER GALLERY SHOWCASE CAROUSEL ═══
 let currentGalSlide = 0;
 const totalGalSlides = 6;
@@ -3507,10 +3650,34 @@ function toggleBundleItem(el){
 function updateBundleDisplay(){
   const totalDisplay = document.getElementById('bundleTotalDisplay');
   const summaryEl = document.getElementById('bundleSummaryText');
-  const total = selectedBundleItems.reduce((sum, i) => sum + i.price, 0);
+  const savingsBadge = document.getElementById('bundleSavingsBadge');
+  const rawTotal = selectedBundleItems.reduce((sum, i) => sum + i.price, 0);
   
+  let finalTotal = rawTotal;
+  let savings = 0;
+  if(window.APPLIED_COUPON && window.APPLIED_COUPON.discount > 0 && rawTotal > 0){
+    if(window.APPLIED_COUPON.type === 'percent'){
+      savings = Math.round((rawTotal * window.APPLIED_COUPON.discount) / 100);
+    } else {
+      savings = Math.min(rawTotal, window.APPLIED_COUPON.discount);
+    }
+    finalTotal = Math.max(0, rawTotal - savings);
+  }
+
   if(totalDisplay){
-    totalDisplay.textContent = '₹' + total.toLocaleString('en-IN');
+    if(savings > 0){
+      totalDisplay.innerHTML = `<span style="text-decoration:line-through;font-size:1.1rem;color:rgba(255,255,255,0.4);margin-right:6px">₹${rawTotal.toLocaleString('en-IN')}</span> ₹${finalTotal.toLocaleString('en-IN')}`;
+    } else {
+      totalDisplay.textContent = '₹' + finalTotal.toLocaleString('en-IN');
+    }
+  }
+  if(savingsBadge){
+    if(savings > 0){
+      savingsBadge.style.display = 'inline-block';
+      savingsBadge.textContent = `✦ Saved ₹${savings.toLocaleString('en-IN')} (${window.APPLIED_COUPON.discount}% OFF Coupon ${window.APPLIED_COUPON.code})!`;
+    } else {
+      savingsBadge.style.display = 'none';
+    }
   }
   if(summaryEl){
     if(selectedBundleItems.length === 0){
@@ -3527,9 +3694,17 @@ function sendBundleToWhatsApp(){
     alert('Please select at least one service in the Bundle Builder.');
     return;
   }
-  const total = selectedBundleItems.reduce((sum, i) => sum + i.price, 0);
+  const rawTotal = selectedBundleItems.reduce((sum, i) => sum + i.price, 0);
+  let finalTotal = rawTotal;
+  let couponText = '';
+  if(window.APPLIED_COUPON && window.APPLIED_COUPON.discount > 0){
+    const disc = window.APPLIED_COUPON.discount;
+    const savings = Math.round((rawTotal * disc) / 100);
+    finalTotal = rawTotal - savings;
+    couponText = `%0A• VIP Coupon Applied: ${window.APPLIED_COUPON.code} (-₹${savings.toLocaleString('en-IN')} / ${disc}% OFF)`;
+  }
   const itemsText = selectedBundleItems.map(i => `• ${i.name} (₹${i.price.toLocaleString('en-IN')})`).join('%0A');
-  const text = `Namaste Anshita Makeover!%0AI would like to reserve a bespoke customized look package:%0A%0A${itemsText}%0A%0AEstimated Total: ₹${total.toLocaleString('en-IN')}%0APlease let me know the availability and procedure to book.`;
+  const text = `Namaste Anshita Makeover!%0AI would like to reserve a bespoke customized look package:%0A%0A${itemsText}${couponText}%0A%0AEstimated Total: ₹${finalTotal.toLocaleString('en-IN')}%0APlease let me know the availability and procedure to book.`;
   window.open(`https://wa.me/{{ whatsapp }}?text=${text}`, '_blank');
 }
 
@@ -3618,6 +3793,121 @@ function sendTravelQuoteWhatsApp(){
   const text = `Namaste Anshita Makeover!%0AI would like to inquire about wedding makeup booking in *${city}* (Approx ${dist} Km from Jabalpur) for ${days} day(s).%0APlease provide available dates and exact conveyance / travel terms.`;
   window.open(`https://wa.me/{{ whatsapp }}?text=${text}`, '_blank');
 }
+
+/* ── Interactive Service Combo Privileges Popup Engine ── */
+window.openServiceComboModal = function(svcId, title, price, origPrice, category) {
+  const modal = document.getElementById('serviceComboModal');
+  const titleEl = document.getElementById('scmServiceTitle');
+  const descEl = document.getElementById('scmServiceDesc');
+  const gridEl = document.getElementById('scmTiersGrid');
+  if(!modal || !gridEl) return;
+
+  titleEl.textContent = `Combo Privileges: ${title}`;
+  descEl.textContent = `Combine ${title} (Standalone: ₹${price.toLocaleString('en-IN')}) with companion bridal events to unlock up to 32% bundled savings and complimentary family courtesies.`;
+
+  // Dynamically tailor combo pairings based on service category
+  let combos = [];
+  if (category === 'bridal') {
+    combos = [
+      {
+        name: '👑 Sacred Vivah & Reception High-Glam Duo',
+        desc: 'Combine with Evening Reception Statement Glamour + 2 Distinct Hair Architectures',
+        perks: ['18% Additional Bundle Discount', 'Free 1 Side Makeup for Mother/Sister', 'Deluxe Touchup Kit & Custom Lip Decant'],
+        standaloneRate: price + 15000,
+        bundleRate: Math.round((price + 15000) * 0.82),
+        savingsTag: 'Save 18% Bundled',
+        comboTitle: `${title} + Reception Glam Duo`
+      },
+      {
+        name: '✨ Grand Trousseau: Bridal + Engagement + Sangeet Trio',
+        desc: 'Complete 3-Event Bridal Suite covering Ring Ceremony, Sangeet Night, and Main Wedding Day',
+        perks: ['30% Off Standalone Rates', '2 Free Side Makeups for Mother & Sister (Value ₹13,000)', 'Free Nail Extensions Set & Mathapatti Pinning'],
+        standaloneRate: price + 12600 + 15000,
+        bundleRate: Math.round((price + 12600 + 15000) * 0.70),
+        savingsTag: 'Save 30% VIP Privilege',
+        comboTitle: `${title} + 3-Event Grand Trousseau Suite`
+      }
+    ];
+  } else if (category === 'engagement') {
+    combos = [
+      {
+        name: '💍 Roka + Wedding Day Royal Bridal Bundle',
+        desc: `Pair ${title} with our Imperial Royal HD Wedding Suite`,
+        perks: ['Save ₹8,000 Combined', 'Free 2 Family Makeups on Wedding Day', 'Double Dupatta Pinning Included'],
+        standaloneRate: price + 24500,
+        bundleRate: Math.round((price + 24500) * 0.80),
+        savingsTag: 'Save 20% Combined',
+        comboTitle: `${title} + Imperial Bridal Suite`
+      },
+      {
+        name: '💅 Ring Ceremony & Bridal Nail Artistry Combo',
+        desc: 'Pair with bespoke Swarovski Crystal Gel Extensions & Express Hydra-Facial',
+        perks: ['Save ₹2,500 on Nail Extension Set', 'Free Nail Repair Kit', 'Free Shimmer Lip Glaze'],
+        standaloneRate: price + 4000,
+        bundleRate: price + 2500,
+        savingsTag: 'Free Nail Art Addon',
+        comboTitle: `${title} + Nail Couture Combo`
+      }
+    ];
+  } else {
+    // Family / Side makeup / Hair / Beauty combos
+    combos = [
+      {
+        name: '👭 Entourage Suite: 4 Guests Combo',
+        desc: 'Book for 4 bridesmaids or family members together',
+        perks: ['4th Guest Styled Complimentary (Free)', 'Synchronized Team Styling — Zero Delays', 'Iron-free Saree Box Pleating for all 4 Guests'],
+        standaloneRate: price * 4,
+        bundleRate: price * 3,
+        savingsTag: '4th Guest FREE',
+        comboTitle: `${title} (4 Guests Entourage Ensemble)`
+      },
+      {
+        name: '👑 Bride + Entourage Combo Addon',
+        desc: `Add ${title} to a Bridal Suite booking`,
+        perks: ['Special Entourage Privilege Rate', 'Complimentary False Lash Application', 'Matching Theme Coordination'],
+        standaloneRate: price,
+        bundleRate: Math.round(price * 0.75),
+        savingsTag: 'Save 25% with Bride',
+        comboTitle: `${title} (Bridal Companion Rate)`
+      }
+    ];
+  }
+
+  let html = '';
+  combos.forEach(c => {
+    html += `
+      <div class="combo-tier-card">
+        <div class="ctc-hdr">
+          <span class="ctc-name">${c.name}</span>
+          <span class="ctc-savings-tag">${c.savingsTag}</span>
+        </div>
+        <p class="ctc-desc">${c.desc}</p>
+        <ul class="ctc-perks">
+          ${c.perks.map(p => `<li><span>✦</span> ${p}</li>`).join('')}
+        </ul>
+        <div class="ctc-pricing-row">
+          <div class="ctc-rates">
+            <span class="ctc-bundle-rate">₹${c.bundleRate.toLocaleString('en-IN')}</span>
+            <span class="ctc-orig-rate">₹${c.standaloneRate.toLocaleString('en-IN')}</span>
+          </div>
+          <button class="ctc-add-btn" onclick="AnshitaCart.addItem({id: 'combo-${svcId}-${Date.now()}', title: '${c.comboTitle.replace(/'/g, "\\'")}', price: ${c.bundleRate}, originalPrice: ${c.standaloneRate}, category: 'bridal', isCombo: true}); closeServiceComboModal();">
+            🛍️ Add Combo to Cart
+          </button>
+        </div>
+      </div>
+    `;
+  });
+  gridEl.innerHTML = html;
+
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeServiceComboModal = function() {
+  const modal = document.getElementById('serviceComboModal');
+  if(modal) modal.classList.remove('open');
+  document.body.style.overflow = '';
+};
 
 // Initialize calculator and showcase on page load
 document.addEventListener('DOMContentLoaded', () => {
