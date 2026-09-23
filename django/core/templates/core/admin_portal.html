@@ -1628,6 +1628,38 @@ body.mode-full-editor .visualizer-pane { display: none; }
           </div>
         </div>
 
+        <div class="admin-card" style="border:1px solid rgba(212,175,55,0.35); background:linear-gradient(145deg,rgba(212,175,55,0.04),var(--bg-card));">
+          <div class="card-header-row">
+            <div>
+              <h3 style="color:var(--gold);">🌐 Studio Social Media & Official Channels</h3>
+              <p style="font-size:0.75rem; color:rgba(245,237,214,0.6); margin-top:2px;">
+                Directly configure official Instagram, WhatsApp, YouTube, and Facebook URLs. These update live on footer icons, floating buttons, and contact links.
+              </p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>WhatsApp Number (with country code, e.g. 919876543210)</label>
+              <input class="form-input" id="soc-whatsapp" value="{{ site.whatsapp_number|default:'919717585098' }}" placeholder="919876543210">
+            </div>
+            <div class="form-group">
+              <label>Instagram URL</label>
+              <input class="form-input" id="soc-instagram" value="{{ site.instagram_url|default:'https://www.instagram.com/anshitamakeover' }}" placeholder="https://instagram.com/...">
+            </div>
+            <div class="form-group">
+              <label>YouTube Channel URL</label>
+              <input class="form-input" id="soc-youtube" value="{{ site.youtube_url|default:'https://youtube.com/@anshitamakeover' }}" placeholder="https://youtube.com/@...">
+            </div>
+            <div class="form-group">
+              <label>Facebook Page URL</label>
+              <input class="form-input" id="soc-facebook" value="{{ site.facebook_url|default:'https://facebook.com/anshitamakeover' }}" placeholder="https://facebook.com/...">
+            </div>
+          </div>
+          <div style="margin-top:14px;">
+            <button class="btn-primary" onclick="saveSocialLinks()">💾 Save Official Social Links</button>
+          </div>
+        </div>
+
         <div class="admin-card">
           <div class="card-header-row">
             <h3>Quick Actions</h3>
@@ -2358,6 +2390,32 @@ async function saveCoursePrice(id, val){
   });
   showToast('🎓 Course rate updated.');
   refreshVisualizer();
+}
+
+async function saveSocialLinks(){
+  const whatsapp = document.getElementById('soc-whatsapp')?.value.trim();
+  const instagram = document.getElementById('soc-instagram')?.value.trim();
+  const youtube = document.getElementById('soc-youtube')?.value.trim();
+  const facebook = document.getElementById('soc-facebook')?.value.trim();
+  
+  const res = await fetch('/api/admin/price/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrf() },
+    body: JSON.stringify({
+      type: 'social_links',
+      whatsapp_number: whatsapp,
+      instagram_url: instagram,
+      youtube_url: youtube,
+      facebook_url: facebook
+    })
+  });
+  const data = await res.json();
+  if(data.ok){
+    showToast('🌐 Official social links saved and synced!');
+    refreshVisualizer();
+  } else {
+    showToast('❌ Failed to update social links.');
+  }
 }
 
 function calcAddonROI(){

@@ -6,6 +6,8 @@ class SiteSettings(models.Model):
     """Global site settings controllable by admin"""
     whatsapp_number = models.CharField(max_length=20, default='917879223442')
     instagram_url = models.URLField(default='https://www.instagram.com/anshitamakeover21/')
+    youtube_url = models.URLField(default='https://www.youtube.com/@anshitamakeover21', blank=True)
+    facebook_url = models.URLField(default='https://www.facebook.com/anshitamakeover21', blank=True)
     
     # Coupon settings
     coupon_active = models.BooleanField(default=True)

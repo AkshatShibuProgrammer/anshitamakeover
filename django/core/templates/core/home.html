@@ -1002,78 +1002,64 @@
       <p class="ss">Experience the pinnacle of Indian bridal artistry. Seamlessly explore our signature service disciplines, view real transformations, and compare bespoke coverage.</p>
     </div>
 
-    <!-- LAYER 1: Dynamic Auto-Rotating Hero Service Showcase Carousel -->
-    <div class="gal-showcase-hero rev d1" id="galShowcaseHero">
-      <!-- Slide 1: Sacred Vivah Royal Crimson Bride -->
-      <div class="gal-slide active" data-slide="0" onclick="openLookbook('royal_crimson')" style="cursor:pointer">
-        <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah Royal Crimson Bride" class="gal-slide-img">
-        <div class="gal-slide-overlay"></div>
-        <div class="gal-slide-caption">
-          <span class="gal-slide-badge">Signature Discipline 01 · 4 Angles</span>
-          <h3>Imperial Bridal Couture & Airbrush Artistry</h3>
+    <!-- LAYER 1: Expansive 3-Photo Featured Couture Showcase -->
+    <div class="gal-featured-trio rev d1" id="galFeaturedTrio">
+      <!-- Card 1: Sacred Vivah Royal Crimson Bride -->
+      <div class="gal-trio-card" onclick="triggerGalleryCardDeal(() => openLookbook('royal_crimson'))">
+        <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah Royal Crimson Bride" class="gal-trio-img">
+        <div class="gal-trio-overlay"></div>
+        <div class="gal-trio-badge-top">
+          <span class="gal-trio-pill">✦ Imperial Crimson Vivah</span>
+          <span class="gal-trio-view-btn">Full Lookbook ↗</span>
+        </div>
+        <div class="gal-trio-content">
+          <h3>Sacred Vivah Royal Crimson Bride</h3>
           <p>Micro-buffed HD & atomized TEMPTU airbrush bases ensuring 18+ hour cry-proof and sweat resilience for royal pheras.</p>
-        </div>
-      </div>
-      <!-- Slide 2: Christian Bridal Couture Suite -->
-      <div class="gal-slide" data-slide="1" onclick="openLookbook('christian_ivory')" style="cursor:pointer">
-        <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Christian Bridal Couture Suite" class="gal-slide-img">
-        <div class="gal-slide-overlay"></div>
-        <div class="gal-slide-caption">
-          <span class="gal-slide-badge">Signature Discipline 02 · Couture Suite</span>
-          <h3>Christian Bridal Couture & Cathedral Veil</h3>
-          <p>Bespoke church ceremony styling featuring luminous porcelain HD airbrush, off-shoulder ivory gown framing, and multi-tier cathedral veil anchoring.</p>
-        </div>
-      </div>
-      <!-- Slide 3: Imperial Fuchsia & Emerald Palace Bride (Recreated 4K) -->
-      <div class="gal-slide" data-slide="2" onclick="openLookbook('fuchsia_palace')" style="cursor:pointer">
-        <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia & Emerald Palace Bride" class="gal-slide-img">
-        <div class="gal-slide-overlay"></div>
-        <div class="gal-slide-caption">
-          <span class="gal-slide-badge">Signature Discipline 03 · 4K Recreated</span>
-          <h3>Imperial Fuchsia Silk & Emerald Palace Suite</h3>
-          <p>Majestic heritage styling with rose-dew HD radiance, gilded cut-crease eye artistry, and Zambian emerald choker settings.</p>
-        </div>
-      </div>
-      <!-- Slide 4: Palace Maroon Velvet Heritage (Telegram DSLR Shoot) -->
-      <div class="gal-slide" data-slide="3" onclick="openLookbook('maroon_velvet')" style="cursor:pointer">
-        <img src="{% static 'core/images/curated/dsc09702.jpg' %}?v=2" alt="Palace Maroon Velvet Heritage" class="gal-slide-img">
-        <div class="gal-slide-overlay"></div>
-        <div class="gal-slide-caption">
-          <span class="gal-slide-badge">Authentic DSLR Shoot · 6 Angles</span>
-          <h3>Palace Maroon Velvet Heritage Couture</h3>
-          <p>Deep wine velvet lehenga, hand-embroidered gold zardozi, antique polki nath, and double royal veil architecture.</p>
-        </div>
-      </div>
-      <!-- Slide 5: Ring Ceremony Sheer Maroon Veil Bride -->
-      <div class="gal-slide" data-slide="4" onclick="openLookbook('maroon_veil')" style="cursor:pointer">
-        <img src="{% static 'core/images/curated/ig_post_DRP0QCODVfD.jpg' %}" alt="Ring Ceremony Sheer Maroon Veil Bride" class="gal-slide-img">
-        <div class="gal-slide-overlay"></div>
-        <div class="gal-slide-caption">
-          <span class="gal-slide-badge">Signature Discipline 05 · Ring Ceremony</span>
-          <h3>Ring Ceremony & Sheer Maroon Veil Radiance</h3>
-          <p>Enchanting sheer gold-bordered veil framing, warm smokey cut-crease eyes, and delicate maang tikka alignment.</p>
-        </div>
-      </div>
-      <!-- Slide 6: Traditional Kolkata Banarasi & Chandan Art -->
-      <div class="gal-slide" data-slide="5" onclick="openLookbook('bengali_heritage')" style="cursor:pointer">
-        <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Traditional Bengali Mukut & Chandan" class="gal-slide-img">
-        <div class="gal-slide-overlay"></div>
-        <div class="gal-slide-caption">
-          <span class="gal-slide-badge">Cultural Specialty Heritage · 4 Photos</span>
-          <h3>Traditional Kolkata Banarasi & Chandan Art</h3>
-          <p>Intricate forehead sandalwood artwork, artisanal glitter cut-crease eye makeup, and pure silk Banarasi draping with sacred alta grace.</p>
+          <span class="gal-trio-action"><span>🔍 View 4 Perspectives</span> · <span>Open Picasa Viewer ↗</span></span>
         </div>
       </div>
 
-      <!-- Navigation Dots -->
-      <div class="gal-hero-dots">
-        <span class="gal-hero-dot active" onclick="setGalHeroSlide(0)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(1)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(2)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(3)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(4)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(5)"></span>
+      <!-- Card 2: Palace Maroon Velvet Heritage -->
+      <div class="gal-trio-card" onclick="triggerGalleryCardDeal(() => openLookbook('maroon_velvet'))">
+        <img src="{% static 'core/images/curated/dsc09702.jpg' %}?v=2" alt="Palace Maroon Velvet Heritage" class="gal-trio-img">
+        <div class="gal-trio-overlay"></div>
+        <div class="gal-trio-badge-top">
+          <span class="gal-trio-pill">✦ Palace Velvet Heritage</span>
+          <span class="gal-trio-view-btn">Full Lookbook ↗</span>
+        </div>
+        <div class="gal-trio-content">
+          <h3>Palace Maroon Velvet Heritage Couture</h3>
+          <p>Deep wine velvet lehenga, hand-embroidered gold zardozi, antique polki nath, and double royal veil architecture.</p>
+          <span class="gal-trio-action"><span>🔍 View 6 Authentic Angles</span> · <span>Open Picasa Viewer ↗</span></span>
+        </div>
       </div>
+
+      <!-- Card 3: Traditional Kolkata Banarasi & Chandan Art -->
+      <div class="gal-trio-card" onclick="triggerGalleryCardDeal(() => openLookbook('bengali_heritage'))">
+        <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Traditional Bengali Mukut & Chandan" class="gal-trio-img">
+        <div class="gal-trio-overlay"></div>
+        <div class="gal-trio-badge-top">
+          <span class="gal-trio-pill">✦ Bengali Mukut & Alta</span>
+          <span class="gal-trio-view-btn">Full Lookbook ↗</span>
+        </div>
+        <div class="gal-trio-content">
+          <h3>Traditional Kolkata Banarasi & Chandan Art</h3>
+          <p>Intricate forehead sandalwood artwork, artisanal glitter cut-crease eye makeup, and pure silk Banarasi draping.</p>
+          <span class="gal-trio-action"><span>🔍 View 4 Ceremonial Photos</span> · <span>Open Picasa Viewer ↗</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Luxury CTA Banner: See More Photos & Card Deal Picasa Viewer -->
+    <div class="gal-see-more-banner rev d2">
+      <div class="gal-see-more-info">
+        <h4>✦ Complete Bridal & Haute Couture Lookbook Archive</h4>
+        <p>Explore all {{ look_groups|length|default:'12' }}+ curated real-wedding transformation portfolios with multi-angle perspective navigation.</p>
+      </div>
+      <button class="gal-see-more-btn" onclick="triggerGalleryCardDeal(() => openPeekGallery(0))">
+        <span>✨ See More Photos (Picasa Viewer)</span>
+        <span style="font-size:1.1rem">↗</span>
+      </button>
     </div>
 
     <!-- LAYER 2: Filterable Masonry Real-Brides Gallery Grid & Dynamic Deal Controls -->
@@ -1137,6 +1123,128 @@
         <a href="#packages" class="btn-comp-trigger" style="background:transparent;border-color:rgba(212,175,55,0.4)">
           {{ t.btn_view_suites|default:'View All Suites ↓' }}
         </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HAUTE COUTURE REELS & STUDIO MOTION (UNDER GALLERY) ═══ -->
+<section id="reels" style="background:var(--black);position:relative;padding:75px 0 65px;border-top:1px solid rgba(212,175,55,.15);border-bottom:1px solid rgba(212,175,55,.15);overflow:hidden">
+  <div class="editorial-watermark" style="top:22%">STUDIO MOTION REELS</div>
+  <div class="sw">
+    <div class="rev" style="text-align:center">
+      <p class="sl" style="justify-content:center">✦ REAL BRIDAL ARTISTRY IN MOTION ✦</p>
+      <h2 class="sh" style="text-align:center">Bridal Reels & Studio Motion</h2>
+      <div class="gdiv" style="margin:18px auto"></div>
+      <p class="ss" style="margin:0 auto">Experience authentic behind-the-scenes transformations, sacred paan leaf rituals, and genuine bridal smiles captured in high definition.</p>
+    </div>
+
+    <div class="reels-grid">
+      <!-- Dynamically Added Admin Media (Instagram Reels / YouTube Videos) -->
+      {% for m in media_reels %}
+      <div class="reel-card reel-item-{{ m.id }} rev d1" id="media-reel-{{ m.id }}" data-media-id="{{ m.id }}" onclick="openReelModal('{% if m.video_file %}{{ m.video_file.url }}{% elif m.embed_code %}{{ m.embed_code }}{% else %}{{ m.external_url }}{% endif %}', '{{ m.title|escapejs }}', '{{ m.caption|escapejs }}', '{{ m.display_thumb }}', '{{ m.media_type }}', '{{ m.external_url|escapejs }}')">
+        <div class="reel-thumb-wrap">
+          <img src="{{ m.display_thumb }}" alt="{{ m.title }}" class="reel-thumb">
+          <div class="reel-play-btn"><span>▶</span></div>
+          <div class="reel-badge">{% if m.media_type == 'youtube' %}YOUTUBE{% elif m.media_type == 'instagram' %}INSTAGRAM{% else %}MOTION{% endif %}</div>
+          <div class="reel-views">{{ m.views_count }} Views</div>
+        </div>
+        <div class="reel-info">
+          <h4>{{ m.title }}</h4>
+          <p>{{ m.caption|truncatewords:14 }}</p>
+          <span class="reel-link-text">Watch {% if m.media_type == 'youtube' %}YouTube Video{% elif m.media_type == 'instagram' %}Instagram Reel{% else %}Video{% endif %} ↗</span>
+        </div>
+      </div>
+      {% endfor %}
+
+      <!-- Reel 1: Instagram Live Paan Leaf Reveal (Dap4JkvKL1E) -->
+      <div class="reel-card rev d1" onclick="openReelModal('{% static 'core/videos/ig_video_Dap4JkvKL1E.mp4' %}', 'Sacred Betel Leaf Reveal — Instagram Spotlight', 'Authentic Shubho Drishti reveal featured on Instagram @anshitamakeover21 with glowing bridal complexion and red alta hands.', '{% static 'core/images/curated/ig_reel_Dap4JkvKL1E.jpg' %}', 'instagram', 'https://www.instagram.com/p/Dap4JkvKL1E/')">
+        <div class="reel-thumb-wrap">
+          <img src="{% static 'core/images/curated/ig_reel_Dap4JkvKL1E.jpg' %}" alt="Instagram Paan Leaf Reel" class="reel-thumb">
+          <div class="reel-play-btn"><span>▶</span></div>
+          <div class="reel-badge">INSTAGRAM SPOTLIGHT</div>
+          <div class="reel-views">28.7K+ Views</div>
+        </div>
+        <div class="reel-info">
+          <h4>Sacred Reveal Spotlight — Bengali Bride</h4>
+          <p>Viral Instagram reel: sacred Subho Drishti moment and intricate forehead chandan.</p>
+          <span class="reel-link-text">Watch Instagram Reel ↗</span>
+        </div>
+      </div>
+
+      <!-- Reel 2: Instagram Live Bridal Reel (DWwjKABgtXH) -->
+      <div class="reel-card rev d2" onclick="openReelModal('{% static 'core/videos/ig_video_DWwjKABgtXH.mp4' %}', 'Studio Touch-up & Signature Bridal Artistry', 'Anshita adding the finishing touches to a radiant bride wearing a velvet bridal ensemble with fine floral backdrop.', '{% static 'core/images/curated/ig_reel_DWwjKABgtXH.jpg' %}', 'instagram', 'https://www.instagram.com/p/DWwjKABgtXH/')">
+        <div class="reel-thumb-wrap">
+          <img src="{% static 'core/images/curated/ig_reel_DWwjKABgtXH.jpg' %}" alt="Instagram Bridal Reel" class="reel-thumb">
+          <div class="reel-play-btn"><span>▶</span></div>
+          <div class="reel-badge">INSTAGRAM REEL</div>
+          <div class="reel-views">14.2K+ Views</div>
+        </div>
+        <div class="reel-info">
+          <h4>Live Studio Touch-up — Signature Look</h4>
+          <p>Published on @anshitamakeover21: precision contouring & bridal lip sculpting.</p>
+          <span class="reel-link-text">Watch Instagram Reel ↗</span>
+        </div>
+      </div>
+
+      <!-- Reel 3: Royal Crimson Bridal Couture (DQ9YYAUjKFW) -->
+      <div class="reel-card rev d3" onclick="openReelModal('https://www.instagram.com/p/DQ9YYAUjKFW/', 'Crimson Royal Couture — Modern Indian Bride', 'Rich crimson embroidery, gold temple mathapatti, and dewy bridal glass skin by Master Artist Anshita.', '{% static 'core/images/curated/ig_reel_DQ9YYAUjKFW.jpg' %}', 'instagram', 'https://www.instagram.com/p/DQ9YYAUjKFW/')">
+        <div class="reel-thumb-wrap">
+          <img src="{% static 'core/images/curated/ig_reel_DQ9YYAUjKFW.jpg' %}" alt="Crimson Royal Couture" class="reel-thumb">
+          <div class="reel-play-btn"><span>▶</span></div>
+          <div class="reel-badge">BRIDAL COUTURE</div>
+          <div class="reel-views">33.4K+ Views</div>
+        </div>
+        <div class="reel-info">
+          <h4>Crimson Royal Couture — Golden Hour Glow</h4>
+          <p>Regal bridal radiance with signature smokey eyes and bespoke dupatta styling.</p>
+          <span class="reel-link-text">Watch Instagram Reel ↗</span>
+        </div>
+      </div>
+
+      <!-- Reel 4: Anshita in Studio Action (Telegram Masterpiece WA0177 with Serene Music) -->
+      <div class="reel-card rev d4" onclick="openReelModal('{% static 'core/videos/VID-20250804-WA0177_music.mp4' %}', 'Anshita Master Stroke — Studio Bridal Artistry', 'Founder Anshita creating an authentic bridal transformation in studio. Precision chandan forehead artwork, sculpted eye definition, and flawless long-lasting base.', '{% static 'core/images/curated/anshita_artistry_brush_action.jpg' %}')">
+        <div class="reel-thumb-wrap">
+          <img src="{% static 'core/images/curated/anshita_artistry_brush_action.jpg' %}" alt="Anshita in Studio Action" class="reel-thumb">
+          <div class="reel-play-btn"><span>▶</span></div>
+          <div class="reel-badge">STUDIO MASTERPIECE</div>
+          <div class="reel-views">18.4K+ Views</div>
+        </div>
+        <div class="reel-info">
+          <h4>Studio Master Stroke — Bridal Transformation</h4>
+          <p>Behind-the-scenes artistry: sculpting flawless base & traditional chandan art.</p>
+          <span class="reel-link-text">▶ Watch Studio Video Reel</span>
+        </div>
+      </div>
+
+      <!-- Reel 5: Royal Maroon Velvet Bride (Telegram 4K Video 20251109 Muted Clean) -->
+      <div class="reel-card rev d5" onclick="openReelModal('{% static 'core/videos/royal_velvet_bride_muted.mp4' %}', 'Imperial Royal Bride — Maroon Velvet Splendour', 'Regal deep maroon velvet bridal lehenga, heavy gold polki temple jewellery, winged eyes, and majestic poise.', '{% static 'core/images/royal_maroon_bride.jpg' %}')">
+        <div class="reel-thumb-wrap">
+          <img src="{% static 'core/images/royal_maroon_bride.jpg' %}" alt="Imperial Royal Velvet Bride" class="reel-thumb">
+          <div class="reel-play-btn"><span>▶</span></div>
+          <div class="reel-badge">4K CINEMATIC</div>
+          <div class="reel-views">31.8K+ views</div>
+        </div>
+        <div class="reel-info">
+          <h4>Imperial Velvet Bride — Royal Motion</h4>
+          <p>High-definition velvet bridal couture, polki jewellery, and timeless poise.</p>
+          <span class="reel-link-text">▶ Watch 4K Bridal Reel</span>
+        </div>
+      </div>
+
+      <!-- Reel 6: Haute Couture Eye Artistry & Glitter Masterclass (40s with Palace Music) -->
+      <div class="reel-card rev d6" onclick="openReelModal('{% static 'core/videos/eyes_makeup_40s.mp4' %}', 'Haute Couture Eye Artistry — Master Eye Definition', 'Sculpted winged smokey eye, micro-glitter lids, and forehead chandan precision by Founder Anshita with serene palace symphony.', '{% static 'core/images/curated/eyes_makeup_thumb.jpg' %}', 'video_file', 'https://www.instagram.com/anshitamakeover21/')">
+        <div class="reel-thumb-wrap">
+          <img src="{% static 'core/images/curated/eyes_makeup_thumb.jpg' %}" alt="Haute Couture Eye Artistry" class="reel-thumb">
+          <div class="reel-play-btn"><span>▶</span></div>
+          <div class="reel-badge">👁️ EYE ARTISTRY</div>
+          <div class="reel-views">👁 26.5K+ views</div>
+        </div>
+        <div class="reel-info">
+          <h4>Haute Couture Eye Artistry — Studio Focus</h4>
+          <p>40-second high-definition masterclass: sculpted glitter eye definition & bridal glow.</p>
+          <span class="reel-link-text">▶ Watch Eye Artistry Reel</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1994,129 +2102,7 @@
   </div>
 </section>
 
-<!-- ═══ HAUTE COUTURE REELS & STUDIO MOTION ═══ -->
-<section id="reels" style="background:var(--black);position:relative;padding:75px 0 65px;border-top:1px solid rgba(212,175,55,.15);border-bottom:1px solid rgba(212,175,55,.15);overflow:hidden">
-  <div class="editorial-watermark" style="top:22%">STUDIO MOTION REELS</div>
-  <div class="sw">
-    <div class="rev" style="text-align:center">
-      <p class="sl" style="justify-content:center">✦ REAL BRIDAL ARTISTRY IN MOTION ✦</p>
-      <h2 class="sh" style="text-align:center">Bridal Reels & Studio Motion</h2>
-      <div class="gdiv" style="margin:18px auto"></div>
-      <p class="ss" style="margin:0 auto">Experience authentic behind-the-scenes transformations, sacred paan leaf rituals, and genuine bridal smiles captured in high definition.</p>
-    </div>
-
-    <div class="reels-grid">
-      <!-- Dynamically Added Admin Media (Instagram Reels / YouTube Videos) -->
-      {% for m in media_reels %}
-      <div class="reel-card reel-item-{{ m.id }} rev d1" id="media-reel-{{ m.id }}" data-media-id="{{ m.id }}" onclick="openReelModal('{% if m.video_file %}{{ m.video_file.url }}{% elif m.embed_code %}{{ m.embed_code }}{% else %}{{ m.external_url }}{% endif %}', '{{ m.title|escapejs }}', '{{ m.caption|escapejs }}', '{{ m.display_thumb }}', '{{ m.media_type }}', '{{ m.external_url|escapejs }}')">
-        <div class="reel-thumb-wrap">
-          <img src="{{ m.display_thumb }}" alt="{{ m.title }}" class="reel-thumb">
-          <div class="reel-play-btn"><span>▶</span></div>
-          <div class="reel-badge">{% if m.media_type == 'youtube' %}YOUTUBE{% elif m.media_type == 'instagram' %}INSTAGRAM{% else %}MOTION{% endif %}</div>
-          <div class="reel-views">{{ m.views_count }} Views</div>
-        </div>
-        <div class="reel-info">
-          <h4>{{ m.title }}</h4>
-          <p>{{ m.caption|truncatewords:14 }}</p>
-          <span class="reel-link-text">Watch {% if m.media_type == 'youtube' %}YouTube Video{% elif m.media_type == 'instagram' %}Instagram Reel{% else %}Video{% endif %} ↗</span>
-        </div>
-      </div>
-      {% endfor %}
-
-      <!-- Reel 1: Instagram Live Paan Leaf Reveal (Dap4JkvKL1E) -->
-      <div class="reel-card rev d1" onclick="openReelModal('{% static 'core/videos/ig_video_Dap4JkvKL1E.mp4' %}', 'Sacred Betel Leaf Reveal — Instagram Spotlight', 'Authentic Shubho Drishti reveal featured on Instagram @anshitamakeover21 with glowing bridal complexion and red alta hands.', '{% static 'core/images/curated/ig_reel_Dap4JkvKL1E.jpg' %}', 'instagram', 'https://www.instagram.com/p/Dap4JkvKL1E/')">
-        <div class="reel-thumb-wrap">
-          <img src="{% static 'core/images/curated/ig_reel_Dap4JkvKL1E.jpg' %}" alt="Instagram Paan Leaf Reel" class="reel-thumb">
-          <div class="reel-play-btn"><span>▶</span></div>
-          <div class="reel-badge">INSTAGRAM SPOTLIGHT</div>
-          <div class="reel-views">28.7K+ Views</div>
-        </div>
-        <div class="reel-info">
-          <h4>Sacred Reveal Spotlight — Bengali Bride</h4>
-          <p>Viral Instagram reel: sacred Subho Drishti moment and intricate forehead chandan.</p>
-          <span class="reel-link-text">Watch Instagram Reel ↗</span>
-        </div>
-      </div>
-
-      <!-- Reel 2: Instagram Live Bridal Reel (DWwjKABgtXH) -->
-      <div class="reel-card rev d2" onclick="openReelModal('{% static 'core/videos/ig_video_DWwjKABgtXH.mp4' %}', 'Studio Touch-up & Signature Bridal Artistry', 'Anshita adding the finishing touches to a radiant bride wearing a velvet bridal ensemble with fine floral backdrop.', '{% static 'core/images/curated/ig_reel_DWwjKABgtXH.jpg' %}', 'instagram', 'https://www.instagram.com/p/DWwjKABgtXH/')">
-        <div class="reel-thumb-wrap">
-          <img src="{% static 'core/images/curated/ig_reel_DWwjKABgtXH.jpg' %}" alt="Instagram Bridal Reel" class="reel-thumb">
-          <div class="reel-play-btn"><span>▶</span></div>
-          <div class="reel-badge">INSTAGRAM REEL</div>
-          <div class="reel-views">14.2K+ Views</div>
-        </div>
-        <div class="reel-info">
-          <h4>Live Studio Touch-up — Signature Look</h4>
-          <p>Published on @anshitamakeover21: precision contouring & bridal lip sculpting.</p>
-          <span class="reel-link-text">Watch Instagram Reel ↗</span>
-        </div>
-      </div>
-
-      <!-- Reel 3: Royal Crimson Bridal Couture (DQ9YYAUjKFW) -->
-      <div class="reel-card rev d3" onclick="openReelModal('https://www.instagram.com/p/DQ9YYAUjKFW/', 'Crimson Royal Couture — Modern Indian Bride', 'Rich crimson embroidery, gold temple mathapatti, and dewy bridal glass skin by Master Artist Anshita.', '{% static 'core/images/curated/ig_reel_DQ9YYAUjKFW.jpg' %}', 'instagram', 'https://www.instagram.com/p/DQ9YYAUjKFW/')">
-        <div class="reel-thumb-wrap">
-          <img src="{% static 'core/images/curated/ig_reel_DQ9YYAUjKFW.jpg' %}" alt="Crimson Royal Couture" class="reel-thumb">
-          <div class="reel-play-btn"><span>▶</span></div>
-          <div class="reel-badge">BRIDAL COUTURE</div>
-          <div class="reel-views">33.4K+ Views</div>
-        </div>
-        <div class="reel-info">
-          <h4>Crimson Royal Couture — Golden Hour Glow</h4>
-          <p>Regal bridal radiance with signature smokey eyes and bespoke dupatta styling.</p>
-          <span class="reel-link-text">Watch Instagram Reel ↗</span>
-        </div>
-      </div>
-
-      <!-- Reel 4: Anshita in Studio Action (Telegram Masterpiece WA0177 with Serene Music) -->
-      <div class="reel-card rev d4" onclick="openReelModal('{% static 'core/videos/VID-20250804-WA0177_music.mp4' %}', 'Anshita Master Stroke — Studio Bridal Artistry', 'Founder Anshita creating an authentic bridal transformation in studio. Precision chandan forehead artwork, sculpted eye definition, and flawless long-lasting base.', '{% static 'core/images/curated/anshita_artistry_brush_action.jpg' %}')">
-        <div class="reel-thumb-wrap">
-          <img src="{% static 'core/images/curated/anshita_artistry_brush_action.jpg' %}" alt="Anshita in Studio Action" class="reel-thumb">
-          <div class="reel-play-btn"><span>▶</span></div>
-          <div class="reel-badge">STUDIO MASTERPIECE</div>
-          <div class="reel-views">18.4K+ Views</div>
-        </div>
-        <div class="reel-info">
-          <h4>Studio Master Stroke — Bridal Transformation</h4>
-          <p>Behind-the-scenes artistry: sculpting flawless base & traditional chandan art.</p>
-          <span class="reel-link-text">▶ Watch Studio Video Reel</span>
-        </div>
-      </div>
-
-      <!-- Reel 5: Royal Maroon Velvet Bride (Telegram 4K Video 20251109 Muted Clean) -->
-      <div class="reel-card rev d5" onclick="openReelModal('{% static 'core/videos/royal_velvet_bride_muted.mp4' %}', 'Imperial Royal Bride — Maroon Velvet Splendour', 'Regal deep maroon velvet bridal lehenga, heavy gold polki temple jewellery, winged eyes, and majestic poise.', '{% static 'core/images/royal_maroon_bride.jpg' %}')">
-        <div class="reel-thumb-wrap">
-          <img src="{% static 'core/images/royal_maroon_bride.jpg' %}" alt="Imperial Royal Velvet Bride" class="reel-thumb">
-          <div class="reel-play-btn"><span>▶</span></div>
-          <div class="reel-badge">4K CINEMATIC</div>
-          <div class="reel-views">31.8K+ views</div>
-        </div>
-        <div class="reel-info">
-          <h4>Imperial Velvet Bride — Royal Motion</h4>
-          <p>High-definition velvet bridal couture, polki jewellery, and timeless poise.</p>
-          <span class="reel-link-text">▶ Watch 4K Bridal Reel</span>
-        </div>
-      </div>
-
-      <!-- Reel 6: Haute Couture Eye Artistry & Glitter Masterclass (40s with Palace Music) -->
-      <div class="reel-card rev d6" onclick="openReelModal('{% static 'core/videos/eyes_makeup_40s.mp4' %}', 'Haute Couture Eye Artistry — Master Eye Definition', 'Sculpted winged smokey eye, micro-glitter lids, and forehead chandan precision by Founder Anshita with serene palace symphony.', '{% static 'core/images/curated/eyes_makeup_thumb.jpg' %}', 'video_file', 'https://www.instagram.com/anshitamakeover21/')">
-        <div class="reel-thumb-wrap">
-          <img src="{% static 'core/images/curated/eyes_makeup_thumb.jpg' %}" alt="Haute Couture Eye Artistry" class="reel-thumb">
-          <div class="reel-play-btn"><span>▶</span></div>
-          <div class="reel-badge">👁️ EYE ARTISTRY</div>
-          <div class="reel-views">👁 26.5K+ views</div>
-        </div>
-        <div class="reel-info">
-          <h4>Haute Couture Eye Artistry — Studio Focus</h4>
-          <p>40-second high-definition masterclass: sculpted glitter eye definition & bridal glow.</p>
-          <span class="reel-link-text">▶ Watch Eye Artistry Reel</span>
-        </div>
-      </div>
-    </div>
-  </div>
 </section>
-
-<!-- Gallery was relocated directly following Services as part of the editorial architecture overhaul -->
 
 <!-- ═══ ABOUT THE COUTURIER (INTERACTIVE EDITORIAL CARD) ═══ -->
 <section id="about" style="background:var(--black)">
@@ -2127,27 +2113,38 @@
       <div class="gdiv" style="margin:18px auto"></div>
     </div>
 
-    <!-- Editorial Compact About Card -->
-    <div class="about-card-wrap rev">
-      <div class="about-card-avatar">
-        <img src="{% static 'core/images/anshita_front.jpg' %}" alt="Anshita — Founder & Couturier">
+    <!-- Editorial Elevated About Spread -->
+    <div class="about-card-wrap rev" style="position:relative; overflow:hidden;">
+      <div style="position:absolute; top:-40px; right:-40px; width:160px; height:160px; background:radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%); border-radius:50%; pointer-events:none;"></div>
+      
+      <div class="about-card-avatar" style="width:130px; height:130px; border-width:2px; box-shadow:0 0 30px rgba(212,175,55,0.35);">
+        <img src="{% static 'core/images/anshita_front.jpg' %}" alt="Anshita — Founder & Master Couturier">
       </div>
+
       <div class="about-card-info">
-        <h3>{{ t.about_card_title|default:'Anshita — Founder & Couturier' }}</h3>
-        <p>
-          {{ t.about_bio1|default:"Anshita is one of India's most celebrated bridal couturiers and makeup artists, renowned for harmonizing timeless Indian regal aesthetics with contemporary luxury techniques." }}
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <span style="font-size:0.68rem; letter-spacing:2px; color:var(--gold); text-transform:uppercase; font-weight:700;">✦ Master Bridal Couturier & Founder</span>
+          <span style="background:rgba(212,175,55,0.15); border:1px solid rgba(212,175,55,0.4); color:var(--gold-l); font-size:0.62rem; font-weight:800; padding:2px 8px; border-radius:10px;">8+ Yrs Artistry</span>
+        </div>
+        <h3 style="font-family:var(--font-h); font-size:1.65rem; color:#FFFFFF; margin-bottom:10px; line-height:1.2;">{{ t.about_card_title|default:'Anshita — The Visionary Couturier' }}</h3>
+        <p style="color:rgba(245,237,214,0.82); font-size:0.9rem; line-height:1.75; margin-bottom:16px; max-width:640px;">
+          {{ t.about_bio1|default:"Trained under world-renowned international beauty academies, Anshita reimagines Indian bridal luxury by harmonizing traditional royal heritage draping, sacred chandan artistry, and cry-proof 18-hour HD Airbrush formulations for brides across India." }}
         </p>
         <div class="about-card-tags">
-          <span class="about-pill">✦ 8+ Years Mastery</span>
-          <span class="about-pill">✦ 500+ Celebrated Brides</span>
-          <span class="about-pill">✦ Pan-India Destination Services</span>
-          <span class="about-pill">✦ Certified Educator</span>
+          <span class="about-pill">✦ 500+ Sacred Vivah Brides</span>
+          <span class="about-pill">✦ Pan-India Destination Specialist</span>
+          <span class="about-pill">✦ Certified Masterclass Mentor</span>
+          <span class="about-pill">✦ Cry-Proof HD & Airbrush Alchemy</span>
         </div>
       </div>
-      <div class="about-card-action">
-        <button class="btn-p" onclick="openAboutModal()">
-          {{ t.about_card_btn|default:'View Complete Journey & Credentials' }}
+
+      <div class="about-card-action" style="display:flex; flex-direction:column; gap:10px; align-items:center;">
+        <button class="btn-p" onclick="openAboutModal()" style="padding:12px 24px; font-size:0.75rem;">
+          {{ t.about_card_btn|default:'View Complete Journey & Credentials ↗' }}
         </button>
+        <a href="https://wa.me/{{ site.whatsapp_number|default:whatsapp }}?text=Namaste%20Anshita%20ji!%20I%20would%20like%20to%20consult%20directly%20with%20you%20for%20my%20wedding%20makeup." target="_blank" class="btn-o" style="padding:10px 20px; font-size:0.72rem; width:100%; text-align:center;">
+          💬 Direct WhatsApp
+        </a>
       </div>
     </div>
   </div>
@@ -2574,10 +2571,26 @@
     <a href="/#gallery">{{ t.nav_gallery|default:'Gallery' }}</a>
   </div>
   <div class="f-socials">
-    <a href="https://www.instagram.com/anshitamakeover21/" target="_blank" class="soc-btn" title="Instagram">IG</a>
-    <a href="https://wa.me/{{ whatsapp }}" target="_blank" class="soc-btn" title="WhatsApp">WA</a>
-    <a href="#" class="soc-btn" title="Facebook">FB</a>
-    <a href="#" class="soc-btn" title="YouTube">YT</a>
+    <a href="{{ site.instagram_url|default:'https://www.instagram.com/anshitamakeover21/' }}" target="_blank" class="soc-btn" title="Follow Anshita Makeover on Instagram" aria-label="Instagram">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg>
+    </a>
+    <a href="https://wa.me/{{ site.whatsapp_number|default:whatsapp }}" target="_blank" class="soc-btn" title="Chat on WhatsApp" aria-label="WhatsApp">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+      </svg>
+    </a>
+    <a href="{{ site.facebook_url|default:'https://facebook.com/anshitamakeover' }}" target="_blank" class="soc-btn" title="Follow Anshita Makeover on Facebook" aria-label="Facebook">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+      </svg>
+    </a>
+    <a href="{{ site.youtube_url|default:'https://youtube.com/@anshitamakeover' }}" target="_blank" class="soc-btn" title="Watch Anshita Makeover on YouTube" aria-label="YouTube">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+      </svg>
+    </a>
   </div>
   <!-- Multilingual Switcher in Footer -->
   <div style="margin:20px 0 24px;display:flex;flex-direction:column;align-items:center;gap:10px">
@@ -3827,6 +3840,7 @@ function setGalHeroSlide(idx){
   currentGalSlide = idx;
   const slides = document.querySelectorAll('.gal-slide');
   const dots = document.querySelectorAll('.gal-hero-dot');
+  if(!slides.length) return;
   slides.forEach((s, i) => {
     if(i === idx) s.classList.add('active');
     else s.classList.remove('active');
@@ -3838,9 +3852,11 @@ function setGalHeroSlide(idx){
 }
 
 function startGalHeroAutoRotate(){
+  const slides = document.querySelectorAll('.gal-slide');
+  if(!slides.length) return;
   if(galHeroTimer) clearInterval(galHeroTimer);
   galHeroTimer = setInterval(() => {
-    currentGalSlide = (currentGalSlide + 1) % totalGalSlides;
+    currentGalSlide = (currentGalSlide + 1) % slides.length;
     setGalHeroSlide(currentGalSlide);
   }, 3500);
 }

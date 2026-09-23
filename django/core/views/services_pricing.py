@@ -145,6 +145,27 @@ def admin_price_update(request):
             site.save()
             return JsonResponse({'ok': True, 'message': 'Travel settings saved'})
 
+        # Social Media Links update
+        if target_type in ['social_links', 'social']:
+            site = get_site_settings()
+            if 'whatsapp_number' in data:
+                site.whatsapp_number = str(data['whatsapp_number']).strip()
+            if 'instagram_url' in data:
+                site.instagram_url = str(data['instagram_url']).strip()
+            if 'youtube_url' in data:
+                site.youtube_url = str(data['youtube_url']).strip()
+            if 'facebook_url' in data:
+                site.facebook_url = str(data['facebook_url']).strip()
+            site.save()
+            return JsonResponse({
+                'ok': True,
+                'message': 'Social media links updated successfully',
+                'whatsapp_number': site.whatsapp_number,
+                'instagram_url': site.instagram_url,
+                'youtube_url': site.youtube_url,
+                'facebook_url': site.facebook_url
+            })
+
         # Service price update
         is_on_request = data.get('is_on_request', False)
         # NULL-safe upsert: ServicePrice.price is NOT NULL, so a bare
