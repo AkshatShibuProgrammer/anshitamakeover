@@ -60,16 +60,23 @@ def check_gemini_key(key: str):
         result['status_detail'] = f"Network/Connection error: {str(e)}"
         return result
 
-    # 2. Test actual generation on gemini-2.5-flash
-    gen_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={key}"
-    gen_payload = json.dumps({"contents": [{"parts": [{"text": "hi"}]}]}).encode('utf-8')
-    try:
-        gen_req = urllib.request.Request(gen_url, data=gen_payload, headers={'Content-Type': 'application/json'})
-        with urllib.request.urlopen(gen_req, timeout=10) as resp:
-            if resp.status == 200:
-                result['account_info']['inference_test'] = 'Success (gemini-2.5-flash responded 200 OK)'
-    except Exception as e:
-        result['account_info']['inference_test'] = f"Inference failed: {e}"
+    # 2. Test actual generation on models
+    test_models = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-3-flash-preview']
+    for tm in test_models:
+        gen_url = f"https://generativelanguage.googleapis.com/v1beta/models/{tm}:generateContent?key={key}"
+        gen_payload = json.dumps({"contents": [{"parts": [{"text": "hi"}]}]}).encode('utf-8')
+        try:
+            gen_req = urllib.request.Request(gen_url, data=gen_payload, headers={'Content-Type': 'application/json'})
+            with urllib.request.urlopen(gen_req, timeout=10) as resp:
+                if resp.status == 200:
+                    result['account_info']['inference_test'] = f'Success ({tm} responded 200 OK)'
+                    break
+        except urllib.error.HTTPError as e:
+            if e.code == 429:
+                result['account_info']['inference_test'] = f'Rate limited / Quota reached ({tm}: HTTP 429)'
+            continue
+        except Exception:
+            continue
 
     return result
 
@@ -256,6 +263,43 @@ def main():
     if os.environ.get('OPENAI_API_KEY'):
         v = os.environ['OPENAI_API_KEY'].strip()
         found_keys.setdefault(('openai', v), []).append('Windows User Environment')
+
+    # 4. Scan CFA Encrypted Key Store (ai_credentials.b64)
+    import base64
+    cfa_b64_paths = [
+        r"D:\TcsQET\qet-react-ui\keys\ai_credentials.b64",
+        r"D:\TcsQET\keys\ai_credentials.b64"
+    ]
+    for b64_p in cfa_b64_paths:
+        if os.path.exists(b64_p):
+            try:
+                raw_bytes = open(b64_p, 'rb').read()
+                data = json.loads(base64.b64decode(raw_bytes).decode('utf-8'))
+                for gk in data.get('gemini', []):
+                    if gk and gk.strip():
+                        found_keys.setdefault(('gemini', gk.strip()), []).append(f"CFA Encrypted Store: {b64_p}")
+                for ok in data.get('gpt', []):
+                    if ok and ok.strip():
+                        found_keys.setdefault(('openai', ok.strip()), []).append(f"CFA Encrypted Store: {b64_p}")
+            except Exception as e:
+                print(f"[!] Warning: Failed to read {b64_p}: {e}")
+
+    # 5. Scan D:\TcsQET for additional key files
+    for txt_path in glob.glob(r"D:\TcsQET\**\*key*.txt", recursive=True):
+        if any(x in txt_path for x in ['node_modules', '.git', '__pycache__', 'venv', '.venv']):
+            continue
+        if not os.path.isfile(txt_path):
+            continue
+        try:
+            v = open(txt_path, encoding='utf-8', errors='ignore').read().strip()
+            if not v or v == 'YOUR_GEMINI_API_KEY_HERE':
+                continue
+            if 'gemini' in txt_path.lower():
+                found_keys.setdefault(('gemini', v), []).append(txt_path)
+            elif 'openai' in txt_path.lower():
+                found_keys.setdefault(('openai', v), []).append(txt_path)
+        except Exception:
+            pass
 
     # Also scan for any google service account json files
     for json_file in glob.glob(r"F:\Code by Akshat\**\*credential*.json", recursive=True):

@@ -1,0 +1,101 @@
+{% load static %}
+<!-- ═══ LUXURY VIP CART DRAWER (SLIDE-OUT HAUTE SHOPPING & COMBO EXPERIENCE) ═══ -->
+<div class="cart-drawer-backdrop" id="cart-drawer-backdrop" onclick="closeCartDrawer()"></div>
+
+<aside class="cart-drawer" id="cart-drawer" aria-label="Selected Wedding Packages and Services">
+  <!-- Drawer Header -->
+  <div class="cart-drawer-hdr">
+    <div class="cart-drawer-brand">
+      <span class="cart-drawer-icon">🛍️</span>
+      <div>
+        <h3 class="cart-drawer-title">{{ t.cart_title|default:'Your Bridal Trousseau' }}</h3>
+        <span class="cart-drawer-sub" id="cartItemCountLabel">0 {{ t.cart_items_count|default:'Services Selected' }}</span>
+      </div>
+    </div>
+    <button class="cart-drawer-close" onclick="closeCartDrawer()" aria-label="Close Cart">✕</button>
+  </div>
+
+  <!-- Combo Privilege Active Announcement -->
+  <div class="cart-combo-alert" id="cartComboAlert" style="display:none">
+    <div class="cca-icon">👑</div>
+    <div class="cca-body">
+      <strong id="cartComboTitle">Bridal + Event Combo Privilege Activated!</strong>
+      <span id="cartComboDesc">Enjoy up to 25% bundled savings and complimentary side makeup courtesy.</span>
+    </div>
+  </div>
+
+  <!-- Freebies & Courtesies Unlocked Banner -->
+  <div class="cart-freebies-box" id="cartFreebiesBox" style="display:none">
+    <span class="cf-badge">✦ COMPLIMENTARY COURTESIES UNLOCKED ✦</span>
+    <ul class="cf-list" id="cartFreebiesList">
+      <!-- Injected via Cart JS -->
+    </ul>
+  </div>
+
+  <!-- Cart Items List Container -->
+  <div class="cart-items-container" id="cartItemsContainer">
+    <!-- Items rendered dynamically via JS -->
+  </div>
+
+  <!-- Smart Upsell & Add-on Suggestions Section -->
+  <div class="cart-upsell-section" id="cartUpsellSection" style="display:none">
+    <div class="cus-header">
+      <span class="cus-sparkle">✦</span>
+      <span class="cus-title">{{ t.cart_upsell_title|default:'Complete Your Bridal Journey' }}</span>
+      <span class="cus-tag">{{ t.cart_upsell_tag|default:'Privilege Rate' }}</span>
+    </div>
+    <div class="cus-cards" id="cartUpsellCards">
+      <!-- Injected dynamically via AnshitaCart.renderUpsells() -->
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="cart-empty-state" id="cartEmptyState" style="display:none">
+    <div class="ces-emblem">✨</div>
+    <h4>{{ t.cart_empty_title|default:'Your Trousseau is Empty' }}</h4>
+    <p>{{ t.cart_empty_desc|default:'Explore our Signature Services and Bridal Packages to assemble your wedding glam with privileged combo rates.' }}</p>
+    <a href="/#services" onclick="closeCartDrawer()" class="ces-btn">{{ t.btn_explore_services|default:'Explore Services' }}</a>
+  </div>
+
+  <!-- Drawer Footer: Pricing Breakdown & Call-to-Actions -->
+  <div class="cart-drawer-footer" id="cartDrawerFooter">
+    <div class="cart-summary-box">
+      <div class="cs-row">
+        <span>{{ t.cart_subtotal|default:'Standalone A-La-Carte Value' }}</span>
+        <span id="cartSubtotal">₹0</span>
+      </div>
+      <div class="cs-row disc" id="cartSavingsRow" style="display:none">
+        <span id="cartSavingsLabel">{{ t.cart_combo_saving|default:'Combo & Package Savings' }}</span>
+        <span id="cartSavingsVal">-₹0</span>
+      </div>
+      <div class="cs-row disc" id="cartCouponRow" style="display:none">
+        <span id="cartCouponLabel">VIP Privilege</span>
+        <span id="cartCouponVal">-₹0</span>
+      </div>
+      <div class="cs-divider"></div>
+      <div class="cs-row final">
+        <div>
+          <strong>{{ t.cart_total_payable|default:'Estimated Package Investment' }}</strong>
+          <small style="display:block;font-size:0.65rem;color:rgba(245,237,214,0.6)">{{ t.cart_transparent_note|default:'Includes Vanity Kits & Professional Styling' }}</small>
+        </div>
+        <strong class="cs-total" id="cartTotalVal">₹0</strong>
+      </div>
+    </div>
+
+    <!-- Actions: Full Cart Page & Direct WhatsApp Booking -->
+    <div class="cart-actions-grid">
+      <a href="/cart/" class="cart-action-btn sec" onclick="closeCartDrawer()">
+        📄 {{ t.btn_view_full_cart|default:'Review Details & Dates' }}
+      </a>
+      <button class="cart-action-btn primary" onclick="checkoutViaWhatsApp()">
+        💬 {{ t.btn_reserve_cart_wa|default:'Reserve on WhatsApp' }}
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- Floating Cart Launcher Button (Always Available Bottom-Right on Desktop & Mobile) -->
+<button class="floating-cart-pill" id="floatingCartPill" onclick="openCartDrawer()" aria-label="Open Cart and Packages" title="Open Trousseau Cart">
+  <span class="fcp-icon">🛍️</span>
+  <span class="fcp-badge" id="fcpItemCount">0</span>
+</button>

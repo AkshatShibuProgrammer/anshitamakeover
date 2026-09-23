@@ -4,7 +4,8 @@ from .chatbot import chatbot_api, gemini_chat, admin_ai_command, fallback_chatbo
 from .auth import admin_login, admin_logout_view, admin_portal
 from .coupons import get_coupon_api, admin_coupon_update
 from .services_pricing import (
-    admin_price_update, admin_event_package, admin_service_manage, admin_studio_service_manage
+    admin_price_update, admin_event_package, admin_service_manage, admin_studio_service_manage,
+    admin_site_settings_manage, admin_package_manage, artist_onboarding
 )
 from .artists import admin_artist_manage
 from .reviews import submit_review, admin_review_manage

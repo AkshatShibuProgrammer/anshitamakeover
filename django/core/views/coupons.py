@@ -9,7 +9,8 @@ from features.coupon_ops.coupon_service import (
 
 def get_coupon_api(request):
     """Orchestrator endpoint delegating to coupon_ops service"""
-    result = fetch_active_and_exit_coupons()
+    code = request.GET.get('code', '')
+    result = fetch_active_and_exit_coupons(query_code=code)
     return JsonResponse(result)
 
 @admin_required

@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Studio Intake Portal — Anshita Makeover</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4AF37;
+  --gold-l: #F5E296;
+  --cream: #FAF7F2;
+  --dark: #0F0F12;
+  --dark-card: #18181F;
+  --border: rgba(212, 175, 55, 0.25);
+  --font-h: 'Cinzel', serif;
+  --font-b: 'Outfit', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: radial-gradient(circle at 50% 30%, #1c151b 0%, #0c0a0e 100%);
+  color: var(--cream);
+  font-family: var(--font-b);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--dark-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px 28px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.6), 0 0 24px rgba(212,175,55,0.08);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.studio-badge {
+  font-family: var(--font-h);
+  font-size: 1.15rem;
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+.portal-sub {
+  font-size: 0.78rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(250,247,242,0.6);
+  margin-bottom: 24px;
+}
+.avatar-crest {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(212,175,55,0.1);
+  box-shadow: 0 0 16px rgba(212,175,55,0.2);
+}
+.avatar-crest span { font-size: 2rem; }
+.desc {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: rgba(250,247,242,0.75);
+  margin-bottom: 24px;
+}
+.pin-input {
+  width: 100%;
+  background: rgba(0,0,0,0.4);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: #fff;
+  font-size: 1.25rem;
+  letter-spacing: 6px;
+  text-align: center;
+  outline: none;
+  font-family: monospace;
+  margin-bottom: 16px;
+  transition: all 0.25s ease;
+}
+.pin-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 12px rgba(212,175,55,0.25);
+  background: rgba(0,0,0,0.6);
+}
+.btn-enter {
+  width: 100%;
+  background: linear-gradient(135deg, #E6CA65, #D4AF37, #AA820A);
+  color: #1A0F00;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(212,175,55,0.3);
+}
+.btn-enter:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212,175,55,0.45);
+}
+.err-msg {
+  background: rgba(194,96,122,0.15);
+  border: 1px solid rgba(194,96,122,0.4);
+  color: #ff8ca3;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  margin-bottom: 18px;
+}
+.hint {
+  margin-top: 18px;
+  font-size: 0.72rem;
+  color: rgba(250,247,242,0.45);
+  letter-spacing: 0.5px;
+}
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="avatar-crest">
+    <span>👑</span>
+  </div>
+  <h1 class="studio-badge">ANSHITA MAKEOVER</h1>
+  <div class="portal-sub">Artist Services & Pricing Setup</div>
+  
+  <p class="desc">
+    Namaste Anshita! ✨<br>
+    Please enter your studio passcode to add or customize your bridal services, looks, packages, and pricing.
+  </p>
+
+  {% if error %}
+  <div class="err-msg">⚠️ {{ error }}</div>
+  {% endif %}
+
+  <form method="POST" action="">
+    {% csrf_token %}
+    <input type="password" name="passcode" class="pin-input" placeholder="••••" maxlength="12" autofocus required>
+    <button type="submit" class="btn-enter">Unlock Studio Portal →</button>
+  </form>
+
+  <div class="hint">Passcode: <strong>2026</strong> · Instant Studio Access</div>
+</div>
+
+</body>
+</html>

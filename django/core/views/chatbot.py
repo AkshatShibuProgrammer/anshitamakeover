@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from .common import admin_required
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.conf import settings
@@ -102,7 +103,7 @@ def chatbot_api(request):
 GEMINI_HISTORY_TURNS = int(os.environ.get('GEMINI_HISTORY_TURNS', '5'))
 # Truncate each stored reply to this many chars when re-sending as context.
 GEMINI_HISTORY_CHARS = 500
-GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-2.5-flash')
+GEMINI_MODEL = os.environ.get('GEMINI_MODEL', 'gemini-flash-latest')
 
 
 
@@ -160,7 +161,7 @@ def conversation_history(session_id, limit=GEMINI_HISTORY_TURNS):
 
 def gemini_chat(api_key, user_msg, session_id):
     """Client-facing AI Concierge — Gemini with conversation memory, live DB
-    pricing, negotiation guardrails and a strict concise/plain-text style."""
+    pricing, standalone bridal vs package distinction, negotiation guardrails and a strict concise/plain-text style."""
     import requests
     site = get_site_settings()
     free_sides = site.offer_bridal_free_sides
@@ -171,10 +172,29 @@ def gemini_chat(api_key, user_msg, session_id):
     today_code = site.default_auto_coupon_code if site.default_auto_coupon_active else "TODAYVIP"
     today_disc = site.default_auto_coupon_discount if site.default_auto_coupon_active else 15
 
+    services = list(StudioService.objects.filter(is_active=True).order_by('order'))
     pkgs = list(MakeupPackage.objects.filter(is_active=True).order_by('order'))
     min_floor_pct = site.ai_negotiation_min_floor_percent or 75
     max_disc_pct = site.ai_max_discount_percent or 20
 
+    # 1. Standalone single-day bridal looks (NOT packages)
+    standalone_bridal = [s for s in services if s.category == 'bridal']
+    if not standalone_bridal:
+        standalone_bridal = services[:3]
+
+    standalone_rules = []
+    for s_ in standalone_bridal:
+        s_std = float(s_.price) if s_.price else 35000.0
+        s_off = round(s_std * (100 - today_disc) / 100) if site.default_auto_coupon_active else s_std
+        s_floor = float(s_.min_negotiated_price) if s_.min_negotiated_price else round(s_std * min_floor_pct / 100)
+        note = s_.bundle_note or (s_.features[:60] if s_.features else "Single-day luxury bridal makeover")
+        standalone_rules.append(
+            f"- {s_.title}: std ₹{s_std:,.0f}, today's VIP offer ₹{s_off:,.0f}. "
+            f"Authorized floor: ₹{s_floor:,.0f}. Inclusions: {note}"
+        )
+    standalone_text = "\n".join(standalone_rules)
+
+    # 2. Multi-event celebration packages (bundles)
     pkg_rules = []
     for p_ in pkgs:
         std_val = float(p_.price) if p_.price else 0.0
@@ -182,67 +202,110 @@ def gemini_chat(api_key, user_msg, session_id):
         floor_val = float(p_.min_negotiated_price) if p_.min_negotiated_price else round(std_val * min_floor_pct / 100)
         feats = ", ".join(p_.get_features_list()[:3])
         pkg_rules.append(
-            f"- {p_.name}: std ₹{std_val:,.0f}, offer ₹{offer_val:,.0f}, "
+            f"- {p_.name}: std ₹{std_val:,.0f}, today's VIP offer ₹{offer_val:,.0f}, "
             f"includes: {feats}. "
-            f"ABSOLUTE MINIMUM NEGOTIATED FLOOR: ₹{floor_val:,.0f} "
-            f"({'negotiable' if (site.ai_negotiation_enabled and p_.allow_ai_negotiation) else 'fixed rate'})."
+            f"Authorized floor: ₹{floor_val:,.0f}."
         )
     pkg_rules_text = "\n".join(pkg_rules) or "- No active packages."
 
     system_prompt = f"""You are Anshita Makeover's Luxury Concierge AI (bridal, hair, nails, academy).
 
-CONVERSATION RULES:
-- This is an ongoing chat: you can see earlier messages above. Continue the conversation naturally — NEVER repeat the welcome greeting, NEVER re-introduce the studio, NEVER repeat offers/prices you already gave.
-- Answer the user's specific question directly in your FIRST sentence.
-- Mirror the user's language and register: Hinglish question → short warm Hinglish answer; English question → English.
+CONVERSATION CONTEXT:
+- This is an ongoing conversation: you can see earlier messages above. Continue naturally.
+- NEVER repeat welcome greetings or re-introduce the studio if this is a follow-up message.
+- Answer the user's specific question or objection directly in your FIRST sentence.
+- Mirror user's language: If user writes in Hindi/Hinglish (e.g. "yeh toh bahut mehnga h", "mujhe option nahi dikhe"), reply warmly in natural Hinglish!
 
-RESPONSE STYLE — STRICT (the chat widget cannot render tables):
-- MAX 90 words / MAX 8 short lines. Brevity beats completeness.
-- PLAIN TEXT ONLY: no markdown tables, no pipe "|" characters, no HTML (no <br>), no headings, no code blocks.
-- Lists = one short line each starting with ✦.
-- Show ONLY what was asked. Max 3 packages at once. Format per package: "✦ Name — ₹58,000 (today ₹49,300): 2-3 key inclusions".
-- Never cut off mid-sentence: if you are nearing the limit, stop after a complete line.
+CATALOG & PRICING (live from database — quote ONLY these, never invent prices):
 
-TODAY'S VIP PRIVILEGE: code {today_code} = extra {today_disc}% off (mention only once per conversation, or when relevant).
+✦ STANDALONE SINGLE-DAY BRIDAL MAKEUP (NOT PACKAGES):
+{standalone_text}
 
-PRICING (live from database — quote ONLY these, never invent prices):
+✦ MULTI-EVENT CELEBRATION PACKAGES (BUNDLES FOR 2-3 EVENTS):
 {pkg_rules_text}
 
-BOOKING PRIVILEGES: first {free_sides} side makeups FREE with bridal; next 2 at ₹{disc_sides_rate:,} each; bridal+engagement combo extra {combo_disc}% off; Grand Royal Bundle flat ₹{combo_flat:,}.
+BOOKING PRIVILEGES:
+- First {free_sides} side makeups (sisters/family) are completely FREE (₹0, worth ₹7,000) with any bridal booking!
+- Next 2 side makeups at ₹{disc_sides_rate:,} each; bridal+engagement combo extra {combo_disc}% off.
+- Today's VIP Privilege Code: {today_code} gives extra {today_disc}% savings.
 
-NEGOTIATION GUARDRAILS:
-- Enabled: {'YES' if site.ai_negotiation_enabled else 'NO'}. Strategy: {site.ai_negotiation_strategy.upper()}. Max discount {max_disc_pct}%; never quote below any package's ABSOLUTE MINIMUM NEGOTIATED FLOOR.
-- Budget >= floor: warmly grant a "Special Concierge Privilege Rate" near their budget, give code {today_code}, and hand off: WhatsApp https://wa.me/{wa_number}?text=Namaste!%20AI%20Concierge%20granted%20me%20a%20Special%20Privilege%20Rate%20of%20₹[Amount]%20with%20VIP%20code%20{today_code}.
-- Budget < floor: politely hold ₹[floor] as minimum (original luxury products + hygiene), highlight the free side makeups worth ₹7,000.
-- Admin directives: {site.ai_negotiation_instructions}
+CRITICAL INSTRUCTIONS:
+1. STANDALONE BRIDAL VS MULTI-EVENT PACKAGES:
+- If user says "only bridal makeup", "sirf bridal", "not package", "package nahi", "package nahi chahiye", "single day", "ek din ka", "bas bridal", or asks specifically for bridal makeup without packages:
+  YOU MUST NEVER PITCH PACKAGES! NEVER mention Sacred Vivah Duo or Grand Royal Vivah!
+  Quote ONLY the Standalone Single-Day Bridal options above (e.g. Royal Bridal Couture HD/Airbrush ₹35,000 / today ₹{round(35000 * (100 - today_disc) / 100):,}, or Traditional Banarasi ₹25,000 / today ₹{round(25000 * (100 - today_disc) / 100):,}).
+- Only pitch multi-event packages if the user explicitly asks for packages, bundles, or multi-day celebrations.
+
+2. PRICE OBJECTIONS & NEGOTIATION ("yeh toh bahut mehnga h", "expensive", "too costly", "budget kam h", "discount", "kam karo"):
+- Reply warmly in Hinglish/Hindi: "Hum bilkul samajhte hain! Hamari priority hai ki aap apne wedding par sabse khoobsurat lagein."
+- Explain the premium value gently: 100% original international luxury brands (TEMPTU, Charlotte Tilbury, MAC) + medical-grade hygiene.
+- Standalone bridal negotiation: Offer the special privilege rate down towards authorized floor (e.g. ₹20,000 - ₹24,500 for Royal Bridal HD/Airbrush, or ₹18,000 for Traditional Banarasi) using VIP code {today_code}.
+- Highlight the bonus perk: Remind them that 2 family side makeups are completely FREE (saving ₹7,000), making the overall package extremely economical.
+- Direct to WhatsApp: https://wa.me/{wa_number}?text=Namaste!%20AI%20Concierge%20granted%20me%20a%20Special%20Privilege%20Rate%20with%20VIP%20code%20{today_code}.
+
+3. ABSOLUTELY NO TRUNCATION:
+- Keep the response clean, concise (under 100 words), and complete.
+- NEVER stop mid-sentence.
+- Use ✦ bullet points. Plain text only (no markdown tables, no HTML <br>).
 """
 
     history = headroom_compress_history(conversation_history(session_id))
     contents = history + [{'role': 'user', 'parts': [{'text': user_msg}]}]
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={api_key}"
-    gen_config = {
-        "temperature": 0.4,
-        "maxOutputTokens": 600,
-    }
-    if "thinking" in GEMINI_MODEL.lower():
-        gen_config["thinkingConfig"] = {"thinkingBudget": 0}
+    candidate_models = []
+    for m in [GEMINI_MODEL, 'gemini-flash-latest', 'gemini-2.5-flash', 'gemini-2.0-flash']:
+        if m and m not in candidate_models:
+            candidate_models.append(m)
 
-    payload = {
-        "contents": contents,
-        "systemInstruction": {"parts": [{"text": system_prompt}]},
-        "generationConfig": gen_config,
-    }
+    last_error = None
+    for model_name in candidate_models:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+        gen_config = {
+            "temperature": 0.4,
+            "maxOutputTokens": 2048,
+            "thinkingConfig": {"thinkingBudget": 0}
+        }
+        payload = {
+            "contents": contents,
+            "systemInstruction": {"parts": [{"text": system_prompt}]},
+            "generationConfig": gen_config,
+        }
 
-    resp = requests.post(url, json=payload, timeout=15)
-    if resp.status_code == 200:
-        data = resp.json()
-        return data['candidates'][0]['content']['parts'][0]['text']
-    raise RuntimeError(f"Gemini API error: {resp.status_code} - {resp.text[:200]}")
+        try:
+            resp = requests.post(url, json=payload, timeout=15)
+            if resp.status_code == 200:
+                data = resp.json()
+                candidates = data.get('candidates', [])
+                if candidates and 'content' in candidates[0]:
+                    parts = candidates[0]['content'].get('parts', [])
+                    for part in parts:
+                        if 'text' in part and part['text'].strip():
+                            return part['text'].strip()
+            elif resp.status_code == 400 and 'thinkingConfig' in resp.text:
+                # Retry this model without thinkingConfig if unsupported
+                payload["generationConfig"] = {
+                    "temperature": 0.4,
+                    "maxOutputTokens": 2048,
+                }
+                resp2 = requests.post(url, json=payload, timeout=15)
+                if resp2.status_code == 200:
+                    data2 = resp2.json()
+                    candidates2 = data2.get('candidates', [])
+                    if candidates2 and 'content' in candidates2[0]:
+                        parts2 = candidates2[0]['content'].get('parts', [])
+                        for part in parts2:
+                            if 'text' in part and part['text'].strip():
+                                return part['text'].strip()
+            last_error = f"{model_name}: {resp.status_code} - {resp.text[:150]}"
+        except Exception as e:
+            last_error = f"{model_name}: {str(e)}"
+            continue
+
+    raise RuntimeError(f"All Gemini models failed. Last error: {last_error}")
 
 
 # ── API: Admin AI Co-Pilot (Intelligent Natural Language Website Manager) ──
-@login_required
+@admin_required
 @require_POST
 def admin_ai_command(request):
     """
@@ -555,7 +618,7 @@ Supported Action Schemas:
         return JsonResponse({'ok': False, 'error': f"Failed to execute: {str(e)}"})
 
 
-@login_required
+@admin_required
 def admin_ai_status(request):
     """Return status of Gemini AI integration for Admin Dashboard."""
     api_key = get_gemini_api_key()
@@ -608,11 +671,35 @@ def fallback_chatbot(msg):
     hd_floor = float(hd_pkg.min_negotiated_price) if (hd_pkg and hd_pkg.min_negotiated_price) else round(hd_std * min_floor_pct / 100)
     air_floor = float(air_pkg.min_negotiated_price) if (air_pkg and air_pkg.min_negotiated_price) else round(air_std * min_floor_pct / 100)
 
-    # ── 1. SMART AI PRICE NEGOTIATION & BUDGET MATCHING ──
+    # ── 1. STANDALONE SINGLE-DAY BRIDAL INQUIRIES (NOT PACKAGES) ──
+    is_only_bridal = any(k in msg_lower for k in [
+        'only bridal', 'not package', 'package nahi', 'sirf bridal', 'single day', 'ek din',
+        'naki package', 'package bas nahi', 'only makeup', 'single bridal', 'bas bridal',
+        'package nahi chahiye', 'no package', 'without package', 'not a package', 'single-day',
+        'naki bridal', 'bridal makeup bas', 'makeup bas', 'package bas', 'sirf makeup',
+        'package h naki', 'package hai naki', 'only single', 'sirf ek'
+    ])
+
+    if is_only_bridal:
+        lines = [
+            "Namaste! 🙏✨ Here are our Standalone Single-Day Bridal options (Not Packages):",
+            f"✦ Royal Bridal Couture (HD & Airbrush Artistry) — ₹35,000 (today's VIP rate: ₹{round(35000 * (100 - today_disc) / 100):,})",
+            f"✦ Traditional Banarasi & Mukut Artistry — ₹25,000 (today's VIP rate: ₹{round(25000 * (100 - today_disc) / 100):,})",
+            f"✦ Imperial Fuchsia Palace Suite — ₹32,000 (today's VIP rate: ₹{round(32000 * (100 - today_disc) / 100):,})",
+            f"✦ Master Airbrush Cry-Proof Suite — ₹45,000 (today's VIP rate: ₹{round(45000 * (100 - today_disc) / 100):,})",
+            f"✦ Privilege: First {free_sides} side makeups for family are completely FREE (₹0, worth ₹7,000)!",
+            f"✦ Today's VIP code {today_code} gives extra {today_disc}% savings.",
+            f"WhatsApp Anshita directly: https://wa.me/{wa_number}?text="
+            + urllib.parse.quote(f"Namaste Anshita! I want single-day standalone bridal makeup with VIP code {today_code}.")
+        ]
+        return "\n".join(lines)
+
+    # ── 2. SMART AI PRICE NEGOTIATION & BUDGET MATCHING ──
     is_negotiation = any(k in msg_lower for k in [
-        'negotiat', 'bargain', 'budget', 'kam karo', 'kam ho sakta', 'kam kijiye',
-        'discount', 'sasta', 'too costly', 'expensive', 'mehenga', 'mehanga', 'concession',
+        'negotiat', 'bargain', 'budget', 'kam karo', 'kam ho sakta', 'kam kijiye', 'kam h', 'kam hai',
+        'discount', 'sasta', 'too costly', 'expensive', 'mehenga', 'mehanga', 'mehnga', 'concession',
         'best price', 'last price', 'final price', 'special price', 'vip code',
+        'bahut mehnga', 'bohot mehnga', 'jyada hai', 'zyada hai', 'zyada h', 'jyada h',
         '20000', '25000', '28000', '30000', '32000', '35000', '40000'
     ])
 
@@ -651,15 +738,16 @@ def fallback_chatbot(msg):
                 + urllib.parse.quote(f"Namaste Anshita! My budget is around ₹{int(budget):,}. Can we customize a bridal suite for my date?")
             )
         return (
-            f"✦ AI Concierge Negotiation & Privileges ✨\n"
-            f"✦ Today's auto VIP code {today_code}: extra {today_disc}% off all bridal suites\n"
-            f"✦ First {free_sides} side makeups FREE (worth ₹7,000) with any bridal booking\n"
-            f"✦ Up to {combo_disc}% off on Engagement/Reception combos\n"
-            f"Tell me your Wedding Date and target budget — I'll calculate your best authorized rate right now!\n"
-            f"Or WhatsApp us: +91 {wa_number}"
+            f"Hum bilkul samajhte hain! 🙏 Hamari priority hai ki aap apne wedding day par sabse khoobsurat lagein.\n"
+            f"✦ Hamare bridal makeovers mein 100% original luxury brands (TEMPTU, Charlotte Tilbury, MAC) aur hospital-grade hygiene use hoti hai.\n"
+            f"✦ Special AI Privilege Offer: Standalone Royal Bridal HD ₹22,000 - ₹24,500 tak (Traditional Banarasi ₹18,500 tak) possible hai with code {today_code}.\n"
+            f"✦ PLUS: {free_sides} family side makeups bilkul FREE (₹7,000 value included)!\n"
+            f"Aapka wedding date aur target budget kya hai? Anshita ji se direct best deal confirm karein:\n"
+            f"👉 WhatsApp: https://wa.me/{wa_number}?text="
+            + urllib.parse.quote(f"Namaste Anshita! AI Concierge offered a special rate with VIP code {today_code}. Let's discuss my wedding date.")
         )
 
-    # ── 2. BRIDAL INQUIRIES ──
+    # ── 3. GENERAL BRIDAL INQUIRIES ──
     if any(w in msg_lower for w in ['bridal', 'wedding', 'shaadi', 'bride', 'dulhan']):
         lines = ["Namaste! ✨ Here are our signature Bridal Suites:"]
         if pkgs:

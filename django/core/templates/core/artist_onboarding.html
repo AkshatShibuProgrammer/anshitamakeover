@@ -1,0 +1,936 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Anshita Studio — Services & Pricing Intake</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4AF37;
+  --gold-l: #F5E296;
+  --gold-d: #9A7B1C;
+  --maroon: #7B1C2E;
+  --emerald: #10B981;
+  --cream: #FAF7F2;
+  --dark: #0A0A0C;
+  --dark-card: #131318;
+  --dark-card-hover: #1A1A22;
+  --input-bg: #1B1B22;
+  --border: rgba(212, 175, 55, 0.2);
+  --border-focus: rgba(212, 175, 55, 0.6);
+  --font-h: 'Cinzel', serif;
+  --font-b: 'Outfit', sans-serif;
+  --radius: 16px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #08080A;
+  color: var(--cream);
+  font-family: var(--font-b);
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+/* Header */
+.portal-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13, 13, 16, 0.94);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  background: rgba(212,175,55,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+.brand-titles h1 {
+  font-family: var(--font-h);
+  font-size: 1rem;
+  color: var(--gold);
+  letter-spacing: 1.5px;
+  line-height: 1.1;
+}
+.brand-titles span {
+  font-size: 0.68rem;
+  color: rgba(250,247,242,0.5);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-header {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  color: var(--cream);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.76rem;
+  font-weight: 500;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+.btn-header:hover {
+  background: rgba(212,175,55,0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Container */
+.main-wrap {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 16px;
+}
+
+/* Welcome Banner */
+.welcome-box {
+  background: linear-gradient(135deg, rgba(123,28,46,0.25) 0%, rgba(212,175,55,0.1) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 24px;
+}
+.welcome-box h2 {
+  font-family: var(--font-h);
+  font-size: 1.15rem;
+  color: var(--gold-l);
+  margin-bottom: 6px;
+}
+.welcome-box p {
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: rgba(250,247,242,0.8);
+}
+
+/* Tabs */
+.tab-pills {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.tab-pill {
+  flex: 1;
+  min-width: 140px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: rgba(250,247,242,0.65);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.tab-pill:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.08);
+}
+.tab-pill.active {
+  background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(123,28,46,0.25));
+  border-color: var(--gold);
+  color: var(--gold-l);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+}
+
+/* Card Sections */
+.form-card {
+  background: var(--dark-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  margin-bottom: 28px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(212,175,55,0.12);
+  padding-bottom: 12px;
+}
+.card-title h3 {
+  font-family: var(--font-h);
+  font-size: 1.05rem;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+}
+.card-title span {
+  font-size: 0.72rem;
+  color: rgba(250,247,242,0.5);
+}
+
+/* Form controls */
+.form-group {
+  margin-bottom: 16px;
+}
+.form-group label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(250,247,242,0.7);
+  margin-bottom: 6px;
+}
+.form-group label small {
+  text-transform: none;
+  font-weight: 400;
+  color: rgba(250,247,242,0.4);
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #fff;
+  font-size: 0.92rem;
+  font-family: var(--font-b);
+  outline: none;
+  transition: all 0.2s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--gold);
+  background: #21212B;
+  box-shadow: 0 0 10px rgba(212,175,55,0.2);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media(max-width: 540px) {
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* Inclusion Chips */
+.chips-label {
+  font-size: 0.76rem;
+  color: var(--gold-l);
+  margin-bottom: 8px;
+  display: block;
+}
+.chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.chip {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(212,175,55,0.2);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  color: rgba(250,247,242,0.75);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+.chip:hover {
+  border-color: var(--gold);
+  color: #fff;
+}
+.chip.active {
+  background: rgba(212,175,55,0.25);
+  border-color: var(--gold);
+  color: var(--gold-l);
+  font-weight: 600;
+}
+
+/* Buttons */
+.btn-save {
+  width: 100%;
+  background: linear-gradient(135deg, #E6CA65, #D4AF37, #AA820A);
+  color: #1A0F00;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(212,175,55,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.btn-save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212,175,55,0.45);
+}
+
+/* Items List */
+.items-heading {
+  font-family: var(--font-h);
+  font-size: 0.95rem;
+  color: var(--gold);
+  letter-spacing: 1px;
+  margin: 28px 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.item-card {
+  background: var(--dark-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s ease;
+}
+.item-card:hover {
+  border-color: rgba(212,175,55,0.4);
+  background: var(--dark-card-hover);
+}
+.item-meta h4 {
+  font-size: 0.95rem;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.item-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.tag-badge {
+  background: rgba(212,175,55,0.12);
+  color: var(--gold);
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.item-desc {
+  font-size: 0.78rem;
+  color: rgba(250,247,242,0.6);
+  line-height: 1.4;
+}
+.item-pricing-box {
+  text-align: right;
+  flex-shrink: 0;
+}
+.actual-price {
+  font-family: var(--font-h);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--gold-l);
+}
+.mrp-price {
+  font-size: 0.78rem;
+  color: rgba(250,247,242,0.4);
+  text-decoration: line-through;
+}
+.item-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  justify-content: flex-end;
+}
+.btn-action-icon {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  color: rgba(250,247,242,0.7);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+.btn-action-icon:hover {
+  border-color: #ff5e7e;
+  color: #ff5e7e;
+  background: rgba(255,94,126,0.1);
+}
+
+/* Toast */
+.toast-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #10B981;
+  color: #000;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+}
+.toast-bar.show {
+  transform: translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="portal-header">
+  <div class="brand-group">
+    <div class="brand-avatar">👑</div>
+    <div class="brand-titles">
+      <h1>ANSHITA MAKEOVER</h1>
+      <span>Artist Services & Pricing Portal</span>
+    </div>
+  </div>
+  <div class="header-actions">
+    <a href="/" target="_blank" class="btn-header" title="Preview live site">🌐 View Website ↗</a>
+  </div>
+</header>
+
+<main class="main-wrap">
+
+  <!-- Welcome -->
+  <div class="welcome-box">
+    <h2>Namaste Anshita! ✨</h2>
+    <p>
+      Add, update, and manage your bridal looks, ceremony packages, and charges here.
+      Everything you save updates the website and your AI Concierge in real-time!
+    </p>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="tab-pills">
+    <button class="tab-pill active" onclick="switchSection('services', this)">✦ Single-Day Looks ({{ services|length }})</button>
+    <button class="tab-pill" onclick="switchSection('packages', this)">👑 Multi-Event Packages ({{ packages|length }})</button>
+    <button class="tab-pill" onclick="switchSection('privileges', this)">🎁 Studio Privileges & Rates</button>
+  </div>
+
+  <!-- ════════ SECTION 1: SINGLE-DAY SERVICES ════════ -->
+  <div id="sec-services" class="tab-content-sec">
+
+    <!-- Add New Service Form -->
+    <div class="form-card">
+      <div class="card-title">
+        <h3 id="svc-form-head">✨ Add New Studio Service</h3>
+        <span>Single-Day Bridal / Ceremony</span>
+      </div>
+
+      <input type="hidden" id="svc-id" value="">
+
+      <div class="form-group">
+        <label>Service / Look Title * <small>(e.g. Imperial Royal HD Bridal, Traditional Banarasi Glam)</small></label>
+        <input class="form-input" id="svc-title" placeholder="e.g. Royal HD Bridal Couture" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <select class="form-select" id="svc-category">
+            <option value="bridal">Main Bridal</option>
+            <option value="reception">Reception / Cocktail</option>
+            <option value="engagement">Engagement / Roka</option>
+            <option value="sangeet">Sangeet / Mehendi / Haldi</option>
+            <option value="party">Party & Bridesmaid</option>
+            <option value="saree">Saree Draping & Hair</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Technique / Style</label>
+          <input class="form-input" id="svc-discipline" placeholder="e.g. TEMPTU Airbrush / HD Artistry">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Original MRP (₹) *</label>
+          <input class="form-input" type="number" id="svc-price" placeholder="35000" required>
+        </div>
+        <div class="form-group">
+          <label>Special Offer Rate (₹) <small>(Optional)</small></label>
+          <input class="form-input" type="number" id="svc-discount" placeholder="29750">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="chips-label">✦ Quick Tap Inclusions (Adds to features below):</label>
+        <div class="chips-wrap">
+          <span class="chip" onclick="toggleChip(this, 'TEMPTU Airbrush Finish')">+ Airbrush Finish</span>
+          <span class="chip" onclick="toggleChip(this, 'Royal Cut-Crease HD Eye Makeup')">+ HD Eye Artistry</span>
+          <span class="chip" onclick="toggleChip(this, 'Luxury Couture Hairstyling')">+ Couture Hair</span>
+          <span class="chip" onclick="toggleChip(this, 'Designer Saree & Dupatta Draping')">+ Dupatta Draping</span>
+          <span class="chip" onclick="toggleChip(this, 'Premium 3D Mink Lashes')">+ Mink Lashes</span>
+          <span class="chip" onclick="toggleChip(this, 'Jewelry & Mathapatti Setting')">+ Jewelry Setting</span>
+          <span class="chip" onclick="toggleChip(this, 'Hydrating Skin Prep & Glow Primer')">+ Skin Prep</span>
+          <span class="chip" onclick="toggleChip(this, 'Colored Cosmetic Lenses')">+ Eye Lenses</span>
+        </div>
+        <textarea class="form-textarea" id="svc-features" rows="2" placeholder="Features & inclusions (e.g. HD Base, Hairstyling, Lashes, Draping)"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Luxury Note / Description</label>
+        <input class="form-input" id="svc-desc" placeholder="e.g. Long-wearing, 24-hr cry-proof finish with international luxury brands.">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Minimum Negotiated Floor (₹) <small>(For AI Concierge)</small></label>
+          <input class="form-input" type="number" id="svc-floor" placeholder="20000">
+        </div>
+        <div class="form-group">
+          <label>Bundle Advantage Note</label>
+          <input class="form-input" id="svc-bundle-note" placeholder="e.g. Includes 2 Free Side Makeups">
+        </div>
+      </div>
+
+      <button type="button" class="btn-save" id="btn-save-service" onclick="saveStudioService()">
+        💾 Save Studio Service
+      </button>
+      <button type="button" class="btn-header" id="btn-cancel-service" style="display:none; width:100%; justify-content:center; margin-top:8px;" onclick="resetServiceForm()">
+        Cancel Edit
+      </button>
+    </div>
+
+    <!-- Active Single-Day Services List -->
+    <div class="items-heading">
+      <span>Active Services ({{ services|length }})</span>
+      <small style="color:rgba(250,247,242,0.5)">Tap to edit price or delete</small>
+    </div>
+
+    <div id="services-list">
+      {% for s in services %}
+      <div class="item-card" id="card-svc-{{ s.id }}">
+        <div class="item-meta">
+          <h4>{{ s.title }}</h4>
+          <div class="item-tags">
+            <span class="tag-badge">{{ s.category }}</span>
+            {% if s.discipline %}<span class="tag-badge" style="background:rgba(255,255,255,0.06); color:#fff">{{ s.discipline }}</span>{% endif %}
+          </div>
+          <div class="item-desc">{{ s.description|default:s.features|truncatechars:90 }}</div>
+        </div>
+        <div class="item-pricing-box">
+          <div class="actual-price">₹{{ s.discount_price|default:s.price|floatformat:0 }}</div>
+          {% if s.discount_price and s.discount_price < s.price %}
+          <div class="mrp-price">₹{{ s.price|floatformat:0 }}</div>
+          {% endif %}
+          <div class="item-actions">
+            <button class="btn-action-icon" title="Edit" onclick="editService({{ s.id }}, '{{ s.title|escapejs }}', '{{ s.category }}', '{{ s.discipline|default:''|escapejs }}', {{ s.price|default:0 }}, {{ s.discount_price|default:0 }}, '{{ s.features|default:''|escapejs }}', '{{ s.description|default:''|escapejs }}')">✏️</button>
+            <button class="btn-action-icon" title="Delete" onclick="deleteService({{ s.id }})">🗑️</button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <!-- ════════ SECTION 2: MULTI-EVENT CELEBRATION PACKAGES ════════ -->
+  <div id="sec-packages" class="tab-content-sec" style="display:none;">
+
+    <!-- Add New Package Form -->
+    <div class="form-card">
+      <div class="card-title">
+        <h3 id="pkg-form-head">👑 Add Multi-Event Celebration Package</h3>
+        <span>Wedding + Reception + Sangeet Bundles</span>
+      </div>
+
+      <input type="hidden" id="pkg-id" value="">
+
+      <div class="form-group">
+        <label>Package Name * <small>(e.g. The Grand Royal Vivah Celebration)</small></label>
+        <input class="form-input" id="pkg-name" placeholder="e.g. Sacred Vivah & Reception Duo (2 Events)" required>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Package Category</label>
+          <select class="form-select" id="pkg-category">
+            <option value="bridal">Bridal Multi-Event Bundle</option>
+            <option value="engagement">Pre-Wedding / Sangeet Combo</option>
+            <option value="side_makeup">Family & Bridesmaid Group</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Package Tagline / Subtitle</label>
+          <input class="form-input" id="pkg-tagline" placeholder="e.g. Complete 2-Event Signature Artistry">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Standard Package Price (₹) *</label>
+          <input class="form-input" type="number" id="pkg-price" placeholder="45000" required>
+        </div>
+        <div class="form-group">
+          <label>Special Offer Rate (₹) <small>(Optional)</small></label>
+          <input class="form-input" type="number" id="pkg-discount" placeholder="38250">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Inclusions / Events Covered *</label>
+        <textarea class="form-textarea" id="pkg-features" rows="3" placeholder="e.g. Event 1: Imperial Royal HD/Airbrush Bridal Suite for Sacred Pheras&#10;Event 2: Reception & Cocktail Evening Glamour&#10;Bonus: 2 Complimentary Side Makeups"></textarea>
+      </div>
+
+      <button type="button" class="btn-save" id="btn-save-package" onclick="saveMakeupPackage()">
+        💾 Save Celebration Package
+      </button>
+      <button type="button" class="btn-header" id="btn-cancel-package" style="display:none; width:100%; justify-content:center; margin-top:8px;" onclick="resetPackageForm()">
+        Cancel Edit
+      </button>
+    </div>
+
+    <!-- Active Multi-Event Packages List -->
+    <div class="items-heading">
+      <span>Active Packages ({{ packages|length }})</span>
+      <small style="color:rgba(250,247,242,0.5)">Multi-day bundles</small>
+    </div>
+
+    <div id="packages-list">
+      {% for p in packages %}
+      <div class="item-card" id="card-pkg-{{ p.id }}">
+        <div class="item-meta">
+          <h4>{{ p.name }}</h4>
+          <div class="item-tags">
+            <span class="tag-badge">{{ p.package_type }}</span>
+            {% if p.tagline %}<span class="tag-badge" style="background:rgba(255,255,255,0.06); color:#fff">{{ p.tagline }}</span>{% endif %}
+          </div>
+          <div class="item-desc">{{ p.features|truncatechars:100 }}</div>
+        </div>
+        <div class="item-pricing-box">
+          <div class="actual-price">₹{{ p.price|floatformat:0 }}</div>
+          <div class="item-actions">
+            <button class="btn-action-icon" title="Edit" onclick="editPackage({{ p.id }}, '{{ p.name|escapejs }}', '{{ p.package_type }}', '{{ p.tagline|default:''|escapejs }}', {{ p.price|default:0 }}, '{{ p.features|default:''|escapejs }}')">✏️</button>
+            <button class="btn-action-icon" title="Delete" onclick="deletePackage({{ p.id }})">🗑️</button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <!-- ════════ SECTION 3: PRIVILEGES & RATES ════════ -->
+  <div id="sec-privileges" class="tab-content-sec" style="display:none;">
+    <div class="form-card">
+      <div class="card-title">
+        <h3>🎁 Studio Privileges & Add-on Rates</h3>
+        <span>Complimentary Side Makeups & Travel</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>FREE Side Makeups with Bridal Booking</label>
+          <input class="form-input" type="number" id="priv-free-sides" value="{{ site.offer_bridal_free_sides|default:2 }}">
+        </div>
+        <div class="form-group">
+          <label>Next Side Makeup Subsidized Rate (₹)</label>
+          <input class="form-input" type="number" id="priv-side-rate" value="{{ site.offer_next_sides_discounted_price|default:2500|floatformat:0 }}">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Outstation / Destination Day Surcharge (₹)</label>
+          <input class="form-input" type="number" id="priv-outstation" value="18000">
+        </div>
+        <div class="form-group">
+          <label>Today's Auto VIP Discount (%)</label>
+          <input class="form-input" type="number" id="priv-auto-disc" value="{{ site.default_auto_coupon_discount|default:15 }}">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>WhatsApp Number for Direct Bookings</label>
+        <input class="form-input" id="priv-wa" value="{{ site.whatsapp_number|default:'917879223442' }}">
+      </div>
+
+      <button type="button" class="btn-save" onclick="savePrivileges()">
+        💾 Update Studio Policies & Privileges
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<!-- Toast Notification -->
+<div class="toast-bar" id="toast-bar">
+  <span>✓ Saved successfully!</span>
+</div>
+
+<script>
+function showToast(msg) {
+  const t = document.getElementById('toast-bar');
+  t.querySelector('span').textContent = msg || '✓ Saved successfully!';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function switchSection(sec, btn) {
+  document.querySelectorAll('.tab-content-sec').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + sec).style.display = 'block';
+  btn.classList.add('active');
+}
+
+function toggleChip(chip, text) {
+  const txtarea = document.getElementById('svc-features');
+  chip.classList.toggle('active');
+  let current = txtarea.value.trim();
+  let items = current ? current.split(',').map(s => s.trim()).filter(Boolean) : [];
+  
+  if (chip.classList.contains('active')) {
+    if (!items.includes(text)) items.push(text);
+  } else {
+    items = items.filter(i => i !== text);
+  }
+  txtarea.value = items.join(', ');
+}
+
+// ── SAVE STUDIO SERVICE ──
+async function saveStudioService() {
+  const id = document.getElementById('svc-id').value;
+  const title = document.getElementById('svc-title').value.trim();
+  const category = document.getElementById('svc-category').value;
+  const discipline = document.getElementById('svc-discipline').value.trim();
+  const price = document.getElementById('svc-price').value;
+  const discount_price = document.getElementById('svc-discount').value;
+  const features = document.getElementById('svc-features').value.trim();
+  const description = document.getElementById('svc-desc').value.trim();
+  const bundle_note = document.getElementById('svc-bundle-note').value.trim();
+
+  if (!title) { alert('Please enter a Service Title.'); return; }
+  if (!price) { alert('Please enter a Price.'); return; }
+
+  const formData = new FormData();
+  if (id) formData.append('id', id);
+  formData.append('title', title);
+  formData.append('category', category);
+  formData.append('discipline', discipline);
+  formData.append('price', price);
+  if (discount_price) formData.append('discount_price', discount_price);
+  formData.append('features', features);
+  formData.append('description', description);
+  formData.append('bundle_note', bundle_note);
+  formData.append('is_active', '1');
+
+  try {
+    const res = await fetch('/api/admin/studio-service/', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showToast('✨ Studio Service Saved!');
+      setTimeout(() => location.reload(), 1000);
+    } else {
+      alert('Error: ' + (data.error || 'Failed to save service'));
+    }
+  } catch(e) {
+    alert('Network error while saving. Please try again.');
+  }
+}
+
+function editService(id, title, cat, disc, price, discPrice, feats, desc) {
+  document.getElementById('svc-id').value = id;
+  document.getElementById('svc-title').value = title;
+  document.getElementById('svc-category').value = cat;
+  document.getElementById('svc-discipline').value = disc;
+  document.getElementById('svc-price').value = price;
+  document.getElementById('svc-discount').value = discPrice || '';
+  document.getElementById('svc-features').value = feats;
+  document.getElementById('svc-desc').value = desc;
+  document.getElementById('svc-form-head').textContent = '✏️ Edit Studio Service';
+  document.getElementById('btn-save-service').textContent = '💾 Update Service';
+  document.getElementById('btn-cancel-service').style.display = 'block';
+  window.scrollTo({ top: 120, behavior: 'smooth' });
+}
+
+function resetServiceForm() {
+  document.getElementById('svc-id').value = '';
+  document.getElementById('svc-title').value = '';
+  document.getElementById('svc-discipline').value = '';
+  document.getElementById('svc-price').value = '';
+  document.getElementById('svc-discount').value = '';
+  document.getElementById('svc-features').value = '';
+  document.getElementById('svc-desc').value = '';
+  document.getElementById('svc-form-head').textContent = '✨ Add New Studio Service';
+  document.getElementById('btn-save-service').textContent = '💾 Save Studio Service';
+  document.getElementById('btn-cancel-service').style.display = 'none';
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+}
+
+async function deleteService(id) {
+  if (!confirm('Are you sure you want to delete this service?')) return;
+  const formData = new FormData();
+  formData.append('action', 'delete');
+  formData.append('id', id);
+  try {
+    const res = await fetch('/api/admin/studio-service/', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.ok) {
+      const card = document.getElementById('card-svc-' + id);
+      if (card) card.remove();
+      showToast('🗑️ Service Removed');
+    }
+  } catch(e) {
+    alert('Failed to delete service.');
+  }
+}
+
+// ── SAVE MAKEUP PACKAGE ──
+async function saveMakeupPackage() {
+  const id = document.getElementById('pkg-id').value;
+  const name = document.getElementById('pkg-name').value.trim();
+  const package_type = document.getElementById('pkg-category').value;
+  const tagline = document.getElementById('pkg-tagline').value.trim();
+  const price = document.getElementById('pkg-price').value;
+  const features = document.getElementById('pkg-features').value.trim();
+
+  if (!name) { alert('Please enter a Package Name.'); return; }
+  if (!price) { alert('Please enter a Price.'); return; }
+
+  const payload = {
+    id: id || undefined,
+    name: name,
+    package_type: package_type,
+    tagline: tagline,
+    price: parseFloat(price),
+    features: features,
+    is_active: true
+  };
+
+  try {
+    const res = await fetch('/api/admin/package/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showToast('👑 Celebration Package Saved!');
+      setTimeout(() => location.reload(), 1000);
+    } else {
+      alert('Error: ' + (data.error || 'Failed to save package'));
+    }
+  } catch(e) {
+    alert('Network error while saving package.');
+  }
+}
+
+function editPackage(id, name, type, tag, price, feats) {
+  document.getElementById('pkg-id').value = id;
+  document.getElementById('pkg-name').value = name;
+  document.getElementById('pkg-category').value = type;
+  document.getElementById('pkg-tagline').value = tag;
+  document.getElementById('pkg-price').value = price;
+  document.getElementById('pkg-features').value = feats;
+  document.getElementById('pkg-form-head').textContent = '✏️ Edit Celebration Package';
+  document.getElementById('btn-save-package').textContent = '💾 Update Package';
+  document.getElementById('btn-cancel-package').style.display = 'block';
+  window.scrollTo({ top: 120, behavior: 'smooth' });
+}
+
+function resetPackageForm() {
+  document.getElementById('pkg-id').value = '';
+  document.getElementById('pkg-name').value = '';
+  document.getElementById('pkg-tagline').value = '';
+  document.getElementById('pkg-price').value = '';
+  document.getElementById('pkg-features').value = '';
+  document.getElementById('pkg-form-head').textContent = '👑 Add Multi-Event Celebration Package';
+  document.getElementById('btn-save-package').textContent = '💾 Save Celebration Package';
+  document.getElementById('btn-cancel-package').style.display = 'none';
+}
+
+async function deletePackage(id) {
+  if (!confirm('Are you sure you want to delete this package?')) return;
+  try {
+    const res = await fetch('/api/admin/package/', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      const card = document.getElementById('card-pkg-' + id);
+      if (card) card.remove();
+      showToast('🗑️ Package Removed');
+    }
+  } catch(e) {
+    alert('Failed to delete package.');
+  }
+}
+
+// ── SAVE PRIVILEGES ──
+async function savePrivileges() {
+  const freeSides = document.getElementById('priv-free-sides').value;
+  const sideRate = document.getElementById('priv-side-rate').value;
+  const wa = document.getElementById('priv-wa').value;
+  const autoDisc = document.getElementById('priv-auto-disc').value;
+
+  const payload = {
+    type: 'booking_offer',
+    offer_bridal_free_sides: parseInt(freeSides) || 2,
+    offer_next_sides_discounted_price: parseFloat(sideRate) || 2500,
+    whatsapp_number: wa,
+    default_auto_coupon_discount: parseInt(autoDisc) || 15
+  };
+
+  try {
+    const res = await fetch('/api/admin/price/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.ok) {
+      showToast('🎁 Studio Privileges & Rates Updated!');
+    }
+  } catch(e) {
+    alert('Failed to update privileges.');
+  }
+}
+</script>
+
+</body>
+</html>

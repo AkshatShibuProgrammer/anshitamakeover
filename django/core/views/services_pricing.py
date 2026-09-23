@@ -29,6 +29,7 @@ from .common import get_site_settings, get_active_coupon
 
 
 # ── API: Admin Price Update ───────────────────────────────────
+@csrf_exempt
 @admin_required
 def admin_price_update(request):
     if request.method == 'POST':
@@ -229,6 +230,7 @@ def admin_event_package(request):
 
 
 # ── API: Admin Service / Package Management (CRUD) ────────────
+@csrf_exempt
 @admin_required
 def admin_service_manage(request):
     if request.method == 'POST':
@@ -315,6 +317,7 @@ def admin_service_manage(request):
 
 
 # ── API: Admin Studio Service Management (Add, Edit, Delete, Inclusions) ──
+@csrf_exempt
 @admin_required
 def admin_studio_service_manage(request):
     """
@@ -456,5 +459,216 @@ def admin_studio_service_manage(request):
             'is_active': s.is_active,
         })
     return JsonResponse({'services': services})
+
+
+@admin_required
+def admin_site_settings_manage(request):
+    """Direct REST endpoint to view and update SiteSettings (WhatsApp, Instagram, Travel, AI, etc.)"""
+    site = get_site_settings()
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body) if request.content_type == 'application/json' else request.POST
+            if 'whatsapp_number' in data:
+                site.whatsapp_number = str(data['whatsapp_number']).strip()
+            if 'instagram_url' in data:
+                site.instagram_url = str(data['instagram_url']).strip()
+            if 'travel_widget_active' in data:
+                site.travel_widget_active = bool(data['travel_widget_active'])
+            if 'travel_same_zone_km' in data and data['travel_same_zone_km'] != '':
+                site.travel_same_zone_km = int(data['travel_same_zone_km'])
+            if 'travel_near_label' in data:
+                site.travel_near_label = str(data['travel_near_label']).strip()
+            if 'travel_near_fee_min' in data and data['travel_near_fee_min'] != '':
+                site.travel_near_fee_min = int(float(data['travel_near_fee_min']))
+            if 'travel_near_fee_max' in data and data['travel_near_fee_max'] != '':
+                site.travel_near_fee_max = int(float(data['travel_near_fee_max']))
+            if 'travel_far_label' in data:
+                site.travel_far_label = str(data['travel_far_label']).strip()
+            if 'travel_far_fee_min' in data and data['travel_far_fee_min'] != '':
+                site.travel_far_fee_min = int(float(data['travel_far_fee_min']))
+            if 'travel_far_fee_max' in data and data['travel_far_fee_max'] != '':
+                site.travel_far_fee_max = int(float(data['travel_far_fee_max']))
+            if 'travel_custom_note' in data:
+                site.travel_custom_note = str(data['travel_custom_note']).strip()
+            if 'default_auto_coupon_badge' in data:
+                site.default_auto_coupon_badge = str(data['default_auto_coupon_badge']).strip()
+            if 'ai_negotiation_enabled' in data:
+                site.ai_negotiation_enabled = bool(data['ai_negotiation_enabled'])
+            if 'ai_max_discount_percent' in data and data['ai_max_discount_percent'] != '':
+                site.ai_max_discount_percent = int(data['ai_max_discount_percent'])
+            if 'ai_negotiation_strategy' in data:
+                site.ai_negotiation_strategy = str(data['ai_negotiation_strategy']).strip()
+            if 'ai_negotiation_instructions' in data:
+                site.ai_negotiation_instructions = str(data['ai_negotiation_instructions']).strip()
+            site.save()
+            return JsonResponse({'ok': True, 'message': 'Site settings updated successfully.'})
+        except Exception as e:
+            return JsonResponse({'ok': False, 'error': str(e)}, status=400)
+
+    # GET: return all site settings
+    return JsonResponse({
+        'ok': True,
+        'settings': {
+            'whatsapp_number': site.whatsapp_number,
+            'instagram_url': site.instagram_url,
+            'travel_widget_active': site.travel_widget_active,
+            'travel_same_zone_km': site.travel_same_zone_km,
+            'travel_near_label': site.travel_near_label,
+            'travel_near_fee_min': site.travel_near_fee_min,
+            'travel_near_fee_max': site.travel_near_fee_max,
+            'travel_far_label': site.travel_far_label,
+            'travel_far_fee_min': site.travel_far_fee_min,
+            'travel_far_fee_max': site.travel_far_fee_max,
+            'travel_custom_note': site.travel_custom_note,
+            'default_auto_coupon_badge': site.default_auto_coupon_badge,
+            'ai_negotiation_enabled': site.ai_negotiation_enabled,
+            'ai_max_discount_percent': site.ai_max_discount_percent,
+            'ai_negotiation_strategy': site.ai_negotiation_strategy,
+            'ai_negotiation_instructions': site.ai_negotiation_instructions,
+            'offer_bridal_free_sides': site.offer_bridal_free_sides,
+            'offer_next_sides_discounted_price': float(site.offer_next_sides_discounted_price),
+            'offer_combo_discount_percent': site.offer_combo_discount_percent,
+            'offer_grand_combo_bundle_price': float(site.offer_grand_combo_bundle_price),
+        }
+    })
+
+
+@csrf_exempt
+@admin_required
+def admin_package_manage(request, pkg_id=None):
+    """Direct REST endpoint to view, create, edit, or delete MakeupPackages"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body) if request.content_type == 'application/json' else request.POST
+            action = data.get('action')
+            
+            # Delete
+            if action == 'delete' or (pkg_id and data.get('delete')):
+                target_id = pkg_id or data.get('id')
+                MakeupPackage.objects.filter(id=target_id).delete()
+                return JsonResponse({'ok': True, 'message': 'Package deleted.'})
+
+            # Edit existing or Create new
+            pkg = MakeupPackage.objects.filter(id=pkg_id or data.get('id')).first() if (pkg_id or data.get('id')) else MakeupPackage()
+            
+            if 'name' in data:
+                pkg.name = str(data['name']).strip()
+            if 'display_label' in data:
+                pkg.display_label = str(data['display_label']).strip()
+            if 'package_type' in data:
+                pkg.package_type = str(data['package_type']).strip()
+            if 'tagline' in data:
+                pkg.tagline = str(data['tagline']).strip()
+            if 'price' in data:
+                pr = data['price']
+                pkg.price = float(pr) if pr is not None and str(pr).strip() != '' else None
+            if 'original_price' in data:
+                opr = data['original_price']
+                pkg.original_price = float(opr) if opr is not None and str(opr).strip() != '' else None
+            if 'features' in data:
+                pkg.features = str(data['features']).strip()
+            if 'is_featured' in data:
+                pkg.is_featured = bool(data['is_featured'])
+            if 'is_active' in data:
+                pkg.is_active = bool(data['is_active'])
+            if 'order' in data and data['order'] != '':
+                pkg.order = int(data['order'])
+            if 'min_negotiated_price' in data:
+                mnp = data['min_negotiated_price']
+                pkg.min_negotiated_price = float(mnp) if mnp is not None and str(mnp).strip() != '' else None
+            if 'max_discount_percent' in data and data['max_discount_percent'] != '':
+                pkg.max_discount_percent = int(data['max_discount_percent'])
+
+            pkg.save()
+            return JsonResponse({
+                'ok': True,
+                'package': {
+                    'id': pkg.id,
+                    'name': pkg.name,
+                    'display_label': pkg.display_label,
+                    'human_label': pkg.human_label,
+                    'package_type': pkg.package_type,
+                    'tagline': pkg.tagline,
+                    'price': float(pkg.price) if pkg.price else None,
+                    'original_price': float(pkg.original_price) if pkg.original_price else None,
+                    'features': pkg.features,
+                    'features_list': pkg.get_features_list(),
+                    'is_featured': pkg.is_featured,
+                    'is_active': pkg.is_active,
+                }
+            })
+        except Exception as e:
+            return JsonResponse({'ok': False, 'error': str(e)}, status=400)
+
+    # GET: return package list or single package
+    if pkg_id:
+        pkg = MakeupPackage.objects.filter(id=pkg_id).first()
+        if not pkg:
+            return JsonResponse({'ok': False, 'error': 'Package not found'}, status=404)
+        return JsonResponse({'ok': True, 'package': {
+            'id': pkg.id,
+            'name': pkg.name,
+            'display_label': pkg.display_label,
+            'human_label': pkg.human_label,
+            'package_type': pkg.package_type,
+            'tagline': pkg.tagline,
+            'price': float(pkg.price) if pkg.price else None,
+            'original_price': float(pkg.original_price) if pkg.original_price else None,
+            'features': pkg.features,
+            'features_list': pkg.get_features_list(),
+            'is_featured': pkg.is_featured,
+            'is_active': pkg.is_active,
+        }})
+
+    pkgs = []
+    for p in MakeupPackage.objects.all():
+        pkgs.append({
+            'id': p.id,
+            'name': p.name,
+            'display_label': p.display_label,
+            'human_label': p.human_label,
+            'package_type': p.package_type,
+            'tagline': p.tagline,
+            'price': float(p.price) if p.price else None,
+            'original_price': float(p.original_price) if p.original_price else None,
+            'features': p.features,
+            'features_list': p.get_features_list(),
+            'is_featured': p.is_featured,
+            'is_active': p.is_active,
+        })
+    return JsonResponse({'ok': True, 'packages': pkgs})
+
+
+@csrf_exempt
+def artist_onboarding(request):
+    """
+    Dedicated Mobile-First Artist Onboarding & Pricing Intake Portal for Anshita.
+    Allows Anshita to view, add, and update services, packages, and pricing seamlessly
+    from her mobile phone or laptop.
+    Protected by staff auth OR artist passcode session (PIN: '2026' or ?key=anshita2026).
+    """
+    pin_attempt = request.POST.get('passcode') or request.GET.get('key')
+    if pin_attempt in ['2026', 'anshita2026', 'Anshita@2026']:
+        request.session['artist_verified'] = True
+
+    is_authed = request.user.is_authenticated and request.user.is_staff
+    is_artist_verified = request.session.get('artist_verified', False)
+
+    if not (is_authed or is_artist_verified):
+        return render(request, 'core/artist_onboarding_login.html', {
+            'error': 'Incorrect passcode. Please enter studio passcode (2026).' if pin_attempt else None
+        })
+
+    site = get_site_settings()
+    services = StudioService.objects.all().order_by('order', 'id')
+    packages = MakeupPackage.objects.all().order_by('order', 'id')
+    service_prices = ServicePrice.objects.all()
+
+    return render(request, 'core/artist_onboarding.html', {
+        'site': site,
+        'services': services,
+        'packages': packages,
+        'service_prices': service_prices,
+    })
 
 

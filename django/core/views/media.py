@@ -156,12 +156,24 @@ def admin_media_manage(request):
         is_group_cover_raw = request.POST.get('is_group_cover')
         is_group_cover = (is_group_cover_raw in ['1', 'true', 'on']) if is_group_cover_raw is not None else (not look_group_id)
 
+        # File security validations (CWE-434 mitigation)
+        ALLOWED_IMAGE_EXTS = {'.jpg', '.jpeg', '.png', '.webp', '.gif'}
+        ALLOWED_VIDEO_EXTS = {'.mp4', '.webm', '.mov'}
+        MAX_FILE_SIZE = 25 * 1024 * 1024  # 25 MB
+
         if 'image_file' in request.FILES:
-            media_item.image_file = request.FILES['image_file']
+            f = request.FILES['image_file']
+            ext = os.path.splitext(f.name)[1].lower()
+            if ext not in ALLOWED_IMAGE_EXTS:
+                return JsonResponse({'ok': False, 'error': f"Invalid image file type: {ext}. Allowed: {', '.join(sorted(ALLOWED_IMAGE_EXTS))}"}, status=400)
+            if f.size > MAX_FILE_SIZE:
+                return JsonResponse({'ok': False, 'error': "Image file exceeds maximum limit of 25MB."}, status=400)
+
+            media_item.image_file = f
             # Also sync to GalleryImage if section is gallery or both
             if section in ['gallery', 'both']:
                 GalleryImage.objects.create(
-                    image=request.FILES['image_file'],
+                    image=f,
                     caption=title or caption or 'Bridal Couture Look',
                     category=category,
                     look_group_id=look_group_id,
@@ -172,7 +184,14 @@ def admin_media_manage(request):
                 )
 
         if 'video_file' in request.FILES:
-            media_item.video_file = request.FILES['video_file']
+            vf = request.FILES['video_file']
+            vext = os.path.splitext(vf.name)[1].lower()
+            if vext not in ALLOWED_VIDEO_EXTS:
+                return JsonResponse({'ok': False, 'error': f"Invalid video file type: {vext}. Allowed: {', '.join(sorted(ALLOWED_VIDEO_EXTS))}"}, status=400)
+            if vf.size > MAX_FILE_SIZE:
+                return JsonResponse({'ok': False, 'error': "Video file exceeds maximum limit of 25MB."}, status=400)
+
+            media_item.video_file = vf
 
         media_item.save()
 

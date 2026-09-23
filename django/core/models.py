@@ -145,7 +145,8 @@ class MakeupPackage(models.Model):
     package_type = models.CharField(max_length=20, choices=PACKAGE_TYPE, default='bridal')
     tagline = models.CharField(max_length=300, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text='Leave blank for "On Request"')
-    price_label = models.CharField(max_length=100, default='On Request')
+    display_label = models.CharField(max_length=60, blank=True, null=True, help_text='Clean human-friendly label e.g. Bridal Sangeet Makeup')
+    original_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text='Original MRP for strikethrough display')
     features = models.TextField(help_text='One feature per line')
     is_featured = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -161,6 +162,29 @@ class MakeupPackage(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def price_label(self):
+        if self.price:
+            return f"₹{int(self.price):,}"
+        return 'On Request'
+
+    @property
+    def human_label(self):
+        if self.display_label and self.display_label.strip():
+            return self.display_label.strip()
+        type_map = {
+            'bridal': 'Bridal Makeup',
+            'engagement': 'Engagement & Roka',
+            'reception': 'Reception & Sangeet',
+            'side_makeup': 'Side & Family Makeup',
+            'party': 'Party & Festive Glam',
+            'hair': 'Haute Hair Couture',
+            'nails': 'Nails & Extensions',
+            'beauty': 'Pre-Bridal Skincare',
+            'custom': 'Bespoke Package',
+        }
+        return type_map.get(self.package_type, self.name)
 
     def get_features_list(self):
         return [f.strip() for f in self.features.splitlines() if f.strip()]

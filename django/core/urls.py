@@ -27,6 +27,10 @@ urlpatterns = [
     path('api/admin/ai/', views.admin_ai_command, name='admin_ai'),
     path('api/admin/ai-command/', views.admin_ai_command, name='admin_ai_command'),
     path('api/admin/ai-status/', views.admin_ai_status, name='admin_ai_status'),
+    path('api/admin/site-settings/', views.admin_site_settings_manage, name='admin_site_settings'),
+    path('api/admin/package/', views.admin_package_manage, name='admin_package'),
+    path('api/admin/package/<int:pkg_id>/edit/', views.admin_package_manage, name='admin_package_edit'),
     path('sinha-logos/', views.sinha_logo_studio, name='sinha_logo_studio'),
+    path('artist-onboarding/', views.artist_onboarding, name='artist_onboarding'),
 ]
 

@@ -1076,14 +1076,19 @@
       </div>
     </div>
 
-    <!-- LAYER 2: Filterable Masonry Real-Brides Gallery Grid -->
-    <div class="gal-filters rev d2" style="margin-top:10px">
-      <button class="gf-btn active" onclick="filterGal('all')">{{ t.gf_all|default:'All Disciplines' }}</button>
-      <button class="gf-btn" onclick="filterGal('bridal')">{{ t.gf_bridal|default:'Bridal Suites' }}</button>
-      <button class="gf-btn" onclick="filterGal('engagement')">{{ t.gf_engagement|default:'Engagement & Roka' }}</button>
-      <button class="gf-btn" onclick="filterGal('hair')">{{ t.gf_hair|default:'Hair & Draping' }}</button>
-      <button class="gf-btn" onclick="filterGal('nails')">{{ t.gf_nails|default:'Nail Artistry' }}</button>
-      <button class="gf-btn" onclick="filterGal('party')">{{ t.gf_party|default:'Party & Side Glam' }}</button>
+    <!-- LAYER 2: Filterable Masonry Real-Brides Gallery Grid & Dynamic Deal Controls -->
+    <div class="gal-filters rev d2" style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+        <button class="gf-btn active" onclick="filterGal('all')">{{ t.gf_all|default:'All Disciplines' }}</button>
+        <button class="gf-btn" onclick="filterGal('bridal')">{{ t.gf_bridal|default:'Bridal Suites' }}</button>
+        <button class="gf-btn" onclick="filterGal('engagement')">{{ t.gf_engagement|default:'Engagement & Roka' }}</button>
+        <button class="gf-btn" onclick="filterGal('hair')">{{ t.gf_hair|default:'Hair & Draping' }}</button>
+        <button class="gf-btn" onclick="filterGal('nails')">{{ t.gf_nails|default:'Nail Artistry' }}</button>
+        <button class="gf-btn" onclick="filterGal('party')">{{ t.gf_party|default:'Party & Side Glam' }}</button>
+      </div>
+      <button class="btn-liquid-glass" onclick="triggerGalleryCardDeal()" style="padding:8px 18px;font-size:0.75rem;border-color:rgba(212,175,55,0.5);letter-spacing:0.06em" title="Replay full-screen overlapping card deal animation">
+        <span>✨ Deal Portfolio Cards</span>
+      </button>
     </div>
 
     <div class="gal-grid rev d2">
@@ -1418,45 +1423,34 @@
           </div>
         </div>
         <div class="pkg-bundle-body">
+          <div style="font-size:0.72rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:6px">✦ Bridal & Sangeet Grand Vivah</div>
           <h3 class="pkg-bundle-title">The Grand Royal Vivah Celebration</h3>
-          <p class="pkg-bundle-tagline">Complete 3-Event Bridal Journey · Sacred Pheras, Evening Reception & Pre-Wedding Glam + 2 Free Side Makeups</p>
+          <p class="pkg-bundle-tagline" style="margin-bottom:14px">3-Event Complete Bridal Journey · Sacred Pheras, Evening Reception & Pre-Wedding Glam + 2 Free Side Makeups</p>
 
-          <div class="pkg-bundled-box">
-            <div class="pkg-bundled-heading"><span>✦</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
-            <ul class="pkg-bundled-list">
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 1 (Main Wedding Day):</strong> Imperial Royal HD/Airbrush Bridal Makeover & Sacred Pheras Artistry</li>
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 2 (Evening Party):</strong> High-Glam Reception or Cocktail Evening Makeover (Luminous Glass Skin)</li>
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 3 (Ritual):</strong> Engagement Ceremony or Sangeet Night Glamour</li>
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>VIP Entourage Bonus:</strong> 2 Free Side Makeups for Mother & Sister of Bride (Value ₹13,000)</li>
-            </ul>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+            <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.3);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">✦ 3 Event Celebrations</span>
+            <span style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:#86efac;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">🎁 2 Free Family Sides</span>
+            <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:rgba(245,237,214,0.85);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">Dior & TEMPTU Kits</span>
           </div>
 
           <div class="pkg-pricing-calc">
             <div class="pkg-calc-row">
-              <span>Individual A-La-Carte Total Value:</span>
+              <span>Standalone Total Value:</span>
               <del>₹85,000</del>
             </div>
             <div class="pkg-calc-row final">
-              <span>Bundled Package Investment:</span>
+              <span>Bundled Investment:</span>
               <span class="pkg-bundle-rate">₹58,000</span>
             </div>
-            <div class="pkg-savings-pill">✦ Total Savings: Save ₹27,000 (32% Off Standalone Rates) ✦</div>
+            <div class="pkg-savings-pill">✦ Total Savings: Save ₹27,000 (32% Standalone Privilege) ✦</div>
           </div>
 
-          <ul class="pkg-bundle-inclusions">
-            <li>International Master Kits: Dior, Charlotte Tilbury, Huda Beauty, TEMPTU Airbrush</li>
-            <li>Haute Couture Hair Architecture & Fresh Floral Gajra Art for all 3 events</li>
-            <li>Double Bridal Dupatta Pinning & Saree / Lehenga Precision Pleating</li>
-            <li>Deluxe Touchup Kit with Custom Lip Decants & Oil-Blotting Sheets</li>
-            <li>Cry-Proof & Sweat-Proof Formulation (18+ Hours Longevity)</li>
-          </ul>
-
-          <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
             <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-grand-royal', title: 'The Grand Royal Vivah Celebration Suite', price: 58000, originalPrice: 85000, category: 'bridal', isCombo: true, image: '{% static 'core/images/curated/maroon_20251109_191223_p30.jpg' %}'})">
-              🛍️ {{ t.btn_add_bundle_cart|default:'Add Bundle to Cart' }}
+              🛍️ Add to Cart
             </button>
-            <button onclick="openLookbook('maroon_bride')" class="pkg-bundle-btn sec">
-              Explore Look
+            <button onclick="openPackageQuickView('grand-royal')" class="pkg-bundle-btn sec" style="border-color:var(--gold);color:var(--gold-l);font-weight:600">
+              👁️ View Details ✦
             </button>
             <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20The%20Grand%20Royal%20Vivah%20Celebration%20Package%20(3-Event%20Suite%20%2B%202%20Free%20Sides%20for%20₹58,000)." target="_blank" class="pkg-bundle-btn sec" style="border-color:rgba(212,175,55,0.4)">
               Reserve on WhatsApp
@@ -1477,44 +1471,34 @@
           </div>
         </div>
         <div class="pkg-bundle-body">
+          <div style="font-size:0.72rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:6px">✦ Pheras & Reception Milestone Duo</div>
           <h3 class="pkg-bundle-title">Sacred Vivah & Reception Duo</h3>
-          <p class="pkg-bundle-tagline">The Essential Two Major Milestones · Pheras Day & High-Definition Evening Reception Glam</p>
+          <p class="pkg-bundle-tagline" style="margin-bottom:14px">The Essential Two Major Milestones · Pheras Day & High-Definition Evening Reception Glam</p>
 
-          <div class="pkg-bundled-box">
-            <div class="pkg-bundled-heading"><span>✦</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
-            <ul class="pkg-bundled-list">
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 1 (Sacred Pheras):</strong> Imperial Royal HD / Airbrush Bridal Couture & Symmetrical Mathapatti Setting</li>
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 2 (Reception Party):</strong> Reception & Cocktail Evening Glam (Luminous Glass Skin & Shimmer Eyes)</li>
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>2 Couture Hairstyles:</strong> Royal Traditional Floral Updo + Hollywood Glam Waves</li>
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Complete Draping:</strong> Double Dupatta Balancing + Evening Gown/Saree Pleating</li>
-            </ul>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+            <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.3);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">✦ 2 Major Milestones</span>
+            <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.3);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">Glass Skin & Mathapatti</span>
+            <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:rgba(245,237,214,0.85);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">2 Haute Hairstyles</span>
           </div>
 
           <div class="pkg-pricing-calc">
             <div class="pkg-calc-row">
-              <span>Individual A-La-Carte Total Value:</span>
+              <span>Standalone Total Value:</span>
               <del>₹60,000</del>
             </div>
             <div class="pkg-calc-row final">
-              <span>Bundled Package Investment:</span>
+              <span>Bundled Investment:</span>
               <span class="pkg-bundle-rate">₹45,000</span>
             </div>
-            <div class="pkg-savings-pill">✦ Total Savings: Save ₹15,000 (25% Off Standalone Rates) ✦</div>
+            <div class="pkg-savings-pill">✦ Total Savings: Save ₹15,000 (25% Standalone Privilege) ✦</div>
           </div>
 
-          <ul class="pkg-bundle-inclusions">
-            <li>MAC Pro, Estée Lauder, Anastasia Beverly Hills & Dior Kits</li>
-            <li>Cry-proof & humidity-resistant base engineered for stage lighting</li>
-            <li>Premium 3D Mink Lashes & Mathapatti / Nath alignment</li>
-            <li>Complimentary Touchup Kit with Custom Lip Vial</li>
-          </ul>
-
-          <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
             <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-vivah-duo', title: 'Sacred Vivah & Reception Duo Suite', price: 45000, originalPrice: 60000, category: 'bridal', isCombo: true, image: '{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}'})">
-              🛍️ {{ t.btn_add_bundle_cart|default:'Add Bundle to Cart' }}
+              🛍️ Add to Cart
             </button>
-            <button onclick="openLookbook('cocktail')" class="pkg-bundle-btn sec">
-              Explore Looks
+            <button onclick="openPackageQuickView('vivah-duo')" class="pkg-bundle-btn sec" style="border-color:var(--gold);color:var(--gold-l);font-weight:600">
+              👁️ View Details ✦
             </button>
             <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Sacred%20Vivah%20%26%20Reception%20Duo%20Package%20(₹45,000)." target="_blank" class="pkg-bundle-btn sec" style="border-color:rgba(212,175,55,0.4)">
               Reserve on WhatsApp
@@ -1535,44 +1519,34 @@
           </div>
         </div>
         <div class="pkg-bundle-body">
+          <div style="font-size:0.72rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:6px">✦ Ring Ceremony & Sangeet Glam</div>
           <h3 class="pkg-bundle-title">Pre-Wedding Rites & Festivities Trio</h3>
-          <p class="pkg-bundle-tagline">Youthful, Radiant & Long-Wear Coverage Across Ring Ceremony, Sangeet & Bridal Nails</p>
+          <p class="pkg-bundle-tagline" style="margin-bottom:14px">Radiant Long-Wear Coverage Across Ring Ceremony, Sangeet & Swarovski Gel Nails</p>
 
-          <div class="pkg-bundled-box">
-            <div class="pkg-bundled-heading"><span>✦</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
-            <ul class="pkg-bundled-list">
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 1 (Ring Ceremony):</strong> Engagement / Roka Ceremonial Glow (Dewy Glass Skin)</li>
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Event 2 (Music Night):</strong> Sangeet / Mehendi High-Energy Glam (Dance-Resistant Base)</li>
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Artisanal Nail Couture:</strong> Full Set Gel/Acrylic Extensions with Swarovski Crystal Embellishments</li>
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Styling & Draping:</strong> 3 Thermal Hairstyles & Outfit Draping for All 3 Functions</li>
-            </ul>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+            <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.3);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">✦ Roka + Sangeet</span>
+            <span style="background:rgba(192,132,252,0.12);border:1px solid rgba(192,132,252,0.3);color:#e9d5ff;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">💅 Swarovski Gel Nails</span>
+            <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:rgba(245,237,214,0.85);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">3 Thermal Hairstyles</span>
           </div>
 
           <div class="pkg-pricing-calc">
             <div class="pkg-calc-row">
-              <span>Individual A-La-Carte Total Value:</span>
+              <span>Standalone Total Value:</span>
               <del>₹47,500</del>
             </div>
             <div class="pkg-calc-row final">
-              <span>Bundled Package Investment:</span>
+              <span>Bundled Investment:</span>
               <span class="pkg-bundle-rate">₹34,000</span>
             </div>
-            <div class="pkg-savings-pill">✦ Total Savings: Save ₹13,500 (~28% Off Standalone Rates) ✦</div>
+            <div class="pkg-savings-pill">✦ Total Savings: Save ₹13,500 (~28% Standalone Privilege) ✦</div>
           </div>
 
-          <ul class="pkg-bundle-inclusions">
-            <li>Too Faced, Laura Mercier, Fenty Beauty & NARS Formulas</li>
-            <li>3 Distinct Hairstyles: Textured Waves, Floral Braids & Half-Updo</li>
-            <li>Long-Wear Chip-Resistant Swarovski Gel Nails (3–4 weeks durability)</li>
-            <li>Gown, Sharara & Pastel Lehenga Draping Included</li>
-          </ul>
-
-          <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
             <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-pre-wedding-trio', title: 'Pre-Wedding Rites & Festivities Trio', price: 34000, originalPrice: 47500, category: 'engagement', isCombo: true, image: '{% static 'core/images/curated/ig_post_DSrKrDHiLNPGzQHnwZkcRe3YUoC5fCc24nWZjQ0.jpg' %}'})">
-              🛍️ {{ t.btn_add_bundle_cart|default:'Add Bundle to Cart' }}
+              🛍️ Add to Cart
             </button>
-            <button onclick="openLookbook('engagement')" class="pkg-bundle-btn sec">
-              Explore Looks
+            <button onclick="openPackageQuickView('pre-wedding-trio')" class="pkg-bundle-btn sec" style="border-color:var(--gold);color:var(--gold-l);font-weight:600">
+              👁️ View Details ✦
             </button>
             <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Pre-Wedding%20Rites%20%26%20Festivities%20Trio%20(₹34,000)." target="_blank" class="pkg-bundle-btn sec" style="border-color:rgba(212,175,55,0.4)">
               Reserve on WhatsApp
@@ -1593,17 +1567,14 @@
           </div>
         </div>
         <div class="pkg-bundle-body">
+          <div style="font-size:0.72rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:6px">✦ Side & Family Makeover Suite</div>
           <h3 class="pkg-bundle-title">Royal Family & Bridesmaids Ensemble</h3>
-          <p class="pkg-bundle-tagline">Coordinated Bridal Entourage · Mothers, Sisters & Bridesmaids (Complimentary 4th Guest Privilege)</p>
+          <p class="pkg-bundle-tagline" style="margin-bottom:14px">Coordinated Bridal Entourage · Mothers, Sisters & Bridesmaids (Complimentary 4th Guest Privilege)</p>
 
-          <div class="pkg-bundled-box">
-            <div class="pkg-bundled-heading"><span>✦</span> BUNDLED SERVICES INCLUDED IN THIS SUITE:</div>
-            <ul class="pkg-bundled-list">
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>4 Complete HD Makeovers:</strong> Camera-Ready Long-Wear Base Tailored to Each Face Shape</li>
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>4 Customized Hairstyles:</strong> Textured Waves, Sleek Chignons or Festive Floral Buns</li>
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>4 Draping Sessions:</strong> Saree Pleating, Dupatta Pinning & Jewellery Alignment for All 4 Guests</li>
-              <li class="pkg-bundled-item"><span class="icon">✦</span> <strong>Synchronized Execution:</strong> Dedicated Studio Team Ensuring Zero Delays on Wedding Morning</li>
-            </ul>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+            <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.3);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">✦ 4 Complete HD Looks</span>
+            <span style="background:rgba(194,96,122,0.15);border:1px solid rgba(194,96,122,0.3);color:#f472b6;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">👑 4th Guest Free</span>
+            <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:rgba(245,237,214,0.85);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">4 Hairstyles & Drapes</span>
           </div>
 
           <div class="pkg-pricing-calc">
@@ -1612,25 +1583,18 @@
               <del>₹26,000</del>
             </div>
             <div class="pkg-calc-row final">
-              <span>Bundled Package Investment:</span>
+              <span>Bundled Investment:</span>
               <span class="pkg-bundle-rate">₹19,500 <small style="font-size:0.75rem;color:rgba(245,237,214,0.6)">(₹4,875 / Guest)</small></span>
             </div>
             <div class="pkg-savings-pill">✦ Total Savings: Save ₹6,500 (4th Guest Complimentary) ✦</div>
           </div>
 
-          <ul class="pkg-bundle-inclusions">
-            <li>MAC, Clinique, PAC Pro & Kryolan Professional High-Definition Kits</li>
-            <li>Seamless Aesthetic Coordination Harmonized with the Bride's Theme</li>
-            <li>Lash placement, subtle sculpting & luminescent highlights</li>
-            <li>Iron-free saree box pleating & dupatta security</li>
-          </ul>
-
-          <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
             <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-family-ensemble', title: 'Royal Family & Bridesmaids Ensemble (4 Guests)', price: 19500, originalPrice: 26000, category: 'party', isCombo: true, image: '{% static 'core/images/curated/ig_post_DVTThv0CI_psJjhtWi0TP5npf_Crqxgeq7JBTE0.jpg' %}'})">
-              🛍️ {{ t.btn_add_bundle_cart|default:'Add Bundle to Cart' }}
+              🛍️ Add to Cart
             </button>
-            <button onclick="openLookbook('bridesmaids')" class="pkg-bundle-btn sec">
-              Explore Looks
+            <button onclick="openPackageQuickView('family-ensemble')" class="pkg-bundle-btn sec" style="border-color:var(--gold);color:var(--gold-l);font-weight:600">
+              👁️ View Details ✦
             </button>
             <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20reserve%20the%20Royal%20Family%20%26%20Bridesmaids%20Ensemble%20(4%20Persons%20for%20₹19,500)." target="_blank" class="pkg-bundle-btn sec" style="border-color:rgba(212,175,55,0.4)">
               Reserve on WhatsApp
@@ -2298,6 +2262,304 @@
 </section>
 
 <!-- ═══ FOOTER ═══ -->
+<!-- ═══ LUXURY QUICK-VIEW PACKAGE DETAILS MODAL (PART 02) ═══ -->
+<style>
+.pkg-quickview-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 6, 5, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 10005;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+.pkg-quickview-modal.open {
+  display: flex;
+}
+.pqv-modal-dialog {
+  background: linear-gradient(145deg, #14100c, #0d0a08);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.15);
+  border-radius: 16px;
+  max-width: 920px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 36px 32px;
+  color: #f5edd6;
+  animation: pqvFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes pqvFadeUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.pqv-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: var(--gold);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+.pqv-close-btn:hover {
+  background: var(--gold);
+  color: #0d0a08;
+  transform: rotate(90deg);
+}
+.pqv-header {
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  padding-bottom: 20px;
+}
+.pqv-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.08));
+  border: 1px solid var(--gold);
+  color: var(--gold-l);
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+.pqv-title {
+  font-family: var(--font-h, 'Cinzel', serif);
+  font-size: 1.85rem;
+  color: #fff;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+.pqv-subtitle {
+  font-size: 0.88rem;
+  color: rgba(245, 237, 214, 0.75);
+  line-height: 1.5;
+}
+.pqv-content-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 28px;
+}
+@media (max-width: 768px) {
+  .pqv-content-grid { grid-template-columns: 1fr; }
+  .pqv-modal-dialog { padding: 24px 18px; }
+  .pqv-title { font-size: 1.45rem; }
+}
+.pqv-section-heading {
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  color: var(--gold);
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pqv-event-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.pqv-event-title {
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--gold-l);
+  margin-bottom: 4px;
+}
+.pqv-event-desc {
+  font-size: 0.78rem;
+  color: rgba(245, 237, 214, 0.8);
+  line-height: 1.4;
+}
+.pqv-inclusions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.pqv-inclusions-list li {
+  font-size: 0.8rem;
+  color: rgba(245, 237, 214, 0.85);
+  margin-bottom: 8px;
+  position: relative;
+  padding-left: 20px;
+  line-height: 1.4;
+}
+.pqv-inclusions-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-weight: 800;
+}
+.pqv-pricing-card {
+  background: rgba(212, 175, 55, 0.04);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+.pqv-pricing-label {
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+  color: rgba(245, 237, 214, 0.6);
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.pqv-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+  color: rgba(245, 237, 214, 0.7);
+}
+.pqv-price-row.final {
+  border-top: 1px dashed rgba(212, 175, 55, 0.2);
+  padding-top: 10px;
+  margin-top: 8px;
+  font-size: 0.95rem;
+  color: #fff;
+  font-weight: 700;
+}
+.pqv-rate-gold {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--gold);
+}
+.pqv-savings-badge {
+  background: linear-gradient(135deg, #15803d, #166534);
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 12px;
+  border-radius: 14px;
+  margin: 14px 0;
+}
+.pqv-guarantee-note {
+  font-size: 0.72rem;
+  color: rgba(245, 237, 214, 0.65);
+  line-height: 1.5;
+  margin: 12px 0 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 12px;
+}
+.pqv-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pqv-btn-cart {
+  background: linear-gradient(135deg, var(--gold), #b89628);
+  color: #0d0a08;
+  border: none;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.5px;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+.pqv-btn-cart:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+.pqv-btn-wa {
+  background: transparent;
+  border: 1px solid rgba(37, 211, 102, 0.45);
+  color: #4ade80;
+  font-weight: 600;
+  font-size: 0.78rem;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  transition: all 0.2s ease;
+}
+.pqv-btn-wa:hover {
+  background: rgba(37, 211, 102, 0.1);
+}
+</style>
+
+<div id="pkgQuickViewModal" class="pkg-quickview-modal" onclick="if(event.target===this) closePackageQuickView()">
+  <div class="pqv-modal-dialog">
+    <button class="pqv-close-btn" onclick="closePackageQuickView()" title="Close Details">✕</button>
+    
+    <div class="pqv-header">
+      <span id="pqvCategoryBadge" class="pqv-badge">Flagship 3-Event Suite</span>
+      <h2 id="pqvTitle" class="pqv-title">The Grand Royal Vivah Celebration</h2>
+      <p id="pqvSubtitle" class="pqv-subtitle">3-Event Complete Bridal Journey · Sacred Pheras, Evening Reception & Pre-Wedding Glam + 2 Free Side Makeups</p>
+    </div>
+
+    <div class="pqv-content-grid">
+      <!-- Left Column: Events & Inclusions -->
+      <div class="pqv-col-left">
+        <div class="pqv-section-heading"><span>✦</span> BUNDLED SERVICES INCLUDED IN THIS SUITE</div>
+        <div id="pqvEventsList" class="pqv-events-list"></div>
+
+        <div class="pqv-section-heading" style="margin-top:20px"><span>✦</span> HAUTE COUTURE INCLUSIONS & MASTER FORMULAS</div>
+        <ul id="pqvInclusionsList" class="pqv-inclusions-list"></ul>
+      </div>
+
+      <!-- Right Column: Investment Summary & Checkout -->
+      <div class="pqv-col-right">
+        <div class="pqv-pricing-card">
+          <div class="pqv-pricing-label">INVESTMENT BREAKDOWN</div>
+          <div class="pqv-price-row">
+            <span>Standalone A-La-Carte Value:</span>
+            <del id="pqvOriginalRate">₹85,000</del>
+          </div>
+          <div class="pqv-price-row final">
+            <span>Bundled Privilege Rate:</span>
+            <span id="pqvBundleRate" class="pqv-rate-gold">₹58,000</span>
+          </div>
+          <div id="pqvSavingsPill" class="pqv-savings-badge">
+            ✦ Save ₹27,000 (32% Standalone Privilege) ✦
+          </div>
+
+          <div class="pqv-guarantee-note">
+            <p>✓ 100% On-Time Artist Arrival Guarantee</p>
+            <p>✓ International Cry-Proof & Sweat-Proof Formulation</p>
+            <p>✓ Personalized Bridal Skincare Consultation Included</p>
+          </div>
+
+          <div class="pqv-actions">
+            <button id="pqvAddCartBtn" class="pqv-btn-cart">
+              🛍️ Add Suite to Trousseau Cart
+            </button>
+            <a id="pqvWaBtn" href="#" target="_blank" class="pqv-btn-wa">
+              💬 Reserve Instantly via WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="f-logo"><img src="{% static 'core/images/logo.jpeg' %}" alt="Anshita Makeover"></div>
   <p class="f-tag">{{ t.footer_tag|default:'✦ Transforming Beauty, Celebrating Elegance ✦' }}</p>
@@ -3909,16 +4171,190 @@ window.closeServiceComboModal = function() {
   document.body.style.overflow = '';
 };
 
+/* ── Luxury Package Quick-View Modal Controller (Part 02) ── */
+const PACKAGE_DETAILS_STORE = {
+  'grand-royal': {
+    title: 'The Grand Royal Vivah Celebration',
+    subtitle: '3-Event Complete Bridal Journey · Sacred Pheras, Evening Reception & Pre-Wedding Glam + 2 Free Side Makeups',
+    category: 'Flagship 3-Event Suite',
+    bundleRate: 58000,
+    originalRate: 85000,
+    savings: 27000,
+    savingsPercent: '32%',
+    image: '/static/core/images/curated/maroon_20251109_191223_p30.jpg',
+    events: [
+      { title: 'Event 1 (Main Wedding Day):', desc: 'Imperial Royal HD/Airbrush Bridal Makeover, Sacred Pheras Artistry & Symmetrical Mathapatti Setting' },
+      { title: 'Event 2 (Evening Party):', desc: 'High-Glam Reception or Cocktail Evening Makeover with Luminous Glass Skin' },
+      { title: 'Event 3 (Ritual):', desc: 'Engagement Ceremony or Sangeet Night Glamour' },
+      { title: 'VIP Entourage Bonus:', desc: '2 Free Side Makeups for Mother & Sister of Bride (Worth ₹13,000 complimentary)' }
+    ],
+    inclusions: [
+      'International Master Kits: Dior, Charlotte Tilbury, Huda Beauty & TEMPTU Airbrush',
+      'Haute Couture Hair Architecture & Fresh Floral Gajra Art for all 3 events',
+      'Double Bridal Dupatta Pinning & Saree / Lehenga Precision Pleating',
+      'Deluxe Touchup Kit with Custom Lip Decants & Oil-Blotting Sheets',
+      'Cry-Proof & Sweat-Proof Formulation (18+ Hours Longevity)'
+    ],
+    waMessage: 'Namaste Anshita Makeover! I would like to reserve The Grand Royal Vivah Celebration Package (3-Event Suite + 2 Free Sides for ₹58,000).'
+  },
+  'vivah-duo': {
+    title: 'Sacred Vivah & Reception Duo',
+    subtitle: 'The Essential Two Major Milestones · Pheras Day & High-Definition Evening Reception Glam',
+    category: 'Most Loved Bridal Duo',
+    bundleRate: 45000,
+    originalRate: 60000,
+    savings: 15000,
+    savingsPercent: '25%',
+    image: '/static/core/images/curated/royal_crimson_bride_angle3.jpg',
+    events: [
+      { title: 'Event 1 (Sacred Pheras):', desc: 'Imperial Royal HD / Airbrush Bridal Couture & Symmetrical Mathapatti Setting' },
+      { title: 'Event 2 (Reception Party):', desc: 'Reception & Cocktail Evening Glam (Luminous Glass Skin & Shimmer Eyes)' },
+      { title: '2 Couture Hairstyles:', desc: 'Royal Traditional Floral Updo + Hollywood Glam Waves' },
+      { title: 'Complete Draping:', desc: 'Double Dupatta Balancing + Evening Gown / Saree Pleating' }
+    ],
+    inclusions: [
+      'MAC Pro, Estée Lauder, Anastasia Beverly Hills & Dior Kits',
+      'Cry-proof & humidity-resistant base engineered for stage lighting',
+      'Premium 3D Mink Lashes & Mathapatti / Nath alignment',
+      'Complimentary Touchup Kit with Custom Lip Vial'
+    ],
+    waMessage: 'Namaste Anshita Makeover! I would like to reserve the Sacred Vivah & Reception Duo Package (₹45,000).'
+  },
+  'pre-wedding-trio': {
+    title: 'Pre-Wedding Rites & Festivities Trio',
+    subtitle: 'Youthful, Radiant & Long-Wear Coverage Across Ring Ceremony, Sangeet & Swarovski Gel Nails',
+    category: 'Pre-Wedding Trio',
+    bundleRate: 34000,
+    originalRate: 47500,
+    savings: 13500,
+    savingsPercent: '28%',
+    image: '/static/core/images/curated/ig_post_DSrKrDHiLNPGzQHnwZkcRe3YUoC5fCc24nWZjQ0.jpg',
+    events: [
+      { title: 'Event 1 (Ring Ceremony):', desc: 'Engagement / Roka Ceremonial Glow (Dewy Glass Skin)' },
+      { title: 'Event 2 (Music Night):', desc: 'Sangeet / Mehendi High-Energy Glam (Dance-Resistant Base)' },
+      { title: 'Artisanal Nail Couture:', desc: 'Full Set Gel/Acrylic Extensions with Swarovski Crystal Embellishments' },
+      { title: 'Styling & Draping:', desc: '3 Thermal Hairstyles & Outfit Draping for All 3 Functions' }
+    ],
+    inclusions: [
+      'Too Faced, Laura Mercier, Fenty Beauty & NARS Formulas',
+      '3 Distinct Hairstyles: Textured Waves, Floral Braids & Half-Updo',
+      'Long-Wear Chip-Resistant Swarovski Gel Nails (3–4 weeks durability)',
+      'Gown, Sharara & Pastel Lehenga Draping Included'
+    ],
+    waMessage: 'Namaste Anshita Makeover! I would like to reserve the Pre-Wedding Rites & Festivities Trio (₹34,000).'
+  },
+  'family-ensemble': {
+    title: 'Royal Family & Bridesmaids Ensemble',
+    subtitle: 'Coordinated Bridal Entourage · Mothers, Sisters & Bridesmaids (Complimentary 4th Guest Privilege)',
+    category: 'Entourage Ensemble (4 Guests)',
+    bundleRate: 19500,
+    originalRate: 26000,
+    savings: 6500,
+    savingsPercent: '25%',
+    image: '/static/core/images/curated/ig_post_DVTThv0CI_psJjhtWi0TP5npf_Crqxgeq7JBTE0.jpg',
+    events: [
+      { title: '4 Complete HD Makeovers:', desc: 'Camera-Ready Long-Wear Base Tailored to Each Face Shape' },
+      { title: '4 Customized Hairstyles:', desc: 'Textured Waves, Sleek Chignons or Festive Floral Buns' },
+      { title: '4 Draping Sessions:', desc: 'Saree Pleating, Dupatta Pinning & Jewellery Alignment for All 4 Guests' },
+      { title: 'Synchronized Execution:', desc: 'Dedicated Studio Team Ensuring Zero Delays on Wedding Morning' }
+    ],
+    inclusions: [
+      'MAC, Clinique, PAC Pro & Kryolan Professional High-Definition Kits',
+      'Seamless Aesthetic Coordination Harmonized with the Bride\'s Theme',
+      'Lash placement, subtle sculpting & luminescent highlights',
+      'Iron-free saree box pleating & dupatta security'
+    ],
+    waMessage: 'Namaste Anshita Makeover! I would like to reserve the Royal Family & Bridesmaids Ensemble (4 Persons for ₹19,500).'
+  }
+};
+
+window.openPackageQuickView = function(key) {
+  const pkg = PACKAGE_DETAILS_STORE[key];
+  if(!pkg) return;
+
+  const modal = document.getElementById('pkgQuickViewModal');
+  if(!modal) return;
+
+  document.getElementById('pqvCategoryBadge').textContent = pkg.category;
+  document.getElementById('pqvTitle').textContent = pkg.title;
+  document.getElementById('pqvSubtitle').textContent = pkg.subtitle;
+
+  // Events list
+  const eventsContainer = document.getElementById('pqvEventsList');
+  eventsContainer.innerHTML = pkg.events.map(ev => `
+    <div class="pqv-event-card">
+      <div class="pqv-event-title">${ev.title}</div>
+      <div class="pqv-event-desc">${ev.desc}</div>
+    </div>
+  `).join('');
+
+  // Inclusions list
+  const incContainer = document.getElementById('pqvInclusionsList');
+  incContainer.innerHTML = pkg.inclusions.map(inc => `<li>${inc}</li>`).join('');
+
+  // Pricing
+  document.getElementById('pqvOriginalRate').textContent = `₹${pkg.originalRate.toLocaleString('en-IN')}`;
+  document.getElementById('pqvBundleRate').textContent = `₹${pkg.bundleRate.toLocaleString('en-IN')}`;
+  document.getElementById('pqvSavingsPill').textContent = `✦ Save ₹${pkg.savings.toLocaleString('en-IN')} (${pkg.savingsPercent} Standalone Privilege) ✦`;
+
+  // Buttons
+  const cartBtn = document.getElementById('pqvAddCartBtn');
+  cartBtn.onclick = () => {
+    AnshitaCart.addItem({
+      id: `pkg-${key}`,
+      title: pkg.title,
+      price: pkg.bundleRate,
+      originalPrice: pkg.originalRate,
+      category: 'bridal',
+      isCombo: true,
+      image: pkg.image
+    });
+    closePackageQuickView();
+  };
+
+  const waBtn = document.getElementById('pqvWaBtn');
+  waBtn.href = `https://wa.me/{{ whatsapp }}?text=${encodeURIComponent(pkg.waMessage)}`;
+
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closePackageQuickView = function() {
+  const modal = document.getElementById('pkgQuickViewModal');
+  if(modal) modal.classList.remove('open');
+  document.body.style.overflow = '';
+};
+
 // Initialize calculator and showcase on page load
-document.addEventListener('DOMContentLoaded', () => {
+function initHomePageScripts() {
   updateCalc();
   startGalHeroAutoRotate();
   loadCityDistances().then(() => calculateTravelEstimate());
-});
-if(document.readyState === 'complete' || document.readyState === 'interactive'){
-  updateCalc();
-  startGalHeroAutoRotate();
-  loadCityDistances().then(() => calculateTravelEstimate());
+
+  // Auto-trigger Card Deal entrance once when gallery enters view
+  const galSection = document.getElementById('gallery');
+  if (galSection && 'IntersectionObserver' in window) {
+    let dealTriggered = false;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !dealTriggered) {
+          dealTriggered = true;
+          setTimeout(() => {
+            if (typeof triggerGalleryCardDeal === 'function') {
+              triggerGalleryCardDeal();
+            }
+          }, 350);
+          observer.unobserve(galSection);
+        }
+      });
+    }, { threshold: 0.15 });
+    observer.observe(galSection);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initHomePageScripts);
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  initHomePageScripts();
 }
 </script>
 {% endblock %}

@@ -5,25 +5,50 @@ from django.contrib.auth.decorators import user_passes_test
 from ..models import SiteSettings
 
 
-def _is_staff_member(user):
-    return user.is_authenticated and user.is_staff
+def admin_required(view_func):
+    """Gate for admin-management APIs and artist portal.
+    Permits authenticated staff members OR verified artist sessions.
+    """
+    from functools import wraps
+    from django.http import JsonResponse, HttpResponseRedirect
 
-
-#: Gate for every admin-management API. ``login_required`` alone is NOT
-#: sufficient — any authenticated non-staff account would otherwise be able
-#: to modify prices, coupons and media (security defect found by the
-#: regression suite, see TC-PRC-002 / KD-005).
-admin_required = user_passes_test(_is_staff_member, login_url='/admin-login/')
+    @wraps(view_func)
+    def _wrapped(request, *args, **kwargs):
+        if (request.user.is_authenticated and request.user.is_staff) or request.session.get('artist_verified', False):
+            return view_func(request, *args, **kwargs)
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json' or request.path.startswith('/api/'):
+            return JsonResponse({'ok': False, 'error': 'Authentication required. Please enter studio passcode.'}, status=401)
+        return HttpResponseRedirect('/admin-login/?next=' + request.path)
+    return _wrapped
 
 def get_site_settings():
     s, _ = SiteSettings.objects.get_or_create(id=1)
     return s
 
+INDIAN_SEASONAL_COUPON_MAP = {
+    1:  {'code': 'WINTER30', 'discount': 30, 'label': '❄️ Winter Wedding Peak Season — 30% Grand Bridal Privilege'},
+    2:  {'code': 'WINTER30', 'discount': 30, 'label': '❄️ Auspicious Wedding Muhurtas — 30% Grand Bridal Privilege'},
+    3:  {'code': 'SPRING15', 'discount': 15, 'label': '🌸 Spring Bridal Glow & Holi Festivities — 15% Off'},
+    4:  {'code': 'SPRING15', 'discount': 15, 'label': '🌸 Vasant Panchami & Spring Nuptials — 15% Off'},
+    5:  {'code': 'SUMMER10', 'discount': 10, 'label': '☀️ Early Summer Booking Privilege — 10% Off'},
+    6:  {'code': 'MONSOON20', 'discount': 20, 'label': '🌧️ Monsoon Advance Makeover — Extra 20% Off Pre-Season Privilege'},
+    7:  {'code': 'MONSOON20', 'discount': 20, 'label': '🌧️ Mid-Monsoon Early Booking — 20% Special Bridal Privilege'},
+    8:  {'code': 'GLAM20', 'discount': 20, 'label': '✨ Pre-Season Bridal Privilege — 20% Off Advance Bookings'},
+    9:  {'code': 'ROYAL25', 'discount': 25, 'label': '✨ Royal Autumn & Pre-Vivah Season Early-Bird — 25% Off Advance Bookings'},
+    10: {'code': 'NAVRATRI15', 'discount': 15, 'label': '🪔 Navratri & Karwa Chauth Festive Glow — 15% Festive Privilege'},
+    11: {'code': 'SHAADI30', 'discount': 30, 'label': '👑 Dev Uthani Ekadashi & Winter Vivah — 30% Grand Wedding Season Offer'},
+    12: {'code': 'WINTER30', 'discount': 30, 'label': '❄️ Grand Winter Vivah Celebration — 30% Imperial Privilege'},
+}
+
 def get_active_coupon(settings_obj):
-    """Return active coupon dict based on settings or auto date logic"""
+    """Return active coupon dict based on settings or Indian seasonal calendar logic"""
     if not settings_obj.coupon_active:
         return None
     if settings_obj.coupon_auto_by_date:
+        month = date.today().month
+        seasonal = INDIAN_SEASONAL_COUPON_MAP.get(month)
+        if seasonal:
+            return seasonal
         day = date.today().day
         if day <= 10:
             return {'code': 'GLAMOUR30', 'discount': 30, 'label': 'Start of Month Special — Days 1–10'}

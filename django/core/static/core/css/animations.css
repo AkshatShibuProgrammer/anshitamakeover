@@ -79,7 +79,301 @@
   transform: translateZ(0);
 }
 
-/* 6. Accessible Reduced Motion Override */
+/* 7. Liquid Glass Haute Couture Button */
+.btn-liquid-glass {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
+              inset 0 1px 1px 0 rgba(255, 255, 255, 0.25),
+              inset 0 -1px 2px 0 rgba(212, 175, 55, 0.2);
+  color: #FAF7F2;
+  font-family: var(--font-b, 'Outfit', sans-serif);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, box-shadow;
+}
+
+.btn-liquid-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.25) 40%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(212, 175, 55, 0.25) 60%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  transition: left 0.75s ease;
+  pointer-events: none;
+}
+
+.btn-liquid-glass:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.7);
+  box-shadow: 0 14px 40px rgba(212, 175, 55, 0.25),
+              0 0 20px rgba(212, 175, 55, 0.2),
+              inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  color: #FFF6D6;
+}
+
+.btn-liquid-glass:hover::before {
+  left: 200%;
+}
+
+.btn-liquid-glass:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* 8. Rolling / Slot-Machine Number Transition */
+.rolling-number-wrap {
+  display: inline-flex;
+  overflow: hidden;
+  height: 1.2em;
+  line-height: 1.2em;
+  vertical-align: middle;
+}
+
+.rolling-digit-strip {
+  display: inline-flex;
+  flex-direction: column;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* 9. Scrolltide-Inspired 3D Perspective Card Tilt */
+.tilt-luxury-card {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
+  will-change: transform, box-shadow;
+}
+
+.tilt-luxury-card:hover {
+  transform: translateY(-6px) rotateX(2deg) rotateY(-2deg) scale(1.015);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(212, 175, 55, 0.2);
+}
+
+/* 10. Scroll-Driven Golden Progress Line */
+#scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2.5px;
+  width: 0%;
+  background: linear-gradient(90deg, #9A7B1C 0%, #D4AF37 50%, #F5E296 100%);
+  z-index: 99999;
+  pointer-events: none;
+  transition: width 0.08s linear;
+}
+
+/* 11. Cinematic Image Parallax / Slow-Zoom Container */
+.cinematic-zoom-frame {
+  overflow: hidden;
+  border-radius: var(--radius, 16px);
+}
+
+.cinematic-zoom-frame img,
+.cinematic-zoom-frame video {
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.cinematic-zoom-frame:hover img,
+.cinematic-zoom-frame:hover video {
+  transform: scale(1.06);
+}
+
+/* 12. Full-Screen Photo Stack Deal & Grid Cascade Animation */
+.gal-grid.dealing {
+  position: relative;
+  min-height: 480px;
+}
+
+.gal-item {
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), 
+              opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s ease;
+  will-change: transform, opacity;
+}
+
+.gal-item.stack-deal-card {
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(212, 175, 55, 0.35);
+  border: 1px solid rgba(212, 175, 55, 0.6);
+}
+
+.gal-item.docked-glow {
+  animation: dockedGlowSheen 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dockedGlowSheen {
+  0% {
+    box-shadow: 0 0 0 rgba(212, 175, 55, 0);
+  }
+  40% {
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.6), 0 10px 40px rgba(0, 0, 0, 0.8);
+  }
+  100% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Related Looks & Angles Filmstrip inside Lookbook Modal */
+.peek-related-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 900px;
+  margin: 14px auto 0;
+  padding: 0 16px;
+  z-index: 10;
+}
+
+.peek-related-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-l, #F5E296);
+  font-weight: 600;
+}
+
+.peek-related-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 6px 4px 10px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 55, 0.4) transparent;
+}
+
+.peek-related-strip::-webkit-scrollbar {
+  height: 4px;
+}
+.peek-related-strip::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.4);
+  border-radius: 4px;
+}
+
+.peek-thumb-card {
+  position: relative;
+  flex: 0 0 68px;
+  height: 68px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  background: #111;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, border-color;
+}
+
+.peek-thumb-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.peek-thumb-card:hover {
+  transform: translateY(-3px) scale(1.08);
+  border-color: var(--gold, #D4AF37);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6), 0 0 12px rgba(212, 175, 55, 0.35);
+}
+
+.peek-thumb-card.active {
+  border-color: var(--gold, #D4AF37);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.4), 0 8px 24px rgba(0, 0, 0, 0.7);
+  transform: translateY(-2px) scale(1.06);
+}
+
+.peek-thumb-card.active::after {
+  content: '✦';
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
+  font-size: 0.65rem;
+  color: var(--gold);
+}
+
+/* 14. Mobile Ergonomics & Touch Optimization (Under 768px) */
+@media (max-width: 768px) {
+  /* Prevent horizontal screen bleeding */
+  html, body {
+    overflow-x: hidden !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+
+  /* Compact luxury language selector on mobile */
+  .nav-lang {
+    max-width: 155px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 2px 4px !important;
+  }
+  .nav-lang::-webkit-scrollbar {
+    display: none;
+  }
+  .nav-lang .lang-btn {
+    padding: 3px 6px !important;
+    font-size: 0.65rem !important;
+    white-space: nowrap;
+  }
+
+  /* Sticky header ergonomics */
+  #mnav {
+    padding: 8px 12px !important;
+  }
+
+  /* Full-screen deal cards: mobile scaling */
+  .gal-item.stack-deal-card {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  /* Filmstrip in lookbook modal: comfortable finger tap targets */
+  .peek-thumb-card {
+    flex: 0 0 58px;
+    height: 58px;
+  }
+
+  /* Liquid glass buttons on mobile: full tap targets */
+  .btn-liquid-glass {
+    padding: 12px 20px !important;
+    font-size: 0.8rem !important;
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+/* 15. Accessible Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {
   .gold-shimmer-fx,
   .couture-pulse,
@@ -90,5 +384,17 @@
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
+  }
+  .btn-liquid-glass,
+  .btn-liquid-glass::before,
+  .rolling-digit-strip,
+  .tilt-luxury-card,
+  .cinematic-zoom-frame img,
+  .cinematic-zoom-frame video,
+  .gal-item,
+  .peek-thumb-card {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
   }
 }

@@ -37,15 +37,16 @@
     <!-- Compare Matrix Quick Link -->
     <li class="nav-dropdown">
       <a href="/#service-compare" class="nav-drop-btn">
-        Compare <span class="nav-badge-pill">MATRIX</span> <span style="font-size:.65rem;opacity:.7">▾</span>
+        {{ t.nav_compare|default:'Compare' }} <span class="nav-badge-pill">MATRIX</span> <span style="font-size:.65rem;opacity:.7">▾</span>
       </a>
       <div class="nav-dropdown-menu">
-        <a href="/#service-compare"><span>⚡ Compare All Services</span></a>
-        <a href="/#package-compare"><span>⚖️ Compare Bridal Suites</span></a>
-        <a href="/#calc-section"><span>🧮 Budget Estimator</span></a>
+        <a href="/#service-compare"><span>{{ t.nav_compare_services|default:'⚡ Compare All Services' }}</span></a>
+        <a href="/#package-compare"><span>{{ t.nav_compare_suites|default:'⚖️ Compare Bridal Suites' }}</span></a>
+        <a href="/#calc-section"><span>{{ t.nav_budget_estimator|default:'🧮 Budget Estimator' }}</span></a>
       </div>
     </li>
 
+    <li><a href="/travel-estimator/">{{ t.nav_travel_estimator|default:'Travel Estimator' }}</a></li>
     <li><a href="/#outstation">{{ t.nav_outstation|default:'Destinations' }}</a></li>
     <li><a href="/#gallery">{{ t.nav_gallery|default:'Gallery' }}</a></li>
     <li><a href="/academy/">{{ t.nav_academy|default:'Academy' }}</a></li>
@@ -57,14 +58,17 @@
     <button class="theme-toggle-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle Dark / Light Mode" style="background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.3);color:var(--gold);padding:6px 11px;border-radius:20px;font-size:0.75rem;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-weight:600;transition:all 0.3s ease">
       <span id="theme-icon">🌙</span> <span id="theme-label" style="font-size:0.68rem;letter-spacing:1px;text-transform:uppercase">Dark</span>
     </button>
-    <button class="mobile-sim-toggle-btn" id="nav-sim-toggle" onclick="toggleMobileSimulator()" title="Toggle Mobile Phone Mode Viewport (390×844)">
-      📱 <span class="sim-label-text">Mobile View</span>
+    <button class="nav-cart-btn" id="nav-cart-btn" onclick="openCartDrawer()" title="View Bridal Trousseau & Cart" style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.45);color:var(--gold);padding:6px 12px;border-radius:20px;font-size:0.75rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-weight:700;transition:all 0.3s ease;position:relative">
+      <span>🛍️</span>
+      <span class="nav-cart-text">{{ t.nav_cart|default:'Cart' }}</span>
+      <span class="nav-cart-badge" id="navCartBadge" style="background:var(--gold);color:#000;font-size:0.65rem;padding:1px 6px;border-radius:10px;font-weight:800;display:none">0</span>
     </button>
     <a href="https://wa.me/{{ whatsapp }}" target="_blank" class="nav-wa">💬 {{ t.nav_concierge|default:'Concierge' }}</a>
     <div class="nav-lang" title="Select Language / भाषा चुनें">
       <span style="font-size:.72rem;padding-left:4px;color:var(--gold);line-height:1">🌐</span>
       <button class="lang-btn {% if lang == 'english' or not lang %}active{% endif %}" onclick="setLang('english')" title="English">EN</button>
       <button class="lang-btn {% if lang == 'hindi' or lang == 'hinglish' %}active{% endif %}" onclick="setLang('hindi')" title="हिन्दी (Hindi)">हिन्दी</button>
+      <button class="lang-btn {% if lang == 'bhojpuri' %}active{% endif %}" onclick="setLang('bhojpuri')" title="भोजपुरी (Bhojpuri)">भोजपुरी</button>
       <button class="lang-btn {% if lang == 'marathi' %}active{% endif %}" onclick="setLang('marathi')" title="मराठी (Marathi)">मराठी</button>
       <button class="lang-btn {% if lang == 'bundelkhandi' %}active{% endif %}" onclick="setLang('bundelkhandi')" title="बुंदेलखंडी (Bundelkhandi)">बुंदेलखंडी</button>
     </div>

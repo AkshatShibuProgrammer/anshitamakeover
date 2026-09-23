@@ -1,24 +1,48 @@
 {% load static %}
-<!-- CHATBOT CONCIERGE COMPONENT -->
-<div id="chatbot">
+<!-- CHATBOT CONCIERGE COMPONENT (FB MESSENGER MOVABLE STYLE) -->
+<div id="chatbot" class="chat-container">
   <div class="chat-box" id="chat-box">
-    <div class="chat-hdr">
+    <div class="chat-hdr" id="chat-hdr" title="Drag to move">
       <div class="chat-hdr-info">
-        <img src="{% static 'core/images/logo.jpeg' %}" alt="Bot">
+        <div class="chat-avatar-wrap">
+          <img src="{% static 'core/images/logo.jpeg' %}" alt="Anshita AI Concierge">
+          <span class="chat-status-dot"></span>
+        </div>
         <div>
-          <h4>Anshita Concierge ✨</h4>
+          <h4>Anshita Concierge <span class="chat-vip-badge">AI</span></h4>
           <p>Online & At Your Service</p>
         </div>
       </div>
-      <button class="chat-close" onclick="toggleChat()">✕</button>
+      <div class="chat-hdr-controls">
+        <!-- Open in New Tab -->
+        <a href="/chatbot/" target="_blank" class="chat-ctrl-btn" id="chat-tab-btn" title="Open in New Tab">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </a>
+        <!-- Maximize / Restore -->
+        <button type="button" class="chat-ctrl-btn" id="chat-max-btn" onclick="toggleChatMaximize()" title="Maximize / Restore Window">
+          <span id="chat-max-icon">⛶</span>
+        </button>
+        <!-- Dock / Restore to Bubble (cannot minimize to 0) -->
+        <button type="button" class="chat-ctrl-btn chat-close-btn" onclick="toggleChat()" title="Dock Chat">✕</button>
+      </div>
     </div>
     <div class="chat-msgs" id="chat-msgs">
-      <div class="msg bot">Namaste and welcome to Anshita Makeover! ✨ How may I assist you with our bespoke bridal, hair, nail artistry, or academy masterclass today? 💄</div>
+      <div class="msg bot">
+        Namaste and welcome to Anshita Makeover! ✨ I am your 24/7 AI Wedding Concierge.<br><br>
+        How may I assist you today? You can ask me about our bespoke <strong>Bridal Suites</strong>, <strong>Signature Party & HD looks</strong>, <strong>Pan-India Destination rates</strong>, or <strong>Academy Masterclasses</strong>. 💄
+      </div>
     </div>
     <div class="chat-inp-row">
-      <input class="chat-inp" id="chat-inp" placeholder="Type your inquiry here..." onkeydown="chatKey(event)">
-      <button class="chat-send" onclick="sendChat()">➤</button>
+      <input class="chat-inp" id="chat-inp" placeholder="Ask anything about bridal, hair, bookings..." onkeydown="chatKey(event)">
+      <button class="chat-send" onclick="sendChat()" title="Send Message">➤</button>
     </div>
   </div>
-  <button class="chat-toggle" onclick="toggleChat()">💬</button>
+  <button class="chat-toggle" id="chat-toggle" onclick="toggleChat()" title="Anshita AI Concierge">
+    💬
+    <span class="chat-pulse-ping"></span>
+  </button>
 </div>

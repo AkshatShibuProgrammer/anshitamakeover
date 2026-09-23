@@ -66,6 +66,45 @@ def compile_home_context(lang):
     media_reels = MediaItem.objects.filter(is_active=True, is_featured=True).order_by('-created_at')[:6]
     look_groups = LookGroup.objects.filter(is_active=True).prefetch_related('media_items').order_by('order', 'id')
 
+    # Build JSON map for lookbook modal
+    look_groups_dict = {}
+    for lg in look_groups:
+        items = []
+        for itm in lg.media_items.all().order_by('order', 'id'):
+            thumb = itm.display_thumb
+            if thumb and not thumb.startswith('http') and not thumb.startswith('/'):
+                thumb = '/' + thumb
+            items.append({
+                'src': thumb,
+                'caption': itm.caption or itm.title or lg.name,
+                'category': lg.get_category_display(),
+                'media_type': itm.media_type,
+                'external_url': itm.external_url,
+                'embed_code': itm.embed_code,
+            })
+        if not items and lg.display_cover:
+            cov = lg.display_cover
+            if cov and not cov.startswith('http') and not cov.startswith('/'):
+                cov = '/' + cov
+            items.append({
+                'src': cov,
+                'caption': lg.makeup_type or lg.name,
+                'category': lg.get_category_display(),
+                'media_type': 'image',
+                'external_url': '',
+                'embed_code': '',
+            })
+        group_data = {
+            'id': lg.id,
+            'title': lg.name,
+            'category': lg.get_category_display(),
+            'items': items,
+        }
+        # Key by numeric ID as string and integer
+        look_groups_dict[str(lg.id)] = group_data
+
+    look_groups_json = json.dumps(look_groups_dict)
+
     t = get_translation(lang)
     return {
         'site': site,
@@ -77,10 +116,12 @@ def compile_home_context(lang):
         'packages_bridal': packages_bridal,
         'packages_other': packages_other,
         'studio_services': studio_services,
+        'services': studio_services,
         'event_packages': event_packages,
         'reviews': reviews,
         'media_reels': media_reels,
         'look_groups': look_groups,
+        'look_groups_json': look_groups_json,
         'whatsapp': site.whatsapp_number,
         'lang': lang,
         'current_lang': lang,
@@ -134,3 +175,51 @@ def compile_academy_context(lang):
         'current_lang': lang,
         't': t,
     }
+
+def compile_travel_estimator_context(lang):
+    """Compile context for standalone Pan-India Travel & Outstation Distance Estimator tool page"""
+    site = get_site_settings()
+    coupon = get_active_coupon(site)
+    t = get_translation(lang)
+    return {
+        'site': site,
+        'coupon': coupon,
+        'whatsapp': site.whatsapp_number,
+        'lang': lang,
+        'current_lang': lang,
+        't': t,
+    }
+
+def compile_cart_context(lang):
+    """Compile context for the dedicated Bridal Trousseau / Cart booking page"""
+    site = get_site_settings()
+    coupon = get_active_coupon(site)
+    studio_services = list(StudioService.objects.filter(is_active=True).order_by('order', 'id'))
+    all_packages = list(MakeupPackage.objects.filter(is_active=True).order_by('order', 'id'))
+    t = get_translation(lang)
+    return {
+        'site': site,
+        'coupon': coupon,
+        'studio_services': studio_services,
+        'packages': all_packages,
+        'whatsapp': site.whatsapp_number,
+        'lang': lang,
+        'current_lang': lang,
+        't': t,
+    }
+
+def compile_chatbot_context(lang):
+    """Compile context for standalone full-screen AI Concierge chat page"""
+    site = get_site_settings()
+    coupon = get_active_coupon(site)
+    t = get_translation(lang)
+    return {
+        'site': site,
+        'coupon': coupon,
+        'whatsapp': site.whatsapp_number,
+        'lang': lang,
+        'current_lang': lang,
+        't': t,
+    }
+
+

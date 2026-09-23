@@ -9,11 +9,36 @@ def get_site_settings_instance():
     s, _ = SiteSettings.objects.get_or_create(id=1)
     return s
 
+# Indian Wedding Calendar Seasonality Map (Hindu Calendar Muhurtas & Demand Cycles)
+INDIAN_SEASONAL_COUPON_MAP = {
+    1:  {'code': 'WINTER30', 'discount': 30, 'label': '❄️ Winter Wedding Peak Season — 30% Grand Bridal Privilege', 'season': 'Winter Peak'},
+    2:  {'code': 'WINTER30', 'discount': 30, 'label': '❄️ Auspicious Wedding Muhurtas — 30% Grand Bridal Privilege', 'season': 'Winter Peak'},
+    3:  {'code': 'SPRING15', 'discount': 15, 'label': '🌸 Spring Bridal Glow & Holi Festivities — 15% Off', 'season': 'Spring Festive'},
+    4:  {'code': 'SPRING15', 'discount': 15, 'label': '🌸 Vasant Panchami & Spring Nuptials — 15% Off', 'season': 'Spring Festive'},
+    5:  {'code': 'SUMMER10', 'discount': 10, 'label': '☀️ Early Summer Booking Privilege — 10% Off', 'season': 'Early Summer'},
+    6:  {'code': 'MONSOON20', 'discount': 20, 'label': '🌧️ Monsoon Advance Makeover — Extra 20% Off Pre-Season Privilege', 'season': 'Monsoon Off-Peak'},
+    7:  {'code': 'MONSOON20', 'discount': 20, 'label': '🌧️ Mid-Monsoon Early Booking — 20% Special Bridal Privilege', 'season': 'Monsoon Pre-Season'},
+    8:  {'code': 'GLAM20', 'discount': 20, 'label': '✨ Pre-Season Bridal Privilege — 20% Off Advance Bookings', 'season': 'Late Monsoon Off-Peak'},
+    9:  {'code': 'ROYAL25', 'discount': 25, 'label': '✨ Royal Autumn & Pre-Vivah Season Early-Bird — 25% Off Advance Bookings', 'season': 'Autumn Vivah Early-Bird'},
+    10: {'code': 'NAVRATRI15', 'discount': 15, 'label': '🪔 Navratri & Karwa Chauth Festive Glow — 15% Festive Privilege', 'season': 'Festive Post-Monsoon'},
+    11: {'code': 'SHAADI30', 'discount': 30, 'label': '👑 Dev Uthani Ekadashi & Winter Vivah — 30% Grand Wedding Season Offer', 'season': 'Winter Vivah Peak'},
+    12: {'code': 'WINTER30', 'discount': 30, 'label': '❄️ Grand Winter Vivah Celebration — 30% Imperial Privilege', 'season': 'Winter Vivah Peak'},
+}
+
 def calculate_active_coupon(settings_obj):
-    """Return active coupon dict based on settings or auto date logic"""
+    """Return active coupon dict based on settings or Indian seasonal calendar logic"""
     if not settings_obj.coupon_active:
         return None
     if settings_obj.coupon_auto_by_date:
+        # Season-aware resolution: check Indian calendar month
+        month = date.today().month
+        seasonal = INDIAN_SEASONAL_COUPON_MAP.get(month)
+        if seasonal:
+            return {
+                'code': seasonal['code'],
+                'discount': seasonal['discount'],
+                'label': seasonal['label']
+            }
         day = date.today().day
         if day <= 10:
             return {'code': 'GLAMOUR30', 'discount': 30, 'label': 'Start of Month Special — Days 1–10'}
@@ -29,7 +54,7 @@ def calculate_active_coupon(settings_obj):
         }
     return None
 
-def fetch_active_and_exit_coupons():
+def fetch_active_and_exit_coupons(query_code=None):
     site = get_site_settings_instance()
     active_coupon = calculate_active_coupon(site)
     default_coupon = {
@@ -45,8 +70,63 @@ def fetch_active_and_exit_coupons():
         'label': site.exit_coupon_label,
         'active': site.exit_coupon_active,
     } if site.exit_coupon_active else None
+
+    # Verification of specific query_code entered by user
+    is_valid = False
+    applied_data = {}
+    if query_code:
+        q = query_code.strip().upper()
+        # Check active seasonal coupon
+        if active_coupon and active_coupon.get('code', '').upper() == q:
+            is_valid = True
+            applied_data = {
+                'code': active_coupon['code'],
+                'discount': active_coupon['discount'],
+                'discount_type': 'percent',
+                'label': active_coupon.get('label', '')
+            }
+        # Check default today auto coupon
+        elif default_coupon and default_coupon.get('code', '').upper() == q:
+            is_valid = True
+            applied_data = {
+                'code': default_coupon['code'],
+                'discount': default_coupon['discount'],
+                'discount_type': default_coupon.get('type', 'percent'),
+                'label': default_coupon.get('badge', '')
+            }
+        # Check exit coupon
+        elif exit_coupon and exit_coupon.get('code', '').upper() == q:
+            is_valid = True
+            applied_data = {
+                'code': exit_coupon['code'],
+                'discount': exit_coupon['discount'],
+                'discount_type': 'percent',
+                'label': exit_coupon.get('label', '')
+            }
+        # Check VIP generated codes
+        else:
+            try:
+                vip_list = json.loads(site.vip_generated_codes or '[]')
+                for vip in vip_list:
+                    if vip.get('code', '').upper() == q:
+                        is_valid = True
+                        applied_data = {
+                            'code': vip.get('code'),
+                            'discount': vip.get('discount', 15),
+                            'discount_type': vip.get('type', 'percent'),
+                            'label': vip.get('notes', 'VIP Privilege')
+                        }
+                        break
+            except Exception:
+                pass
+
     return {
         'ok': True,
+        'valid': is_valid,
+        'code': applied_data.get('code', query_code),
+        'discount': applied_data.get('discount', 0),
+        'discount_type': applied_data.get('discount_type', 'percent'),
+        'label': applied_data.get('label', ''),
         'coupon': active_coupon,
         'default_coupon': default_coupon,
         'exit_coupon': exit_coupon
