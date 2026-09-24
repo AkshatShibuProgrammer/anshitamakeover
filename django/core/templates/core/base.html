@@ -1285,6 +1285,600 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   .peek-nav-hints{display:none}
 }
 
+/* ═══ THEATRICAL DUAL-CURTAIN PICASA MODAL ENHANCEMENTS ═══ */
+.peek-curtain-left, .peek-curtain-right {
+  position: absolute;
+  top: 0; width: 50%; height: 100%;
+  background: radial-gradient(circle at center, #261f18 0%, #120e0b 100%);
+  transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+.peek-curtain-left {
+  left: 0;
+  justify-content: flex-end;
+  padding-right: 32px;
+  border-right: 2px solid var(--gold);
+  transform: translateX(-100%);
+}
+.peek-curtain-right {
+  right: 0;
+  justify-content: flex-start;
+  padding-left: 32px;
+  border-left: 2px solid var(--gold);
+  transform: translateX(100%);
+}
+.peek-gallery-modal.curtains-closed .peek-curtain-left {
+  transform: translateX(0);
+}
+.peek-gallery-modal.curtains-closed .peek-curtain-right {
+  transform: translateX(0);
+}
+.peek-curtain-crest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.peek-curtain-crown {
+  font-size: 2.2rem;
+}
+.peek-curtain-brand {
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+  letter-spacing: 5px;
+  font-weight: 700;
+  color: var(--gold-l);
+  text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+}
+
+/* Directional Photo Slide In / Out Physics (Curtains stay open while navigating!) */
+.curtain-viewer-img {
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.32s ease, filter 0.32s ease;
+  will-change: transform, opacity;
+}
+.curtain-viewer-img.slide-out-left {
+  opacity: 0 !important;
+  transform: translateX(-70px) scale(0.95) !important;
+  filter: blur(4px) !important;
+}
+.curtain-viewer-img.slide-out-right {
+  opacity: 0 !important;
+  transform: translateX(70px) scale(0.95) !important;
+  filter: blur(4px) !important;
+}
+.curtain-viewer-img.slide-in-right {
+  opacity: 0 !important;
+  transform: translateX(70px) scale(0.95) !important;
+  filter: blur(4px) !important;
+}
+.curtain-viewer-img.slide-in-left {
+  opacity: 0 !important;
+  transform: translateX(-70px) scale(0.95) !important;
+  filter: blur(4px) !important;
+}
+
+/* Lookbook Modal Top Bar & Mode Switcher */
+.peek-top-bar {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  z-index: 9515;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.peek-album-badge {
+  background: rgba(24, 19, 14, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid var(--gold);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--gold-l);
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+}
+.peek-mode-switches {
+  display: flex;
+  background: rgba(18, 14, 16, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 20px;
+  padding: 3px;
+  gap: 4px;
+}
+.peek-mode-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.peek-mode-btn.active, .peek-mode-btn:hover {
+  background: var(--gold);
+  color: #000;
+}
+
+/* ═══ SERVICES: 3D PERSPECTIVE TILT FILMSTRIP ═══ */
+.svc-3d-viewport {
+  overflow-x: auto;
+  padding: 20px 8px 36px;
+  cursor: grab;
+  perspective: 1400px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) rgba(255,255,255,0.1);
+}
+/* ═══ SERVICES: 3D PERSPECTIVE TILT FILMSTRIP (TRUE 3D DEPTH) ═══ */
+@keyframes svcFloat3D {
+  0% {
+    transform: perspective(1200px) rotateY(-4deg) rotateX(2deg) translateY(-4px);
+  }
+  50% {
+    transform: perspective(1200px) rotateY(3deg) rotateX(-2deg) translateY(4px);
+  }
+  100% {
+    transform: perspective(1200px) rotateY(-4deg) rotateX(2deg) translateY(-4px);
+  }
+}
+
+.svc-3d-viewport {
+  overflow-x: auto;
+  padding: 24px 12px 42px;
+  cursor: grab;
+  perspective: 1400px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) rgba(255,255,255,0.1);
+  transform-style: preserve-3d;
+}
+.svc-3d-viewport:active {
+  cursor: grabbing;
+}
+.svc-3d-track {
+  display: flex;
+  gap: 32px;
+  width: max-content;
+  transform-style: preserve-3d;
+  padding: 10px;
+}
+.svc-3d-card {
+  width: 390px;
+  background: linear-gradient(160deg, #382c20, #2b2218);
+  border: 1.5px solid rgba(243, 212, 120, 0.45);
+  border-radius: 24px;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(243, 212, 120, 0.12);
+  transform: perspective(1200px) rotateY(-3deg) rotateX(1deg);
+  transition: transform .22s cubic-bezier(0.16, 1, 0.3, 1), border-color .3s ease, box-shadow .3s ease;
+  transform-style: preserve-3d;
+  animation: svcFloat3D 6.5s ease-in-out infinite alternate;
+}
+.svc-3d-card:nth-child(even) {
+  animation-duration: 7.5s;
+  animation-delay: -3.2s;
+}
+.svc-3d-card:hover {
+  animation-play-state: paused;
+  border-color: rgba(243, 212, 120, 0.85);
+  box-shadow: 0 30px 65px rgba(0, 0, 0, 0.75), 0 0 40px rgba(243, 212, 120, 0.3);
+}
+.svc-3d-card .svc-3d-sheen {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.35) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity .3s ease;
+  z-index: 10;
+}
+.svc-3d-card:hover .svc-3d-sheen {
+  opacity: 1;
+}
+
+/* 3D Z-Axis Popping Hologram Layers */
+.svc-3d-img-box {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+  background: #3e3124;
+  cursor: pointer;
+  transform: translateZ(24px);
+  transform-style: preserve-3d;
+}
+.svc-3d-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.svc-3d-card:hover .svc-3d-img-box img {
+  transform: scale(1.08);
+}
+.svc-3d-badge {
+  position: absolute;
+  top: 14px; left: 14px;
+  background: rgba(28, 22, 17, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1.5px solid var(--gold);
+  color: #fff6c8;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 5px 14px;
+  border-radius: 16px;
+  z-index: 5;
+  letter-spacing: 0.06em;
+  transform: translateZ(52px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+.svc-3d-num {
+  position: absolute;
+  top: 14px; right: 14px;
+  font-family: var(--font-h);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 5;
+  transform: translateZ(48px);
+}
+.svc-3d-img-ov {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 12px 16px;
+  background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%);
+  color: var(--gold-l);
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  transform: translateZ(30px);
+}
+.svc-3d-content {
+  padding: 24px 24px 20px;
+  background: linear-gradient(180deg, #32271d 0%, #291f16 100%);
+  transform: translateZ(20px);
+  transform-style: preserve-3d;
+}
+.svc-3d-discipline {
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  transform: translateZ(32px);
+}
+.svc-3d-title {
+  font-family: var(--font-h);
+  font-size: 1.35rem;
+  color: #ffffff;
+  font-weight: 800;
+  margin-bottom: 10px;
+  line-height: 1.3;
+  transform: translateZ(40px);
+}
+.svc-3d-prices {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  transform: translateZ(46px);
+}
+.svc-3d-price-val {
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #fff6c8;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+.svc-3d-price-orig {
+  text-decoration: line-through;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1rem;
+}
+.svc-3d-discount-badge {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.svc-3d-desc {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #f5edd8;
+  margin-bottom: 18px;
+  min-height: 54px;
+  transform: translateZ(25px);
+}
+.svc-3d-actions {
+  border-top: 1.5px solid rgba(243, 212, 120, 0.25);
+  padding-top: 16px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  transform: translateZ(38px);
+}
+
+/* ═══ GALLERY: SPATIAL 3D CARD FAN (TRUE 3D ROTATION & SPREAD) ═══ */
+@keyframes spatialFanFloat {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.4deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+.gal-fan-stage {
+  height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  perspective: 1400px;
+  margin: 10px auto 40px;
+  transform-style: preserve-3d;
+  animation: spatialFanFloat 5.5s ease-in-out infinite;
+}
+.gal-fan-item {
+  width: 290px;
+  height: 410px;
+  border-radius: 20px;
+  overflow: hidden;
+  position: absolute;
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.65s ease, border-color 0.3s ease;
+  cursor: pointer;
+  border: 2px solid var(--gold);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+  background: #1c150f;
+  transform-style: preserve-3d;
+}
+.gal-fan-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.gal-fan-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 24px 20px;
+  background: linear-gradient(0deg, rgba(16, 12, 9, 0.96) 0%, rgba(16, 12, 9, 0.6) 60%, transparent 100%);
+  color: #fff;
+  transition: background 0.3s ease;
+  transform: translateZ(30px);
+}
+.gal-fan-overlay h4 {
+  font-family: var(--font-h);
+  font-size: 1.25rem;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.gal-fan-overlay p {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.gal-fan-badge {
+  display: inline-block;
+  background: rgba(212, 175, 55, 0.25);
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--gold-l);
+  margin-bottom: 6px;
+  transform: translateZ(48px);
+}
+
+/* 3D Spatial Deck Stacking */
+.gal-fan-item.fan-left {
+  transform: perspective(1400px) translateX(-260px) rotateY(24deg) rotateZ(-7deg) scale(0.92);
+  z-index: 2;
+  opacity: 0.94;
+}
+.gal-fan-item.fan-center {
+  transform: perspective(1400px) translateZ(80px) rotateY(0deg) scale(1.05);
+  z-index: 5;
+  box-shadow: 0 30px 75px rgba(0, 0, 0, 0.95), 0 0 35px rgba(243, 212, 120, 0.3);
+}
+.gal-fan-item.fan-right {
+  transform: perspective(1400px) translateX(260px) rotateY(-24deg) rotateZ(7deg) scale(0.92);
+  z-index: 2;
+  opacity: 0.94;
+}
+
+/* Hover Spread in 3D Space */
+.gal-fan-stage:hover .gal-fan-item.fan-left {
+  transform: perspective(1400px) translateX(-390px) rotateY(32deg) rotateZ(-12deg) scale(0.98);
+}
+.gal-fan-stage:hover .gal-fan-item.fan-center {
+  transform: perspective(1400px) translateY(-28px) translateZ(150px) scale(1.16);
+  box-shadow: 0 45px 95px rgba(0, 0, 0, 0.98), 0 0 55px rgba(230, 202, 101, 0.55);
+}
+.gal-fan-stage:hover .gal-fan-item.fan-right {
+  transform: perspective(1400px) translateX(390px) rotateY(-32deg) rotateZ(12deg) scale(0.98);
+}
+.gal-fan-item:hover {
+  z-index: 10 !important;
+  transform: perspective(1400px) translateY(-32px) translateZ(160px) scale(1.18) !important;
+  box-shadow: 0 50px 100px rgba(0, 0, 0, 0.98), 0 0 60px rgba(230, 202, 101, 0.6) !important;
+}
+.gal-fan-item:hover img {
+  transform: scale(1.08);
+}
+
+@media (max-width: 900px) {
+  .svc-3d-card { width: 310px; }
+  .gal-fan-stage { height: 420px; }
+  .gal-fan-item { width: 240px; height: 350px; }
+  .gal-fan-item.fan-left { transform: perspective(1400px) translateX(-110px) rotateY(16deg) rotateZ(-6deg) scale(0.88); }
+  .gal-fan-item.fan-right { transform: perspective(1400px) translateX(110px) rotateY(-16deg) rotateZ(6deg) scale(0.88); }
+  .gal-fan-stage:hover .gal-fan-item.fan-left { transform: perspective(1400px) translateX(-150px) rotateY(20deg) scale(0.92); }
+  .gal-fan-stage:hover .gal-fan-item.fan-right { transform: perspective(1400px) translateX(150px) rotateY(-20deg) scale(0.92); }
+}
+
+/* ═══ PACKAGE COMBO CARDS: EXECUTIVE PHOTO-FREE ARCHITECTURE ═══ */
+.pkg-combo-hdr {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.22);
+}
+.pkg-combo-crown {
+  font-size: 1.8rem;
+  line-height: 1;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 8px 10px;
+  flex-shrink: 0;
+}
+.pkg-combo-tier {
+  font-size: 0.68rem;
+  letter-spacing: 1.5px;
+  color: var(--gold-l);
+  font-weight: 800;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+.pkg-combo-save-badge {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.pkg-combo-deliverables {
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 14px 0;
+}
+.pcd-title {
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  color: var(--gold);
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pcd-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pcd-list li {
+  font-size: 0.8rem;
+  color: rgba(245, 237, 214, 0.92);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.45;
+}
+.pcd-list li strong {
+  color: #FFFFFF;
+}
+.pcd-check {
+  color: #22c55e;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* Highlighted Special Offer: Side Makeups */
+.pkg-combo-offer-box {
+  background: linear-gradient(135deg, rgba(212,175,55,0.18), rgba(123,28,46,0.22));
+  border: 1.5px solid var(--gold);
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 4px 18px rgba(212,175,55,0.15);
+}
+.pcob-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+.pcob-text strong {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--gold-l);
+  font-weight: 800;
+  margin-bottom: 3px;
+  letter-spacing: 0.03em;
+}
+.pcob-text span {
+  display: block;
+  font-size: 0.74rem;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.4;
+}
+
+[data-theme="light"] .pkg-combo-hdr {
+  border-bottom-color: rgba(154, 123, 28, 0.25) !important;
+}
+[data-theme="light"] .pkg-combo-crown {
+  background: #FAF7F2 !important;
+  border-color: rgba(154, 123, 28, 0.35) !important;
+}
+[data-theme="light"] .pkg-combo-tier {
+  color: #8B6F1A !important;
+}
+[data-theme="light"] .pkg-combo-deliverables {
+  background: #FAF7F2 !important;
+  border-color: rgba(154, 123, 28, 0.25) !important;
+}
+[data-theme="light"] .pcd-list li {
+  color: #4A3E36 !important;
+}
+[data-theme="light"] .pcd-list li strong {
+  color: #1A1410 !important;
+}
+[data-theme="light"] .pkg-combo-offer-box {
+  background: linear-gradient(135deg, #FAF4E6, #F5ECE0) !important;
+  border-color: #8B6F1A !important;
+}
+[data-theme="light"] .pcob-text strong {
+  color: #8B6F1A !important;
+}
+[data-theme="light"] .pcob-text span {
+  color: #4A3E36 !important;
+}
+
 /* ═══ SERVICES: EDITORIAL SPLIT-ROW ARCHITECTURE ═══ */
 #services{background:var(--dark);padding:80px 0}
 .svc-split-list{display:flex;flex-direction:column;gap:36px;margin-top:48px}
@@ -4610,6 +5204,183 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
   color: #1A1410 !important;
 }
 
+/* ── Light Mode: Services 3D Track, Spatial Card Fan & Theatrical Lookbook Viewer ── */
+[data-theme="light"] #services {
+  background: #F7F3EC !important;
+}
+[data-theme="light"] .svc-3d-card {
+  background: #FFFFFF !important;
+  border: 1.5px solid rgba(154, 123, 28, 0.35) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.06), 0 0 20px rgba(154, 123, 28, 0.08) !important;
+}
+[data-theme="light"] .svc-3d-card .svc-3d-sheen {
+  background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.15) 0%, transparent 60%) !important;
+}
+[data-theme="light"] .svc-3d-img-box {
+  background: #EFE8DC !important;
+}
+[data-theme="light"] .svc-3d-badge {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: #8B6F1A !important;
+  color: #1A1410 !important;
+}
+[data-theme="light"] .svc-3d-num {
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #1A1410 !important;
+  border-color: rgba(154, 123, 28, 0.3) !important;
+}
+[data-theme="light"] .svc-3d-img-ov {
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.92) 0%, transparent 100%) !important;
+  color: #8B6F1A !important;
+}
+[data-theme="light"] .svc-3d-content {
+  background: #FFFFFF !important;
+}
+[data-theme="light"] .svc-3d-discipline {
+  color: #8B6F1A !important;
+}
+[data-theme="light"] .svc-3d-title {
+  color: #1A1410 !important;
+}
+[data-theme="light"] .svc-3d-price-val {
+  color: #8B6F1A !important;
+  text-shadow: none !important;
+}
+[data-theme="light"] .svc-3d-price-orig {
+  color: #7D6E63 !important;
+}
+[data-theme="light"] .svc-3d-desc {
+  color: #4A3E36 !important;
+}
+[data-theme="light"] .svc-3d-actions {
+  border-top-color: rgba(154, 123, 28, 0.2) !important;
+}
+
+[data-theme="light"] #gallery {
+  background: #FAF7F2 !important;
+}
+[data-theme="light"] .gal-fan-item {
+  border-color: rgba(154, 123, 28, 0.4) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12) !important;
+  background: #FFFFFF !important;
+}
+[data-theme="light"] .gal-fan-overlay {
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.82) 60%, transparent 100%) !important;
+}
+[data-theme="light"] .gal-fan-overlay h4 {
+  color: #1A1410 !important;
+}
+[data-theme="light"] .gal-fan-overlay p {
+  color: #4A3E36 !important;
+}
+[data-theme="light"] .gal-fan-badge {
+  background: #FAF7F2 !important;
+  border-color: rgba(154, 123, 28, 0.35) !important;
+  color: #8B6F1A !important;
+}
+[data-theme="light"] .gal-item {
+  border-color: rgba(154, 123, 28, 0.35) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .gal-ov {
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.78) 60%, transparent 100%) !important;
+}
+[data-theme="light"] .gal-ov span {
+  color: #8B6F1A !important;
+}
+[data-theme="light"] .gal-ov strong {
+  color: #1A1410 !important;
+}
+[data-theme="light"] .gal-ov small {
+  color: #5C4E43 !important;
+}
+[data-theme="light"] .gal-see-more-banner {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(154, 123, 28, 0.3) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+}
+[data-theme="light"] .gal-see-more-info h4 {
+  color: #1A1410 !important;
+}
+[data-theme="light"] .gal-see-more-info p {
+  color: #4A3E36 !important;
+}
+
+[data-theme="light"] .peek-gallery-modal {
+  background: rgba(250, 247, 242, 0.98) !important;
+}
+[data-theme="light"] .peek-curtain-left,
+[data-theme="light"] .peek-curtain-right {
+  background: radial-gradient(circle at center, #F4EFE6 0%, #E2D7C5 100%) !important;
+  border-color: #8B6F1A !important;
+}
+[data-theme="light"] .peek-curtain-brand {
+  color: #8B6F1A !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+[data-theme="light"] .peek-top-bar .peek-album-badge {
+  background: #FFFFFF !important;
+  color: #1A1410 !important;
+  border-color: rgba(154, 123, 28, 0.4) !important;
+}
+[data-theme="light"] .peek-mode-switches {
+  background: #FFFFFF !important;
+  border-color: rgba(154, 123, 28, 0.3) !important;
+}
+[data-theme="light"] .peek-mode-btn {
+  color: #4A3E36 !important;
+}
+[data-theme="light"] .peek-mode-btn.active {
+  background: #8B6F1A !important;
+  color: #FFFFFF !important;
+}
+[data-theme="light"] .peek-slide-frame {
+  background: #FFFFFF !important;
+  border-color: rgba(154, 123, 28, 0.35) !important;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.15) !important;
+}
+[data-theme="light"] .peek-slide-prev,
+[data-theme="light"] .peek-slide-next {
+  background: #FAF7F2 !important;
+  border-color: rgba(154, 123, 28, 0.25) !important;
+}
+[data-theme="light"] .peek-footer-bar {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(154, 123, 28, 0.28) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .peek-info-caption {
+  color: #1A1410 !important;
+}
+[data-theme="light"] .peek-info-counter {
+  color: #8B6F1A !important;
+  border-left-color: rgba(154, 123, 28, 0.25) !important;
+}
+[data-theme="light"] .peek-nav-hints {
+  color: #705D50 !important;
+  border-left-color: rgba(154, 123, 28, 0.25) !important;
+}
+[data-theme="light"] .peek-arrow {
+  background: #FFFFFF !important;
+  color: #1A1410 !important;
+  border-color: rgba(154, 123, 28, 0.35) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .peek-arrow:hover {
+  background: #8B6F1A !important;
+  color: #FFFFFF !important;
+}
+[data-theme="light"] .peek-gallery-close {
+  background: #FFFFFF !important;
+  color: #1A1410 !important;
+  border-color: rgba(154, 123, 28, 0.35) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+}
+[data-theme="light"] .peek-gallery-close:hover {
+  background: #8B6F1A !important;
+  color: #FFFFFF !important;
+}
+
 /* Shimmering Luxury Foil Button Accent */
 .btn-gold-foil, .btn-p, .pkg-bundle-btn.primary, .calc-cta {
   background: linear-gradient(135deg, #ECC870 0%, #D4AF37 50%, #A67C1E 100%) !important;
@@ -5258,10 +6029,35 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
 
 <!-- ═══ INTERACTIVE EDITORIAL PEEK MODAL GALLERY (EVAGHER STYLE) ═══ -->
 <div class="peek-gallery-modal" id="editorial-peek-gallery" onclick="if(event.target===this)closePeekGallery()">
+  <!-- Theatrical Dual Velvet Curtains -->
+  <div class="peek-curtain-left">
+    <div class="peek-curtain-crest">
+      <span class="peek-curtain-crown">👑</span>
+      <div class="peek-curtain-brand">ANSHITA</div>
+    </div>
+  </div>
+  <div class="peek-curtain-right">
+    <div class="peek-curtain-crest">
+      <span class="peek-curtain-crown">👑</span>
+      <div class="peek-curtain-brand">MAKEOVER</div>
+    </div>
+  </div>
+
   <button class="peek-gallery-close" onclick="closePeekGallery()" aria-label="Close Lookbook">✕</button>
   
   <button class="peek-arrow peek-arrow-prev" onclick="prevPeekImage()" aria-label="Previous Image">❮</button>
   <button class="peek-arrow peek-arrow-next" onclick="nextPeekImage()" aria-label="Next Image">❯</button>
+
+  <!-- Top Segmented Mode Bar (Current Album Lookbook vs All Studio Media) -->
+  <div class="peek-top-bar" id="peek-top-bar">
+    <div class="peek-album-badge" id="peek-album-badge">
+      <span id="peek-group-pill">✦ ALBUM: Royal Vivah</span>
+    </div>
+    <div class="peek-mode-switches">
+      <button class="peek-mode-btn active" id="btn-mode-album" onclick="switchPeekMode('album')">📂 This Album</button>
+      <button class="peek-mode-btn" id="btn-mode-all" onclick="switchPeekMode('all')">🌐 All Photos & Videos (<span id="peek-all-count">0</span>)</button>
+    </div>
+  </div>
 
   <div class="peek-stage-track" id="peek-stage-track">
     <!-- Left Margin Peek Image -->
@@ -5269,9 +6065,11 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
       <img id="peek-img-prev" src="" alt="Previous Look">
     </div>
 
-    <!-- Main Centered Active Image -->
+    <!-- Main Centered Active Image / Video Stage -->
     <div class="peek-slide-frame" id="peek-slide-frame">
-      <img id="peek-img-active" src="" alt="Active Couture Look">
+      <img id="peek-img-active" class="curtain-viewer-img" src="" alt="Active Couture Look">
+      <video id="peek-video-active" class="curtain-viewer-img" controls autoplay muted loop playsinline style="display:none;width:100%;height:100%;object-fit:contain;border-radius:18px;background:#000"></video>
+      <div id="peek-embed-active" class="curtain-viewer-img" style="display:none;width:100%;height:100%;border-radius:18px;overflow:hidden;background:#000;align-items:center;justify-content:center"></div>
     </div>
 
     <!-- Right Margin Peek Image -->
@@ -5297,7 +6095,7 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
       <span>↕ Mouse Scroll / ↔ Drag to Navigate · ESC to Close</span>
     </div>
     <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-      <a id="peek-ig-view" href="https://www.instagram.com/anshitamakeover21/" target="_blank" class="peek-ig-link">
+      <a id="peek-ig-view" href="#" target="_blank" class="peek-ig-link" style="display:none">
         <span id="peek-link-label">📸 View Media</span> ↗
       </a>
       <a id="peek-wa-inquire" href="https://wa.me/{{ whatsapp }}" target="_blank" class="btn-wa" style="padding:6px 14px;font-size:.68rem">
@@ -6793,10 +7591,34 @@ try {
 }
 
 window.peekGalleryItems = Object.values(window.lookbookGroups).flatMap(g => g.items);
-window.currentPeekGroupTitle = 'All Haute Couture Looks';
-window.currentPeekGroupKey = 'all';
+/* ── 3D Card Perspective Tilt Engine (Services & Media) ── */
+window.handleCardTilt = function(e, card) {
+  const rect = card.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+  const rotateX = ((y - centerY) / centerY) * -10;
+  const rotateY = ((x - centerX) / centerX) * 10;
+  card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-6px) scale3d(1.02, 1.02, 1.02)`;
+  const sheen = card.querySelector('.svc-3d-sheen');
+  if (sheen) {
+    sheen.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.3) 0%, transparent 60%)`;
+  }
+};
 
-window.openLookbook = function(key){
+window.resetCardTilt = function(card) {
+  card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale3d(1, 1, 1)';
+};
+
+window.scrollServicesTrack = function(delta) {
+  const vp = document.getElementById('svc3DViewport');
+  if (vp) vp.scrollBy({ left: delta, behavior: 'smooth' });
+};
+
+window.lastSelectedAlbumKey = 'all';
+
+window.openLookbook = function(key, triggerCurtains = true){
   const lookAliases = {
     '1': '1',
     '2': '2',
@@ -6856,84 +7678,186 @@ window.openLookbook = function(key){
   const resolvedKey = lookAliases[strKey] || strKey;
   let group = window.lookbookGroups ? (window.lookbookGroups[resolvedKey] || window.lookbookGroups[strKey]) : null;
 
-  // If not found by alias directly, check reverse or fallback
   if (!group && window.lookbookGroups && lookAliases[resolvedKey]) {
     group = window.lookbookGroups[lookAliases[resolvedKey]];
   }
 
-  if(group && group.items && group.items.length > 0){
+  // Update mode buttons UI
+  const btnAlbum = document.getElementById('btn-mode-album');
+  const btnAll = document.getElementById('btn-mode-all');
+  const allCountEl = document.getElementById('peek-all-count');
+  const allItems = Object.values(window.lookbookGroups || {}).flatMap(g => g.items || []);
+  if (allCountEl) allCountEl.textContent = allItems.length;
+
+  if (resolvedKey !== 'all' && group && group.items && group.items.length > 0){
+    window.lastSelectedAlbumKey = resolvedKey;
     window.peekGalleryItems = group.items;
     window.currentPeekGroupTitle = group.title;
     window.currentPeekGroupKey = resolvedKey;
-    openPeekGallery(0);
-  } else if(typeof key === 'number' && key >= 0 && window.lookbookGroups){
-    window.peekGalleryItems = Object.values(window.lookbookGroups).flatMap(g => g.items || []);
+    if (btnAlbum) { btnAlbum.classList.add('active'); btnAlbum.textContent = `📂 ${group.title || 'This Album'}`; }
+    if (btnAll) btnAll.classList.remove('active');
+    openPeekGallery(0, triggerCurtains);
+  } else {
+    window.peekGalleryItems = allItems;
     window.currentPeekGroupTitle = 'All Haute Couture Looks';
     window.currentPeekGroupKey = 'all';
-    openPeekGallery(key);
-  } else if(window.lookbookGroups){
-    window.peekGalleryItems = Object.values(window.lookbookGroups).flatMap(g => g.items || []);
-    window.currentPeekGroupTitle = 'All Haute Couture Looks';
-    window.currentPeekGroupKey = 'all';
-    openPeekGallery(0);
+    if (btnAlbum) btnAlbum.classList.remove('active');
+    if (btnAll) btnAll.classList.add('active');
+    openPeekGallery(typeof key === 'number' && key >= 0 ? key : 0, triggerCurtains);
   }
 };
 window.openGroupGallery = window.openLookbook;
+
+window.switchPeekMode = function(mode){
+  if (mode === 'all') {
+    window.openLookbook('all', false);
+  } else {
+    if (window.lastSelectedAlbumKey && window.lastSelectedAlbumKey !== 'all') {
+      window.openLookbook(window.lastSelectedAlbumKey, false);
+    } else {
+      const firstKey = Object.keys(window.lookbookGroups || {})[0];
+      if (firstKey) window.openLookbook(firstKey, false);
+    }
+  }
+};
 
 window.currentPeekIndex = 0;
 let peekWheelLock = false;
 let peekTouchStartX = 0;
 let peekTouchStartY = 0;
 let peekTouchDeltaX = 0;
+let isSwitchingPeekPhoto = false;
 
 function updatePeekStage(){
   const total = window.peekGalleryItems.length;
+  if(total === 0) return;
   const curr = window.peekGalleryItems[window.currentPeekIndex];
+  if(!curr) return;
+
   const prevIdx = (window.currentPeekIndex - 1 + total) % total;
   const nextIdx = (window.currentPeekIndex + 1) % total;
-
   const prev = window.peekGalleryItems[prevIdx];
   const next = window.peekGalleryItems[nextIdx];
 
   const imgActive = document.getElementById('peek-img-active');
+  const videoActive = document.getElementById('peek-video-active');
+  const embedActive = document.getElementById('peek-embed-active');
   const imgPrev = document.getElementById('peek-img-prev');
   const imgNext = document.getElementById('peek-img-next');
   const captionEl = document.getElementById('peek-info-caption');
   const counterEl = document.getElementById('peek-info-counter');
   const waBtn = document.getElementById('peek-wa-inquire');
   const igBtn = document.getElementById('peek-ig-view');
+  const groupPill = document.getElementById('peek-group-pill');
 
-  if(imgActive && curr) imgActive.src = curr.src;
-  if(imgPrev && prev) imgPrev.src = prev.src;
-  if(imgNext && next) imgNext.src = next.src;
+  if(imgPrev && prev) imgPrev.src = prev.src || '';
+  if(imgNext && next) imgNext.src = next.src || '';
 
-  if(captionEl && curr){
-    const groupBadge = (window.currentPeekGroupTitle && window.currentPeekGroupKey !== 'all') ? `✦ ${window.currentPeekGroupTitle} · ` : '';
-    captionEl.textContent = `${groupBadge}${curr.caption}`;
+  // Media Player Type Check (image, video_file, youtube, instagram)
+  const mediaType = curr.media_type || 'image';
+  const videoUrl = curr.video_url || (curr.src && curr.src.match(/\.(mp4|webm|ogg)$/i) ? curr.src : '');
+
+  if (videoActive) {
+    videoActive.pause();
+    videoActive.style.display = 'none';
   }
-  if(counterEl) counterEl.textContent = `${String(window.currentPeekIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
-
-  if(waBtn && curr){
-    waBtn.href = `https://wa.me/${WA}?text=` + encodeURIComponent(`Namaste! I would like to inquire about the look: ${curr.caption} (${curr.category}).`);
+  if (embedActive) {
+    embedActive.innerHTML = '';
+    embedActive.style.display = 'none';
   }
-  if(igBtn && curr){
-    const linkLabel = document.getElementById('peek-link-label');
-    if(curr.media_type === 'youtube' || curr.youtube){
-      igBtn.href = curr.youtube || curr.external_url;
-      if(linkLabel) linkLabel.textContent = '▶ Watch on YouTube';
-    } else if(curr.media_type === 'instagram' || curr.instagram){
-      igBtn.href = curr.instagram || curr.external_url;
-      if(linkLabel) linkLabel.textContent = '📸 View on Instagram';
-    } else if(curr.external_url){
-      igBtn.href = curr.external_url;
-      if(linkLabel) linkLabel.textContent = '↗ View Source';
-    } else {
-      igBtn.href = curr.src;
-      if(linkLabel) linkLabel.textContent = '🔍 High-Res View';
+  if (imgActive) {
+    imgActive.style.display = 'none';
+  }
+
+  if (mediaType === 'video_file' || videoUrl) {
+    if (videoActive) {
+      videoActive.src = videoUrl || curr.src;
+      videoActive.style.display = 'block';
+      videoActive.play().catch(() => {});
+    }
+  } else if (mediaType === 'youtube' && (curr.external_url || curr.embed_code)) {
+    if (embedActive) {
+      embedActive.style.display = 'flex';
+      let ytId = '';
+      const url = curr.external_url || '';
+      const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+      if (m) ytId = m[1];
+      if (ytId) {
+        embedActive.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border:none;border-radius:18px"></iframe>`;
+      } else if (curr.embed_code) {
+        embedActive.innerHTML = curr.embed_code;
+      }
+    }
+  } else if (mediaType === 'instagram' && (curr.external_url || curr.embed_code)) {
+    if (embedActive) {
+      embedActive.style.display = 'flex';
+      if (curr.embed_code) {
+        embedActive.innerHTML = curr.embed_code;
+      } else {
+        embedActive.innerHTML = `
+          <div style="text-align:center;padding:30px;background:#140e0a;border-radius:18px;border:1px solid var(--gold);max-width:420px;color:#fff">
+            <span style="font-size:3rem;display:block;margin-bottom:12px">📸</span>
+            <h4 style="font-family:var(--font-h);margin-bottom:8px">${curr.title || 'Instagram Look'}</h4>
+            <p style="color:rgba(255,255,255,0.8);font-size:0.85rem;margin-bottom:18px">${curr.caption || 'Bridal Reel Transformation'}</p>
+            <a href="${curr.external_url}" target="_blank" class="btn-p" style="padding:10px 24px;font-size:0.85rem;display:inline-block">
+              Watch Reel on Instagram ↗
+            </a>
+          </div>`;
+      }
+    }
+  } else {
+    if (imgActive) {
+      imgActive.src = curr.src;
+      imgActive.style.display = 'block';
     }
   }
 
-  // Render Related Looks & Angles Filmstrip
+  if (groupPill) {
+    groupPill.textContent = (window.currentPeekGroupTitle && window.currentPeekGroupKey !== 'all')
+      ? `✦ ALBUM: ${window.currentPeekGroupTitle}`
+      : `✦ ALL STUDIO MEDIA ARCHIVE`;
+  }
+  if (captionEl) {
+    const groupBadge = (window.currentPeekGroupTitle && window.currentPeekGroupKey !== 'all') ? `✦ ${window.currentPeekGroupTitle} · ` : '';
+    captionEl.textContent = `${groupBadge}${curr.caption || curr.title || 'Haute Couture Look'}`;
+  }
+  if (counterEl) {
+    counterEl.textContent = `${String(window.currentPeekIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+  }
+
+  if (waBtn) {
+    waBtn.href = `https://wa.me/${WA}?text=` + encodeURIComponent(`Namaste! I would like to inquire about the look: ${curr.caption || curr.title} (${curr.category || ''}).`);
+  }
+
+  // Admin Controlled External Platform Link Toggle
+  if (igBtn) {
+    const linkLabel = document.getElementById('peek-link-label');
+    if (curr.show_platform_link) {
+      igBtn.style.display = 'inline-flex';
+      if (curr.media_type === 'youtube' || curr.youtube) {
+        igBtn.href = curr.youtube || curr.external_url;
+        if (linkLabel) linkLabel.textContent = '▶ Watch on YouTube';
+      } else if (curr.media_type === 'instagram' || curr.instagram) {
+        igBtn.href = curr.instagram || curr.external_url;
+        if (linkLabel) linkLabel.textContent = '📸 View on Instagram';
+      } else if (curr.external_url) {
+        igBtn.href = curr.external_url;
+        if (linkLabel) linkLabel.textContent = '↗ View Platform';
+      } else {
+        igBtn.href = curr.src;
+        if (linkLabel) linkLabel.textContent = '🔍 High-Res View';
+      }
+    } else {
+      igBtn.style.display = 'none';
+    }
+  }
+
+  // Render Related Looks Filmstrip
+  renderPeekRelatedStrip();
+}
+
+function renderPeekRelatedStrip(){
+  const total = window.peekGalleryItems.length;
   const relatedBox = document.getElementById('peek-related-container');
   const relatedStrip = document.getElementById('peek-related-strip');
   const relatedTitle = document.getElementById('peek-related-title');
@@ -6942,21 +7866,22 @@ function updatePeekStage(){
     if (total > 1) {
       relatedBox.style.display = 'flex';
       if (relatedTitle) {
-        relatedTitle.textContent = `✦ Related Angles & Views (${window.currentPeekIndex + 1} of ${total})`;
+        relatedTitle.textContent = `✦ Related Perspectives & Looks (${window.currentPeekIndex + 1} of ${total})`;
       }
       relatedStrip.innerHTML = '';
       window.peekGalleryItems.forEach((itm, idx) => {
         const card = document.createElement('div');
         card.className = `peek-thumb-card${idx === window.currentPeekIndex ? ' active' : ''}`;
-        card.title = itm.caption || `Angle ${idx + 1}`;
+        card.title = itm.caption || `Perspective ${idx + 1}`;
         card.onclick = (e) => {
           e.stopPropagation();
+          if (idx === window.currentPeekIndex) return;
+          const dir = idx > window.currentPeekIndex ? 'next' : 'prev';
           window.currentPeekIndex = idx;
-          updatePeekStage();
-          triggerPeekFeedback('select');
+          transitionPeekPhoto(dir, true);
         };
         const thumbImg = document.createElement('img');
-        thumbImg.src = itm.src;
+        thumbImg.src = itm.src || itm.display_thumb || '';
         thumbImg.alt = itm.caption || 'Bridal Detail';
         card.appendChild(thumbImg);
         relatedStrip.appendChild(card);
@@ -6967,34 +7892,87 @@ function updatePeekStage(){
   }
 }
 
-function openPeekGallery(startIndex){
+function openPeekGallery(startIndex, triggerCurtains = true){
   window.currentPeekIndex = (startIndex !== undefined && startIndex >= 0 && startIndex < window.peekGalleryItems.length) ? startIndex : 0;
   updatePeekStage();
   const m = document.getElementById('editorial-peek-gallery');
   if(m){
     m.classList.add('open');
     document.body.style.overflow = 'hidden';
+
+    // Theatrical Gold Curtains Sweep Open on Entry
+    if(triggerCurtains){
+      m.classList.add('curtains-closed');
+      setTimeout(() => {
+        m.classList.remove('curtains-closed');
+      }, 420);
+    } else {
+      m.classList.remove('curtains-closed');
+    }
   }
 }
 
 function closePeekGallery(){
   const m = document.getElementById('editorial-peek-gallery');
   if(m){
-    m.classList.remove('open');
-    document.body.style.overflow = '';
+    m.classList.add('curtains-closed');
+    setTimeout(() => {
+      m.classList.remove('open');
+      m.classList.remove('curtains-closed');
+      document.body.style.overflow = '';
+      const videoActive = document.getElementById('peek-video-active');
+      if (videoActive) videoActive.pause();
+    }, 450);
   }
 }
 
+/* Directional Photo Slide In / Out: Curtains stay open while navigating! */
+function transitionPeekPhoto(dir, skipIndexUpdate = false){
+  if(isSwitchingPeekPhoto) return;
+  isSwitchingPeekPhoto = true;
+
+  const total = window.peekGalleryItems.length;
+  if(total <= 1){
+    isSwitchingPeekPhoto = false;
+    return;
+  }
+
+  const slideFrame = document.getElementById('peek-slide-frame');
+  const slideOutClass = dir === 'next' ? 'slide-out-left' : 'slide-out-right';
+  const slideInClass = dir === 'next' ? 'slide-in-right' : 'slide-in-left';
+
+  const activeMedia = document.getElementById('peek-img-active') || slideFrame;
+  activeMedia.classList.add(slideOutClass);
+
+  setTimeout(() => {
+    if (!skipIndexUpdate) {
+      if (dir === 'next') {
+        window.currentPeekIndex = (window.currentPeekIndex + 1) % total;
+      } else {
+        window.currentPeekIndex = (window.currentPeekIndex - 1 + total) % total;
+      }
+    }
+    updatePeekStage();
+
+    const newActiveMedia = document.getElementById('peek-img-active') || slideFrame;
+    newActiveMedia.classList.remove(slideOutClass);
+    newActiveMedia.classList.add(slideInClass);
+
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        newActiveMedia.classList.remove(slideInClass);
+        isSwitchingPeekPhoto = false;
+      }, 30);
+    });
+  }, 220);
+}
+
 function nextPeekImage(){
-  window.currentPeekIndex = (window.currentPeekIndex + 1) % window.peekGalleryItems.length;
-  updatePeekStage();
-  triggerPeekFeedback('next');
+  transitionPeekPhoto('next');
 }
 
 function prevPeekImage(){
-  window.currentPeekIndex = (window.currentPeekIndex - 1 + window.peekGalleryItems.length) % window.peekGalleryItems.length;
-  updatePeekStage();
-  triggerPeekFeedback('prev');
+  transitionPeekPhoto('prev');
 }
 
 function triggerPeekFeedback(dir){

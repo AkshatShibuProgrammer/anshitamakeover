@@ -899,94 +899,85 @@
       <a href="#packages" class="sppb-btn">Explore Wedding Suites & Inclusions ↓</a>
     </div>
 
-    <div class="svc-split-list" style="margin-top:40px">
-      {% for svc in services %}
-      <div class="svc-split-card svc-card-{{ svc.id }} rev d{{ forloop.counter|default:1 }}" id="studio-svc-{{ svc.id }}" data-svc-id="{{ svc.id }}">
-        <div class="svc-split-left" onclick="openLookbook('{{ svc.look_group_id|default:svc.category }}')" style="cursor:pointer">
-          <img src="{{ svc.display_image }}" alt="{{ svc.title }}" class="svc-split-img">
-          <span class="svc-split-badge">{{ svc.get_category_display }}</span>
-          <div class="svc-split-zoom-hint">
-            <span>✦ View Real Transformations</span>
-            <span style="color:var(--gold)">Explore ↗</span>
-          </div>
-        </div>
-        <div class="svc-split-right">
-          <div class="svc-split-discipline">
-            <span>✦</span> {{ svc.discipline }}
-          </div>
-          <h3 class="svc-split-title">{{ svc.title }}</h3>
+    <!-- Horizontal 3D Perspective Tilt Filmstrip Controls & Track -->
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin:28px 0 10px">
+      <button class="btn-secondary" onclick="scrollServicesTrack(-420)" style="padding:8px 18px;font-size:0.8rem;border-radius:20px;border-color:var(--gold);color:var(--gold)">← Prev Discipline</button>
+      <button class="btn-secondary" onclick="scrollServicesTrack(420)" style="padding:8px 18px;font-size:0.8rem;border-radius:20px;border-color:var(--gold);color:var(--gold)">Next Discipline →</button>
+    </div>
+
+    <div class="svc-3d-viewport" id="svc3DViewport" style="overflow-x:auto;padding:20px 8px 36px;cursor:grab;perspective:1400px;scrollbar-width:thin;scrollbar-color:var(--gold) rgba(255,255,255,0.1)">
+      <div class="svc-3d-track" style="display:flex;gap:28px;width:max-content;transform-style:preserve-3d">
+        {% for svc in services %}
+        <div class="svc-3d-card" onmousemove="handleCardTilt(event, this)" onmouseleave="resetCardTilt(this)">
+          <div class="svc-3d-sheen"></div>
           
-          <!-- Clean Pricing Presentation (Actual Booking Price + Crossed-Out Original MRP + Bundle Note) -->
-          <div class="svc-split-price-box" style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:10px 0 14px">
-            {% if svc.has_offer and svc.offer_price < svc.price %}
-            <!-- When active coupon/offer applies -->
-            <div style="display:flex;align-items:baseline;gap:8px">
-              <span class="svc-split-price-val" style="font-size:1.55rem;font-weight:800;color:var(--gold)">
+          <div class="svc-3d-img-box" onclick="openLookbook('{{ svc.look_group_id|default:svc.category }}')">
+            <span class="svc-3d-badge">
+              ✦ {{ svc.get_category_display }}
+            </span>
+            <span class="svc-3d-num">
+              0{{ forloop.counter }}
+            </span>
+            <img src="{{ svc.display_image }}" alt="{{ svc.title }}" loading="lazy">
+            <div class="svc-3d-img-ov">
+              <span>🔍 Real Transformations</span>
+              <span>Explore Lookbook ↗</span>
+            </div>
+          </div>
+
+          <div class="svc-3d-content">
+            <div class="svc-3d-discipline">
+              ✦ {{ svc.discipline }}
+            </div>
+            <h3 class="svc-3d-title">
+              {{ svc.title }}
+            </h3>
+
+            <!-- Price Row -->
+            <div class="svc-3d-prices">
+              {% if svc.has_offer and svc.offer_price < svc.price %}
+              <span class="svc-3d-price-val">
                 ₹{{ svc.offer_price|floatformat:0 }}
               </span>
-              <span style="text-decoration:line-through;color:rgba(245,237,214,0.5);font-size:1.05rem" title="Standard Service Price">
+              <span class="svc-3d-price-orig">
                 ₹{{ svc.price|floatformat:0 }}
               </span>
-            </div>
-            <span style="background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:700;letter-spacing:0.5px">
-              {{ svc.discount_percent }}% OFF (Save ₹{{ svc.saving|floatformat:0 }})
-            </span>
-            {% elif svc.discount_price and svc.discount_price > svc.price %}
-            <!-- Standard pricing with higher MRP discount comparison -->
-            <div style="display:flex;align-items:baseline;gap:8px">
-              <span class="svc-split-price-val" style="font-size:1.55rem;font-weight:800;color:var(--gold)">
+              <span class="svc-3d-discount-badge">
+                {{ svc.discount_percent }}% OFF
+              </span>
+              {% else %}
+              <span class="svc-3d-price-val">
                 ₹{{ svc.price|floatformat:0 }}
               </span>
-              <span style="text-decoration:line-through;color:rgba(245,237,214,0.5);font-size:1.05rem" title="Original Standard MRP">
+              {% if svc.discount_price and svc.discount_price > svc.price %}
+              <span class="svc-3d-price-orig">
                 ₹{{ svc.discount_price|floatformat:0 }}
               </span>
+              {% endif %}
+              {% endif %}
             </div>
-            <span style="background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.35);color:var(--gold);padding:3px 9px;border-radius:12px;font-size:0.7rem;font-weight:700">
-              Special Studio Rate
-            </span>
-            {% else %}
-            <span class="svc-split-price-val" style="font-size:1.55rem;font-weight:800;color:var(--gold)">
-              ₹{{ svc.price|floatformat:0 }}
-            </span>
-            {% endif %}
 
-            {% if svc.bundle_note %}
-            <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.35);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600;letter-spacing:0.5px">
-              {{ svc.bundle_note }}
-            </span>
-            {% endif %}
-          </div>
+            <p class="svc-3d-desc">
+              {{ svc.description|truncatewords:24 }}
+            </p>
 
-          <!-- Crisp, Concise Luxury Editorial Description -->
-          <p class="svc-split-desc" style="font-size:0.88rem;line-height:1.6;color:rgba(245,237,214,0.85);margin-bottom:18px">
-            {{ svc.description }}
-          </p>
-
-          {% if svc.get_features_list %}
-          <div class="svc-split-inc-title" style="font-size:0.72rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;margin-bottom:10px">WHAT IS INCLUDED IN THIS SERVICE:</div>
-          <div class="svc-split-inclusions">
-            {% for feat in svc.get_features_list %}
-            <div class="svc-split-inc-item"><span>✓</span> {{ feat }}</div>
-            {% endfor %}
-          </div>
-          {% endif %}
-
-          <div class="svc-split-actions" style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-            <button class="btn-p" onclick="AnshitaCart.addItem({id: 'svc-{{ svc.id }}', title: '{{ svc.title|escapejs }}', price: {% if svc.has_offer %}{{ svc.offer_price }}{% else %}{{ svc.price }}{% endif %}, originalPrice: {{ svc.discount_price|default:svc.price }}, category: '{{ svc.category }}', image: '{{ svc.display_image|escapejs }}'})" style="padding:10px 20px;font-size:0.75rem;cursor:pointer">
-              🛍️ {{ t.btn_add_to_cart|default:'Add to Cart' }}
-            </button>
-            <button class="btn-o" onclick="openServiceComboModal('{{ svc.id }}', '{{ svc.title|escapejs }}', {% if svc.has_offer %}{{ svc.offer_price }}{% else %}{{ svc.price }}{% endif %}, {{ svc.discount_price|default:svc.price }}, '{{ svc.category }}')" style="padding:10px 18px;font-size:0.75rem;cursor:pointer;border-color:rgba(212,175,55,0.45);color:var(--gold-l)">
-              👑 {{ t.btn_combo_privileges|default:'Combo Privileges & Savings ✦' }}
-            </button>
-            <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20reserve%20{{ svc.title|urlencode }}." target="_blank" class="btn-wa" style="padding:10px 18px;font-size:0.75rem">
-              💬 {{ t.btn_reserve|default:'Reserve' }}
-            </a>
+            <div class="svc-3d-actions">
+              <button class="btn-p" onclick="AnshitaCart.addItem({id: 'svc-{{ svc.id }}', title: '{{ svc.title|escapejs }}', price: {% if svc.has_offer %}{{ svc.offer_price }}{% else %}{{ svc.price }}{% endif %}, originalPrice: {{ svc.discount_price|default:svc.price }}, category: '{{ svc.category }}', image: '{{ svc.display_image|escapejs }}'})" style="padding:9px 16px;font-size:0.75rem;cursor:pointer;flex:1">
+                🛍️ Cart
+              </button>
+              <button class="btn-o" onclick="openServiceComboModal('{{ svc.id }}', '{{ svc.title|escapejs }}', {% if svc.has_offer %}{{ svc.offer_price }}{% else %}{{ svc.price }}{% endif %}, {{ svc.discount_price|default:svc.price }}, '{{ svc.category }}')" style="padding:9px 14px;font-size:0.75rem;cursor:pointer;border-color:rgba(243,212,120,0.5);color:var(--gold-l)">
+                👑 Combo ✦
+              </button>
+              <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20reserve%20{{ svc.title|urlencode }}." target="_blank" class="btn-wa" style="padding:9px 14px;font-size:0.75rem">
+                💬
+              </a>
+            </div>
           </div>
         </div>
+        {% empty %}
+        <p style="text-align:center;color:rgba(245,237,214,0.5);padding:40px">No services configured yet.</p>
+        {% endfor %}
       </div>
-      {% empty %}
-      <p style="text-align:center;color:rgba(245,237,214,0.5);padding:40px">No services configured yet.</p>
-      {% endfor %}
     </div>
   </div>
 </section>
@@ -1002,68 +993,64 @@
       <p class="ss">Experience the pinnacle of Indian bridal artistry. Seamlessly explore our signature service disciplines, view real transformations, and compare bespoke coverage.</p>
     </div>
 
-    <!-- LAYER 1: Expansive 3-Photo Featured Couture Showcase -->
-    <div class="gal-featured-trio rev d1" id="galFeaturedTrio">
-      <!-- Card 1: Sacred Vivah Royal Crimson Bride -->
-      <div class="gal-trio-card" onclick="triggerGalleryCardDeal(() => openLookbook('royal_crimson'))">
-        <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah Royal Crimson Bride" class="gal-trio-img">
-        <div class="gal-trio-overlay"></div>
-        <div class="gal-trio-badge-top">
-          <span class="gal-trio-pill">✦ Imperial Crimson Vivah</span>
-          <span class="gal-trio-view-btn">Full Lookbook ↗</span>
-        </div>
-        <div class="gal-trio-content">
-          <h3>Sacred Vivah Royal Crimson Bride</h3>
-          <p>Micro-buffed HD & atomized TEMPTU airbrush bases ensuring 18+ hour cry-proof and sweat resilience for royal pheras.</p>
-          <span class="gal-trio-action"><span>🔍 View 4 Perspectives</span> · <span>Open Picasa Viewer ↗</span></span>
+    <!-- LAYER 1: Spatial 3D Card Fan for Featured Couture Portfolios -->
+    <div style="text-align:center;margin:30px 0 10px">
+      <span style="display:inline-block;padding:5px 16px;background:rgba(212,175,55,0.15);border:1px solid var(--gold);color:var(--gold-l);border-radius:20px;font-size:0.75rem;font-weight:800;letter-spacing:1px;text-transform:uppercase">
+        ✦ Featured Couture Lookbooks · Hover to Spread Deck · Click to Explore ✦
+      </span>
+    </div>
+
+    <div class="gal-fan-stage" id="galFanStage" style="height:480px;display:flex;align-items:center;justify-content:center;position:relative;perspective:1400px;margin:10px auto 40px">
+      <!-- Fan Card 1: Sacred Vivah Royal Crimson Bride -->
+      <div class="gal-fan-item fan-left" onclick="openLookbook('royal_crimson')">
+        <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah Royal Crimson Bride">
+        <div class="gal-fan-overlay">
+          <span class="gal-fan-badge">✦ Imperial Vivah</span>
+          <h4>Sacred Crimson Bride</h4>
+          <p>Micro-buffed HD base with authentic Banarasi veil.</p>
+          <span style="color:var(--gold-l);font-weight:700;font-size:0.8rem">Explore Lookbook Album ↗</span>
         </div>
       </div>
 
-      <!-- Card 2: Palace Maroon Velvet Heritage -->
-      <div class="gal-trio-card" onclick="triggerGalleryCardDeal(() => openLookbook('maroon_velvet'))">
-        <img src="{% static 'core/images/curated/dsc09702.jpg' %}?v=2" alt="Palace Maroon Velvet Heritage" class="gal-trio-img">
-        <div class="gal-trio-overlay"></div>
-        <div class="gal-trio-badge-top">
-          <span class="gal-trio-pill">✦ Palace Velvet Heritage</span>
-          <span class="gal-trio-view-btn">Full Lookbook ↗</span>
-        </div>
-        <div class="gal-trio-content">
-          <h3>Palace Maroon Velvet Heritage Couture</h3>
-          <p>Deep wine velvet lehenga, hand-embroidered gold zardozi, antique polki nath, and double royal veil architecture.</p>
-          <span class="gal-trio-action"><span>🔍 View 6 Authentic Angles</span> · <span>Open Picasa Viewer ↗</span></span>
+      <!-- Fan Card 2: Palace Maroon Velvet Heritage -->
+      <div class="gal-fan-item fan-center" onclick="openLookbook('maroon_velvet')">
+        <img src="{% static 'core/images/curated/dsc09702.jpg' %}?v=2" alt="Palace Maroon Velvet Heritage">
+        <div class="gal-fan-overlay">
+          <span class="gal-fan-badge">✦ Featured Spotlight</span>
+          <h4>Palace Maroon Velvet</h4>
+          <p>Royal double veil drape and antique heirloom polki.</p>
+          <span style="color:var(--gold-l);font-weight:700;font-size:0.8rem">Explore Lookbook Album ↗</span>
         </div>
       </div>
 
-      <!-- Card 3: Traditional Kolkata Banarasi & Chandan Art -->
-      <div class="gal-trio-card" onclick="triggerGalleryCardDeal(() => openLookbook('bengali_heritage'))">
-        <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Traditional Bengali Mukut & Chandan" class="gal-trio-img">
-        <div class="gal-trio-overlay"></div>
-        <div class="gal-trio-badge-top">
-          <span class="gal-trio-pill">✦ Bengali Mukut & Alta</span>
-          <span class="gal-trio-view-btn">Full Lookbook ↗</span>
-        </div>
-        <div class="gal-trio-content">
-          <h3>Traditional Kolkata Banarasi & Chandan Art</h3>
-          <p>Intricate forehead sandalwood artwork, artisanal glitter cut-crease eye makeup, and pure silk Banarasi draping.</p>
-          <span class="gal-trio-action"><span>🔍 View 4 Ceremonial Photos</span> · <span>Open Picasa Viewer ↗</span></span>
+      <!-- Fan Card 3: Traditional Kolkata Banarasi & Chandan Art -->
+      <div class="gal-fan-item fan-right" onclick="openLookbook('bengali_heritage')">
+        <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Traditional Bengali Mukut & Chandan">
+        <div class="gal-fan-overlay">
+          <span class="gal-fan-badge">✦ Banarasi Heritage</span>
+          <h4>Traditional Chandan Art</h4>
+          <p>Hand-painted sandalwood forehead art with mukut crown.</p>
+          <span style="color:var(--gold-l);font-weight:700;font-size:0.8rem">Explore Lookbook Album ↗</span>
         </div>
       </div>
     </div>
 
-    <!-- Luxury CTA Banner: See More Photos & Card Deal Picasa Viewer -->
+    <!-- Luxury CTA Banner: Complete Lookbook Archive & Fullscreen View -->
     <div class="gal-see-more-banner rev d2">
       <div class="gal-see-more-info">
         <h4>✦ Complete Bridal & Haute Couture Lookbook Archive</h4>
-        <p>Explore all {{ look_groups|length|default:'12' }}+ curated real-wedding transformation portfolios with multi-angle perspective navigation.</p>
+        <p>Explore all {{ look_groups|length|default:'12' }}+ curated real-wedding albums with multi-angle photos, reels, and video embeds.</p>
       </div>
-      <button class="gal-see-more-btn" onclick="triggerGalleryCardDeal(() => openPeekGallery(0))">
-        <span>✨ See More Photos (Picasa Viewer)</span>
-        <span style="font-size:1.1rem">↗</span>
-      </button>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="gal-see-more-btn" onclick="openLookbook('all')">
+          <span>✨ View All Media Archive (Theatrical Viewer)</span>
+          <span style="font-size:1.1rem">↗</span>
+        </button>
+      </div>
     </div>
 
-    <!-- LAYER 2: Filterable Masonry Real-Brides Gallery Grid & Dynamic Deal Controls -->
-    <div class="gal-filters rev d2" style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <!-- LAYER 2: Filterable Real-Brides Album Grid -->
+    <div class="gal-filters rev d2" style="margin-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px">
         <button class="gf-btn active" onclick="filterGal('all')">{{ t.gf_all|default:'All Disciplines' }}</button>
         <button class="gf-btn" onclick="filterGal('bridal')">{{ t.gf_bridal|default:'Bridal Suites' }}</button>
@@ -1077,27 +1064,32 @@
       </button>
     </div>
 
-    <div class="gal-grid rev d2">
+    <div class="gal-grid rev d2" style="margin-top:20px">
       {% for grp in look_groups %}
-      <div class="gal-item lg-card-{{ grp.id }}" id="lookgroup-{{ grp.id }}" data-lg-id="{{ grp.id }}" data-cat="{{ grp.category }}" onclick="openLookbook('{{ grp.id }}')" style="cursor:pointer">
-        <img src="{{ grp.display_cover }}?v=2" alt="{{ grp.name }}" loading="lazy">
+      <div class="gal-item lg-card-{{ grp.id }}" id="lookgroup-{{ grp.id }}" data-lg-id="{{ grp.id }}" data-cat="{{ grp.category }}" onclick="openLookbook('{{ grp.id }}')" style="cursor:pointer;position:relative;border-radius:18px;overflow:hidden;border:1.5px solid rgba(212,175,55,0.3);box-shadow:0 12px 30px rgba(0,0,0,0.5)">
+        <img src="{{ grp.display_cover }}?v=2" alt="{{ grp.name }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;transition:transform .6s ease">
         
-        <!-- Person & Makeup Type Folder Badges -->
-        <div style="position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:center;z-index:3;pointer-events:none">
+        <!-- Album Details & Media Count Badges -->
+        <div style="position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;z-index:3;pointer-events:none">
           {% if grp.client_name %}
-          <span style="background:rgba(20,16,18,0.92);backdrop-filter:blur(8px);border:1px solid rgba(212,175,55,0.6);border-radius:14px;padding:4px 10px;font-size:0.68rem;font-weight:700;color:var(--gold);letter-spacing:0.5px">
+          <span style="background:rgba(24,19,14,0.95);backdrop-filter:blur(10px);border:1px solid var(--gold);border-radius:14px;padding:4px 10px;font-size:0.7rem;font-weight:800;color:var(--gold-l);letter-spacing:0.5px">
             👤 {{ grp.client_name }}
           </span>
+          {% else %}
+          <span style="background:rgba(24,19,14,0.95);backdrop-filter:blur(10px);border:1px solid var(--gold);border-radius:14px;padding:4px 10px;font-size:0.7rem;font-weight:800;color:var(--gold-l);letter-spacing:0.5px">
+            👑 {{ grp.get_category_display }}
+          </span>
           {% endif %}
-          <span style="background:rgba(0,0,0,0.75);border-radius:12px;padding:3px 8px;font-size:0.62rem;color:rgba(245,237,214,0.9);letter-spacing:0.5px">
-            {{ grp.media_items.count }} Media
+
+          <span style="background:rgba(0,0,0,0.8);border-radius:12px;padding:4px 10px;font-size:0.68rem;color:#ffffff;font-weight:700;letter-spacing:0.5px;border:1px solid rgba(255,255,255,0.2)">
+            {{ grp.count_summary|default:'Album' }}
           </span>
         </div>
 
-        <div class="gal-ov">
-          <span style="font-weight:700;letter-spacing:1px">🔍 Open Lookbook Folder</span>
-          <strong style="font-size:.78rem;color:var(--gold-l);display:block;margin-top:6px">{{ grp.makeup_type|default:grp.name }}</strong>
-          <small style="font-size:.65rem;color:rgba(245,237,214,0.7);display:block;margin-top:2px">{{ grp.get_category_display }}</small>
+        <div class="gal-ov" style="background:linear-gradient(0deg,rgba(16,12,9,0.95) 0%,rgba(16,12,9,0.6) 60%,transparent 100%)">
+          <span style="font-weight:800;letter-spacing:1px;color:#fff6c8">🔍 Open Lookbook Album</span>
+          <strong style="font-size:.85rem;color:var(--gold-l);display:block;margin-top:6px">{{ grp.makeup_type|default:grp.name }}</strong>
+          <small style="font-size:.7rem;color:rgba(255,255,255,0.85);display:block;margin-top:2px">{{ grp.get_category_display }}</small>
         </div>
       </div>
       {% empty %}
@@ -1519,26 +1511,51 @@
     </div>
 
     <div class="pkg-grid-bundles">
-      <!-- BUNDLE 1: The Grand Royal Vivah Celebration (Featuring Telegram Shoot: Deep Maroon Velvet Bride) -->
+      <!-- BUNDLE 1: The Grand Royal Vivah Celebration -->
       <div class="pkg-bundle-card featured rev d1">
-        <div class="pkg-bundle-media" onclick="openLookbook('maroon_bride')">
-          <img src="{% static 'core/images/curated/maroon_20251109_191223_p30.jpg' %}" alt="Grand Royal Vivah Celebration - Palace Deep Maroon Velvet Bride">
-          <div class="pkg-bundle-overlay"></div>
-          <span class="pkg-bundle-badge">Flagship 3-Event Suite</span>
-          <div class="pkg-bundle-tag-bottom">
-            <span>Authentic Velvet Bride (Editorial Shoot)</span>
-            <span style="color:var(--gold)">View 2 HD Angles ↗</span>
-          </div>
-        </div>
         <div class="pkg-bundle-body">
-          <div style="font-size:0.72rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:6px">✦ Bridal & Sangeet Grand Vivah</div>
-          <h3 class="pkg-bundle-title">The Grand Royal Vivah Celebration</h3>
-          <p class="pkg-bundle-tagline" style="margin-bottom:14px">3-Event Complete Bridal Journey · Sacred Pheras, Evening Reception & Pre-Wedding Glam + 2 Free Side Makeups</p>
+          <div class="pkg-combo-hdr">
+            <span class="pkg-combo-crown">👑</span>
+            <div style="flex:1">
+              <span class="pkg-combo-tier">✦ FLAGSHIP 3-EVENT COMPLETE TROUSSEAU</span>
+              <h3 class="pkg-bundle-title">The Grand Royal Vivah Celebration</h3>
+              <p class="pkg-bundle-tagline">Complete 3-Event Bridal Journey from Sacred Pheras to Midnight Reception</p>
+            </div>
+            <span class="pkg-combo-save-badge">Save 32%</span>
+          </div>
 
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-            <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.3);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">✦ 3 Event Celebrations</span>
-            <span style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:#86efac;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">🎁 2 Free Family Sides</span>
-            <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:rgba(245,237,214,0.85);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">Dior & TEMPTU Kits</span>
+          <!-- What the person gets in this combo -->
+          <div class="pkg-combo-deliverables">
+            <div class="pcd-title">✦ Included Events & Master Deliverables:</div>
+            <ul class="pcd-list">
+              <li>
+                <span class="pcd-check">✓</span>
+                <div>
+                  <strong>Event 1: Sacred Vivah Pheras</strong> — Micro-buffed HD & TEMPTU Airbrush base, Banarasi double veil drape, nath & mathapatti architecture (18-Hr Cry-Proof).
+                </div>
+              </li>
+              <li>
+                <span class="pcd-check">✓</span>
+                <div>
+                  <strong>Event 2: Evening Reception High-Glam</strong> — Jewel-toned cut-crease eye art, Hollywood waves / textured bridal bun, and saree box pleating.
+                </div>
+              </li>
+              <li>
+                <span class="pcd-check">✓</span>
+                <div>
+                  <strong>Event 3: Ring Ceremony / Sangeet</strong> — High-shine dewy glass skin finish, floral braid architecture, and custom wispy lashes.
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Special Offer: Side Makeups Based on Combo -->
+          <div class="pkg-combo-offer-box">
+            <div class="pcob-icon">🎁</div>
+            <div class="pcob-text">
+              <strong>SPECIAL COMBO PRIVILEGE: 2 Free Family Side Makeups Included</strong>
+              <span>Receive 2 complete HD side makeovers for Mother & Sister completely free of charge (Worth ₹13,000 complimentary value) + Deluxe bridal touch-up kit.</span>
+            </div>
           </div>
 
           <div class="pkg-pricing-calc">
@@ -1569,24 +1586,43 @@
 
       <!-- BUNDLE 2: Sacred Vivah & Reception Duo -->
       <div class="pkg-bundle-card featured rev d2">
-        <div class="pkg-bundle-media" onclick="openLookbook('bridal')">
-          <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah and Reception Duo">
-          <div class="pkg-bundle-overlay"></div>
-          <span class="pkg-bundle-badge" style="background:linear-gradient(135deg,#e07a5f,#d4af37)">Most Loved Bridal Duo</span>
-          <div class="pkg-bundle-tag-bottom">
-            <span>Pheras Day + Evening Reception</span>
-            <span style="color:var(--gold)">View Lookbook ↗</span>
-          </div>
-        </div>
         <div class="pkg-bundle-body">
-          <div style="font-size:0.72rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:6px">✦ Pheras & Reception Milestone Duo</div>
-          <h3 class="pkg-bundle-title">Sacred Vivah & Reception Duo</h3>
-          <p class="pkg-bundle-tagline" style="margin-bottom:14px">The Essential Two Major Milestones · Pheras Day & High-Definition Evening Reception Glam</p>
+          <div class="pkg-combo-hdr">
+            <span class="pkg-combo-crown">💍</span>
+            <div style="flex:1">
+              <span class="pkg-combo-tier">✦ 2-EVENT MILESTONE DUO</span>
+              <h3 class="pkg-bundle-title">Sacred Vivah & Reception Duo</h3>
+              <p class="pkg-bundle-tagline">The Essential Two Major Wedding Day Ceremonies Combined</p>
+            </div>
+            <span class="pkg-combo-save-badge">Save 25%</span>
+          </div>
 
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-            <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.3);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">✦ 2 Major Milestones</span>
-            <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.3);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">Glass Skin & Mathapatti</span>
-            <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:rgba(245,237,214,0.85);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">2 Haute Hairstyles</span>
+          <!-- What the person gets in this combo -->
+          <div class="pkg-combo-deliverables">
+            <div class="pcd-title">✦ Included Events & Master Deliverables:</div>
+            <ul class="pcd-list">
+              <li>
+                <span class="pcd-check">✓</span>
+                <div>
+                  <strong>Event 1: Sacred Vivah Pheras</strong> — 18-Hr Waterproof HD base, Banarasi double veil drape, nath & mathapatti pinning with cry-proof seal.
+                </div>
+              </li>
+              <li>
+                <span class="pcd-check">✓</span>
+                <div>
+                  <strong>Event 2: Evening Reception Glam</strong> — Red-carpet high-definition glow, 2nd distinct haute hairstyle (textured bun / waves), and luxury saree pleating.
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Special Offer: Side Makeups Based on Combo -->
+          <div class="pkg-combo-offer-box">
+            <div class="pcob-icon">🎁</div>
+            <div class="pcob-text">
+              <strong>SPECIAL COMBO PRIVILEGE: 1 Free Family Side Makeup Included</strong>
+              <span>Receive 1 complete HD family side makeover for Mother or Sister complimentary (Worth ₹6,500 value) + Free lash application & touch-up kit.</span>
+            </div>
           </div>
 
           <div class="pkg-pricing-calc">
@@ -1617,24 +1653,49 @@
 
       <!-- BUNDLE 3: Pre-Wedding Rites & Festivities Trio -->
       <div class="pkg-bundle-card rev d3">
-        <div class="pkg-bundle-media" onclick="openLookbook('engagement')">
-          <img src="{% static 'core/images/curated/ig_post_DSrKrDHiLNPGzQHnwZkcRe3YUoC5fCc24nWZjQ0.jpg' %}" alt="Pre-Wedding Rites and Festivities Trio">
-          <div class="pkg-bundle-overlay"></div>
-          <span class="pkg-bundle-badge" style="background:linear-gradient(135deg,#c084fc,#7e22ce);color:#fff">Pre-Wedding Trio</span>
-          <div class="pkg-bundle-tag-bottom">
-            <span>Ring Ceremony + Sangeet + Gel Nails</span>
-            <span style="color:var(--gold)">View Lookbook ↗</span>
-          </div>
-        </div>
         <div class="pkg-bundle-body">
-          <div style="font-size:0.72rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:6px">✦ Ring Ceremony & Sangeet Glam</div>
-          <h3 class="pkg-bundle-title">Pre-Wedding Rites & Festivities Trio</h3>
-          <p class="pkg-bundle-tagline" style="margin-bottom:14px">Radiant Long-Wear Coverage Across Ring Ceremony, Sangeet & Swarovski Gel Nails</p>
+          <div class="pkg-combo-hdr">
+            <span class="pkg-combo-crown">✨</span>
+            <div style="flex:1">
+              <span class="pkg-combo-tier">✦ PRE-WEDDING FESTIVITIES TRIO</span>
+              <h3 class="pkg-bundle-title">Pre-Wedding Rites & Festivities Trio</h3>
+              <p class="pkg-bundle-tagline">Radiant Coverage Across Ring Ceremony, Sangeet & Swarovski Gel Nails</p>
+            </div>
+            <span class="pkg-combo-save-badge">Save 28%</span>
+          </div>
 
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-            <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.3);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">✦ Roka + Sangeet</span>
-            <span style="background:rgba(192,132,252,0.12);border:1px solid rgba(192,132,252,0.3);color:#e9d5ff;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">💅 Swarovski Gel Nails</span>
-            <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:rgba(245,237,214,0.85);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">3 Thermal Hairstyles</span>
+          <!-- What the person gets in this combo -->
+          <div class="pkg-combo-deliverables">
+            <div class="pcd-title">✦ Included Events & Master Deliverables:</div>
+            <ul class="pcd-list">
+              <li>
+                <span class="pcd-check">✓</span>
+                <div>
+                  <strong>Event 1: Engagement & Ring Ceremony</strong> — Micro-buffed pastel glam, soft mermaid waves, and floral jewelry setting.
+                </div>
+              </li>
+              <li>
+                <span class="pcd-check">✓</span>
+                <div>
+                  <strong>Event 2: Sangeet & Haldi Night</strong> — Sweat-proof golden shimmer base, textured Dutch braiding, and high-definition finish.
+                </div>
+              </li>
+              <li>
+                <span class="pcd-check">✓</span>
+                <div>
+                  <strong>Event 3: Bridal Nail Couture</strong> — Full set Swarovski crystal sculpted gel extensions with custom bridal design.
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Special Offer: Side Makeups Based on Combo -->
+          <div class="pkg-combo-offer-box">
+            <div class="pcob-icon">🎁</div>
+            <div class="pcob-text">
+              <strong>SPECIAL COMBO PRIVILEGE: Free Family Hair Styling & Hydration Mask</strong>
+              <span>Receive 1 complimentary family hair styling & saree draping (Worth ₹3,500 value) + Express Hydra-sheet pre-makeup prep.</span>
+            </div>
           </div>
 
           <div class="pkg-pricing-calc">
@@ -1665,24 +1726,49 @@
 
       <!-- BUNDLE 4: Royal Family & Bridesmaids Ensemble -->
       <div class="pkg-bundle-card rev d4">
-        <div class="pkg-bundle-media" onclick="openLookbook('bridesmaids')">
-          <img src="{% static 'core/images/curated/ig_post_DVTThv0CI_psJjhtWi0TP5npf_Crqxgeq7JBTE0.jpg' %}" alt="Royal Family & Bridesmaids Ensemble">
-          <div class="pkg-bundle-overlay"></div>
-          <span class="pkg-bundle-badge" style="background:linear-gradient(135deg,#c2607a,#7b1c2e);color:#fff">Entourage Ensemble</span>
-          <div class="pkg-bundle-tag-bottom">
-            <span>Mother, Sisters & Bridesmaids (4 Guests)</span>
-            <span style="color:var(--gold)">View Lookbook ↗</span>
-          </div>
-        </div>
         <div class="pkg-bundle-body">
-          <div style="font-size:0.72rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:6px">✦ Side & Family Makeover Suite</div>
-          <h3 class="pkg-bundle-title">Royal Family & Bridesmaids Ensemble</h3>
-          <p class="pkg-bundle-tagline" style="margin-bottom:14px">Coordinated Bridal Entourage · Mothers, Sisters & Bridesmaids (Complimentary 4th Guest Privilege)</p>
+          <div class="pkg-combo-hdr">
+            <span class="pkg-combo-crown">👭</span>
+            <div style="flex:1">
+              <span class="pkg-combo-tier">✦ ENTOURAGE ENSEMBLE</span>
+              <h3 class="pkg-bundle-title">Royal Family & Bridesmaids Ensemble</h3>
+              <p class="pkg-bundle-tagline">Coordinated Bridal Entourage · Mothers, Sisters & Bridesmaids (4 Guests)</p>
+            </div>
+            <span class="pkg-combo-save-badge">4th Guest Free</span>
+          </div>
 
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-            <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.3);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">✦ 4 Complete HD Looks</span>
-            <span style="background:rgba(194,96,122,0.15);border:1px solid rgba(194,96,122,0.3);color:#f472b6;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">👑 4th Guest Free</span>
-            <span style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:rgba(245,237,214,0.85);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600">4 Hairstyles & Drapes</span>
+          <!-- What the person gets in this combo -->
+          <div class="pkg-combo-deliverables">
+            <div class="pcd-title">✦ Included Events & Master Deliverables:</div>
+            <ul class="pcd-list">
+              <li>
+                <span class="pcd-check">✓</span>
+                <div>
+                  <strong>4 Complete HD Studio Makeovers</strong> — Custom foundation matching across diverse skin undertones and age groups.
+                </div>
+              </li>
+              <li>
+                <span class="pcd-check">✓</span>
+                <div>
+                  <strong>4 Haute Hairstyles</strong> — Thermal curls, textured updos, Hollywood waves, or traditional buns with accessories.
+                </div>
+              </li>
+              <li>
+                <span class="pcd-check">✓</span>
+                <div>
+                  <strong>4 Precision Saree / Dupatta Drapings</strong> — Iron-free box pleating and anti-slip safety pinning.
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Special Offer: Side Makeups Based on Combo -->
+          <div class="pkg-combo-offer-box">
+            <div class="pcob-icon">🎁</div>
+            <div class="pcob-text">
+              <strong>SPECIAL COMBO PRIVILEGE: 4th Guest Completely FREE</strong>
+              <span>Pay for 3 guests and the 4th bridesmaid or mother is styled completely free of charge (Worth ₹6,500 complimentary value) + Synchronized zero-delay team styling.</span>
+            </div>
           </div>
 
           <div class="pkg-pricing-calc">

@@ -265,9 +265,10 @@ def admin_lookgroup_manage(request):
         makeup_type = request.POST.get('makeup_type', '').strip()
         category = request.POST.get('category', 'bridal').strip()
         description = request.POST.get('description', '').strip()
-        cover_image_url = request.POST.get('cover_image_url', '').strip()
         order_val = request.POST.get('order', '0')
         is_active = request.POST.get('is_active') not in ['0', 'false', 'off']
+        is_featured = request.POST.get('is_featured') in ['1', 'true', 'on']
+        show_ext_btn = request.POST.get('show_external_link_button') not in ['0', 'false', 'off']
 
         if not name:
             if client_name and makeup_type:
@@ -280,6 +281,8 @@ def admin_lookgroup_manage(request):
         except ValueError:
             order = 0
 
+        slug_val = slugify(name)[:140]
+
         if grp_id:
             try:
                 grp = LookGroup.objects.get(id=grp_id)
@@ -290,6 +293,9 @@ def admin_lookgroup_manage(request):
             grp.makeup_type = makeup_type
             grp.category = category
             grp.description = description
+            grp.slug = slug_val
+            grp.is_featured = is_featured
+            grp.show_external_link_button = show_ext_btn
             if cover_image_url:
                 grp.cover_image_url = cover_image_url
             grp.order = order
@@ -301,7 +307,10 @@ def admin_lookgroup_manage(request):
                 makeup_type=makeup_type,
                 category=category,
                 description=description,
+                slug=slug_val,
                 cover_image_url=cover_image_url,
+                is_featured=is_featured,
+                show_external_link_button=show_ext_btn,
                 order=order,
                 is_active=is_active
             )
@@ -321,6 +330,8 @@ def admin_lookgroup_manage(request):
                 'category': grp.category,
                 'description': grp.description,
                 'display_cover': grp.display_cover,
+                'is_featured': grp.is_featured,
+                'show_external_link_button': grp.show_external_link_button,
                 'order': grp.order,
                 'is_active': grp.is_active,
                 'media_count': grp.media_items.count()
@@ -340,6 +351,7 @@ def admin_lookgroup_manage(request):
                 'external_url': itm.external_url,
                 'embed_code': itm.embed_code,
                 'thumb': itm.display_thumb,
+                'show_platform_link': itm.show_platform_link,
                 'order': itm.order
             })
         groups.append({
@@ -350,6 +362,8 @@ def admin_lookgroup_manage(request):
             'category': g.category,
             'description': g.description,
             'display_cover': g.display_cover,
+            'is_featured': g.is_featured,
+            'show_external_link_button': g.show_external_link_button,
             'order': g.order,
             'is_active': g.is_active,
             'media_items': media_list,
@@ -395,6 +409,7 @@ def admin_lookmedia_manage(request):
         title = request.POST.get('title', '').strip()
         caption = request.POST.get('caption', '').strip()
         thumb_url = request.POST.get('thumbnail_url', '').strip()
+        show_platform_link = request.POST.get('show_platform_link') not in ['0', 'false', 'off']
         embed_code = ''
 
         # Auto-detect Instagram
@@ -442,6 +457,7 @@ def admin_lookmedia_manage(request):
             thumbnail_url=thumb_url,
             title=title or f"{group.client_name or group.name} Highlight",
             caption=caption,
+            show_platform_link=show_platform_link,
             order=group.media_items.count() + 1
         )
 

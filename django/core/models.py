@@ -500,9 +500,12 @@ class LookGroup(models.Model):
     client_name = models.CharField(max_length=100, blank=True, help_text='Client or Model name e.g. "Kuhu", "Miss Rajak"')
     makeup_type = models.CharField(max_length=150, blank=True, help_text='Type of makeup e.g. "Traditional Bengali Mukut & Chandan", "Mauve Shimmer Cut-Crease"')
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='bridal')
+    slug = models.SlugField(max_length=150, blank=True, help_text='URL-friendly identifier e.g. "kuhu-banarasi-bride"')
     cover_image = models.ImageField(upload_to='lookgroups/covers/', blank=True, null=True)
     cover_image_url = models.CharField(max_length=500, blank=True, help_text='Fallback static image path')
     description = models.TextField(blank=True)
+    show_external_link_button = models.BooleanField(default=True, help_text='Allow visitors to see "Watch on Instagram / YouTube" buttons for this album')
+    is_featured = models.BooleanField(default=False, help_text='Display in top spatial 3D card fan')
     order = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -525,6 +528,25 @@ class LookGroup(models.Model):
             return first_item.display_thumb
         return '/static/core/images/curated/royal_crimson_bride_angle3.jpg'
 
+    @property
+    def photo_count(self):
+        return self.media_items.filter(media_type='image').count()
+
+    @property
+    def video_count(self):
+        return self.media_items.exclude(media_type='image').count()
+
+    @property
+    def count_summary(self):
+        p = self.photo_count
+        v = self.video_count
+        parts = []
+        if p > 0:
+            parts.append(f"{p} Photo{'s' if p > 1 else ''}")
+        if v > 0:
+            parts.append(f"{v} Video{'s' if v > 1 else ''}")
+        return " · ".join(parts) if parts else "Portfolio Look"
+
 
 class LookMediaItem(models.Model):
     """Individual photo, video file, Instagram post/reel, or YouTube link inside a LookGroup"""
@@ -543,6 +565,7 @@ class LookMediaItem(models.Model):
     thumbnail_url = models.CharField(max_length=500, blank=True, help_text='Auto-fetched thumbnail for Instagram/YouTube or static path')
     title = models.CharField(max_length=200, blank=True)
     caption = models.CharField(max_length=300, blank=True)
+    show_platform_link = models.BooleanField(default=True, help_text='Show "Open in Instagram/YouTube" badge for this item')
     order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
