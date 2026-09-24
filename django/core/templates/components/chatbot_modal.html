@@ -31,9 +31,40 @@
       </div>
     </div>
     <div class="chat-msgs" id="chat-msgs">
+      <!-- AI Welcome Greeting -->
       <div class="msg bot">
         Namaste and welcome to Anshita Makeover! ✨ I am your 24/7 AI Wedding Concierge.<br><br>
         How may I assist you today? You can ask me about our bespoke <strong>Bridal Suites</strong>, <strong>Signature Party & HD looks</strong>, <strong>Pan-India Destination rates</strong>, or <strong>Academy Masterclasses</strong>. 💄
+      </div>
+
+      <!-- Regional Language Selection Card -->
+      <div class="chat-lang-prompt" id="chat-lang-prompt">
+        <div class="chat-lang-prompt-title">
+          <span>🌐 Choose Your Preferred Language / अपनी भाषा चुनें</span>
+        </div>
+        <div class="chat-lang-prompt-sub" id="chat-lang-sub">
+          आप जिस भाषा या बोली में सहज महसूस करें, उसे चुनें:
+        </div>
+        <div class="chat-lang-chips" id="chat-lang-chips">
+          <button type="button" class="chat-lang-chip" onclick="selectChatLanguage('bundelkhandi', 'बुंदेलखंडी')">
+            <span>बुंदेलखंडी (Bundelkhandi)</span>
+          </button>
+          <button type="button" class="chat-lang-chip" onclick="selectChatLanguage('baghelkhandi', 'बघेलखंडी')">
+            <span>बघेलखंडी (Baghelkhandi)</span>
+          </button>
+          <button type="button" class="chat-lang-chip" onclick="selectChatLanguage('bhojpuri', 'भोजपुरी')">
+            <span>भोजपुरी (Bhojpuri)</span>
+          </button>
+          <button type="button" class="chat-lang-chip" onclick="selectChatLanguage('hindi', 'हिंदी')">
+            <span>हिंदी (Hindi)</span>
+          </button>
+          <button type="button" class="chat-lang-chip" onclick="selectChatLanguage('english', 'English')">
+            <span>English</span>
+          </button>
+          <button type="button" class="chat-lang-chip" onclick="selectChatLanguage('marathi', 'मराठी')">
+            <span>मराठी (Marathi)</span>
+          </button>
+        </div>
       </div>
     </div>
     <div class="chat-inp-row">

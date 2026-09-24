@@ -75,6 +75,7 @@ def chatbot_api(request):
         data = json.loads(request.body)
         user_msg = data.get('message', '').strip()
         session_id = data.get('session_id', str(uuid.uuid4()))
+        language = data.get('language', 'hindi').strip().lower()
 
         if not user_msg:
             return JsonResponse({'reply': 'Greetings! How may I assist you with our bridal and beauty services today? ✨', 'session_id': session_id})
@@ -83,14 +84,14 @@ def chatbot_api(request):
         api_key = get_gemini_api_key()
 
         if not api_key:
-            reply = fallback_chatbot(user_msg)
+            reply = fallback_chatbot(user_msg, language=language)
         else:
             try:
-                reply = gemini_chat(api_key, user_msg, session_id)
+                reply = gemini_chat(api_key, user_msg, session_id, language=language)
             except Exception as e:
                 import logging
                 logging.getLogger(__name__).warning("Gemini AI error (%s), activating fallback", e)
-                reply = fallback_chatbot(user_msg)
+                reply = fallback_chatbot(user_msg, language=language)
 
         ChatMessage.objects.create(session_id=session_id, message=user_msg, response=reply)
         return JsonResponse({'reply': reply, 'session_id': session_id})
@@ -159,7 +160,7 @@ def conversation_history(session_id, limit=GEMINI_HISTORY_TURNS):
     return turns
 
 
-def gemini_chat(api_key, user_msg, session_id):
+def gemini_chat(api_key, user_msg, session_id, language='hindi'):
     """Client-facing AI Concierge — Gemini with conversation memory, live DB
     pricing, standalone bridal vs package distinction, negotiation guardrails and a strict concise/plain-text style."""
     import requests
@@ -208,13 +209,30 @@ def gemini_chat(api_key, user_msg, session_id):
         )
     pkg_rules_text = "\n".join(pkg_rules) or "- No active packages."
 
+    lang_instruction = f"User has selected preferred language: {language.upper()}."
+    if language == 'bundelkhandi':
+        lang_instruction += " Speak in authentic, affectionate Bundelkhandi (बुंदेलखंडी - eg. 'हओ', 'किए का सिंगार', 'का हाल चाल')."
+    elif language == 'baghelkhandi':
+        lang_instruction += " Speak in natural Baghelkhandi (बघेलखंडी - eg. 'कइसन बाटे', 'का भाव परि', 'लगन सिंगार')."
+    elif language == 'bhojpuri':
+        lang_instruction += " Speak in sweet, respectful Bhojpuri (भोजपुरी - eg. 'राउर स्वागत बा', 'कवन सिंगार चाहीं')."
+    elif language == 'marathi':
+        lang_instruction += " Speak in elegant, welcoming Marathi (मराठी)."
+    elif language == 'english':
+        lang_instruction += " Speak in sophisticated luxury English."
+    else:
+        lang_instruction += " Speak in warm conversational Hindi/Hinglish."
+
     system_prompt = f"""You are Anshita Makeover's Luxury Concierge AI (bridal, hair, nails, academy).
+
+PRIMARY LANGUAGE PREFERENCE:
+- {lang_instruction}
 
 CONVERSATION CONTEXT:
 - This is an ongoing conversation: you can see earlier messages above. Continue naturally.
 - NEVER repeat welcome greetings or re-introduce the studio if this is a follow-up message.
 - Answer the user's specific question or objection directly in your FIRST sentence.
-- Mirror user's language: If user writes in Hindi/Hinglish (e.g. "yeh toh bahut mehnga h", "mujhe option nahi dikhe"), reply warmly in natural Hinglish!
+- Mirror user's language: If user writes in Hindi, Hinglish, Bundelkhandi, Baghelkhandi, Bhojpuri, Marathi, or English, reply naturally in that language!
 
 CATALOG & PRICING (live from database — quote ONLY these, never invent prices):
 
@@ -640,7 +658,7 @@ def admin_ai_status(request):
     })
 
 
-def fallback_chatbot(msg):
+def fallback_chatbot(msg, language='hindi'):
     """Deterministic concierge (no Gemini key / Gemini down).
 
     Style mirrors the AI rules: short bullet lines, NO markdown tables,

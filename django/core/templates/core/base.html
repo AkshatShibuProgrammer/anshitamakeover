@@ -2197,12 +2197,12 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 
 @media(max-width:768px){.about-modal-box{grid-template-columns:1fr}.about-modal-left{border-right:none;border-bottom:1px solid rgba(212,175,55,.15);padding:24px}}
 
-/* ═══ CHATBOT (FB MESSENGER MOVABLE STYLE) ═══ */
+/* ═══ CHATBOT (FB MESSENGER MOVABLE STYLE - BOTTOM-LEFT DOCKED) ═══ */
 #chatbot {
   position: fixed;
-  bottom: 88px;
-  right: 24px;
-  left: auto;
+  bottom: 24px;
+  left: 24px;
+  right: auto;
   z-index: 920;
 }
 #chatbot input, #chatbot textarea, .chat-inp {
@@ -2258,8 +2258,8 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 .chat-box {
   position: absolute;
   bottom: 74px;
-  right: 0;
-  left: auto;
+  left: 0;
+  right: auto;
   width: min(420px, calc(100vw - 32px));
   height: 520px;
   max-height: calc(100vh - 120px);
@@ -2272,18 +2272,77 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   flex-direction: column;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  transform-origin: bottom right;
+  transform-origin: bottom left;
   transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
               height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
               top 0.3s ease, left 0.3s ease, right 0.3s ease, bottom 0.3s ease;
 }
 .chat-box.open {
   display: flex;
-  animation: chatPop 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: chatPopLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-@keyframes chatPop {
+@keyframes chatPopLeft {
   0% { opacity: 0; transform: scale(0.85) translateY(20px); }
   100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Regional Language Selection Bar & Chips */
+.chat-lang-prompt {
+  background: linear-gradient(135deg, rgba(30, 20, 26, 0.95), rgba(18, 12, 16, 0.98));
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin: 4px 0 10px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+}
+.chat-lang-prompt-title {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--gold-l);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+.chat-lang-prompt-sub {
+  font-size: 0.68rem;
+  color: rgba(245, 237, 214, 0.7);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.chat-lang-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chat-lang-chip {
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: var(--cream);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.chat-lang-chip:hover {
+  background: var(--gold);
+  color: #000;
+  border-color: var(--gold);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.4);
+}
+.chat-lang-chip.active {
+  background: linear-gradient(135deg, var(--gold-d), var(--gold));
+  color: #000;
+  border-color: transparent;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.45);
 }
 
 /* Maximized State */
@@ -3154,9 +3213,9 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
     padding-right: 16px;
   }
   #chatbot{
-    bottom: 126px !important;
-    right: 16px !important;
-    left: auto !important;
+    bottom: 72px !important;
+    left: 16px !important;
+    right: auto !important;
     z-index: 900 !important;
   }
   .chat-toggle {
@@ -3176,7 +3235,8 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
   }
   .chat-box{
     width: calc(100vw - 28px) !important;
-    right: -6px !important;
+    left: 0 !important;
+    right: auto !important;
     bottom: 60px !important;
     height: 70vh !important;
     max-height: 480px !important;
@@ -7376,24 +7436,105 @@ function initDraggableChat() {
   }
 }
 
-// Auto-Popup AI for Assistance
+// Regional Language Selection & Regional Detection Engine
+window.selectedChatLanguage = localStorage.getItem('anshita_chat_lang') || 'hindi';
+
+function detectUserRegionAndRecommendLanguages() {
+  const chipsContainer = document.getElementById('chat-lang-chips');
+  const subTitle = document.getElementById('chat-lang-sub');
+  if (!chipsContainer) return;
+
+  // Check saved language preference first
+  const savedLang = localStorage.getItem('anshita_chat_lang');
+  if (savedLang) {
+    const activeChip = chipsContainer.querySelector(`[onclick*="'${savedLang}'"]`);
+    if (activeChip) {
+      chipsContainer.querySelectorAll('.chat-lang-chip').forEach(c => c.classList.remove('active'));
+      activeChip.classList.add('active');
+    }
+  }
+
+  // Detect time zone & browser locale to prioritize regional dialects
+  try {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    const userLoc = (localStorage.getItem('user_city_choice') || '').toLowerCase();
+    
+    // Check if user is from Bundelkhand, Baghelkhand, Bhojpuri belt, or Maharashtra
+    const isBundelkhand = userLoc.includes('jhansi') || userLoc.includes('sagar') || userLoc.includes('damoh') || userLoc.includes('chhatarpur') || userLoc.includes('tikamgarh') || userLoc.includes('lalitpur') || userLoc.includes('banda') || userLoc.includes('mahoba') || userLoc.includes('chitrakoot');
+    const isBaghelkhand = userLoc.includes('rewa') || userLoc.includes('satna') || userLoc.includes('sidhi') || userLoc.includes('singrauli') || userLoc.includes('shahdol') || userLoc.includes('umaria') || userLoc.includes('anuppur');
+    const isBhojpuri = userLoc.includes('varanasi') || userLoc.includes('patna') || userLoc.includes('gorakhpur') || userLoc.includes('ballia') || userLoc.includes('bhojpur') || userLoc.includes('gaya') || userLoc.includes('chhapra');
+    const isMaharashtra = userLoc.includes('nagpur') || userLoc.includes('mumbai') || userLoc.includes('pune');
+
+    if (subTitle) {
+      if (isBundelkhand) {
+        subTitle.innerHTML = '✦ <strong>बुंदेलखंड विशेष</strong>: आपन बुंदेली बोली में बतराय के लाने नीचे चुनो:';
+      } else if (isBaghelkhand) {
+        subTitle.innerHTML = '✦ <strong>बघेलखंड विशेष</strong>: आपन बघेली बोली मा बात करै खातिर नीचे चुना जाय:';
+      } else if (isBhojpuri) {
+        subTitle.innerHTML = '✦ <strong>भोजपुरी विशेष</strong>: आपन मातृभाषा भोजपुरी में बातचीत खातिर चुनीं:';
+      } else {
+        subTitle.innerHTML = '✦ अपने क्षेत्र व पसंद की भाषा या क्षेत्रीय बोली चुनें:';
+      }
+    }
+  } catch (e) {
+    console.debug('Region sensing error:', e);
+  }
+}
+
+window.selectChatLanguage = function(langCode, langName) {
+  window.selectedChatLanguage = langCode;
+  localStorage.setItem('anshita_chat_lang', langCode);
+
+  // Update chip active UI
+  const chipsContainer = document.getElementById('chat-lang-chips');
+  if (chipsContainer) {
+    chipsContainer.querySelectorAll('.chat-lang-chip').forEach(c => c.classList.remove('active'));
+    const btn = event ? event.currentTarget : chipsContainer.querySelector(`[onclick*="'${langCode}'"]`);
+    if (btn) btn.classList.add('active');
+  }
+
+  // Add system feedback in chat
+  const greetings = {
+    'bundelkhandi': 'राम-राम! अब हम आपसे **बुंदेलखंडी** में बात करेंगे। किए का सिंगार या ब्याह पैकेज के बारे में पूछने चाहत हो? ✦',
+    'baghelkhandi': 'प्रणाम! अब हम आपसे **बघेलखंडी** मा बात करब। कौन सिंगार या लगन पैकेज के बारे मा जाने के बा? ✦',
+    'bhojpuri': 'प्रणाम! अब हम आपसे **भोजपुरी** में बातचीत करब। बताईं, ब्राइडल सूट्स भा बियाह के कवना सिंगार के बारे में जाने के बा? ✦',
+    'hindi': 'नमस्ते! अब हम आपसे **हिंदी** में बात करेंगे। आप हमारे ब्राइडल सूट्स, एयरब्रश मेकअप या पैकेज के बारे में क्या जानना चाहते हैं? ✦',
+    'english': 'Wonderful! I will now assist you in **English**. How may I guide you through our bridal suites, vanity kits, or destination booking today? ✦',
+    'marathi': 'नमस्कार! आता आम्ही आपल्याशी **मराठीत** संवाद साधू. आपल्या लग्न सोहळ्याच्या ब्राइडल मेकअप व पॅकेजबद्दल काय माहिती हवी आहे? ✦'
+  };
+
+  const replyMsg = greetings[langCode] || `Language set to ${langName}. How may I help you?`;
+  appendMsg(replyMsg, 'bot');
+
+  const inp = document.getElementById('chat-inp');
+  if (inp && window.innerWidth > 768) {
+    setTimeout(() => inp.focus(), 100);
+  }
+};
+
+// Auto-Popup AI for Assistance (Waits 30 seconds after page load/animations complete)
 function initAutoPopupChat() {
   if (window.location.pathname.startsWith('/chatbot/')) return;
   if (sessionStorage.getItem('anshita_chat_opened') === 'true') return;
+
+  // Wait 30 seconds after animation and page entrance
   setTimeout(() => {
     if (window.location.pathname.startsWith('/chatbot/')) return;
+    if (sessionStorage.getItem('anshita_chat_opened') === 'true') return;
     const activeTag = document.activeElement ? document.activeElement.tagName : '';
     if (activeTag === 'INPUT' || activeTag === 'TEXTAREA') return;
     const box = document.getElementById('chat-box');
     if (box && !box.classList.contains('open')) {
       toggleChat(false);
+      detectUserRegionAndRecommendLanguages();
     }
-  }, 4000);
+  }, 30000); // 30 seconds
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   initDraggableChat();
   initAutoPopupChat();
+  detectUserRegionAndRecommendLanguages();
 });
 
 function chatKey(e){if(e.key==='Enter')sendChat()}
@@ -7404,7 +7545,15 @@ async function sendChat(){
   appendMsg(msg,'user');
   const typing=appendTyping();
   try{
-    const r=await fetch('/api/chatbot/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':getCsrf()},body:JSON.stringify({message:msg,session_id:chatSessionId})});
+    const r=await fetch('/api/chatbot/',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-CSRFToken':getCsrf()},
+      body:JSON.stringify({
+        message:msg,
+        session_id:chatSessionId,
+        language: window.selectedChatLanguage || 'hindi'
+      })
+    });
     const d=await r.json();
     typing.remove();
     appendMsg(d.reply,'bot');
