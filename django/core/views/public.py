@@ -83,3 +83,12 @@ def set_language(request):
 def sinha_logo_studio(request):
     """Orchestrator endpoint for Sinha luxury branding visualizer"""
     return render(request, 'core/sinha_logo_studio.html')
+
+def animation_lab(request):
+    """Dedicated visualizer and animation testing lab for Services and Gallery motion architectures"""
+    lang = request.GET.get('lang') or request.COOKIES.get('lang', 'english')
+    context = compile_home_context(lang)
+    resp = render(request, 'core/animation_lab.html', context)
+    if request.GET.get('lang'):
+        resp.set_cookie('lang', lang, max_age=365*24*3600)
+    return resp
