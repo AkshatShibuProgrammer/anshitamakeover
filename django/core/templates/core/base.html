@@ -5426,6 +5426,112 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(212,175,55,0.55) !important;
 }
+/* ═══ VIP CART ACTION BUTTONS & ACTIVE PILL STYLES ═══ */
+.cart-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.22), rgba(184, 134, 11, 0.38));
+  border: 1px solid var(--gold);
+  color: var(--gold-l);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+}
+.cart-btn-primary:hover {
+  background: linear-gradient(135deg, #ECC86A, #C99625);
+  color: #120C10;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.45);
+  transform: translateY(-2px);
+}
+.cart-card-active-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(212, 175, 55, 0.16);
+  border: 1px solid var(--gold);
+  border-radius: 20px;
+  padding: 3px 6px;
+  width: 100%;
+  gap: 6px;
+}
+.cart-card-active-pill .ccp-btn {
+  background: rgba(212, 175, 55, 0.25);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: var(--gold-l);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.cart-card-active-pill .ccp-btn:hover {
+  background: var(--gold);
+  color: #000;
+}
+.cart-card-active-pill .ccp-qty {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--gold-l);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.cart-card-active-pill .ccp-del {
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.cart-card-active-pill .ccp-del:hover {
+  background: #ef4444;
+  color: #FFF;
+}
+
+[data-theme="light"] .cart-btn-primary {
+  background: #F8F4EC !important;
+  border: 1px solid #8B6F1A !important;
+  color: #1A1410 !important;
+}
+[data-theme="light"] .cart-btn-primary:hover {
+  background: #8B6F1A !important;
+  color: #FFF !important;
+}
+[data-theme="light"] .cart-card-active-pill {
+  background: #FAF6EE !important;
+  border-color: #8B6F1A !important;
+}
+[data-theme="light"] .cart-card-active-pill .ccp-btn {
+  background: #EFE8DA !important;
+  border-color: #8B6F1A !important;
+  color: #1A1410 !important;
+}
+[data-theme="light"] .cart-card-active-pill .ccp-btn:hover {
+  background: #8B6F1A !important;
+  color: #FFF !important;
+}
+[data-theme="light"] .cart-card-active-pill .ccp-qty {
+  color: #1A1410 !important;
+}
+
 /* ═══ VIP CART DRAWER & FLOATING CART PILL STYLES ═══ */
 .cart-drawer-backdrop {
   position: fixed; inset: 0; background: rgba(0,0,0,0.78);
@@ -6653,6 +6759,29 @@ const AnshitaCart = {
     }
   },
 
+  getItem(id) {
+    return this.items.find(i => String(i.id) === String(id));
+  },
+
+  decrementItem(id) {
+    const idx = this.items.findIndex(i => String(i.id) === String(id));
+    if (idx !== -1) {
+      if ((this.items[idx].qty || 1) <= 1) {
+        this.removeItem(idx);
+      } else {
+        this.items[idx].qty -= 1;
+        this.save();
+      }
+    }
+  },
+
+  removeItemById(id) {
+    const idx = this.items.findIndex(i => String(i.id) === String(id));
+    if (idx !== -1) {
+      this.removeItem(idx);
+    }
+  },
+
   updateQty(index, delta) {
     if (this.items[index]) {
       this.items[index].qty = Math.max(1, (this.items[index].qty || 1) + delta);
@@ -6833,6 +6962,43 @@ const AnshitaCart = {
     }
     if (totalEl) totalEl.textContent = '₹' + calc.total.toLocaleString('en-IN');
     this.renderUpsells();
+    this.updateCardButtons();
+    if (typeof renderCartPage === 'function') {
+      try { renderCartPage(); } catch(e) {}
+    }
+  },
+
+  updateCardButtons() {
+    document.querySelectorAll('[data-cart-item-id]').forEach(wrapper => {
+      const id = wrapper.getAttribute('data-cart-item-id');
+      const item = this.getItem(id);
+      const title = wrapper.getAttribute('data-cart-title') || '';
+      const price = parseFloat(wrapper.getAttribute('data-cart-price') || '0');
+      const origPrice = parseFloat(wrapper.getAttribute('data-cart-orig') || wrapper.getAttribute('data-cart-price') || '0');
+      const category = wrapper.getAttribute('data-cart-cat') || 'service';
+      const image = wrapper.getAttribute('data-cart-img') || '';
+      const isCombo = wrapper.getAttribute('data-cart-combo') === 'true';
+
+      const safeTitle = title.replace(/'/g, "\\'");
+      const safeImage = image.replace(/'/g, "\\'");
+
+      if (!item) {
+        wrapper.innerHTML = `
+          <button type="button" class="cart-btn-primary" onclick="AnshitaCart.addItem({id: '${id}', title: '${safeTitle}', price: ${price}, originalPrice: ${origPrice}, category: '${category}', image: '${safeImage}', isCombo: ${isCombo}})">
+            <span>🛍️ Add to Cart</span>
+          </button>
+        `;
+      } else {
+        wrapper.innerHTML = `
+          <div class="cart-card-active-pill">
+            <button type="button" class="ccp-btn dec" onclick="AnshitaCart.decrementItem('${id}')" title="Decrease Quantity">−</button>
+            <span class="ccp-qty">In Cart (${item.qty || 1})</span>
+            <button type="button" class="ccp-btn inc" onclick="AnshitaCart.addItem({id: '${id}', title: '${safeTitle}', price: ${price}, originalPrice: ${origPrice}, category: '${category}', image: '${safeImage}', isCombo: ${isCombo}})" title="Add More">+</button>
+            <button type="button" class="ccp-del" onclick="AnshitaCart.removeItemById('${id}')" title="Remove from Cart">✕</button>
+          </div>
+        `;
+      }
+    });
   },
 
   renderUpsells() {
@@ -7023,22 +7189,32 @@ window.checkoutViaWhatsApp = function() {
     alert('Your Bridal Trousseau is empty. Please add services first.');
     return;
   }
-  let msg = `Namaste Anshita Makeover!%0A%0AI would like to reserve my Bridal Trousseau with the following selected services:%0A%0A`;
-  AnshitaCart.items.forEach((itm, idx) => {
-    msg += `• *${itm.title}* (Qty: ${itm.qty || 1}) — ₹${(itm.price * (itm.qty || 1)).toLocaleString('en-IN')}%0A`;
+  const lines = [
+    'Namaste Anshita Makeover! ✨',
+    '',
+    '✦ *BRIDAL TROUSSEAU RESERVATION REQUEST*',
+    '',
+    '✦ *SELECTED SERVICES & PACKAGES:*'
+  ];
+  AnshitaCart.items.forEach(itm => {
+    lines.push(`• *${itm.title}* (Qty: ${itm.qty || 1}) — ₹${(itm.price * (itm.qty || 1)).toLocaleString('en-IN')}`);
   });
   if (calc.comboActive) {
-    msg += `%0A👑 *Bridal Combo Privilege:* 15% Additional Discount Applied (-₹${calc.comboDiscount.toLocaleString('en-IN')})`;
-    msg += `%0A🎁 *Included Freebies:* 2 Free Side Makeups for Mother & Sister + Deluxe Touchup Kit`;
+    lines.push('');
+    lines.push(`✦ *Bridal Combo Privilege:* 15% Additional Savings Applied (-₹${calc.comboDiscount.toLocaleString('en-IN')})`);
+    lines.push(`✦ *Included Courtesies:* 2 Free Side Makeups for Mother & Sister + Deluxe Touchup Kit`);
   }
   if (calc.couponDiscount > 0 && AnshitaCart.activeCoupon) {
-    msg += `%0A🎟️ *VIP Privilege Code (${AnshitaCart.activeCoupon.code}):* -₹${calc.couponDiscount.toLocaleString('en-IN')}`;
+    lines.push(`✦ *VIP Privilege Code (${AnshitaCart.activeCoupon.code}):* -₹${calc.couponDiscount.toLocaleString('en-IN')}`);
   }
-  msg += `%0A%0A💰 *Estimated Package Investment:* ₹${calc.total.toLocaleString('en-IN')}`;
-  msg += `%0A%0APlease check availability for my wedding dates.`;
+  lines.push('');
+  lines.push(`★ *Estimated Total Investment:* ₹${calc.total.toLocaleString('en-IN')}`);
+  lines.push('');
+  lines.push('✦ Please check artist availability for my wedding dates.');
 
+  const fullText = lines.join('\n');
   const phone = '{{ whatsapp|default:"917879223442" }}';
-  window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+  window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(fullText)}`, '_blank');
 };
 
 document.addEventListener('DOMContentLoaded', () => {

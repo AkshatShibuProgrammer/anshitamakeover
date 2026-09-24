@@ -962,13 +962,15 @@
             </p>
 
             <div class="svc-3d-actions">
-              <button class="btn-p" onclick="AnshitaCart.addItem({id: 'svc-{{ svc.id }}', title: '{{ svc.title|escapejs }}', price: {% if svc.has_offer %}{{ svc.offer_price }}{% else %}{{ svc.price }}{% endif %}, originalPrice: {{ svc.discount_price|default:svc.price }}, category: '{{ svc.category }}', image: '{{ svc.display_image|escapejs }}'})" style="padding:9px 16px;font-size:0.75rem;cursor:pointer;flex:1">
-                🛍️ Cart
+              <div class="svc-cart-slot" data-cart-item-id="svc-{{ svc.id }}" data-cart-title="{{ svc.title }}" data-cart-price="{% if svc.has_offer %}{{ svc.offer_price }}{% else %}{{ svc.price }}{% endif %}" data-cart-orig="{{ svc.discount_price|default:svc.price }}" data-cart-cat="{{ svc.category }}" data-cart-img="{{ svc.display_image }}" data-cart-combo="false" style="flex:1">
+                <button type="button" class="cart-btn-primary" onclick="AnshitaCart.addItem({id: 'svc-{{ svc.id }}', title: '{{ svc.title|escapejs }}', price: {% if svc.has_offer %}{{ svc.offer_price }}{% else %}{{ svc.price }}{% endif %}, originalPrice: {{ svc.discount_price|default:svc.price }}, category: '{{ svc.category }}', image: '{{ svc.display_image|escapejs }}'})">
+                  <span>🛍️ + Add to Cart</span>
+                </button>
+              </div>
+              <button class="btn-o" onclick="openServiceComboModal('{{ svc.id }}', '{{ svc.title|escapejs }}', {% if svc.has_offer %}{{ svc.offer_price }}{% else %}{{ svc.price }}{% endif %}, {{ svc.discount_price|default:svc.price }}, '{{ svc.category }}')" style="padding:9px 12px;font-size:0.75rem;cursor:pointer;border-color:rgba(243,212,120,0.5);color:var(--gold-l)" title="Customize Package Combo">
+                👑 Combo
               </button>
-              <button class="btn-o" onclick="openServiceComboModal('{{ svc.id }}', '{{ svc.title|escapejs }}', {% if svc.has_offer %}{{ svc.offer_price }}{% else %}{{ svc.price }}{% endif %}, {{ svc.discount_price|default:svc.price }}, '{{ svc.category }}')" style="padding:9px 14px;font-size:0.75rem;cursor:pointer;border-color:rgba(243,212,120,0.5);color:var(--gold-l)">
-                👑 Combo ✦
-              </button>
-              <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20reserve%20{{ svc.title|urlencode }}." target="_blank" class="btn-wa" style="padding:9px 14px;font-size:0.75rem">
+              <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20reserve%20{{ svc.title|urlencode }}." target="_blank" class="btn-wa" style="padding:9px 12px;font-size:0.75rem" title="Chat on WhatsApp">
                 💬
               </a>
             </div>
@@ -1571,9 +1573,11 @@
           </div>
 
           <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
-            <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-grand-royal', title: 'The Grand Royal Vivah Celebration Suite', price: 58000, originalPrice: 85000, category: 'bridal', isCombo: true, image: '{% static 'core/images/curated/maroon_20251109_191223_p30.jpg' %}'})">
-              🛍️ Add to Cart
-            </button>
+            <div data-cart-item-id="pkg-grand-royal" data-cart-title="The Grand Royal Vivah Celebration Suite" data-cart-price="58000" data-cart-orig="85000" data-cart-cat="bridal" data-cart-img="{% static 'core/images/curated/maroon_20251109_191223_p30.jpg' %}" data-cart-combo="true" style="flex:1;min-width:140px">
+              <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-grand-royal', title: 'The Grand Royal Vivah Celebration Suite', price: 58000, originalPrice: 85000, category: 'bridal', isCombo: true, image: '{% static 'core/images/curated/maroon_20251109_191223_p30.jpg' %}'})">
+                🛍️ Add to Cart
+              </button>
+            </div>
             <button onclick="openPackageQuickView('grand-royal')" class="pkg-bundle-btn sec" style="border-color:var(--gold);color:var(--gold-l);font-weight:600">
               👁️ View Details ✦
             </button>
@@ -1638,9 +1642,11 @@
           </div>
 
           <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
-            <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-vivah-duo', title: 'Sacred Vivah & Reception Duo Suite', price: 45000, originalPrice: 60000, category: 'bridal', isCombo: true, image: '{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}'})">
-              🛍️ Add to Cart
-            </button>
+            <div data-cart-item-id="pkg-vivah-duo" data-cart-title="Sacred Vivah & Reception Duo Suite" data-cart-price="45000" data-cart-orig="60000" data-cart-cat="bridal" data-cart-img="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" data-cart-combo="true" style="flex:1;min-width:140px">
+              <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-vivah-duo', title: 'Sacred Vivah & Reception Duo Suite', price: 45000, originalPrice: 60000, category: 'bridal', isCombo: true, image: '{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}'})">
+                🛍️ Add to Cart
+              </button>
+            </div>
             <button onclick="openPackageQuickView('vivah-duo')" class="pkg-bundle-btn sec" style="border-color:var(--gold);color:var(--gold-l);font-weight:600">
               👁️ View Details ✦
             </button>
@@ -1711,9 +1717,11 @@
           </div>
 
           <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
-            <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-pre-wedding-trio', title: 'Pre-Wedding Rites & Festivities Trio', price: 34000, originalPrice: 47500, category: 'engagement', isCombo: true, image: '{% static 'core/images/curated/ig_post_DSrKrDHiLNPGzQHnwZkcRe3YUoC5fCc24nWZjQ0.jpg' %}'})">
-              🛍️ Add to Cart
-            </button>
+            <div data-cart-item-id="pkg-pre-wedding-trio" data-cart-title="Pre-Wedding Rites & Festivities Trio" data-cart-price="34000" data-cart-orig="47500" data-cart-cat="engagement" data-cart-img="{% static 'core/images/curated/ig_post_DSrKrDHiLNPGzQHnwZkcRe3YUoC5fCc24nWZjQ0.jpg' %}" data-cart-combo="true" style="flex:1;min-width:140px">
+              <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-pre-wedding-trio', title: 'Pre-Wedding Rites & Festivities Trio', price: 34000, originalPrice: 47500, category: 'engagement', isCombo: true, image: '{% static 'core/images/curated/ig_post_DSrKrDHiLNPGzQHnwZkcRe3YUoC5fCc24nWZjQ0.jpg' %}'})">
+                🛍️ Add to Cart
+              </button>
+            </div>
             <button onclick="openPackageQuickView('pre-wedding-trio')" class="pkg-bundle-btn sec" style="border-color:var(--gold);color:var(--gold-l);font-weight:600">
               👁️ View Details ✦
             </button>
@@ -1784,9 +1792,11 @@
           </div>
 
           <div class="pkg-bundle-actions" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
-            <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-family-ensemble', title: 'Royal Family & Bridesmaids Ensemble (4 Guests)', price: 19500, originalPrice: 26000, category: 'party', isCombo: true, image: '{% static 'core/images/curated/ig_post_DVTThv0CI_psJjhtWi0TP5npf_Crqxgeq7JBTE0.jpg' %}'})">
-              🛍️ Add to Cart
-            </button>
+            <div data-cart-item-id="pkg-family-ensemble" data-cart-title="Royal Family & Bridesmaids Ensemble (4 Guests)" data-cart-price="19500" data-cart-orig="26000" data-cart-cat="party" data-cart-img="{% static 'core/images/curated/ig_post_DVTThv0CI_psJjhtWi0TP5npf_Crqxgeq7JBTE0.jpg' %}" data-cart-combo="true" style="flex:1;min-width:140px">
+              <button class="pkg-bundle-btn primary" onclick="AnshitaCart.addItem({id: 'pkg-family-ensemble', title: 'Royal Family & Bridesmaids Ensemble (4 Guests)', price: 19500, originalPrice: 26000, category: 'party', isCombo: true, image: '{% static 'core/images/curated/ig_post_DVTThv0CI_psJjhtWi0TP5npf_Crqxgeq7JBTE0.jpg' %}'})">
+                🛍️ Add to Cart
+              </button>
+            </div>
             <button onclick="openPackageQuickView('family-ensemble')" class="pkg-bundle-btn sec" style="border-color:var(--gold);color:var(--gold-l);font-weight:600">
               👁️ View Details ✦
             </button>
