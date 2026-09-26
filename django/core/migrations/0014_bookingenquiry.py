@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0013_lookgroup_is_published_lookgroup_seo_description_and_more'),
+        ('core', '0013_lookgroup_catalogue_fields'),
     ]
 
     operations = [
