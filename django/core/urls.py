@@ -40,6 +40,7 @@ urlpatterns = [
     path('api/admin/package/', views.admin_package_manage, name='admin_package'),
     path('api/admin/package/<int:pkg_id>/edit/', views.admin_package_manage, name='admin_package_edit'),
     path('sinha-logos/', views.sinha_logo_studio, name='sinha_logo_studio'),
+    path('animation-lab/', views.animation_lab, name='animation_lab'),
     path('artist-onboarding/', views.artist_onboarding, name='artist_onboarding'),
 ]
 
