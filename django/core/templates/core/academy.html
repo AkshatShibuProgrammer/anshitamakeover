@@ -204,7 +204,7 @@
   <div class="f-logo"><img src="{% static 'core/images/logo.jpeg' %}" alt="Anshita Makeover"></div>
   <p class="f-tag">✦ Anshita Academy — Your Beauty Career Starts Here ✦</p>
   <div class="f-links">
-    <a href="/">{{ t.nav_home|default:'Home' }}</a><a href="/#services">{{ t.nav_services|default:'Services' }}</a><a href="/#packages">{{ t.nav_packages|default:'Packages' }}</a><a href="/#gallery">{{ t.nav_gallery|default:'Gallery' }}</a>
+    <a href="/">{{ t.nav_home|default:'Home' }}</a><a href="{% url 'services' %}">{{ t.nav_services|default:'Services' }}</a><a href="{% url 'packages' %}">{{ t.nav_packages|default:'Packages' }}</a><a href="{% url 'gallery' %}">{{ t.nav_gallery|default:'Gallery' }}</a>
   </div>
   <!-- Multilingual Switcher in Footer -->
   <div style="margin:20px 0 24px;display:flex;flex-direction:column;align-items:center;gap:10px">
