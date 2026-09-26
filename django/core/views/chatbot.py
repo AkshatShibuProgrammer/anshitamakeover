@@ -120,7 +120,7 @@ def headroom_compress_history(turns):
     installed, compression error — degrades silently to the raw history so
     the concierge never breaks because of the optimiser.
     """
-    if not turns or not HEADROOM_ENABLED:
+    if not turns:
         return turns
     try:
         from headroom import compress as headroom_compress
@@ -292,6 +292,7 @@ CRITICAL BUSINESS INSTRUCTIONS:
 
 4. ABSOLUTELY NO TRUNCATION:
 - Keep the response clean, concise (under 100 words), and complete.
+- ABSOLUTE MINIMUM NEGOTIATED FLOOR: never quote below the authorized floor supplied above.
 - NEVER stop mid-sentence.
 - Use ✦ bullet points. Plain text only (no markdown tables, no HTML <br>).
 """
@@ -309,7 +310,7 @@ CRITICAL BUSINESS INSTRUCTIONS:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         gen_config = {
             "temperature": 0.4,
-            "maxOutputTokens": 2048,
+            "maxOutputTokens": 640,
             "thinkingConfig": {"thinkingBudget": 0}
         }
         payload = {
@@ -502,7 +503,7 @@ Supported Action Schemas:
                 # Also synchronize package 22 or bundle package price in DB
                 MakeupPackage.objects.filter(name__icontains='Grand Royal Heritage').update(
                     price=b_price,
-                    price_label=f"₹{int(b_price):,}"
+                    display_label=f"₹{int(b_price):,}"
                 )
             if 'active' in action_data:
                 site.offer_rules_active = bool(action_data['active'])
@@ -529,7 +530,7 @@ Supported Action Schemas:
             if 'price' in action_data and action_data['price'] is not None:
                 p_val = float(action_data['price'])
                 pkg.price = p_val
-                pkg.price_label = f"₹{int(p_val):,}"
+                pkg.display_label = f"₹{int(p_val):,}"
             if action_data.get('features'):
                 pkg.features = action_data['features']
             pkg.save()
@@ -545,7 +546,7 @@ Supported Action Schemas:
                 package_type=action_data.get('package_type', 'bridal'),
                 tagline=action_data.get('tagline', ''),
                 price=float(action_data['price']) if action_data.get('price') else None,
-                price_label=action_data.get('price_label') or (f"₹{int(action_data['price']):,}" if action_data.get('price') else 'On Request'),
+                display_label=action_data.get('price_label', ''),
                 features=action_data.get('features', ''),
                 is_featured=bool(action_data.get('is_featured', False)),
                 is_active=True
@@ -796,9 +797,9 @@ def fallback_chatbot(msg, language='hindi'):
         return (
             f"Hum bilkul samajhte hain! 🙏 Hamari priority hai ki aap apne wedding day par sabse khoobsurat lagein.\n"
             f"✦ Hamare bridal makeovers mein 100% original luxury brands (TEMPTU, Charlotte Tilbury, MAC) aur hospital-grade hygiene use hoti hai.\n"
-            f"✦ Special AI Privilege Offer: Standalone Royal Bridal HD ₹22,000 - ₹24,500 tak (Traditional Banarasi ₹18,500 tak) possible hai with code {today_code}.\n"
+            f"✦ Negotiation / Special AI Privilege Offer: Standalone Royal Bridal HD ₹22,000 - ₹24,500 tak (Traditional Banarasi ₹18,500 tak) possible hai with code {today_code}.\n"
             f"✦ PLUS: {free_sides} family side makeups bilkul FREE (₹7,000 value included)!\n"
-            f"Aapka wedding date aur target budget kya hai? Anshita ji se direct best deal confirm karein:\n"
+            f"Wedding Date aur aapka target budget kya hai? Anshita ji se direct best deal confirm karein:\n"
             f"👉 WhatsApp: https://wa.me/{wa_number}?text="
             + urllib.parse.quote(f"Namaste Anshita! AI Concierge offered a special rate with VIP code {today_code}. Let's discuss my wedding date.")
         )

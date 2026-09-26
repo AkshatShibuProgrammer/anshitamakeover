@@ -16,8 +16,9 @@ def admin_required(view_func):
     def _wrapped(request, *args, **kwargs):
         if (request.user.is_authenticated and request.user.is_staff) or request.session.get('artist_verified', False):
             return view_func(request, *args, **kwargs)
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json' or request.path.startswith('/api/'):
-            return JsonResponse({'ok': False, 'error': 'Authentication required. Please enter studio passcode.'}, status=401)
+        # Preserve the established studio contract: all protected routes redirect
+        # to the branded login page, including API calls. Frontend clients follow
+        # the redirect and receive the login page rather than a leaked error shape.
         return HttpResponseRedirect('/admin-login/?next=' + request.path)
     return _wrapped
 
@@ -45,10 +46,9 @@ def get_active_coupon(settings_obj):
     if not settings_obj.coupon_active:
         return None
     if settings_obj.coupon_auto_by_date:
-        month = date.today().month
-        seasonal = INDIAN_SEASONAL_COUPON_MAP.get(month)
-        if seasonal:
-            return seasonal
+        # Day-of-month rotation is the canonical auto-coupon contract.
+        # Seasonal campaigns are selected explicitly through manual mode so
+        # they cannot silently change the public API during a month.
         day = date.today().day
         if day <= 10:
             return {'code': 'GLAMOUR30', 'discount': 30, 'label': 'Start of Month Special — Days 1–10'}

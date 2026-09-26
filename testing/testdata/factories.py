@@ -181,7 +181,7 @@ def build_courses():
 PACKAGE_ROWS = [
     dict(name='Imperial Royal HD Bridal Suite', package_type='bridal', price=35000,
          tagline='The signature HD bridal transformation', is_featured=True, order=0,
-         min_negotiated_price=28000, max_discount_percent=20, allow_ai_negotiation=True,
+         min_negotiated_price=26250, max_discount_percent=25, allow_ai_negotiation=True,
          features='High-definition luminous base\nCut-crease eye artistry\nDupatta & saree draping\n2 side makeups free'),
     dict(name='Master Airbrush Bridal Suite', package_type='bridal', price=45000,
          tagline='TEMPTU 24-hour cry-proof airbrush perfection', is_featured=True, order=1,
@@ -212,7 +212,7 @@ PACKAGE_ROWS = [
          tagline='Hydra-glow pre-bridal prep', is_featured=False, order=9,
          features='Hydra facial\nBrightening ritual'),
     dict(name='Bespoke Custom Couture', package_type='custom', price=None,
-         price_label='On Request', tagline='Tailored couture quote', is_featured=False, order=10,
+         display_label='On Request', tagline='Tailored couture quote', is_featured=False, order=10,
          features='Consultation-led bespoke quote'),
     dict(name='Legacy Trial Package', package_type='party', price=4000,
          tagline='Deprecated trial package', is_featured=False, order=99, is_active=False,

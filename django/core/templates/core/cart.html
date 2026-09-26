@@ -8,10 +8,8 @@
 .cart-page-wrapper {
   min-height: 85vh;
   padding: 120px 20px 80px;
-  background: var(--bg-main);
-  color: var(--text-main);
+  background: var(--dark);
   position: relative;
-  transition: background-color 0.35s ease, color 0.35s ease;
 }
 .cart-page-grid {
   display: grid;
@@ -23,274 +21,6 @@
   position: sticky;
   top: 100px;
 }
-
-/* Card & Item Styles */
-.cp-item-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 14px;
-  padding: 16px 18px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  transition: all 0.25s ease;
-}
-.cp-item-thumb {
-  width: 80px;
-  height: 80px;
-  border-radius: 10px;
-  object-fit: cover;
-  border: 1px solid var(--card-border);
-  flex-shrink: 0;
-}
-.cp-item-info {
-  flex: 1;
-  min-width: 0;
-}
-.cp-item-tag {
-  font-size: 0.65rem;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 800;
-  display: block;
-}
-.cp-item-title {
-  font-family: var(--font-h);
-  font-size: 1.08rem;
-  color: var(--text-main);
-  margin: 3px 0 4px;
-  line-height: 1.3;
-}
-.cp-item-price-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-top: 4px;
-}
-.cp-item-price {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--gold);
-}
-.cp-item-orig {
-  font-size: 0.8rem;
-  text-decoration: line-through;
-  color: var(--text-sub);
-  opacity: 0.7;
-}
-
-/* Stepper & Controls */
-.cp-stepper {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--card-border);
-  background: rgba(212, 175, 55, 0.08);
-  border-radius: 20px;
-  overflow: hidden;
-}
-.cp-step-btn {
-  background: transparent;
-  border: none;
-  color: var(--gold);
-  width: 30px;
-  height: 30px;
-  font-size: 1rem;
-  font-weight: 800;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-.cp-step-btn:hover {
-  background: var(--gold);
-  color: #000;
-}
-.cp-step-val {
-  padding: 0 10px;
-  font-size: 0.86rem;
-  font-weight: 800;
-  color: var(--text-main);
-}
-.cp-item-del-btn {
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  color: #ef4444;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  transition: all 0.2s ease;
-}
-.cp-item-del-btn:hover {
-  background: #ef4444;
-  color: #FFF;
-  transform: scale(1.08);
-}
-
-/* Catalog Filter Pills */
-.cp-filter-bar {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-}
-.cp-filter-pill {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  color: var(--text-sub);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-.cp-filter-pill:hover, .cp-filter-pill.active {
-  background: var(--gold);
-  color: #000;
-  border-color: var(--gold);
-}
-
-/* Catalog Card */
-.cp-cat-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px;
-}
-.cp-cat-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-  transition: all 0.25s ease;
-}
-.cp-cat-card:hover {
-  border-color: var(--gold);
-  transform: translateY(-2px);
-}
-.cp-cat-top {
-  margin-bottom: 12px;
-}
-.cp-cat-tag {
-  font-size: 0.62rem;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 800;
-}
-.cp-cat-title {
-  font-family: var(--font-h);
-  font-size: 1rem;
-  color: var(--text-main);
-  margin: 4px 0 6px;
-}
-.cp-cat-desc {
-  font-size: 0.74rem;
-  color: var(--text-sub);
-  line-height: 1.4;
-  margin-bottom: 8px;
-}
-.cp-cat-price-box {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-.cp-cat-price {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: var(--gold);
-}
-.cp-cat-vip {
-  font-size: 0.7rem;
-  color: #4ade80;
-  font-weight: 700;
-}
-.cp-cat-action-slot {
-  margin-top: 12px;
-}
-
-/* Sidebar Box & Inputs */
-.cp-sidebar-box {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-}
-.cp-input-label {
-  font-size: 0.72rem;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 700;
-  display: block;
-  margin-bottom: 4px;
-}
-.cp-input-field {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-  color: var(--text-main);
-  padding: 9px 12px;
-  font-size: 0.82rem;
-  outline: none;
-  font-family: inherit;
-  transition: border-color 0.2s;
-  box-sizing: border-box;
-}
-.cp-input-field:focus {
-  border-color: var(--gold);
-}
-
-/* Light Theme Overrides */
-[data-theme="light"] .cart-page-wrapper {
-  background: #FAF7F2 !important;
-  color: #1A1410 !important;
-}
-[data-theme="light"] .cp-item-card,
-[data-theme="light"] .cp-cat-card,
-[data-theme="light"] .cp-sidebar-box {
-  background: #FFFFFF !important;
-  border-color: rgba(154, 123, 28, 0.35) !important;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.06) !important;
-}
-[data-theme="light"] .cp-item-title,
-[data-theme="light"] .cp-cat-title,
-[data-theme="light"] .cp-step-val {
-  color: #1A1410 !important;
-}
-[data-theme="light"] .cp-item-desc,
-[data-theme="light"] .cp-cat-desc {
-  color: #4A3E36 !important;
-}
-[data-theme="light"] .cp-input-field {
-  background: #FAF7F2 !important;
-  border-color: rgba(154, 123, 28, 0.35) !important;
-  color: #1A1410 !important;
-}
-[data-theme="light"] .cp-filter-pill {
-  background: #FFFFFF !important;
-  border-color: rgba(154, 123, 28, 0.3) !important;
-  color: #2D241E !important;
-}
-[data-theme="light"] .cp-filter-pill.active {
-  background: #8B6F1A !important;
-  color: #FFFFFF !important;
-  border-color: #8B6F1A !important;
-}
-
 @media (max-width: 900px) {
   .cart-page-wrapper {
     padding: 90px 14px 100px !important;
@@ -304,14 +34,13 @@
   }
 }
 </style>
-
 <div class="cart-page-wrapper">
   <div class="editorial-watermark" style="top:18%">BRIDAL TROUSSEAU</div>
   
-  <div class="sw" style="max-width:1160px;margin:0 auto;position:relative;z-index:2">
+  <div class="sw" style="max-width:1100px;margin:0 auto;position:relative;z-index:2">
     <!-- Breadcrumb & Header -->
-    <div style="margin-bottom:28px">
-      <div style="display:flex;align-items:center;gap:8px;font-size:0.75rem;color:var(--text-sub);margin-bottom:8px">
+    <div style="margin-bottom:32px">
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.75rem;color:rgba(245,237,214,0.6);margin-bottom:8px">
         <a href="/" style="color:var(--gold);text-decoration:none">Home</a>
         <span>/</span>
         <span>Bridal Trousseau & Cart</span>
@@ -319,253 +48,132 @@
       <p class="sl">{{ t.cart_page_sl|default:'Custom Wedding Curation' }}</p>
       <h1 class="sh" style="font-size:clamp(1.8rem,3.5vw,2.6rem)">{{ t.cart_page_sh|default:'Your Curated Bridal Trousseau' }}</h1>
       <div class="gdiv"></div>
-      <p class="ss" style="max-width:720px">
-        {{ t.cart_page_ss|default:'Review your selected wedding makeup disciplines, customize entourage quantities, and add or remove individual services with real-time package combo discounts.' }}
+      <p class="ss" style="max-width:680px">
+        {{ t.cart_page_ss|default:'Review your chosen signature services, activate bundle privileges across multi-event ceremonies, and personalize your wedding day entourage.' }}
       </p>
     </div>
 
     <!-- Main Grid: Left Items + Right Summary & Booking Form -->
     <div class="cart-page-grid">
       
-      <!-- Left Column: Selected Items & Quick-Add Catalog -->
+      <!-- Left Column: Selected Items & Combo Privileges -->
       <div>
         <!-- Combo Privilege Announcement Banner -->
         <div id="cartPageComboAlert" style="display:none;background:linear-gradient(135deg,rgba(212,175,55,0.18),rgba(123,28,46,0.3));border:1px solid rgba(212,175,55,0.5);border-radius:12px;padding:16px 20px;margin-bottom:20px;align-items:center;gap:14px">
           <span style="font-size:2rem">👑</span>
           <div>
             <strong style="color:var(--gold-l);font-size:0.95rem;display:block">VIP Celebration Combo Activated!</strong>
-            <span style="font-size:0.75rem;color:var(--text-sub);line-height:1.4">
+            <span style="font-size:0.75rem;color:rgba(245,237,214,0.85);line-height:1.4">
               You have combined Bridal Suite with pre-wedding ceremonies. An extra 15% package discount has been applied to your entire order.
             </span>
           </div>
         </div>
 
         <!-- Complimentary Courtesies Unlocked Banner -->
-        <div id="cartPageFreebiesBox" style="display:none;background:rgba(34,197,94,0.12);border:1px dashed rgba(34,197,94,0.5);border-radius:12px;padding:16px 20px;margin-bottom:20px">
-          <span style="display:block;font-size:0.7rem;font-weight:800;letter-spacing:1.5px;color:#22c55e;text-transform:uppercase;margin-bottom:8px">
+        <div id="cartPageFreebiesBox" style="display:none;background:rgba(34,197,94,0.1);border:1px dashed rgba(34,197,94,0.45);border-radius:12px;padding:16px 20px;margin-bottom:20px">
+          <span style="display:block;font-size:0.7rem;font-weight:800;letter-spacing:1.5px;color:#4ade80;text-transform:uppercase;margin-bottom:8px">
             ✦ UNLOCKED COMPLIMENTARY COURTESIES ✦
           </span>
-          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:0.78rem;color:var(--text-main)">
-            <li>✔ <strong>2 Free Family Side Makeups</strong> for Mother & Sister of the Bride (Valued at ₹13,000)</li>
+          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:0.78rem;color:#E6F4EA">
+            <li>✔ <strong>2 Free Side Makeups for Mother & Sister of the Bride</strong> (Valued at ₹13,000)</li>
             <li>✔ <strong>Deluxe On-Stage Touchup Kit</strong> with custom lip decants & blotting sheets</li>
             <li>✔ <strong>Dual Dupatta Pinning Architecture & Royal Saree Pleating</strong></li>
           </ul>
         </div>
 
-        <!-- Section Title: Selected Services in Trousseau -->
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <h3 style="font-family:var(--font-h);font-size:1.2rem;color:var(--text-main);margin:0">
-            Selected Services in Trousseau
-          </h3>
-          <span id="cpItemCountBadge" style="font-size:0.74rem;color:var(--gold);font-weight:700">0 Services</span>
-        </div>
-
         <!-- Items Container -->
-        <div id="cartPageItemsList" style="display:flex;flex-direction:column;gap:12px">
+        <div id="cartPageItemsList" style="display:flex;flex-direction:column;gap:14px">
           <!-- Dynamically populated via JS -->
         </div>
 
         <!-- Empty Trousseau State -->
-        <div id="cartPageEmptyState" style="display:none;text-align:center;padding:50px 20px;background:var(--card-bg);border:1px dashed var(--card-border);border-radius:14px;margin-bottom:30px">
-          <div style="font-size:3rem;margin-bottom:10px">✨</div>
-          <h3 style="font-family:var(--font-h);color:var(--text-main);margin-bottom:6px">Your Bridal Trousseau is Empty</h3>
-          <p style="font-size:0.82rem;color:var(--text-sub);max-width:440px;margin:0 auto 16px;line-height:1.6">
-            You haven't added any services yet. Choose from our signature individual disciplines or multi-event combos below to build your look.
+        <div id="cartPageEmptyState" style="display:none;text-align:center;padding:60px 20px;background:rgba(255,255,255,0.02);border:1px dashed rgba(212,175,55,0.3);border-radius:14px">
+          <div style="font-size:3rem;margin-bottom:12px">✨</div>
+          <h3 style="font-family:var(--font-h);color:#FFF;margin-bottom:8px">Your Bridal Trousseau is Empty</h3>
+          <p style="font-size:0.82rem;color:rgba(245,237,214,0.65);max-width:420px;margin:0 auto 20px;line-height:1.6">
+            You have not added any services yet. Explore our Signature Artistry and Curated Wedding Packages to build your bespoke look.
           </p>
-          <a href="#quickCatalogSection" class="btn-p" style="padding:8px 20px;text-decoration:none;display:inline-block;font-size:0.8rem">Browse Available Services ↓</a>
+          <a href="/#services" class="btn-p" style="padding:10px 24px;text-decoration:none;display:inline-block">Explore Signature Services</a>
         </div>
 
-        <!-- ═══ BROWSE & ADD INDIVIDUAL SERVICES & PACKAGES CATALOG ═══ -->
-        <div id="quickCatalogSection" style="margin-top:40px;border-top:1px solid var(--card-border);padding-top:28px">
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
-            <div>
-              <span class="cp-cat-tag">✦ Complete Atelier Portfolio</span>
-              <h3 style="font-family:var(--font-h);font-size:1.25rem;color:var(--text-main);margin:2px 0 0">
-                Explore & Add Individual Services or Combos
-              </h3>
-            </div>
-            <span style="font-size:0.72rem;color:var(--text-sub)">Click '+ Add' to immediately include any service</span>
-          </div>
-
-          <!-- Category Filter Bar -->
-          <div class="cp-filter-bar" id="cpFilterBar">
-            <button type="button" class="cp-filter-pill active" onclick="filterCatalog('all', this)">All Disciplines</button>
-            <button type="button" class="cp-filter-pill" onclick="filterCatalog('bridal', this)">Bridal Suites</button>
-            <button type="button" class="cp-filter-pill" onclick="filterCatalog('sangeet', this)">Sangeet & Haldi</button>
-            <button type="button" class="cp-filter-pill" onclick="filterCatalog('reception', this)">Reception Glam</button>
-            <button type="button" class="cp-filter-pill" onclick="filterCatalog('party', this)">Family & Side Makeup</button>
-            <button type="button" class="cp-filter-pill" onclick="filterCatalog('saree', this)">Hair & Draping</button>
-            <button type="button" class="cp-filter-pill" onclick="filterCatalog('nails', this)">Nails</button>
-            <button type="button" class="cp-filter-pill" onclick="filterCatalog('combo', this)">Curated Combos</button>
-          </div>
-
-          <!-- Services Grid -->
-          <div class="cp-cat-grid" id="cpCatGrid">
-            {% for svc in studio_services %}
-            <div class="cp-cat-card" data-category="{{ svc.category }}">
-              <div class="cp-cat-top">
-                <span class="cp-cat-tag">{{ svc.get_category_display }}</span>
-                <h4 class="cp-cat-title">{{ svc.title }}</h4>
-                <p class="cp-cat-desc">{{ svc.description|truncatewords:18 }}</p>
-                <div class="cp-cat-price-box">
-                  <span class="cp-cat-price">₹{{ svc.price|floatformat:0 }}</span>
-                  {% if svc.discount_price and svc.discount_price > svc.price %}
-                  <span class="cp-item-orig">₹{{ svc.discount_price|floatformat:0 }}</span>
-                  {% endif %}
-                  <span class="cp-cat-vip">✦ VIP Deal Active</span>
-                </div>
+        <!-- Suggested Complementary Add-ons -->
+        <div style="margin-top:36px;border-top:1px solid rgba(212,175,55,0.2);padding-top:24px">
+          <h4 style="font-family:var(--font-h);font-size:1.1rem;color:#FFF;margin-bottom:14px">
+            ✨ Recommended Companion Services to Bundle & Save
+          </h4>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            {% for svc in studio_services|slice:":4" %}
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(212,175,55,0.22);border-radius:10px;padding:14px;display:flex;flex-direction:column;justify-content:space-between">
+              <div>
+                <span style="font-size:0.62rem;color:var(--gold);letter-spacing:1px;text-transform:uppercase;font-weight:700">{{ svc.get_category_display }}</span>
+                <h5 style="font-family:var(--font-h);font-size:0.92rem;color:#FFF;margin:4px 0 6px">{{ svc.title }}</h5>
+                <span style="font-size:0.95rem;font-weight:800;color:var(--gold)">₹{{ svc.price|floatformat:0 }}</span>
               </div>
-              <div class="cp-cat-action-slot" data-cart-item-id="svc-{{ svc.id }}" data-cart-title="{{ svc.title }}" data-cart-price="{% if svc.has_offer %}{{ svc.offer_price }}{% else %}{{ svc.price }}{% endif %}" data-cart-orig="{{ svc.discount_price|default:svc.price }}" data-cart-cat="{{ svc.category }}" data-cart-img="{{ svc.display_image }}" data-cart-combo="false">
-                <button type="button" class="cart-btn-primary" onclick="AnshitaCart.addItem({id: 'svc-{{ svc.id }}', title: '{{ svc.title|escapejs }}', price: {% if svc.has_offer %}{{ svc.offer_price }}{% else %}{{ svc.price }}{% endif %}, originalPrice: {{ svc.discount_price|default:svc.price }}, category: '{{ svc.category }}', image: '{{ svc.display_image|escapejs }}'})">
-                  <span>🛍️ + Add to Trousseau</span>
-                </button>
-              </div>
+              <button onclick="AnshitaCart.addItem({id: 'svc-{{ svc.id }}', title: '{{ svc.title|escapejs }}', price: {{ svc.price }}, originalPrice: {{ svc.discount_price|default:svc.price }}, category: '{{ svc.category }}', image: '{{ svc.display_image|escapejs }}'})" style="margin-top:10px;background:rgba(212,175,55,0.15);border:1px solid rgba(212,175,55,0.4);color:var(--gold-l);padding:6px 12px;border-radius:18px;font-size:0.7rem;font-weight:700;cursor:pointer;transition:all 0.2s">
+                + Add to Trousseau
+              </button>
             </div>
             {% endfor %}
-
-            <!-- Package Combos in Catalog -->
-            <div class="cp-cat-card" data-category="combo">
-              <div class="cp-cat-top">
-                <span class="cp-cat-tag">✦ 3-EVENT SUITE</span>
-                <h4 class="cp-cat-title">The Grand Royal Vivah Celebration</h4>
-                <p class="cp-cat-desc">Complete 3-Event Package (Vivah + Reception + Sangeet) with 2 Free Side Makeups for Mother & Sister included.</p>
-                <div class="cp-cat-price-box">
-                  <span class="cp-cat-price">₹58,000</span>
-                  <span class="cp-item-orig">₹85,000</span>
-                  <span class="cp-cat-vip">Save ₹27,000</span>
-                </div>
-              </div>
-              <div class="cp-cat-action-slot" data-cart-item-id="pkg-grand-royal" data-cart-title="The Grand Royal Vivah Celebration Suite" data-cart-price="58000" data-cart-orig="85000" data-cart-cat="bridal" data-cart-img="/static/core/images/curated/maroon_20251109_191223_p30.jpg" data-cart-combo="true">
-                <button type="button" class="cart-btn-primary" onclick="AnshitaCart.addItem({id: 'pkg-grand-royal', title: 'The Grand Royal Vivah Celebration Suite', price: 58000, originalPrice: 85000, category: 'bridal', isCombo: true, image: '/static/core/images/curated/maroon_20251109_191223_p30.jpg'})">
-                  <span>🛍️ + Add to Trousseau</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="cp-cat-card" data-category="combo">
-              <div class="cp-cat-top">
-                <span class="cp-cat-tag">✦ 2-EVENT DUO</span>
-                <h4 class="cp-cat-title">Sacred Vivah & Reception Duo</h4>
-                <p class="cp-cat-desc">Sacred Wedding Day Pheras + Evening High-Definition Reception Glam with 1 Free Side Makeup included.</p>
-                <div class="cp-cat-price-box">
-                  <span class="cp-cat-price">₹45,000</span>
-                  <span class="cp-item-orig">₹60,000</span>
-                  <span class="cp-cat-vip">Save ₹15,000</span>
-                </div>
-              </div>
-              <div class="cp-cat-action-slot" data-cart-item-id="pkg-vivah-duo" data-cart-title="Sacred Vivah & Reception Duo Suite" data-cart-price="45000" data-cart-orig="60000" data-cart-cat="bridal" data-cart-img="/static/core/images/curated/royal_crimson_bride_angle3.jpg" data-cart-combo="true">
-                <button type="button" class="cart-btn-primary" onclick="AnshitaCart.addItem({id: 'pkg-vivah-duo', title: 'Sacred Vivah & Reception Duo Suite', price: 45000, originalPrice: 60000, category: 'bridal', isCombo: true, image: '/static/core/images/curated/royal_crimson_bride_angle3.jpg'})">
-                  <span>🛍️ + Add to Trousseau</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="cp-cat-card" data-category="combo">
-              <div class="cp-cat-top">
-                <span class="cp-cat-tag">✦ 3-EVENT PRE-WEDDING</span>
-                <h4 class="cp-cat-title">Pre-Wedding Rites & Festivities Trio</h4>
-                <p class="cp-cat-desc">Sangeet Night High-Energy Glam + Engagement Radiance + Swarovski Gel Nails Suite with complimentary family hair styling.</p>
-                <div class="cp-cat-price-box">
-                  <span class="cp-cat-price">₹34,000</span>
-                  <span class="cp-item-orig">₹47,000</span>
-                  <span class="cp-cat-vip">Save ₹13,000</span>
-                </div>
-              </div>
-              <div class="cp-cat-action-slot" data-cart-item-id="pkg-pre-wedding-trio" data-cart-title="Pre-Wedding Rites & Festivities Trio" data-cart-price="34000" data-cart-orig="47000" data-cart-cat="sangeet" data-cart-img="/static/core/images/curated/fuchsia_silk_bride.jpg" data-cart-combo="true">
-                <button type="button" class="cart-btn-primary" onclick="AnshitaCart.addItem({id: 'pkg-pre-wedding-trio', title: 'Pre-Wedding Rites & Festivities Trio', price: 34000, originalPrice: 47000, category: 'sangeet', isCombo: true, image: '/static/core/images/curated/fuchsia_silk_bride.jpg'})">
-                  <span>🛍️ + Add to Trousseau</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="cp-cat-card" data-category="combo">
-              <div class="cp-cat-top">
-                <span class="cp-cat-tag">✦ ENTOURAGE ENSEMBLE</span>
-                <h4 class="cp-cat-title">Royal Family & Bridesmaids Ensemble (4 Guests)</h4>
-                <p class="cp-cat-desc">4 Full Makeovers for Mother, Sisters & Bridesmaids (₹4,875/guest). 4th guest is completely FREE.</p>
-                <div class="cp-cat-price-box">
-                  <span class="cp-cat-price">₹19,500</span>
-                  <span class="cp-item-orig">₹26,000</span>
-                  <span class="cp-cat-vip">Save ₹6,500</span>
-                </div>
-              </div>
-              <div class="cp-cat-action-slot" data-cart-item-id="pkg-family-ensemble" data-cart-title="Royal Family & Bridesmaids Ensemble (4 Guests)" data-cart-price="19500" data-cart-orig="26000" data-cart-cat="party" data-cart-img="/static/core/images/curated/christian_veil_bride.jpg" data-cart-combo="true">
-                <button type="button" class="cart-btn-primary" onclick="AnshitaCart.addItem({id: 'pkg-family-ensemble', title: 'Royal Family & Bridesmaids Ensemble (4 Guests)', price: 19500, originalPrice: 26000, category: 'party', isCombo: true, image: '/static/core/images/curated/christian_veil_bride.jpg'})">
-                  <span>🛍️ + Add to Trousseau</span>
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </div>
 
       <!-- Right Column: Booking Details, Price Breakdown & WhatsApp Submission -->
       <div class="cart-page-sidebar">
-        <div class="cp-sidebar-box">
-          <h3 style="font-family:var(--font-h);font-size:1.25rem;color:var(--text-main);margin-bottom:16px;border-bottom:1px solid var(--card-border);padding-bottom:12px">
+        <div style="background:rgba(20,14,18,0.95);border:1px solid rgba(212,175,55,0.35);border-radius:16px;padding:24px;box-shadow:0 15px 40px rgba(0,0,0,0.6)">
+          <h3 style="font-family:var(--font-h);font-size:1.25rem;color:#FFF;margin-bottom:16px;border-bottom:1px solid rgba(212,175,55,0.2);padding-bottom:12px">
             Trousseau Investment Summary
           </h3>
 
           <!-- Investment Breakdown Rows -->
-          <div style="display:flex;flex-direction:column;gap:8px;font-size:0.8rem;color:var(--text-sub);margin-bottom:16px">
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:0.8rem;color:rgba(245,237,214,0.85);margin-bottom:16px">
             <div style="display:flex;justify-content:space-between">
               <span>Standalone Total Value:</span>
-              <span id="cpSubtotal" style="font-weight:700;color:var(--text-main)">₹0</span>
+              <span id="cpSubtotal">₹0</span>
             </div>
-            <div id="cpSavingsRow" style="display:none;justify-content:space-between;color:#22c55e;font-weight:700">
+            <div id="cpSavingsRow" style="display:none;justify-content:space-between;color:#4ade80;font-weight:600">
               <span>Celebration Combo Privilege:</span>
               <span id="cpSavingsVal">-₹0</span>
             </div>
-            <div id="cpCouponRow" style="display:none;justify-content:space-between;color:#22c55e;font-weight:700">
+            <div id="cpCouponRow" style="display:none;justify-content:space-between;color:#4ade80;font-weight:600">
               <span id="cpCouponLbl">VIP Privilege:</span>
               <span id="cpCouponVal">-₹0</span>
             </div>
-            <div style="height:1px;background:var(--card-border);margin:6px 0"></div>
-            <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:1rem;color:var(--text-main)">
+            <div style="height:1px;background:rgba(212,175,55,0.25);margin:6px 0"></div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:1rem;color:#FFF">
               <strong>Final Package Investment:</strong>
-              <strong id="cpTotalVal" style="color:var(--gold);font-size:1.45rem">₹0</strong>
+              <strong id="cpTotalVal" style="color:var(--gold-l);font-size:1.45rem">₹0</strong>
             </div>
-            <small style="color:var(--text-sub);font-size:0.68rem;line-height:1.4">
+            <small style="color:rgba(245,237,214,0.55);font-size:0.68rem;line-height:1.4">
               All master cosmetics (Dior, Charlotte Tilbury, TEMPTU, Huda Beauty), false lashes, hair architecture & dupatta pinning included.
             </small>
           </div>
 
           <!-- Client Itinerary Input Fields -->
-          <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px">
-            <div>
-              <label class="cp-input-label" for="cpClientName">Bride / Client Full Name</label>
-              <input type="text" id="cpClientName" class="cp-input-field" placeholder="e.g. Priya Sharma">
-            </div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px">
+            <label style="font-size:0.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:700">Your Name</label>
+            <input type="text" id="cpName" required placeholder="Bride / Client name" style="background:rgba(0,0,0,0.4);border:1px solid rgba(212,175,55,0.35);border-radius:8px;color:#FFF;padding:8px 12px;font-size:0.8rem;outline:none">
 
-            <div>
-              <label class="cp-input-label" for="cpEventDate">Wedding / Ceremony Date</label>
-              <input type="date" id="cpEventDate" class="cp-input-field">
-            </div>
+            <label style="font-size:0.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:700">WhatsApp Number</label>
+            <input type="tel" id="cpPhone" required placeholder="e.g. 9876543210" style="background:rgba(0,0,0,0.4);border:1px solid rgba(212,175,55,0.35);border-radius:8px;color:#FFF;padding:8px 12px;font-size:0.8rem;outline:none">
 
-            <div>
-              <label class="cp-input-label" for="cpVenueCity">Ceremony City / Venue</label>
-              <input type="text" id="cpVenueCity" class="cp-input-field" placeholder="e.g. Jabalpur / Udaipur / Bhopal">
-            </div>
+            <label style="font-size:0.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:700">Wedding / Event Date</label>
+            <input type="date" id="cpEventDate" style="background:rgba(0,0,0,0.4);border:1px solid rgba(212,175,55,0.35);border-radius:8px;color:#FFF;padding:8px 12px;font-size:0.8rem;outline:none">
 
-            <div>
-              <label class="cp-input-label" for="cpNotes">Entourage & Special Requests</label>
-              <textarea id="cpNotes" class="cp-input-field" rows="2" placeholder="e.g. 2 side makeups needed for mother & sister at 4 PM..."></textarea>
-            </div>
+            <label style="font-size:0.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:700">Ceremony City / Venue</label>
+            <input type="text" id="cpVenueCity" placeholder="e.g. Jabalpur / Udaipur / Bhopal" style="background:rgba(0,0,0,0.4);border:1px solid rgba(212,175,55,0.35);border-radius:8px;color:#FFF;padding:8px 12px;font-size:0.8rem;outline:none">
+
+            <label style="font-size:0.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:700">Special Notes / Family Requests</label>
+            <textarea id="cpNotes" rows="2" placeholder="Any specific bridal look preference or timing requirements..." style="background:rgba(0,0,0,0.4);border:1px solid rgba(212,175,55,0.35);border-radius:8px;color:#FFF;padding:8px 12px;font-size:0.8rem;outline:none"></textarea>
           </div>
 
           <!-- Checkout Actions -->
           <button onclick="submitCartPageBooking()" class="btn-p" style="width:100%;padding:14px;font-size:0.85rem;cursor:pointer;box-shadow:0 6px 20px rgba(212,175,55,0.4);display:flex;align-items:center;justify-content:center;gap:8px">
-            <span>💬</span>
-            <span>Reserve Trousseau on WhatsApp</span>
+            💬 Reserve Trousseau on WhatsApp
           </button>
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px">
-            <a href="/#services" style="font-size:0.75rem;color:var(--gold);text-decoration:none">
-              ← Return to Main Page
-            </a>
-            <button type="button" onclick="if(confirm('Are you sure you want to clear your entire trousseau?')){ AnshitaCart.clear(); }" style="background:transparent;border:none;color:#ef4444;font-size:0.75rem;cursor:pointer;text-decoration:underline">
-              Clear All Items
-            </button>
-          </div>
+          <a href="/#services" style="display:block;text-align:center;margin-top:12px;font-size:0.75rem;color:rgba(245,237,214,0.65);text-decoration:none">
+            ← Add More Services
+          </a>
         </div>
       </div>
 
@@ -574,27 +182,12 @@
 </div>
 
 <script>
-function filterCatalog(category, btn) {
-  document.querySelectorAll('.cp-filter-pill').forEach(p => p.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  const cards = document.querySelectorAll('#cpCatGrid .cp-cat-card');
-  cards.forEach(card => {
-    const cardCat = card.getAttribute('data-category');
-    if (category === 'all' || cardCat === category) {
-      card.style.display = 'flex';
-    } else {
-      card.style.display = 'none';
-    }
-  });
-}
-
 function renderCartPage() {
   const calc = AnshitaCart.calculate();
   const listEl = document.getElementById('cartPageItemsList');
   const emptyEl = document.getElementById('cartPageEmptyState');
   const comboAlert = document.getElementById('cartPageComboAlert');
   const freebiesBox = document.getElementById('cartPageFreebiesBox');
-  const countBadge = document.getElementById('cpItemCountBadge');
 
   const subtotalEl = document.getElementById('cpSubtotal');
   const savingsRow = document.getElementById('cpSavingsRow');
@@ -603,10 +196,6 @@ function renderCartPage() {
   const couponVal = document.getElementById('cpCouponVal');
   const couponLbl = document.getElementById('cpCouponLbl');
   const totalVal = document.getElementById('cpTotalVal');
-
-  if (countBadge) {
-    countBadge.textContent = `${calc.count} Service${calc.count !== 1 ? 's' : ''}`;
-  }
 
   if (!listEl) return;
 
@@ -617,8 +206,6 @@ function renderCartPage() {
     if (freebiesBox) freebiesBox.style.display = 'none';
     if (subtotalEl) subtotalEl.textContent = '₹0';
     if (totalVal) totalVal.textContent = '₹0';
-    if (savingsRow) savingsRow.style.display = 'none';
-    if (couponRow) couponRow.style.display = 'none';
     return;
   }
 
@@ -629,27 +216,26 @@ function renderCartPage() {
   let html = '';
   AnshitaCart.items.forEach((item, idx) => {
     html += `
-      <div class="cp-item-card">
-        <img src="${item.image}" alt="${item.title}" class="cp-item-thumb" onerror="this.src='/static/core/images/brand/anshita_haute_emblem.png'">
-        <div class="cp-item-info">
-          <span class="cp-item-tag">
-            ${item.isCombo ? '👑 Curated Celebration Combo' : '✦ Signature Master Discipline'}
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(212,175,55,0.25);border-radius:12px;padding:16px;display:flex;align-items:center;gap:16px">
+        <img src="${item.image}" alt="${item.title}" style="width:72px;height:72px;border-radius:10px;object-fit:cover;border:1px solid rgba(212,175,55,0.3)" onerror="this.src='/static/core/images/brand/anshita_haute_emblem.png'">
+        <div style="flex:1;min-width:0">
+          <span style="font-size:0.65rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:700">
+            ${item.isCombo ? '👑 Curated Celebration Combo' : '✦ Signature Service'}
           </span>
-          <h4 class="cp-item-title">${item.title}</h4>
-          <div class="cp-item-price-row">
-            <span class="cp-item-price">₹${(item.price * (item.qty || 1)).toLocaleString('en-IN')}</span>
-            ${item.originalPrice > item.price ? `<span class="cp-item-orig">₹${(item.originalPrice * (item.qty || 1)).toLocaleString('en-IN')}</span>` : ''}
-            <span style="font-size:0.72rem;color:var(--text-sub)">(₹${item.price.toLocaleString('en-IN')} each)</span>
+          <h4 style="font-family:var(--font-h);font-size:1.1rem;color:#FFF;margin:2px 0 4px">${item.title}</h4>
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span style="font-size:1.1rem;font-weight:800;color:var(--gold)">₹${(item.price * (item.qty || 1)).toLocaleString('en-IN')}</span>
+            ${item.originalPrice > item.price ? `<span style="font-size:0.8rem;text-decoration:line-through;color:rgba(245,237,214,0.4)">₹${(item.originalPrice * (item.qty || 1)).toLocaleString('en-IN')}</span>` : ''}
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
-          <div class="cp-stepper">
-            <button type="button" class="cp-step-btn" onclick="AnshitaCart.updateQty(${idx}, -1)" title="Decrease Quantity">−</button>
-            <span class="cp-step-val">${item.qty || 1}</span>
-            <button type="button" class="cp-step-btn" onclick="AnshitaCart.updateQty(${idx}, 1)" title="Increase Quantity">+</button>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="display:flex;align-items:center;border:1px solid rgba(212,175,55,0.35);border-radius:6px;overflow:hidden">
+            <button onclick="AnshitaCart.updateQty(${idx}, -1); renderCartPage();" style="background:rgba(212,175,55,0.15);border:none;color:var(--gold);padding:4px 10px;cursor:pointer">-</button>
+            <span style="padding:0 8px;color:#FFF;font-size:0.85rem;font-weight:700">${item.qty || 1}</span>
+            <button onclick="AnshitaCart.updateQty(${idx}, 1); renderCartPage();" style="background:rgba(212,175,55,0.15);border:none;color:var(--gold);padding:4px 10px;cursor:pointer">+</button>
           </div>
-          <button type="button" class="cp-item-del-btn" onclick="AnshitaCart.removeItem(${idx})" title="Remove Service from Trousseau">
-            ✕
+          <button onclick="AnshitaCart.removeItem(${idx}); renderCartPage();" title="Remove" style="background:transparent;border:none;color:#ef4444;font-size:1rem;cursor:pointer;padding:6px">
+            🗑️
           </button>
         </div>
       </div>
@@ -678,55 +264,53 @@ function renderCartPage() {
   if (totalVal) totalVal.textContent = '₹' + calc.total.toLocaleString('en-IN');
 }
 
-function submitCartPageBooking() {
+async function submitCartPageBooking() {
   const calc = AnshitaCart.calculate();
   if (AnshitaCart.items.length === 0) {
-    alert('Your Bridal Trousseau is currently empty. Please add services or packages to proceed with reservation.');
+    alert('Your Bridal Trousseau is empty. Please add services first.');
     return;
   }
-  const clientName = document.getElementById('cpClientName')?.value?.trim() || 'Bride / Client';
-  const date = document.getElementById('cpEventDate')?.value || 'To Be Confirmed';
-  const city = document.getElementById('cpVenueCity')?.value?.trim() || 'To Be Confirmed';
-  const notes = document.getElementById('cpNotes')?.value?.trim() || '';
+  const name = document.getElementById('cpName')?.value.trim() || '';
+  const phone = document.getElementById('cpPhone')?.value.trim() || '';
+  if (!name || !phone) { alert('Please enter your name and WhatsApp number.'); return; }
+  const date = document.getElementById('cpEventDate')?.value || '';
+  const city = document.getElementById('cpVenueCity')?.value || 'To Be Confirmed';
+  const notes = document.getElementById('cpNotes')?.value || '';
 
-  const lines = [
-    'Namaste Anshita Makeover! ✨',
-    '',
-    '✦ *BRIDAL TROUSSEAU RESERVATION REQUEST*',
-    `• *Client Name:* ${clientName}`,
-    `• *Wedding Date:* ${date}`,
-    `• *Venue City:* ${city}`,
-    '',
-    '✦ *SELECTED SERVICES & PACKAGES:*'
-  ];
-
+  let msg = `Namaste Anshita Makeover!%0A%0AI would like to reserve my Bridal Trousseau with the following bespoke selections:%0A%0A`;
   AnshitaCart.items.forEach(itm => {
-    lines.push(`• *${itm.title}* (Qty: ${itm.qty || 1}) — ₹${(itm.price * (itm.qty || 1)).toLocaleString('en-IN')}`);
+    msg += `• *${itm.title}* (Qty: ${itm.qty || 1}) — ₹${(itm.price * (itm.qty || 1)).toLocaleString('en-IN')}%0A`;
   });
-
   if (calc.comboActive) {
-    lines.push('');
-    lines.push(`✦ *Bridal Combo Privilege:* 15% Extra Savings Applied (-₹${calc.comboDiscount.toLocaleString('en-IN')})`);
-    lines.push(`✦ *Unlocked Courtesies:* 2 Free Family Side Makeups for Mother & Sister + Deluxe Touchup Kit`);
+    msg += `%0A👑 *Bridal Combo Privilege:* 15% Extra Savings Applied (-₹${calc.comboDiscount.toLocaleString('en-IN')})`;
+    msg += `%0A🎁 *Included Courtesies:* 2 Free Side Makeups for Mother & Sister + Deluxe Touchup Kit`;
   }
-
   if (calc.couponDiscount > 0 && AnshitaCart.activeCoupon) {
-    lines.push(`✦ *VIP Privilege Code (${AnshitaCart.activeCoupon.code}):* -₹${calc.couponDiscount.toLocaleString('en-IN')}`);
+    msg += `%0A🎟️ *VIP Privilege Code (${AnshitaCart.activeCoupon.code}):* -₹${calc.couponDiscount.toLocaleString('en-IN')}`;
   }
-
-  lines.push('');
-  lines.push(`★ *Estimated Total Investment:* ₹${calc.total.toLocaleString('en-IN')}`);
-
-  if (notes) {
-    lines.push(`• *Special Entourage Notes:* ${notes}`);
+  msg += `%0A%0A💰 *Estimated Investment:* ₹${calc.total.toLocaleString('en-IN')}`;
+  msg += `%0A📅 *Wedding Date:* ${date}`;
+  msg += `%0A📍 *Venue City:* ${city}`;
+  if (notes.trim()) {
+    msg += `%0A📝 *Client Notes:* ${notes}`;
   }
+  msg += `%0A%0APlease check availability for my date.`;
 
-  lines.push('');
-  lines.push('✦ Please confirm artist availability for my wedding dates!');
-
-  const fullText = lines.join('\n');
-  const phone = '{{ whatsapp|default:"917879223442" }}';
-  window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(fullText)}`, '_blank');
+  try {
+    const response = await fetch('/api/booking/', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name, phone, event_date: date || null, city, notes, items: AnshitaCart.items, estimated_total: calc.total})
+    });
+    const result = await response.json();
+    if (!response.ok || !result.ok) { alert(result.error || 'Unable to save your enquiry. Please try again.'); return; }
+    msg += `%0A🔖 Enquiry Reference: ${result.id}`;
+    const waPhone = '{{ whatsapp|default:"917879223442" }}';
+    window.open(`https://wa.me/${waPhone}?text=${msg}`, '_blank');
+    const button = document.querySelector('[onclick="submitCartPageBooking()"]');
+    if (button) { button.textContent = '✓ Enquiry saved — WhatsApp opened'; button.disabled = true; }
+  } catch (error) {
+    alert('Connection issue. Please try again or contact us on WhatsApp.');
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

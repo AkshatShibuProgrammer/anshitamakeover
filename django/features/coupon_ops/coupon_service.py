@@ -30,15 +30,8 @@ def calculate_active_coupon(settings_obj):
     if not settings_obj.coupon_active:
         return None
     if settings_obj.coupon_auto_by_date:
-        # Season-aware resolution: check Indian calendar month
-        month = date.today().month
-        seasonal = INDIAN_SEASONAL_COUPON_MAP.get(month)
-        if seasonal:
-            return {
-                'code': seasonal['code'],
-                'discount': seasonal['discount'],
-                'label': seasonal['label']
-            }
+        # Canonical public contract: day-of-month rotation. Seasonal campaigns
+        # are selected explicitly via manual coupon mode.
         day = date.today().day
         if day <= 10:
             return {'code': 'GLAMOUR30', 'discount': 30, 'label': 'Start of Month Special — Days 1–10'}
