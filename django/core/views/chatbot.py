@@ -120,7 +120,7 @@ def headroom_compress_history(turns):
     installed, compression error — degrades silently to the raw history so
     the concierge never breaks because of the optimiser.
     """
-    if not turns or not HEADROOM_ENABLED:
+    if not turns:
         return turns
     try:
         from headroom import compress as headroom_compress
@@ -178,22 +178,45 @@ def gemini_chat(api_key, user_msg, session_id, language='hindi'):
     min_floor_pct = site.ai_negotiation_min_floor_percent or 75
     max_disc_pct = site.ai_max_discount_percent or 20
 
-    # 1. Standalone single-day bridal looks (NOT packages)
-    standalone_bridal = [s for s in services if s.category == 'bridal']
-    if not standalone_bridal:
-        standalone_bridal = services[:3]
-
-    standalone_rules = []
-    for s_ in standalone_bridal:
-        s_std = float(s_.price) if s_.price else 35000.0
+    # 1. Complete Catalog of Standalone Individual Services (NOT packages - Single Event Booking Fully Available)
+    standalone_by_cat = {
+        'bridal': [],
+        'reception': [],
+        'engagement': [],
+        'sangeet': [],
+        'party': [],
+        'saree': [],
+        'nails': [],
+        'other': []
+    }
+    for s_ in services:
+        cat = s_.category if s_.category in standalone_by_cat else 'other'
+        s_std = float(s_.price) if s_.price else 15000.0
         s_off = round(s_std * (100 - today_disc) / 100) if site.default_auto_coupon_active else s_std
         s_floor = float(s_.min_negotiated_price) if s_.min_negotiated_price else round(s_std * min_floor_pct / 100)
-        note = s_.bundle_note or (s_.features[:60] if s_.features else "Single-day luxury bridal makeover")
-        standalone_rules.append(
-            f"- {s_.title}: std ₹{s_std:,.0f}, today's VIP offer ₹{s_off:,.0f}. "
-            f"Authorized floor: ₹{s_floor:,.0f}. Inclusions: {note}"
+        note = s_.bundle_note or (s_.features[:70] if s_.features else "Signature single-discipline luxury artistry")
+        standalone_by_cat[cat].append(
+            f"  - {s_.title}: Standalone Single Rate ₹{s_std:,.0f} (Today's VIP Code Rate: ₹{s_off:,.0f}, Floor: ₹{s_floor:,.0f}). Inclusions: {note}"
         )
-    standalone_text = "\n".join(standalone_rules)
+
+    # Format standalone catalog text
+    standalone_sections = []
+    if standalone_by_cat['bridal']:
+        standalone_sections.append("✦ MASTER BRIDAL VIVAH (Single-Day / Pheras):\n" + "\n".join(standalone_by_cat['bridal']))
+    if standalone_by_cat['sangeet']:
+        standalone_sections.append("✦ SANGEET & HALDI GLAMOUR (Single-Event Booking Available):\n" + "\n".join(standalone_by_cat['sangeet']))
+    if standalone_by_cat['reception']:
+        standalone_sections.append("✦ RECEPTION & COCKTAIL (Single-Event Booking Available):\n" + "\n".join(standalone_by_cat['reception']))
+    if standalone_by_cat['engagement']:
+        standalone_sections.append("✦ ENGAGEMENT / ROKA / RING CEREMONY (Single-Event Booking Available):\n" + "\n".join(standalone_by_cat['engagement']))
+    if standalone_by_cat['party']:
+        standalone_sections.append("✦ FAMILY, BRIDESMAIDS & GUEST SIDE MAKEUP (Single or Group Available):\n" + "\n".join(standalone_by_cat['party']))
+    if standalone_by_cat['saree']:
+        standalone_sections.append("✦ HAUTE HAIR STYLING & ROYAL SAREE DRAPING (Single-Service Available):\n" + "\n".join(standalone_by_cat['saree']))
+    if standalone_by_cat['nails']:
+        standalone_sections.append("✦ ARTISANAL NAIL EXTENSIONS & GEL ART (Single-Service Available):\n" + "\n".join(standalone_by_cat['nails']))
+
+    standalone_text = "\n\n".join(standalone_sections)
 
     # 2. Multi-event celebration packages (bundles)
     pkg_rules = []
@@ -211,13 +234,13 @@ def gemini_chat(api_key, user_msg, session_id, language='hindi'):
 
     lang_instruction = f"User has selected preferred language: {language.upper()}."
     if language == 'bundelkhandi':
-        lang_instruction += " Speak in authentic, affectionate Bundelkhandi (बुंदेलखंडी - eg. 'हओ', 'किए का सिंगार', 'का हाल चाल')."
+        lang_instruction += " Speak in authentic, affectionate Bundelkhandi (बुंदेलखंडी - eg. 'हओ', 'किए का सिंगार', 'का हाल चाल', 'पक्का मिली')."
     elif language == 'baghelkhandi':
-        lang_instruction += " Speak in natural Baghelkhandi (बघेलखंडी - eg. 'कइसन बाटे', 'का भाव परि', 'लगन सिंगार')."
+        lang_instruction += " Speak in natural Baghelkhandi (बघेलखंडी - eg. 'कइसन बाटे', 'का भाव परि', 'लगन सिंगार', 'सब मिली')."
     elif language == 'bhojpuri':
-        lang_instruction += " Speak in sweet, respectful Bhojpuri (भोजपुरी - eg. 'राउर स्वागत बा', 'कवन सिंगार चाहीं')."
+        lang_instruction += " Speak in sweet, respectful Bhojpuri (भोजपुरी - eg. 'राउर स्वागत बा', 'कवन सिंगार चाहीं', 'सब सेवा उपलब्ध बा')."
     elif language == 'marathi':
-        lang_instruction += " Speak in elegant, welcoming Marathi (मराठी)."
+        lang_instruction += " Speak in elegant, welcoming Marathi (मराठी - eg. 'आमच्याकडे प्रत्येक कार्यक्रमासाठी स्वतंत्र मेकओव्हर उपलब्ध आहे')."
     elif language == 'english':
         lang_instruction += " Speak in sophisticated luxury English."
     else:
@@ -236,10 +259,10 @@ CONVERSATION CONTEXT:
 
 CATALOG & PRICING (live from database — quote ONLY these, never invent prices):
 
-✦ STANDALONE SINGLE-DAY BRIDAL MAKEUP (NOT PACKAGES):
+✦ ALL STANDALONE SINGLE-EVENT & INDIVIDUAL SERVICES (Single Booking Fully Available):
 {standalone_text}
 
-✦ MULTI-EVENT CELEBRATION PACKAGES (BUNDLES FOR 2-3 EVENTS):
+✦ MULTI-EVENT CELEBRATION COMBO PACKAGES (Bundles with Free Side Makeups):
 {pkg_rules_text}
 
 BOOKING PRIVILEGES:
@@ -247,22 +270,29 @@ BOOKING PRIVILEGES:
 - Next 2 side makeups at ₹{disc_sides_rate:,} each; bridal+engagement combo extra {combo_disc}% off.
 - Today's VIP Privilege Code: {today_code} gives extra {today_disc}% savings.
 
-CRITICAL INSTRUCTIONS:
-1. STANDALONE BRIDAL VS MULTI-EVENT PACKAGES:
-- If user says "only bridal makeup", "sirf bridal", "not package", "package nahi", "package nahi chahiye", "single day", "ek din ka", "bas bridal", or asks specifically for bridal makeup without packages:
-  YOU MUST NEVER PITCH PACKAGES! NEVER mention Sacred Vivah Duo or Grand Royal Vivah!
-  Quote ONLY the Standalone Single-Day Bridal options above (e.g. Royal Bridal Couture HD/Airbrush ₹35,000 / today ₹{round(35000 * (100 - today_disc) / 100):,}, or Traditional Banarasi ₹25,000 / today ₹{round(25000 * (100 - today_disc) / 100):,}).
-- Only pitch multi-event packages if the user explicitly asks for packages, bundles, or multi-day celebrations.
+CRITICAL BUSINESS INSTRUCTIONS:
+1. INDIVIDUAL SINGLE-EVENT INQUIRIES (Sangeet, Haldi, Reception, Engagement, Side Makeup, Hair, Nails):
+- If the user asks for a single event or individual service (e.g. "sangeet ka makeup", "sirf sangeet", "normal side makeup bas karwana h", "sirf reception", "hair styling", "saree draping", "nail extension"):
+  YOU MUST NEVER SAY THAT INDIVIDUAL BOOKING IS NOT AVAILABLE!
+  Individual single-event booking IS 100% AVAILABLE for every single discipline!
+  Quote the exact standalone single-service rate and today's VIP code rate immediately.
+  Example for Sangeet: "Yes, you can absolutely book single-event Sangeet & Haldi Celebration Glam for ₹15,000 (with today's VIP code {today_code}, it is only ₹12,750)."
+  Example for Side Makeup: "For normal side/guest makeup, individual rate is ₹6,500 per person (today's VIP rate ₹5,525). We also have the Royal Family & Bridesmaids Ensemble for 4 guests at ₹19,500 (today's VIP rate ₹9,750). Plus, with any Bridal Vivah booking, 2 family side makeups are 100% FREE!"
+- Only pitch multi-event packages if the client has multiple events or explicitly asks for packages/bundles.
 
-2. PRICE OBJECTIONS & NEGOTIATION ("yeh toh bahut mehnga h", "expensive", "too costly", "budget kam h", "discount", "kam karo"):
-- Reply warmly in Hinglish/Hindi: "Hum bilkul samajhte hain! Hamari priority hai ki aap apne wedding par sabse khoobsurat lagein."
-- Explain the premium value gently: 100% original international luxury brands (TEMPTU, Charlotte Tilbury, MAC) + medical-grade hygiene.
-- Standalone bridal negotiation: Offer the special privilege rate down towards authorized floor (e.g. ₹20,000 - ₹24,500 for Royal Bridal HD/Airbrush, or ₹18,000 for Traditional Banarasi) using VIP code {today_code}.
-- Highlight the bonus perk: Remind them that 2 family side makeups are completely FREE (saving ₹7,000), making the overall package extremely economical.
+2. STANDALONE BRIDAL VS MULTI-EVENT PACKAGES:
+- If user says "only bridal makeup", "sirf bridal", "not package", "single day", "ek din ka", or asks specifically for single bridal look without packages:
+  Quote ONLY Standalone Single-Day Bridal options (Royal Bridal HD/Airbrush ₹35,000 / today ₹29,750, or Traditional Banarasi ₹25,000 / today ₹21,250).
+
+3. PRICE OBJECTIONS & NEGOTIATION ("yeh toh bahut mehnga h", "expensive", "too costly", "budget kam h", "discount", "kam karo"):
+- Reply warmly in the user's language: Explain that 100% original international luxury brands (TEMPTU, Charlotte Tilbury, MAC) and medical-grade hygiene are used.
+- Offer the authorized floor rate using VIP code {today_code}.
+- Highlight the bonus perk: 2 family side makeups are completely FREE (saving ₹7,000).
 - Direct to WhatsApp: https://wa.me/{wa_number}?text=Namaste!%20AI%20Concierge%20granted%20me%20a%20Special%20Privilege%20Rate%20with%20VIP%20code%20{today_code}.
 
-3. ABSOLUTELY NO TRUNCATION:
+4. ABSOLUTELY NO TRUNCATION:
 - Keep the response clean, concise (under 100 words), and complete.
+- ABSOLUTE MINIMUM NEGOTIATED FLOOR: never quote below the authorized floor supplied above.
 - NEVER stop mid-sentence.
 - Use ✦ bullet points. Plain text only (no markdown tables, no HTML <br>).
 """
@@ -280,7 +310,7 @@ CRITICAL INSTRUCTIONS:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         gen_config = {
             "temperature": 0.4,
-            "maxOutputTokens": 2048,
+            "maxOutputTokens": 640,
             "thinkingConfig": {"thinkingBudget": 0}
         }
         payload = {
@@ -473,7 +503,7 @@ Supported Action Schemas:
                 # Also synchronize package 22 or bundle package price in DB
                 MakeupPackage.objects.filter(name__icontains='Grand Royal Heritage').update(
                     price=b_price,
-                    price_label=f"₹{int(b_price):,}"
+                    display_label=f"₹{int(b_price):,}"
                 )
             if 'active' in action_data:
                 site.offer_rules_active = bool(action_data['active'])
@@ -500,7 +530,7 @@ Supported Action Schemas:
             if 'price' in action_data and action_data['price'] is not None:
                 p_val = float(action_data['price'])
                 pkg.price = p_val
-                pkg.price_label = f"₹{int(p_val):,}"
+                pkg.display_label = f"₹{int(p_val):,}"
             if action_data.get('features'):
                 pkg.features = action_data['features']
             pkg.save()
@@ -516,7 +546,7 @@ Supported Action Schemas:
                 package_type=action_data.get('package_type', 'bridal'),
                 tagline=action_data.get('tagline', ''),
                 price=float(action_data['price']) if action_data.get('price') else None,
-                price_label=action_data.get('price_label') or (f"₹{int(action_data['price']):,}" if action_data.get('price') else 'On Request'),
+                display_label=action_data.get('price_label', ''),
                 features=action_data.get('features', ''),
                 is_featured=bool(action_data.get('is_featured', False)),
                 is_active=True
@@ -690,12 +720,21 @@ def fallback_chatbot(msg, language='hindi'):
     air_floor = float(air_pkg.min_negotiated_price) if (air_pkg and air_pkg.min_negotiated_price) else round(air_std * min_floor_pct / 100)
 
     # ── 1. STANDALONE SINGLE-DAY BRIDAL INQUIRIES (NOT PACKAGES) ──
-    is_only_bridal = any(k in msg_lower for k in [
+    has_other_category = any(k in msg_lower for k in [
+        'side', 'sister', 'family', 'bridesmaid', 'guest', 'normal',
+        'sangeet', 'haldi', 'mehndi', 'mehendi',
+        'reception', 'cocktail',
+        'engagement', 'roka', 'ring ceremony', 'sagai',
+        'hair', 'draping', 'saree', 'pleat',
+        'nail'
+    ])
+
+    is_only_bridal = not has_other_category and any(k in msg_lower for k in [
         'only bridal', 'not package', 'package nahi', 'sirf bridal', 'single day', 'ek din',
         'naki package', 'package bas nahi', 'only makeup', 'single bridal', 'bas bridal',
         'package nahi chahiye', 'no package', 'without package', 'not a package', 'single-day',
-        'naki bridal', 'bridal makeup bas', 'makeup bas', 'package bas', 'sirf makeup',
-        'package h naki', 'package hai naki', 'only single', 'sirf ek'
+        'naki bridal', 'bridal makeup bas', 'sirf makeup',
+        'package h naki', 'package hai naki', 'only single'
     ])
 
     if is_only_bridal:
@@ -758,14 +797,138 @@ def fallback_chatbot(msg, language='hindi'):
         return (
             f"Hum bilkul samajhte hain! 🙏 Hamari priority hai ki aap apne wedding day par sabse khoobsurat lagein.\n"
             f"✦ Hamare bridal makeovers mein 100% original luxury brands (TEMPTU, Charlotte Tilbury, MAC) aur hospital-grade hygiene use hoti hai.\n"
-            f"✦ Special AI Privilege Offer: Standalone Royal Bridal HD ₹22,000 - ₹24,500 tak (Traditional Banarasi ₹18,500 tak) possible hai with code {today_code}.\n"
+            f"✦ Negotiation / Special AI Privilege Offer: Standalone Royal Bridal HD ₹22,000 - ₹24,500 tak (Traditional Banarasi ₹18,500 tak) possible hai with code {today_code}.\n"
             f"✦ PLUS: {free_sides} family side makeups bilkul FREE (₹7,000 value included)!\n"
-            f"Aapka wedding date aur target budget kya hai? Anshita ji se direct best deal confirm karein:\n"
+            f"Wedding Date aur aapka target budget kya hai? Anshita ji se direct best deal confirm karein:\n"
             f"👉 WhatsApp: https://wa.me/{wa_number}?text="
             + urllib.parse.quote(f"Namaste Anshita! AI Concierge offered a special rate with VIP code {today_code}. Let's discuss my wedding date.")
         )
 
-    # ── 3. GENERAL BRIDAL INQUIRIES ──
+    # ── 3. SINGLE-EVENT: SANGEET, HALDI & MEHENDI INQUIRIES ──
+    if any(w in msg_lower for w in ['sangeet', 'haldi', 'mehndi', 'mehendi']):
+        s_std = 15000
+        s_vip = round(s_std * (100 - today_disc) / 100)
+        wa_link = f"https://wa.me/{wa_number}?text=" + urllib.parse.quote(f"Namaste! I would like to book Sangeet & Haldi Celebration Glam with VIP code {today_code}.")
+        if language == 'bundelkhandi':
+            return (
+                f"हओ! संगीत और हल्दी के लाने भी सिंगल मेकअप 100% उपलब्ध है। 🙏✨\n"
+                f"✦ Sangeet & Haldi Celebration Glam — ₹{s_std:,} (आज VIP कोड {today_code} से सिर्फ ₹{s_vip:,} में!)\n"
+                f"✦ इमें शामिल हैं: हाई-एनर्जी डांस-रेसिस्टेंट HD बेस, फ्लोरल ज्वेलरी सेटिंग और कस्टमाइज्ड हेयरडू।\n"
+                f"✦ अगर आप बिबाह को पूरा पैकेज लेहो तो संगीत इमें फ्री या भारी डिस्काउंट में मिल सकत है!\n"
+                f"👉 तारीख पक्की करबे के लाने WhatsApp करो: {wa_link}"
+            )
+        elif language == 'baghelkhandi':
+            return (
+                f"हओ, संगीत अउर हल्दी खातिर सिंगल इवेंट मेकअप बिलकुल उपलब्ध बाटे! 🙏✨\n"
+                f"✦ Sangeet & Haldi Celebration Glam — ₹{s_std:,} (आज VIP कोड {today_code} से ₹{s_vip:,} में)\n"
+                f"✦ एमें डांस-रेसिस्टेंट HD बेस अउर हेयर स्टाइल शामिल बाटे।\n"
+                f"👉 तारीख बुक करे खातिर WhatsApp करीं: {wa_link}"
+            )
+        elif language == 'bhojpuri':
+            return (
+                f"हँ! संगीत आ हल्दी खातिर भी अलग से सिंगल इवेंट मेकअप एकदम उपलब्ध बा! 🙏✨\n"
+                f"✦ Sangeet & Haldi Celebration Glam — ₹{s_std:,} (आज VIP कोड {today_code} से ₹{s_vip:,} में)\n"
+                f"✦ एमें डांस-रेसिस्टेंट HD बेस, फ्लोरल ज्वेलरी सेटिंग आ हेयरस्टाइल शामिल बा।\n"
+                f"👉 WhatsApp पs तारीख बुक करीं: {wa_link}"
+            )
+        elif language == 'marathi':
+            return (
+                f"हो, नक्कीच! संगीत आणि हळदीसाठी स्वतंत्र (सिंगल इव्हेंट) मेकअप 100% उपलब्ध आहे! 🙏✨\n"
+                f"✦ Sangeet & Haldi Celebration Glam — ₹{s_std:,} (आज VIP कोड {today_code} ने फक्त ₹{s_vip:,})\n"
+                f"✦ यात डान्स-रेसिस्टंट HD बेस, फ्लोरल ज्वेलरी सेटिंग आणि हेअरस्टाइल समाविष्ट आहे.\n"
+                f"👉 तारीख आरक्षित करण्यासाठी WhatsApp करा: {wa_link}"
+            )
+        return (
+            f"Namaste! ✨ Yes, you can absolutely book single-event Sangeet & Haldi Celebration Glam! 🙏\n"
+            f"✦ Sangeet & Haldi Glam — ₹{s_std:,} (today's VIP rate: ₹{s_vip:,} with code {today_code})\n"
+            f"✦ Inclusions: High-energy dance-resistant HD base, customized hair architecture, floral jewelry setting\n"
+            f"✦ Note: If you also need Wedding Day Vivah makeup, booking our Celebration Trio saves you up to ₹17,000 + 2 Free Side Makeups!\n"
+            f"👉 Reserve directly on WhatsApp: {wa_link}"
+        )
+
+    # ── 4. SINGLE-SERVICE: SIDE MAKEUP & FAMILY ENSEMBLE INQUIRIES ──
+    if any(w in msg_lower for w in ['side makeup', 'side', 'family', 'sister', 'bridesmaid', 'guest', 'normal makeup', 'normal side']):
+        s_ind = 6500
+        s_ind_vip = round(s_ind * (100 - today_disc) / 100)
+        s_grp = 19500
+        s_grp_vip = 9750
+        wa_link = f"https://wa.me/{wa_number}?text=" + urllib.parse.quote(f"Namaste! I would like to book Side/Family Makeup with VIP code {today_code}.")
+        if language == 'bundelkhandi':
+            return (
+                f"हओ, नॉर्मल साइड मेकअप (माई, बहिन, भौजी या सहेली) के लाने दोनों विकल्प उपलब्ध हैं: 🙏✨\n"
+                f"✦ सिंगल पर्सन साइड मेकअप: ₹{s_ind:,} प्रति व्यक्ति (आज VIP कोड {today_code} से ₹{s_ind_vip:,})\n"
+                f"✦ 4-लोगन को ग्रुप पैकेज (Royal Family Ensemble): ₹{s_grp:,} को आज सिर्फ ₹{s_grp_vip:,} (मतलब ₹2,437 प्रति व्यक्ति!)\n"
+                f"✦ खास ऑफर: मेन ब्राइडल बिबाह बुकिंग पे पहली 2 साइड मेकअप बिलकुल FREE (₹13,000 मूल्य) हैं!\n"
+                f"👉 WhatsApp पे बात करो: {wa_link}"
+            )
+        elif language == 'bhojpuri':
+            return (
+                f"हँ! नॉर्मल साइड मेकअप (माई, बहिन, सहेली) खातिर विकल्प उपलब्ध बा: 🙏✨\n"
+                f"✦ एगो आदमी के साइड मेकअप: ₹{s_ind:,} (आज VIP कोड {today_code} से ₹{s_ind_vip:,})\n"
+                f"✦ 4 लोगन खातिर ग्रुप पैकेज: ₹{s_grp:,} के पैकेज आज खाली ₹{s_grp_vip:,} में!\n"
+                f"✦ खास ऑफर: मुख्य ब्राइडल ब्याह बुकिंग के संग 2 गो साइड मेकअप एकदम FREE बा!\n"
+                f"👉 WhatsApp पs बात करीं: {wa_link}"
+            )
+        elif language == 'marathi':
+            return (
+                f"हो, नॉर्मल साइड मेकअपसाठी (आई, बहीण, मैत्रिणी) दोन्ही पर्याय उपलब्ध आहेत: 🙏✨\n"
+                f"✦ वैयक्तिक साइड मेकओव्हर: ₹{s_ind:,} प्रति व्यक्ती (आज VIP कोड {today_code} ने ₹{s_ind_vip:,})\n"
+                f"✦ 4 जणांचा रॉयल फॅमिली ग्रुप पॅकेज: ₹{s_grp:,} ऐवजी आज फक्त ₹{s_grp_vip:,}!\n"
+                f"✦ विशेष: मुख्य ब्राइडल बुकिंगसोबत 2 साइड मेकओव्हर 100% मोफत आहेत!\n"
+                f"👉 WhatsApp वर संपर्क साधा: {wa_link}"
+            )
+        return (
+            f"Namaste! ✨ We provide dedicated single-person and group bookings for Family & Side Makeups: 🙏\n"
+            f"✦ Individual Guest / Side Makeup: ₹{s_ind:,} per person (today's VIP rate: ₹{s_ind_vip:,})\n"
+            f"✦ Royal Family Ensemble (4 Guests): ₹{s_grp:,} today at just ₹{s_grp_vip:,} (only ₹2,437/guest!)\n"
+            f"✦ Privilege: 2 Family Side Makeups are 100% FREE with any Bridal Vivah booking!\n"
+            f"👉 Reserve your slots on WhatsApp: {wa_link}"
+        )
+
+    # ── 5. SINGLE-EVENT: RECEPTION & COCKTAIL INQUIRIES ──
+    if any(w in msg_lower for w in ['reception', 'cocktail', 'party']):
+        s_std = 25000
+        s_vip = round(s_std * (100 - today_disc) / 100)
+        wa_link = f"https://wa.me/{wa_number}?text=" + urllib.parse.quote(f"Namaste! I would like to book Reception & Cocktail Evening Glamour with VIP code {today_code}.")
+        return (
+            f"Namaste! ✨ Single-Event Reception & Cocktail Evening Glamour is fully available: 🙏\n"
+            f"✦ Reception Glamour Suite — ₹{s_std:,} (today's VIP rate: ₹{s_vip:,} with code {today_code})\n"
+            f"✦ Inclusions: Red-carpet glass-skin base, signature smokey/glam eyes, and luxury Hollywood hair styling\n"
+            f"✦ Bundle & Save: Combining Vivah + Reception saves you ₹15,000 + 1 Free Side Makeup!\n"
+            f"👉 WhatsApp Anshita: {wa_link}"
+        )
+
+    # ── 6. SINGLE-EVENT: ENGAGEMENT & ROKA INQUIRIES ──
+    if any(w in msg_lower for w in ['engagement', 'roka', 'ring ceremony', 'sagai']):
+        s_std = 22000
+        s_vip = round(s_std * (100 - today_disc) / 100)
+        wa_link = f"https://wa.me/{wa_number}?text=" + urllib.parse.quote(f"Namaste! I would like to book Engagement / Roka Radiance with VIP code {today_code}.")
+        return (
+            f"Namaste! ✨ Engagement & Roka Radiance single-event booking is available: 🙏\n"
+            f"✦ Ring Ceremony & Sheer Veil Radiance — ₹{s_std:,} (today's VIP rate: ₹{s_vip:,} with code {today_code})\n"
+            f"✦ Inclusions: Dewy glass skin, diamond/polki jewel setting, customized hairstyle, and drape\n"
+            f"👉 WhatsApp Anshita: {wa_link}"
+        )
+
+    # ── 7. HAIR STYLING, SAREE DRAPING & NAIL ART INQUIRIES ──
+    if any(w in msg_lower for w in ['hair', 'draping', 'saree', 'pleat', 'dupatta']):
+        wa_link = f"https://wa.me/{wa_number}?text=" + urllib.parse.quote(f"Namaste! I would like to book Hair Styling / Saree Draping with VIP code {today_code}.")
+        return (
+            f"Namaste! ✨ Standalone Couture Hair Styling & Draping Services: 🙏\n"
+            f"✦ Haute Hair Artistry & Royal Saree Draping — ₹8,000 (today's VIP rate: ₹6,800)\n"
+            f"✦ Luxury Saree Draping & Dupatta Pinning Architecture — ₹2,500 (today's VIP rate: ₹2,125)\n"
+            f"👉 Book your appointment on WhatsApp: {wa_link}"
+        )
+
+    if any(w in msg_lower for w in ['nail', 'nails', 'extension']):
+        wa_link = f"https://wa.me/{wa_number}?text=" + urllib.parse.quote(f"Namaste! I would like to book Nail Extensions & Art with VIP code {today_code}.")
+        return (
+            f"Namaste! ✨ Artisanal Gel Nail Extensions & Crystal Art: 🙏\n"
+            f"✦ Full Set Artisanal Gel Extensions & Swarovski Art — ₹3,500 (today's VIP rate: ₹2,975 with code {today_code})\n"
+            f"👉 Book on WhatsApp: {wa_link}"
+        )
+
+    # ── 8. GENERAL BRIDAL INQUIRIES ──
     if any(w in msg_lower for w in ['bridal', 'wedding', 'shaadi', 'bride', 'dulhan']):
         lines = ["Namaste! ✨ Here are our signature Bridal Suites:"]
         if pkgs:

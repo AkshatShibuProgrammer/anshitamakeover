@@ -54,7 +54,7 @@
     <div class="ces-emblem">✨</div>
     <h4>{{ t.cart_empty_title|default:'Your Trousseau is Empty' }}</h4>
     <p>{{ t.cart_empty_desc|default:'Explore our Signature Services and Bridal Packages to assemble your wedding glam with privileged combo rates.' }}</p>
-    <a href="/#services" onclick="closeCartDrawer()" class="ces-btn">{{ t.btn_explore_services|default:'Explore Services' }}</a>
+    <a href="{% url 'services' %}" onclick="closeCartDrawer()" class="ces-btn">{{ t.btn_explore_services|default:'Explore Services' }}</a>
   </div>
 
   <!-- Drawer Footer: Pricing Breakdown & Call-to-Actions -->

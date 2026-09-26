@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}{% load static %}
+{% block title %}Lookbook Gallery — Anshita Makeover{% endblock %}
+{% block content %}
+<main class="catalog-page lookbook-page">
+  <header class="catalog-hero"><p class="section-kicker">✦ THE LOOKBOOK</p><h1>Real looks. Every angle. Your complete visual reference.</h1><p>Browse bridal, engagement, reception, and celebration albums. Open any album for the touch-friendly mixed-media viewer.</p></header>
+  <div class="lookbook-grid">
+  {% for group in look_groups %}
+    <article class="lookbook-card">
+      <button type="button" onclick="openLookbook('{{ group.id }}')" aria-label="Open {{ group.name }} album">
+        <img src="{{ group.display_cover }}" alt="{{ group.name }}" loading="lazy">
+        <span>{{ group.get_category_display }}</span><h2>{{ group.name }}</h2><em>{{ group.media_items.all|length }} views · Open album ↗</em>
+      </button>
+    </article>
+  {% empty %}<p>No published albums yet. Check back soon.</p>{% endfor %}
+  </div>
+  <div class="catalog-backlinks"><a class="btn-o" href="{% url 'services' %}">Explore services</a><a class="btn-p" href="{% url 'package_builder' %}">Build your look</a></div>
+</main>
+{% endblock %}
+{% block extra_css %}<style>
+.lookbook-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.lookbook-card{background:var(--card-bg);border:1px solid var(--card-border);overflow:hidden}.lookbook-card button{display:block;width:100%;padding:0;background:none;border:0;color:inherit;text-align:left;cursor:pointer}.lookbook-card img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;transition:transform .6s ease}.lookbook-card:hover img,.lookbook-card:focus-within img{transform:scale(1.04)}.lookbook-card span,.lookbook-card h2,.lookbook-card em{display:block;margin:16px 20px 0}.lookbook-card span{color:var(--gold);font-size:.68rem;text-transform:uppercase;letter-spacing:1.5px}.lookbook-card h2{font:500 1.5rem var(--font-h)}.lookbook-card em{padding-bottom:20px;color:var(--text-sub);font-size:.78rem;font-style:normal}.catalog-backlinks{display:flex;gap:12px;justify-content:center;margin-top:42px}@media(max-width:700px){.lookbook-grid{grid-template-columns:1fr 1fr}.lookbook-card h2{font-size:1.1rem}}@media(max-width:480px){.lookbook-grid{grid-template-columns:1fr}}
+</style>{% endblock %}

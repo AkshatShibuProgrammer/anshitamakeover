@@ -905,6 +905,14 @@ body.mode-full-editor .visualizer-pane { display: none; }
               <label>Cover Photo</label>
               <input class="form-input" type="file" id="lg-cover-file" accept="image/*">
             </div>
+            <div class="form-group" style="display:flex; align-items:center; gap:8px; margin-top:24px;">
+              <input type="checkbox" id="lg-is-featured" style="accent-color:var(--gold); width:18px; height:18px;">
+              <label for="lg-is-featured" style="cursor:pointer; margin:0;">✦ Feature in Top 3D Spatial Card Fan</label>
+            </div>
+            <div class="form-group" style="display:flex; align-items:center; gap:8px; margin-top:24px;">
+              <input type="checkbox" id="lg-show-ext-btn" checked style="accent-color:var(--gold); width:18px; height:18px;">
+              <label for="lg-show-ext-btn" style="cursor:pointer; margin:0;">📱 Show "Watch on Instagram / YouTube" Buttons</label>
+            </div>
           </div>
           <button class="btn-primary" id="lg-save-btn" onclick="saveLookGroup()">Create Folder</button>
         </div>
@@ -949,6 +957,10 @@ body.mode-full-editor .visualizer-pane { display: none; }
             <div class="form-group full">
               <label>Caption / Angle Notes</label>
               <input class="form-input" id="lg-media-caption" placeholder="e.g. 45° Side Profile, Shimmer Eye Detail, Velvet Lips">
+            </div>
+            <div class="form-group full" style="display:flex; align-items:center; gap:8px;">
+              <input type="checkbox" id="lg-media-show-link" checked style="accent-color:var(--gold); width:18px; height:18px;">
+              <label for="lg-media-show-link" style="cursor:pointer; margin:0;">🌐 Show "Open in Instagram/YouTube" badge for this item</label>
             </div>
           </div>
           <button class="btn-primary" onclick="saveLookMediaItem()">Upload & Attach Media</button>
@@ -1998,6 +2010,8 @@ async function saveLookGroup(){
   fd.append('makeup_type', makeupType);
   fd.append('name', clientName ? `${clientName} — ${makeupType}` : makeupType);
   fd.append('category', document.getElementById('lg-category').value);
+  fd.append('is_featured', document.getElementById('lg-is-featured').checked ? '1' : '0');
+  fd.append('show_external_link_button', document.getElementById('lg-show-ext-btn').checked ? '1' : '0');
 
   const coverFile = document.getElementById('lg-cover-file');
   if(coverFile.files && coverFile.files[0]){
@@ -2065,6 +2079,7 @@ async function saveLookMediaItem(){
   const fileInput = document.getElementById('lg-media-file');
   const videoInput = document.getElementById('lg-media-videofile');
   const caption = document.getElementById('lg-media-caption').value.trim();
+  const showPlatformLink = document.getElementById('lg-media-show-link')?.checked ? '1' : '0';
 
   if((mediaType === 'instagram' || mediaType === 'youtube') && !url){
     alert('Please enter an Instagram or YouTube URL.');
@@ -2080,9 +2095,10 @@ async function saveLookMediaItem(){
   fd.append('group_id', groupId);
   fd.append('media_type', mediaType);
   fd.append('caption', caption);
-  if(url) fd.append('url', url);
-  if(mediaType === 'image' && fileInput.files[0]) fd.append('media_file', fileInput.files[0]);
-  if(mediaType === 'video_file' && videoInput.files[0]) fd.append('media_file', videoInput.files[0]);
+  fd.append('show_platform_link', showPlatformLink);
+  if(url) fd.append('external_url', url);
+  if(mediaType === 'image' && fileInput.files[0]) fd.append('image_file', fileInput.files[0]);
+  if(mediaType === 'video_file' && videoInput.files[0]) fd.append('video_file', videoInput.files[0]);
 
   try {
     const res = await fetch('/api/admin/lookgroup/media/', { method: 'POST', body: fd });

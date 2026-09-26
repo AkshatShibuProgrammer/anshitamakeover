@@ -23,12 +23,12 @@
   <ul class="nlinks" id="nlinks">
     <!-- Services & Suites Dropdown -->
     <li class="nav-dropdown">
-      <a href="/#services" class="nav-drop-btn">
+      <a href="{% url 'services' %}" class="nav-drop-btn">
         {{ t.nav_services|default:'Services' }} <span style="font-size:.65rem;opacity:.7">▾</span>
       </a>
       <div class="nav-dropdown-menu">
-        <a href="/#services"><span>💄 {{ t.svc_makeup_title|default:'Signature Services' }}</span></a>
-        <a href="/#packages"><span>👑 {{ t.nav_packages|default:'Bridal Suites & Packages' }}</span></a>
+        <a href="{% url 'services' %}"><span>💄 {{ t.svc_makeup_title|default:'Signature Services' }}</span></a>
+        <a href="{% url 'packages' %}"><span>👑 {{ t.nav_packages|default:'Bridal Suites & Packages' }}</span></a>
         <a href="/#service-compare"><span>⚡ Compare Services</span> <span class="nav-badge-pill">NEW</span></a>
         <a href="/#package-compare"><span>⚖️ Compare Suites</span> <span class="nav-badge-pill">LIVE</span></a>
       </div>
@@ -48,7 +48,7 @@
 
     <li><a href="/travel-estimator/">{{ t.nav_travel_estimator|default:'Travel Estimator' }}</a></li>
     <li><a href="/#outstation">{{ t.nav_outstation|default:'Destinations' }}</a></li>
-    <li><a href="/#gallery">{{ t.nav_gallery|default:'Gallery' }}</a></li>
+    <li><a href="{% url 'gallery' %}">{{ t.nav_gallery|default:'Gallery' }}</a></li>
     <li><a href="/academy/">{{ t.nav_academy|default:'Academy' }}</a></li>
     <li><a href="/#about">{{ t.nav_about|default:'About' }}</a></li>
   </ul>

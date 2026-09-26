@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 
 
 class SiteSettings(models.Model):
@@ -167,9 +168,16 @@ class MakeupPackage(models.Model):
 
     @property
     def price_label(self):
+        if self.display_label and self.display_label.strip():
+            return self.display_label.strip()
         if self.price:
             return f"₹{int(self.price):,}"
         return 'On Request'
+
+    @price_label.setter
+    def price_label(self, value):
+        # Backward-compatible adapter for legacy forms/factories after migration 0011.
+        self.display_label = value or ''
 
     @property
     def human_label(self):
@@ -497,22 +505,51 @@ class LookGroup(models.Model):
         ('studio', 'Studio & Masterclass'),
     ]
     name = models.CharField(max_length=200, help_text='Group display name e.g. "Kuhu — Traditional Kolkata Banarasi & Chandan Art"')
+    slug = models.SlugField(max_length=220, unique=True, blank=True)
     client_name = models.CharField(max_length=100, blank=True, help_text='Client or Model name e.g. "Kuhu", "Miss Rajak"')
     makeup_type = models.CharField(max_length=150, blank=True, help_text='Type of makeup e.g. "Traditional Bengali Mukut & Chandan", "Mauve Shimmer Cut-Crease"')
     category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='bridal')
     cover_image = models.ImageField(upload_to='lookgroups/covers/', blank=True, null=True)
     cover_image_url = models.CharField(max_length=500, blank=True, help_text='Fallback static image path')
     description = models.TextField(blank=True)
+    seo_title = models.CharField(max_length=180, blank=True)
+    seo_description = models.CharField(max_length=320, blank=True)
     order = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
+    is_featured = models.BooleanField(default=False, help_text='Show this album in the homepage featured edit')
+    show_external_link_button = models.BooleanField(default=True)
+    is_published = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['order', '-created_at']
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base = slugify(self.name) or 'lookbook-album'
+            candidate = base
+            suffix = 2
+            while type(self).objects.exclude(pk=self.pk).filter(slug=candidate).exists():
+                candidate = f'{base}-{suffix}'
+                suffix += 1
+            self.slug = candidate
+        super().save(*args, **kwargs)
+
     def __str__(self):
         client = f" ({self.client_name})" if self.client_name else ""
         return f"{self.name}{client}"
+
+    @property
+    def photo_count(self):
+        return self.media_items.filter(media_type='image', is_published=True).count()
+
+    @property
+    def video_count(self):
+        return self.media_items.exclude(media_type='image').filter(is_published=True).count()
+
+    @property
+    def count_summary(self):
+        return f"{self.photo_count} photos · {self.video_count} videos"
 
     @property
     def display_cover(self):
@@ -539,10 +576,16 @@ class LookMediaItem(models.Model):
     image_file = models.ImageField(upload_to='lookgroups/media/', blank=True, null=True)
     video_file = models.FileField(upload_to='lookgroups/videos/', blank=True, null=True)
     external_url = models.URLField(max_length=500, blank=True, help_text='Instagram Reel/Post or YouTube URL')
+    provider = models.CharField(max_length=20, blank=True, help_text='youtube, instagram, or upload')
     embed_code = models.CharField(max_length=200, blank=True, help_text='Instagram shortcode or YouTube video ID')
     thumbnail_url = models.CharField(max_length=500, blank=True, help_text='Auto-fetched thumbnail for Instagram/YouTube or static path')
     title = models.CharField(max_length=200, blank=True)
     caption = models.CharField(max_length=300, blank=True)
+    alt_text = models.CharField(max_length=300, blank=True)
+    duration_seconds = models.PositiveIntegerField(null=True, blank=True)
+    consent_status = models.CharField(max_length=20, default='pending', choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')])
+    show_platform_link = models.BooleanField(default=True)
+    is_published = models.BooleanField(default=True)
     order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -561,5 +604,25 @@ class LookMediaItem(models.Model):
         if self.media_type == 'youtube' and self.embed_code:
             return f"https://img.youtube.com/vi/{self.embed_code}/hqdefault.jpg"
         return '/static/core/images/curated/royal_crimson_bride_angle3.jpg'
+
+
+class BookingEnquiry(models.Model):
+    STATUS_CHOICES = [('new', 'New'), ('contacted', 'Contacted'), ('quoted', 'Quote Sent'), ('booked', 'Booked'), ('completed', 'Completed'), ('cancelled', 'Cancelled')]
+    name = models.CharField(max_length=160)
+    phone = models.CharField(max_length=30)
+    email = models.EmailField(blank=True)
+    event_date = models.DateField(null=True, blank=True)
+    city = models.CharField(max_length=160, blank=True)
+    notes = models.TextField(blank=True)
+    cart_items = models.JSONField(default=list)
+    estimated_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.name} — {self.event_date or "Date pending"}'
 
 
