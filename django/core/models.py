@@ -516,6 +516,8 @@ class LookGroup(models.Model):
     seo_description = models.CharField(max_length=320, blank=True)
     order = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
+    is_featured = models.BooleanField(default=False, help_text='Show this album in the homepage featured edit')
+    show_external_link_button = models.BooleanField(default=True)
     is_published = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -570,6 +572,7 @@ class LookMediaItem(models.Model):
     alt_text = models.CharField(max_length=300, blank=True)
     duration_seconds = models.PositiveIntegerField(null=True, blank=True)
     consent_status = models.CharField(max_length=20, default='pending', choices=[('pending', 'Pending'), ('approved', 'Approved'), ('rejected', 'Rejected')])
+    show_platform_link = models.BooleanField(default=True)
     is_published = models.BooleanField(default=True)
     order = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
