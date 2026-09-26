@@ -100,6 +100,10 @@ def cart_page(request):
         resp.set_cookie('lang', lang, max_age=365*24*3600)
     return resp
 
+def animation_lab(request):
+    """Preserved animation showcase route; public motion remains reduced-motion aware."""
+    return render(request, 'core/animation_lab.html')
+
 def home(request):
     """Orchestrator endpoint delegating homepage data compilation to public_ops"""
     lang = request.GET.get('lang') or request.COOKIES.get('lang', 'english')
