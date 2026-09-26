@@ -134,6 +134,74 @@ window.addEventListener('DOMContentLoaded', () => {
 .home-catalogue-link{display:inline-block;margin-top:10px}
 @media(max-width:700px){.home-service-cards,.home-gallery-cards{grid-template-columns:1fr}.home-service-card img,.home-gallery-card img{height:360px}}
 @media(prefers-reduced-motion:reduce){.home-service-card,.home-gallery-card{transition:none}.home-service-card:hover,.home-gallery-card:hover{transform:none}}
+
+/* ═══ GLOBAL LUXURY BUTTON ARCHITECTURE (EVAGHER-INSPIRED) ═══ */
+.btn-p, .btn-o {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border-radius: 9999px;
+  font-family: var(--font-b, 'Outfit', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.btn-p {
+  background: linear-gradient(135deg, #F0D060 0%, #D4AF37 50%, #A07820 100%);
+  color: #080808 !important;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+.btn-p::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.65s ease;
+  pointer-events: none;
+}
+.btn-p:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.55), 0 0 20px rgba(212, 175, 55, 0.3);
+}
+.btn-p:hover::before {
+  left: 150%;
+}
+.btn-p:active {
+  transform: translateY(1px) scale(0.99);
+}
+.btn-o {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--cream, #F5EDD6) !important;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+.btn-o:hover {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: var(--gold, #D4AF37);
+  color: #FFFFFF !important;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.25);
+}
+.btn-o:active {
+  transform: translateY(1px) scale(0.99);
+}
+@media(prefers-reduced-motion:reduce){.btn-p,.btn-o{transition:none!important;transform:none!important}}
 /* ═══════════════════════════════════════════════════
    CSS VARIABLES
 ═══════════════════════════════════════════════════ */
@@ -149,7 +217,7 @@ window.addEventListener('DOMContentLoaded', () => {
   --card-bg:rgba(18,18,18,0.85);
   --card-border:rgba(212,175,55,0.18);
   --font-h:'Playfair Display',Georgia,serif;
-  --font-b:'Segoe UI',Arial,sans-serif;
+  --font-b:'Outfit','Segoe UI',Arial,sans-serif;
   --nav-h:70px;
   --radius:14px;
   --trans:0.35s cubic-bezier(.17,.67,.4,1);
@@ -5494,13 +5562,11 @@ document.querySelectorAll('a,button,.svc-card,.pkg-card,.art-card,.gal-item,.cpn
 
 /* ── THREE.JS LIQUID GOLD & CELESTIAL STARDUST CANVAS (EVAGHER-INSPIRED) ── */
 (function initThreeBackground() {
-  // WebGL is decorative: skip it for reduced-motion users and touch devices to protect battery/FPS.
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-      (window.matchMedia('(pointer: coarse)').matches && window.innerWidth < 768)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const canvas = document.getElementById('three-bg');
+  const pcv = document.getElementById('pcv');
   if (!canvas || typeof THREE === 'undefined') {
-    const pcv = document.getElementById('pcv');
-    if (pcv) pcv.style.display = 'block';
+    if (pcv) init2DSparkleFallback(pcv);
     return;
   }
 
@@ -5513,27 +5579,29 @@ document.querySelectorAll('a,button,.svc-card,.pkg-card,.art-card,.gal-item,.cpn
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Particle count: 480 desktop, 200 mobile
+    // Particle count: 850 desktop, 420 mobile for rich celestial stardust
     const isMobile = window.innerWidth <= 768;
-    const particleCount = isMobile ? 220 : 480;
+    const particleCount = isMobile ? 420 : 850;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
     const originalPositions = new Float32Array(particleCount * 3);
+    const scales = new Float32Array(particleCount);
 
     const colorPalette = [
-      new THREE.Color(0xD4AF37), // Pure Gold
-      new THREE.Color(0xF0D060), // Champagne Light
-      new THREE.Color(0xE8A4B8), // Rose Gold
-      new THREE.Color(0xF5EDD6), // Cream Pearl
-      new THREE.Color(0xC2607A)  // Deep Rose
+      new THREE.Color(0xFFDF73), // Brilliant Gold
+      new THREE.Color(0xD4AF37), // Pure Metallic Gold
+      new THREE.Color(0xFFF3D1), // Diamond Champagne
+      new THREE.Color(0xF5A3B8), // Rose Gold Shimmer
+      new THREE.Color(0xFFE89C), // Radiant Stardust
+      new THREE.Color(0xE07A94)  // Royal Velvet Rose
     ];
 
     for (let i = 0; i < particleCount; i++) {
       const idx = i * 3;
-      const x = (Math.random() - 0.5) * 110;
-      const y = (Math.random() - 0.5) * 85;
-      const z = (Math.random() - 0.5) * 60;
+      const x = (Math.random() - 0.5) * 130;
+      const y = (Math.random() - 0.5) * 105;
+      const z = (Math.random() - 0.5) * 75;
       positions[idx] = originalPositions[idx] = x;
       positions[idx + 1] = originalPositions[idx + 1] = y;
       positions[idx + 2] = originalPositions[idx + 2] = z;
@@ -5542,29 +5610,48 @@ document.querySelectorAll('a,button,.svc-card,.pkg-card,.art-card,.gal-item,.cpn
       colors[idx] = col.r;
       colors[idx + 1] = col.g;
       colors[idx + 2] = col.b;
+      scales[i] = 0.5 + Math.random() * 1.5;
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    // Dynamic procedural circular particle texture (soft glow)
+    // Haute Couture procedural 4-point star & radiant golden corona texture
     const pCanvas = document.createElement('canvas');
-    pCanvas.width = 64; pCanvas.height = 64;
+    pCanvas.width = 128; pCanvas.height = 128;
     const pCtx = pCanvas.getContext('2d');
-    const pGrad = pCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    
+    // Radial soft corona
+    const pGrad = pCtx.createRadialGradient(64, 64, 0, 64, 64, 64);
     pGrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
-    pGrad.addColorStop(0.35, 'rgba(240, 208, 96, 0.85)');
-    pGrad.addColorStop(0.65, 'rgba(212, 175, 55, 0.35)');
+    pGrad.addColorStop(0.2, 'rgba(255, 223, 115, 0.95)');
+    pGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.45)');
+    pGrad.addColorStop(0.8, 'rgba(194, 96, 122, 0.15)');
     pGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
     pCtx.fillStyle = pGrad;
     pCtx.beginPath();
-    pCtx.arc(32, 32, 32, 0, Math.PI * 2);
+    pCtx.arc(64, 64, 64, 0, Math.PI * 2);
     pCtx.fill();
+
+    // 4-Point Starlight Flare Spikes
+    pCtx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+    pCtx.lineWidth = 2.5;
+    pCtx.beginPath();
+    pCtx.moveTo(64, 16); pCtx.lineTo(64, 112);
+    pCtx.moveTo(16, 64); pCtx.lineTo(112, 64);
+    pCtx.stroke();
+
+    pCtx.strokeStyle = 'rgba(255, 235, 160, 0.5)';
+    pCtx.lineWidth = 1.2;
+    pCtx.beginPath();
+    pCtx.moveTo(32, 32); pCtx.lineTo(96, 96);
+    pCtx.moveTo(32, 96); pCtx.lineTo(96, 32);
+    pCtx.stroke();
 
     const pTexture = new THREE.CanvasTexture(pCanvas);
 
     const material = new THREE.PointsMaterial({
-      size: isMobile ? 1.8 : 2.4,
+      size: isMobile ? 3.2 : 4.5,
       map: pTexture,
       transparent: true,
       vertexColors: true,
@@ -5590,7 +5677,7 @@ document.querySelectorAll('a,button,.svc-card,.pkg-card,.art-card,.gal-item,.cpn
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // Animation Loop
+    // Animation Loop with dynamic glittering twinkling
     let clock = new THREE.Clock();
     function animateThree() {
       requestAnimationFrame(animateThree);
@@ -5600,34 +5687,67 @@ document.querySelectorAll('a,button,.svc-card,.pkg-card,.art-card,.gal-item,.cpn
       mouseX += (targetX - mouseX) * 0.05;
       mouseY += (targetY - mouseY) * 0.05;
 
-      camera.position.x = mouseX * 7;
-      camera.position.y = -mouseY * 5;
+      camera.position.x = mouseX * 8;
+      camera.position.y = -mouseY * 6;
       camera.lookAt(scene.position);
 
-      // Scroll influences gentle rotation
+      // Scroll influences rotation & celestial drift
       const scrollPct = window.scrollY / (document.documentElement.scrollHeight || 1);
-      particles.rotation.y = elapsedTime * 0.035 + scrollPct * 1.5;
-      particles.rotation.x = Math.sin(elapsedTime * 0.03) * 0.08 - scrollPct * 0.25;
+      particles.rotation.y = elapsedTime * 0.03 + scrollPct * 1.6;
+      particles.rotation.x = Math.sin(elapsedTime * 0.025) * 0.09 - scrollPct * 0.28;
 
-      // Harmonic liquid wave displacement
+      // Harmonic liquid wave & shimmer displacement
       const posArr = geometry.attributes.position.array;
       for (let i = 0; i < particleCount; i++) {
         const idx = i * 3;
         const ox = originalPositions[idx];
         const oy = originalPositions[idx + 1];
         const oz = originalPositions[idx + 2];
-        posArr[idx + 1] = oy + Math.sin(elapsedTime * 0.8 + ox * 0.1) * 1.1;
-        posArr[idx + 2] = oz + Math.cos(elapsedTime * 0.6 + oy * 0.1) * 1.3;
+        posArr[idx + 1] = oy + Math.sin(elapsedTime * 0.9 + ox * 0.08) * 1.5;
+        posArr[idx + 2] = oz + Math.cos(elapsedTime * 0.7 + oy * 0.08) * 1.8;
       }
       geometry.attributes.position.needsUpdate = true;
+
+      // Subtle pulse to material size for sparkling star twinkle
+      material.size = (isMobile ? 3.2 : 4.5) + Math.sin(elapsedTime * 2.2) * 0.6;
 
       renderer.render(scene, camera);
     }
     animateThree();
   } catch (err) {
     console.warn('Three.js initialization notice, fallback to 2D:', err);
-    const pcv = document.getElementById('pcv');
-    if (pcv) pcv.style.display = 'block';
+    if (pcv) init2DSparkleFallback(pcv);
+  }
+
+  function init2DSparkleFallback(c) {
+    c.style.display = 'block';
+    const ctx = c.getContext('2d');
+    let w = c.width = window.innerWidth;
+    let h = c.height = window.innerHeight;
+    window.addEventListener('resize', () => { w = c.width = window.innerWidth; h = c.height = window.innerHeight; });
+    const dots = Array.from({ length: 60 }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: 1 + Math.random() * 2.5,
+      alpha: Math.random(),
+      speed: 0.2 + Math.random() * 0.5,
+      pulse: Math.random() * 0.05
+    }));
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      dots.forEach(d => {
+        d.y -= d.speed;
+        if (d.y < 0) d.y = h;
+        d.alpha += d.pulse;
+        if (d.alpha <= 0.1 || d.alpha >= 0.9) d.pulse = -d.pulse;
+        ctx.fillStyle = `rgba(212, 175, 55, ${Math.max(0, Math.min(1, d.alpha))})`;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
   }
 })();
 

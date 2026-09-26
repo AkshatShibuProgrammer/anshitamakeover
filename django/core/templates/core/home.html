@@ -7,40 +7,51 @@
 <section class="home-occasions"><p class="section-kicker">START WITH THE MOMENT</p><h2>What are you getting ready for?</h2><div class="occasion-links"><a href="{% url 'services' %}?category=bridal">Wedding</a><a href="{% url 'services' %}?category=engagement">Engagement</a><a href="{% url 'services' %}?category=reception">Reception</a><a href="{% url 'services' %}?category=sangeet">Haldi & Sangeet</a></div></section>
 <section class="home-section"><div class="section-heading"><div><p class="section-kicker">A SMALL EDIT</p><h2>Featured services</h2></div><a href="{% url 'services' %}">See all services ↗</a></div><div class="editorial-grid">{% for service in services|slice:':3' %}<a class="editorial-card" href="{% url 'service_detail' service.id %}"><img src="{{ service.display_image }}" alt="{{ service.title }}" loading="lazy"><div><small>{{ service.get_category_display }}</small><h3>{{ service.title }}</h3><p>Starting from ₹{{ service.price|floatformat:0 }}</p></div></a>{% empty %}<p>Our service catalogue is being refreshed.</p>{% endfor %}</div></section>
 <section class="home-section home-lookbook"><div class="section-heading"><div><p class="section-kicker">REAL TRANSFORMATIONS</p><h2>Featured lookbook</h2></div><a href="{% url 'gallery' %}">Explore all albums ↗</a></div><div class="editorial-grid">{% for group in look_groups|slice:':3' %}<button class="editorial-card" type="button" onclick="openLookbook('{{ group.id }}')"><img src="{{ group.display_cover }}" alt="{{ group.name }}" loading="lazy"><div><small>{{ group.get_category_display }}</small><h3>{{ group.name }}</h3><p>Open complete album ↗</p></div></button>{% empty %}<p>Our lookbook is being curated.</p>{% endfor %}</div></section>
-<section class="home-trust"><p class="section-kicker">THE ANSHITA PROMISE</p><h2>Personal, precise, and made to last.</h2><p>From the first consultation to the final veil placement, every detail is considered by a personally-led studio team. Prices shown are starting points; your final proposal is confirmed after date, location and requirements review.</p><a class="btn-p" href="{% url 'package_builder' %}">Build your look</a></section>
+<section class="home-trust">
+  {% include 'core/includes/sinha_c2_footer_crest.html' %}
+  <p class="section-kicker">THE ANSHITA PROMISE</p>
+  <h2>Personal, precise, and made to last.</h2>
+  <p>From the first consultation to the final veil placement, every detail is considered by a personally-led studio team. Prices shown are starting points; your final proposal is confirmed after date, location and requirements review.</p>
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+    <a class="btn-p" href="{% url 'package_builder' %}">Build your look</a>
+    <a class="btn-o" href="{% url 'services' %}">All services ↗</a>
+  </div>
+</section>
 </main>
 {% endblock %}
 {% block extra_css %}<style>
 .editorial-home{background:transparent;color:var(--cream);position:relative;z-index:1}
-.home-hero{min-height:720px;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:5vw;max-width:1280px;margin:auto;padding:80px 5vw;position:relative}
-.home-hero::before{content:'';position:absolute;top:20%;left:-10%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,0.08) 0%,transparent 70%);filter:blur(60px);pointer-events:none;z-index:-1}
+.section-kicker{font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.home-hero{min-height:760px;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:5vw;max-width:1280px;margin:auto;padding:90px 5vw 70px;position:relative}
+.home-hero::before{content:'';position:absolute;top:15%;left:-10%;width:550px;height:550px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,0.12) 0%,rgba(123,28,46,0.06) 50%,transparent 70%);filter:blur(65px);pointer-events:none;z-index:-1}
 .home-hero h1{font:500 clamp(3.2rem,6.5vw,6.5rem)/.95 var(--font-h);margin:18px 0;letter-spacing:-0.5px}
 .home-hero h1 i{color:var(--gold);font-weight:400;font-style:italic}
-.home-hero-copy>p:not(.section-kicker){max-width:500px;color:var(--text-sub);line-height:1.8;font-size:1.05rem}
-.home-actions{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap}
-.home-hero-image{height:640px;overflow:hidden;border-radius:18px;border:1px solid rgba(212,175,55,0.3);box-shadow:0 20px 60px rgba(0,0,0,0.7), 0 0 35px rgba(212,175,55,0.15);position:relative}
-.home-hero-image img{width:100%;height:100%;object-fit:cover;transition:transform 0.8s cubic-bezier(0.16,1,0.3,1)}
+.home-hero-copy>p:not(.section-kicker){max-width:520px;color:var(--text-sub);line-height:1.85;font-size:1.08rem}
+.home-actions{display:flex;gap:16px;margin-top:34px;flex-wrap:wrap}
+.home-hero-image{height:650px;overflow:hidden;border-radius:20px;border:1.5px solid rgba(212,175,55,0.35);box-shadow:0 25px 70px rgba(0,0,0,0.75), 0 0 45px rgba(212,175,55,0.18);position:relative}
+.home-hero-image img{width:100%;height:100%;object-fit:cover;transition:transform 0.9s cubic-bezier(0.16,1,0.3,1)}
 .home-hero-image:hover img{transform:scale(1.03)}
 .home-occasions,.home-section,.home-trust{max-width:1180px;margin:auto;padding:90px 5vw;position:relative}
-.home-occasions{border-top:1px solid var(--card-border)}
-h2{font:500 clamp(2rem,4vw,3.8rem) var(--font-h);margin:10px 0 30px}
+.home-occasions{border-top:1px solid rgba(212,175,55,0.14)}
+h2{font:500 clamp(2.2rem,4.2vw,3.8rem) var(--font-h);margin:10px 0 32px;letter-spacing:-0.3px}
 .occasion-links{display:flex;gap:14px;flex-wrap:wrap}
-.occasion-links a{border:1px solid var(--card-border);background:rgba(255,255,255,0.02);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:16px 26px;color:var(--cream);text-decoration:none;border-radius:30px;font-size:0.85rem;letter-spacing:1px;transition:all 0.35s cubic-bezier(0.16,1,0.3,1)}
-.occasion-links a:hover{border-color:var(--gold);color:var(--gold);background:rgba(212,175,55,0.1);transform:translateY(-2px);box-shadow:0 6px 20px rgba(212,175,55,0.2)}
-.section-heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:32px}
-.section-heading>a{color:var(--gold);text-decoration:none;font-size:0.9rem;letter-spacing:1px;font-weight:600;transition:transform 0.3s ease}
-.section-heading>a:hover{transform:translateX(4px)}
-.editorial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.editorial-card{display:block;text-align:left;color:var(--cream);text-decoration:none;background:rgba(18,18,18,0.7);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--card-border);border-radius:14px;padding:0;overflow:hidden;cursor:pointer;transition:transform 0.4s cubic-bezier(0.16,1,0.3,1), border-color 0.4s, box-shadow 0.4s}
-.editorial-card img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;transition:transform 0.6s cubic-bezier(0.16,1,0.3,1)}
-.editorial-card div{padding:22px}
-.editorial-card small{color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;font-size:.68rem;font-weight:600}
-.editorial-card h3{font:500 1.35rem var(--font-h);margin:10px 0 6px}
-.editorial-card p{color:var(--text-sub);font-size:.85rem}
-.editorial-card:hover{border-color:var(--gold);transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,0.6),0 0 25px rgba(212,175,55,0.2)}
+.occasion-links a{border:1px solid rgba(212,175,55,0.25);background:rgba(20,16,18,0.45);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:16px 28px;color:var(--cream);text-decoration:none;border-radius:30px;font-size:0.85rem;letter-spacing:1.2px;text-transform:uppercase;font-weight:600;transition:all 0.35s cubic-bezier(0.16,1,0.3,1)}
+.occasion-links a:hover{border-color:var(--gold);color:var(--gold-l);background:rgba(212,175,55,0.14);transform:translateY(-3px);box-shadow:0 8px 24px rgba(212,175,55,0.25)}
+.section-heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:34px}
+.section-heading>a{color:var(--gold);text-decoration:none;font-size:0.88rem;letter-spacing:1.5px;font-weight:600;text-transform:uppercase;transition:all 0.3s ease;display:inline-flex;align-items:center;gap:6px}
+.section-heading>a:hover{color:var(--gold-l);transform:translateX(5px)}
+.editorial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.editorial-card{display:flex;flex-direction:column;text-align:left;color:var(--cream);text-decoration:none;background:rgba(18,14,16,0.65);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(212,175,55,0.2);border-radius:18px;padding:0;overflow:hidden;cursor:pointer;transition:transform 0.4s cubic-bezier(0.16,1,0.3,1), border-color 0.4s, box-shadow 0.4s;position:relative}
+.editorial-card img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;transition:transform 0.7s cubic-bezier(0.16,1,0.3,1)}
+.editorial-card div{padding:24px;display:flex;flex-direction:column;flex:1}
+.editorial-card small{color:var(--gold);text-transform:uppercase;letter-spacing:2px;font-size:.7rem;font-weight:700}
+.editorial-card h3{font:500 1.4rem var(--font-h);margin:10px 0 8px}
+.editorial-card p{color:var(--text-sub);font-size:.88rem;margin-top:auto}
+.editorial-card:hover{border-color:var(--gold);transform:translateY(-8px);box-shadow:0 22px 50px rgba(0,0,0,0.7),0 0 30px rgba(212,175,55,0.22)}
 .editorial-card:hover img{transform:scale(1.04)}
 .home-lookbook{background:transparent;max-width:none;padding-left:max(5vw,calc((100% - 1180px)/2));padding-right:max(5vw,calc((100% - 1180px)/2))}
-.home-trust{text-align:center;max-width:780px;border-top:1px solid var(--card-border);margin-top:40px}
-.home-trust p:not(.section-kicker){color:var(--text-sub);line-height:1.8;margin-bottom:32px;font-size:1.02rem}
+.home-trust{text-align:center;max-width:820px;border-top:1px solid rgba(212,175,55,0.18);margin-top:40px}
+.home-trust p:not(.section-kicker){color:var(--text-sub);line-height:1.85;margin-bottom:36px;font-size:1.06rem}
+@media(max-width:850px){.editorial-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:750px){.home-hero{grid-template-columns:1fr;padding-top:40px;min-height:auto}.home-hero-image{height:420px;grid-row:1}.editorial-grid{grid-template-columns:1fr}.section-heading{align-items:start;gap:14px;flex-direction:column}}
 </style>{% endblock %}
