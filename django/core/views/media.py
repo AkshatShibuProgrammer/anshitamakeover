@@ -265,6 +265,7 @@ def admin_lookgroup_manage(request):
         makeup_type = request.POST.get('makeup_type', '').strip()
         category = request.POST.get('category', 'bridal').strip()
         description = request.POST.get('description', '').strip()
+        cover_image_url = request.POST.get('cover_image_url', '').strip()
         order_val = request.POST.get('order', '0')
         is_active = request.POST.get('is_active') not in ['0', 'false', 'off']
         is_featured = request.POST.get('is_featured') in ['1', 'true', 'on']

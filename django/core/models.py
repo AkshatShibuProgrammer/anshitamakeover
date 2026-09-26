@@ -540,6 +540,18 @@ class LookGroup(models.Model):
         return f"{self.name}{client}"
 
     @property
+    def photo_count(self):
+        return self.media_items.filter(media_type='image', is_published=True).count()
+
+    @property
+    def video_count(self):
+        return self.media_items.exclude(media_type='image').filter(is_published=True).count()
+
+    @property
+    def count_summary(self):
+        return f"{self.photo_count} photos · {self.video_count} videos"
+
+    @property
     def display_cover(self):
         if self.cover_image:
             return self.cover_image.url
