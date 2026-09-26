@@ -44,6 +44,18 @@ window.dismissPreloader = function() {
   }
 };
 
+// Immediate fail-safe: dismiss automatically after 2.8s, or immediately on Esc
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('anshita_preloader_seen') === 'true') {
+    window.dismissPreloader();
+    return;
+  }
+  setTimeout(window.dismissPreloader, 2800);
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') window.dismissPreloader();
+  });
+});
+
 window.toggleSideDrawer = function(){
   const d = document.getElementById('side-drawer');
   const b = document.getElementById('side-drawer-backdrop');
