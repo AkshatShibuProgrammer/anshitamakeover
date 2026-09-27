@@ -270,16 +270,16 @@ a{text-decoration:none;color:inherit}
 button{cursor:pointer;font-family:var(--font-b)}
 
 /* ═══ CURSOR ═══ */
-#cur-dot,#cur-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:999999;border-radius:50%;transform:translate(-50%,-50%);will-change:left,top,transform}
-#cur-dot{width:8px;height:8px;background:var(--gold);box-shadow:0 0 8px rgba(212,175,55,0.8);transition:opacity 0.2s}
-#cur-ring{width:34px;height:34px;border:1.5px solid var(--gold);opacity:.85;box-shadow:0 0 10px rgba(212,175,55,0.3);transition:transform .15s cubic-bezier(0.16,1,0.3,1),border-color .2s,background .2s,opacity .2s}
+#cur-dot,#cur-ring{position:fixed;top:-100px;left:-100px;pointer-events:none;z-index:999999;border-radius:50%;transform:translate(-50%,-50%);will-change:left,top,transform}
+#cur-dot{width:8px;height:8px;background:var(--gold);box-shadow:0 0 10px rgba(212,175,55,0.95);transition:opacity 0.2s}
+#cur-ring{width:34px;height:34px;border:1.5px solid var(--gold);opacity:.85;box-shadow:0 0 12px rgba(212,175,55,0.4);transition:transform .15s cubic-bezier(0.16,1,0.3,1),border-color .2s,background .2s,opacity .2s}
 [data-theme="light"] #cur-dot{background:#8B6F1A !important;box-shadow:0 0 8px rgba(139,111,26,0.6) !important}
 [data-theme="light"] #cur-ring{border-color:#8B6F1A !important;box-shadow:0 0 10px rgba(139,111,26,0.3) !important}
 @media(max-width:768px){#cur-dot,#cur-ring{display:none !important}}
 
 /* ═══ PARTICLES & THREE.JS CANVAS ═══ */
-#three-bg{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%}
-#pcv{position:fixed;inset:0;z-index:0;pointer-events:none}
+#three-bg{position:fixed;inset:0;z-index:2;pointer-events:none;width:100%;height:100%;opacity:0.88}
+#pcv{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0.88;display:none}
 
 /* ═══ SCROLL RING (EVAGHER-INSPIRED CIRCULAR INDICATOR) ═══ */
 #scr{position:fixed;bottom:24px;right:24px;z-index:800;width:46px;height:46px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .3s cubic-bezier(.2,.8,.3,1),box-shadow .3s}
@@ -5418,7 +5418,7 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
 <div id="cur-ring"></div>
 <!-- PARTICLES & THREE.JS CANVAS -->
 <canvas id="three-bg"></canvas>
-<canvas id="pcv" style="display:none"></canvas>
+<canvas id="pcv"></canvas>
 <!-- SCROLL RING -->
 <div id="scr" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Scroll to top">
   <svg viewBox="0 0 44 44" width="44" height="44"><circle cx="22" cy="22" r="19"/><circle class="pr" cx="22" cy="22" r="19"/></svg>
@@ -7523,7 +7523,7 @@ function updatePeekStage(){
     }
     if(mediaType === 'youtube' && (curr.youtube || curr.external_url)){
       const raw = curr.youtube || curr.external_url;
-      const id = curr.embed_code || ((raw.match(/(?:v=|youtu\\.be\\/|shorts\\/)([A-Za-z0-9_-]{11})/) || [])[1]);
+      const id = curr.embed_code || ((raw.match(/(?:v=|youtu\.be\/|shorts\/)([A-Za-z0-9_-]{11})/) || [])[1]);
       if(id) activeYoutube.src = `https://www.youtube-nocookie.com/embed/${id}?rel=0`;
     } else {
       activeYoutube.removeAttribute('src');

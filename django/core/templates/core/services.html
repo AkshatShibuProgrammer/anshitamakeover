@@ -1,18 +1,159 @@
-{% extends 'core/base.html' %}{% load static %}
-{% block title %}Services — Anshita Makeover{% endblock %}
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Signature Studio Services & Disciplines — Anshita Makeover{% endblock %}
+{% block meta_description %}Explore Anshita Makeover's signature bridal disciplines: Imperial Airbrush, Sacred Vivah HD, Engagement Glam, Couture Hair Architecture, and Nail Artistry.{% endblock %}
+
 {% block content %}
-<main class="catalog-page">
-  <header class="catalog-hero"><p class="section-kicker">✦ SIGNATURE DISCIPLINES</p><h1>Beauty services shaped around your celebration.</h1><p>Explore makeup, hair, draping, skin preparation, and group beauty services. Every price is a starting point and is confirmed after date and location review.</p></header>
-  <div class="catalog-grid">
-    {% for service in services %}
-    <article class="catalog-card">
-      <div class="catalog-media"><img src="{{ service.display_image }}" alt="{{ service.title }}" loading="lazy"></div>
-      <div class="catalog-card-body"><span class="catalog-tag">{{ service.get_category_display }}</span><h2>{{ service.title }}</h2><p>{{ service.description }}</p><div class="catalog-meta"><span>From ₹{{ service.price|floatformat:0 }}</span><span>{{ service.get_features_list|length }} inclusions</span></div><div class="catalog-actions"><a class="btn-o" href="{% url 'service_detail' service.id %}">View details</a><button class="btn-p" type="button" onclick="AnshitaCart.addItem({id:'service-{{ service.id }}',title:'{{ service.title|escapejs }}',price:{{ service.price|default:0 }},category:'{{ service.category }}',image:'{{ service.display_image|escapejs }}'})">Add to plan</button></div></div>
-    </article>
-    {% empty %}<p>No services are published yet.</p>{% endfor %}
-  </div>
+<main class="services-page-wrap">
+  <section id="services-catalog" class="services-sec">
+    <div class="editorial-watermark" style="top:18%">ARTISTRY DISCIPLINES</div>
+    <div class="sw">
+      <div class="rev on">
+        <p class="sl">✦ ARTISTRY ARCHIVE</p>
+        <h1 class="sh" style="font-size:clamp(2.5rem, 5vw, 4.2rem);margin-bottom:14px">Signature Services & Disciplines</h1>
+        <div class="gdiv"></div>
+        <p class="ss" style="max-width:720px;margin:0 auto">
+          Precision techniques personally tailored to each bride. International master formulas, high-definition lighting optimization, and couture hair architecture.
+        </p>
+      </div>
+
+      <!-- Multi-Event & Package Privilege Notice Banner -->
+      <div class="svc-package-privilege-banner rev d1 on" style="margin-top:35px">
+        <div class="sppb-left">
+          <div class="sppb-icon" style="color:var(--gold)">✦</div>
+          <div class="sppb-text">
+            <h4>Multi-Event Celebrations & Bespoke Packages</h4>
+            <p>The individual disciplines below represent standalone a-la-carte rates. When reserving two or more events or selecting our curated Wedding Celebration Suites, rates reflect privileged package pricing with bundled courtesies up to ₹27,000.</p>
+          </div>
+        </div>
+        <a href="{% url 'packages' %}" class="sppb-btn">Explore Wedding Suites & Inclusions ↓</a>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="gal-filters rev d2 on" style="margin-top:28px" id="svc-filter-tabs">
+        <button class="gf-btn active" onclick="filterServices('all')">All Disciplines</button>
+        <button class="gf-btn" onclick="filterServices('bridal')">Bridal Couture</button>
+        <button class="gf-btn" onclick="filterServices('engagement')">Engagement & Roka</button>
+        <button class="gf-btn" onclick="filterServices('sangeet')">Sangeet & Reception</button>
+        <button class="gf-btn" onclick="filterServices('nails')">Nail Artistry</button>
+        <button class="gf-btn" onclick="filterServices('hair')">Hair Architecture</button>
+      </div>
+
+      <!-- Full Scrollable Service Split Cards -->
+      <div class="svc-split-list rev d2 on" style="margin-top:36px" id="services-list-container">
+        {% for svc in services %}
+        <div class="svc-split-card svc-card-{{ svc.id }}" id="studio-svc-{{ svc.id }}" data-svc-id="{{ svc.id }}" data-cat="{{ svc.category }}">
+          <div class="svc-split-left" onclick="openLookbook('{{ svc.look_group_id|default:svc.category }}')" style="cursor:pointer">
+            <img src="{{ svc.display_image }}" alt="{{ svc.title }}" class="svc-split-img" loading="lazy">
+            <span class="svc-split-badge">{{ svc.get_category_display }}</span>
+            <div class="svc-split-zoom-hint">
+              <span>✦ View Real Transformations</span>
+              <span style="color:var(--gold)">Explore ↗</span>
+            </div>
+          </div>
+          <div class="svc-split-right">
+            <div class="svc-split-discipline">
+              <span>✦</span> {{ svc.discipline|default:svc.get_category_display }}
+            </div>
+            <h3 class="svc-split-title">{{ svc.title }}</h3>
+            
+            <!-- Clean Pricing Presentation -->
+            <div class="svc-split-price-box" style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:10px 0 14px">
+              <span class="svc-split-price-val" style="font-size:1.45rem;font-weight:700;color:var(--gold)">
+                ₹{{ svc.price|floatformat:0 }}
+              </span>
+              {% if svc.discount_price and svc.discount_price > svc.price %}
+              <span style="text-decoration:line-through;color:rgba(245,237,214,0.45);font-size:1.02rem" title="Standard Regular Rate">
+                ₹{{ svc.discount_price|floatformat:0 }}
+              </span>
+              {% endif %}
+              {% if svc.bundle_note %}
+              <span style="font-size:.72rem;background:rgba(212,175,55,.12);color:var(--gold-l);padding:3px 8px;border-radius:12px;border:1px solid rgba(212,175,55,.25)">
+                {{ svc.bundle_note }}
+              </span>
+              {% endif %}
+            </div>
+
+            <p class="svc-split-desc" style="color:var(--text-sub);font-size:.88rem;line-height:1.6;margin-bottom:16px">
+              {{ svc.description }}
+            </p>
+
+            <!-- Features and Inclusions List -->
+            {% with features=svc.get_features_list %}
+            {% if features %}
+            <div class="svc-split-inclusions">
+              <span style="font-size:.7rem;letter-spacing:1px;text-transform:uppercase;color:var(--gold);font-weight:700;display:block;margin-bottom:8px">Disciplines & Included Luxuries:</span>
+              <ul style="list-style:none;padding:0;margin:0 0 18px;display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:6px 14px">
+                {% for f in features %}
+                <li style="font-size:.8rem;color:rgba(245,237,214,0.85);display:flex;align-items:center;gap:6px">
+                  <span style="color:var(--gold);font-size:.75rem">✦</span> {{ f }}
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <div class="svc-split-actions" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:auto">
+              <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita!%20I%20am%20inquiring%20about%20{{ svc.title|urlencode }}%20(₹{{ svc.price|floatformat:0 }})." target="_blank" class="btn-p">
+                Book Consultation
+              </a>
+              <button type="button" class="btn-o" onclick="AnshitaCart.addItem({id:'service-{{ svc.id }}',title:'{{ svc.title|escapejs }}',price:{{ svc.price|default:0 }},category:'{{ svc.category }}',image:'{{ svc.display_image|escapejs }}'})">
+                Add to Plan +
+              </button>
+              <a href="{% url 'service_detail' svc.id %}" style="font-size:.75rem;color:var(--gold);text-decoration:underline;margin-left:4px">
+                Full Details ↗
+              </a>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <p style="text-align:center;padding:50px;color:rgba(245,237,214,.4)">No services available currently.</p>
+        {% endfor %}
+      </div>
+
+      <!-- Bottom CTAs -->
+      <div style="text-align:center;margin-top:60px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <a href="{% url 'packages' %}" class="btn-p">View Wedding Suites ↗</a>
+        <a href="{% url 'gallery' %}" class="btn-o">Explore Gallery ↗</a>
+        <a href="{% url 'package_builder' %}" class="btn-o" style="border-color:rgba(212,175,55,0.4)">Build Bespoke Look ↗</a>
+      </div>
+    </div>
+  </section>
 </main>
 {% endblock %}
-{% block extra_css %}<style>
-.catalog-page{max-width:1240px;margin:0 auto;padding:80px 5vw 120px;position:relative;z-index:1}.catalog-hero{max-width:760px;margin:0 auto 56px;text-align:center}.catalog-hero h1{font:500 clamp(2.2rem,5vw,5rem) var(--font-h);line-height:1.05;margin:12px 0}.catalog-hero p:not(.section-kicker){color:var(--text-sub);line-height:1.7}.catalog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.catalog-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:18px;overflow:hidden;transition:transform .35s var(--ease-luxury),box-shadow .35s}.catalog-card:hover{transform:translateY(-8px);box-shadow:0 22px 50px rgba(0,0,0,.28)}.catalog-media{aspect-ratio:4/3;background:var(--dark2);overflow:hidden}.catalog-media img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease-luxury)}.catalog-card:hover img{transform:scale(1.05)}.catalog-card-body{padding:22px}.catalog-tag{color:var(--gold);font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase}.catalog-card h2{font:500 1.55rem var(--font-h);margin:10px 0}.catalog-card p{color:var(--text-sub);font-size:.85rem;line-height:1.6;min-height:4em}.catalog-meta{display:flex;justify-content:space-between;gap:10px;margin:18px 0;color:var(--gold-l);font-size:.78rem}.catalog-actions{display:flex;gap:8px;flex-wrap:wrap}.catalog-actions .btn-p,.catalog-actions .btn-o{padding:10px 14px;font-size:.7rem}@media(max-width:850px){.catalog-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.catalog-page{padding:55px 16px 90px}.catalog-grid{grid-template-columns:1fr}.catalog-card p{min-height:0}}
-</style>{% endblock %}
+
+{% block extra_css %}
+<style>
+.services-page-wrap {
+  padding-bottom: 90px;
+  position: relative;
+  z-index: 1;
+}
+.services-sec {
+  background: transparent;
+  position: relative;
+  padding: 40px 0 60px;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterServices(cat) {
+  document.querySelectorAll('#svc-filter-tabs .gf-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  const cards = document.querySelectorAll('#services-list-container .svc-split-card');
+  cards.forEach(card => {
+    if (cat === 'all' || card.dataset.cat === cat) {
+      card.style.display = 'grid';
+      card.style.opacity = '1';
+    } else {
+      card.style.display = 'none';
+      card.style.opacity = '0';
+    }
+  });
+}
+</script>
+{% endblock %}

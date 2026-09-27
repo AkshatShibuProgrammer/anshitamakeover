@@ -1,21 +1,172 @@
-{% extends 'core/base.html' %}{% load static %}
-{% block title %}Lookbook Gallery — Anshita Makeover{% endblock %}
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Haute Couture Lookbook & Artistry Gallery — Anshita Makeover{% endblock %}
+{% block meta_description %}Explore Anshita Makeover's curated bridal lookbook, multi-angle transformations, editorial couture suites, and real client albums across India.{% endblock %}
+
 {% block content %}
-<main class="catalog-page lookbook-page">
-  <header class="catalog-hero"><p class="section-kicker">✦ THE LOOKBOOK</p><h1>Real looks. Every angle. Your complete visual reference.</h1><p>Browse bridal, engagement, reception, and celebration albums. Open any album for the touch-friendly mixed-media viewer.</p></header>
-  <div class="lookbook-grid">
-  {% for group in look_groups %}
-    <article class="lookbook-card">
-      <button type="button" onclick="openLookbook('{{ group.id }}')" aria-label="Open {{ group.name }} album">
-        <img src="{{ group.display_cover }}" alt="{{ group.name }}" loading="lazy">
-        <span>{{ group.get_category_display }}</span><h2>{{ group.name }}</h2><em>{{ group.media_items.all|length }} views · Open album ↗</em>
-      </button>
-    </article>
-  {% empty %}<p>No published albums yet. Check back soon.</p>{% endfor %}
-  </div>
-  <div class="catalog-backlinks"><a class="btn-o" href="{% url 'services' %}">Explore services</a><a class="btn-p" href="{% url 'package_builder' %}">Build your look</a></div>
+<main class="lookbook-page-wrap">
+  <!-- ═══ GALLERY HERO ═══ -->
+  <section class="lookbook-hero-sec">
+    <div class="editorial-watermark" style="top:25%">EDITORIAL COUTURE</div>
+    <div class="sw">
+      <div class="rev on">
+        <p class="sl">✦ HAUTE ARTISTRY ARCHIVE</p>
+        <h1 class="sh" style="font-size:clamp(2.5rem, 5vw, 4.2rem);margin-bottom:14px">Real Transformations. Every Sacred Angle.</h1>
+        <div class="gdiv"></div>
+        <p class="ss" style="max-width:720px;margin:0 auto">
+          Explore our signature bridal disciplines, multi-angle portfolios, and real client transformations. Click any lookbook album to launch the interactive high-definition peek viewer.
+        </p>
+      </div>
+
+      <!-- LAYER 1: Dynamic Auto-Rotating Hero Service Showcase Carousel -->
+      <div class="gal-showcase-hero rev d1 on" id="galShowcaseHero" style="margin-top:40px">
+        <!-- Slide 1: Sacred Vivah Royal Crimson Bride -->
+        <div class="gal-slide active" data-slide="0" onclick="openLookbook('royal_crimson')" style="cursor:pointer">
+          <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah Royal Crimson Bride" class="gal-slide-img">
+          <div class="gal-slide-overlay"></div>
+          <div class="gal-slide-caption">
+            <span class="gal-slide-badge">Signature Discipline 01 · 4 Angles</span>
+            <h3>Imperial Bridal Couture & Airbrush Artistry</h3>
+            <p>Micro-buffed HD & atomized TEMPTU airbrush bases ensuring 18+ hour cry-proof and sweat resilience for royal pheras.</p>
+          </div>
+        </div>
+        <!-- Slide 2: Christian Bridal Couture Suite -->
+        <div class="gal-slide" data-slide="1" onclick="openLookbook('christian_ivory')" style="cursor:pointer">
+          <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Christian Bridal Couture Suite" class="gal-slide-img">
+          <div class="gal-slide-overlay"></div>
+          <div class="gal-slide-caption">
+            <span class="gal-slide-badge">Signature Discipline 02 · Couture Suite</span>
+            <h3>Christian Bridal Couture & Cathedral Veil</h3>
+            <p>Bespoke church ceremony styling featuring luminous porcelain HD airbrush, off-shoulder ivory gown framing, and multi-tier cathedral veil anchoring.</p>
+          </div>
+        </div>
+        <!-- Slide 3: Imperial Fuchsia & Emerald Palace Bride (Recreated 4K) -->
+        <div class="gal-slide" data-slide="2" onclick="openLookbook('fuchsia_palace')" style="cursor:pointer">
+          <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia & Emerald Palace Bride" class="gal-slide-img">
+          <div class="gal-slide-overlay"></div>
+          <div class="gal-slide-caption">
+            <span class="gal-slide-badge">Signature Discipline 03 · 4K Recreated</span>
+            <h3>Imperial Fuchsia Silk & Emerald Palace Suite</h3>
+            <p>Majestic heritage styling with rose-dew HD radiance, gilded cut-crease eye artistry, and Zambian emerald choker settings.</p>
+          </div>
+        </div>
+        <!-- Slide 4: Palace Maroon Velvet Heritage (DSLR Shoot) -->
+        <div class="gal-slide" data-slide="3" onclick="openLookbook('maroon_velvet')" style="cursor:pointer">
+          <img src="{% static 'core/images/curated/dsc09702.jpg' %}?v=2" alt="Palace Maroon Velvet Heritage" class="gal-slide-img">
+          <div class="gal-slide-overlay"></div>
+          <div class="gal-slide-caption">
+            <span class="gal-slide-badge">Authentic DSLR Shoot · 6 Angles</span>
+            <h3>Palace Maroon Velvet Heritage Couture</h3>
+            <p>Deep wine velvet lehenga, hand-embroidered gold zardozi, antique polki nath, and double royal veil architecture.</p>
+          </div>
+        </div>
+        <!-- Slide 5: Ring Ceremony Sheer Maroon Veil Bride -->
+        <div class="gal-slide" data-slide="4" onclick="openLookbook('maroon_veil')" style="cursor:pointer">
+          <img src="{% static 'core/images/curated/ig_post_DRP0QCODVfD.jpg' %}" alt="Ring Ceremony Sheer Maroon Veil Bride" class="gal-slide-img">
+          <div class="gal-slide-overlay"></div>
+          <div class="gal-slide-caption">
+            <span class="gal-slide-badge">Signature Discipline 05 · Ring Ceremony</span>
+            <h3>Ring Ceremony & Sheer Maroon Veil Radiance</h3>
+            <p>Enchanting sheer gold-bordered veil framing, warm smokey cut-crease eyes, and delicate maang tikka alignment.</p>
+          </div>
+        </div>
+        <!-- Slide 6: Traditional Kolkata Banarasi & Chandan Art -->
+        <div class="gal-slide" data-slide="5" onclick="openLookbook('bengali_heritage')" style="cursor:pointer">
+          <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Traditional Bengali Mukut & Chandan" class="gal-slide-img">
+          <div class="gal-slide-overlay"></div>
+          <div class="gal-slide-caption">
+            <span class="gal-slide-badge">Cultural Specialty Heritage · 4 Photos</span>
+            <h3>Traditional Kolkata Banarasi & Chandan Art</h3>
+            <p>Intricate forehead sandalwood artwork, artisanal glitter cut-crease eye makeup, and pure silk Banarasi draping with sacred alta grace.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Dots -->
+      <div class="gal-hero-dots">
+        <span class="gal-hero-dot active" onclick="setGalHeroSlide(0)"></span>
+        <span class="gal-hero-dot" onclick="setGalHeroSlide(1)"></span>
+        <span class="gal-hero-dot" onclick="setGalHeroSlide(2)"></span>
+        <span class="gal-hero-dot" onclick="setGalHeroSlide(3)"></span>
+        <span class="gal-hero-dot" onclick="setGalHeroSlide(4)"></span>
+        <span class="gal-hero-dot" onclick="setGalHeroSlide(5)"></span>
+      </div>
+
+      <!-- LAYER 2: Filterable Real-Brides Gallery Grid -->
+      <div class="gal-filters rev d2 on" style="margin-top:30px">
+        <button class="gf-btn active" onclick="filterGal('all')">All Disciplines</button>
+        <button class="gf-btn" onclick="filterGal('bridal')">Bridal Suites</button>
+        <button class="gf-btn" onclick="filterGal('engagement')">Engagement & Roka</button>
+        <button class="gf-btn" onclick="filterGal('hair')">Hair & Draping</button>
+        <button class="gf-btn" onclick="filterGal('nails')">Nail Artistry</button>
+        <button class="gf-btn" onclick="filterGal('party')">Party & Side Glam</button>
+      </div>
+
+      <div class="gal-grid rev d2 on" style="margin-top:24px">
+        {% for grp in look_groups %}
+        <div class="gal-item lg-card-{{ grp.id }}" id="lookgroup-{{ grp.id }}" data-lg-id="{{ grp.id }}" data-cat="{{ grp.category }}" onclick="openLookbook('{{ grp.id }}')" style="cursor:pointer">
+          <img src="{{ grp.display_cover }}?v=2" alt="{{ grp.name }}" loading="lazy">
+          
+          <!-- Person & Makeup Type Folder Badges -->
+          <div style="position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:center;z-index:3;pointer-events:none">
+            {% if grp.client_name %}
+            <span style="background:rgba(20,16,18,0.92);backdrop-filter:blur(8px);border:1px solid rgba(212,175,55,0.6);border-radius:14px;padding:4px 10px;font-size:0.68rem;font-weight:700;color:var(--gold);letter-spacing:0.5px">
+              👤 {{ grp.client_name }}
+            </span>
+            {% endif %}
+            <span style="background:rgba(0,0,0,0.75);border-radius:12px;padding:3px 8px;font-size:0.62rem;color:rgba(245,237,214,0.9);letter-spacing:0.5px">
+              {{ grp.media_items.count }} Media
+            </span>
+          </div>
+
+          <div class="gal-ov">
+            <span style="font-weight:700;letter-spacing:1px">🔍 Open Lookbook Folder</span>
+            <strong style="font-size:.78rem;color:var(--gold-l);display:block;margin-top:6px">{{ grp.makeup_type|default:grp.name }}</strong>
+            <small style="font-size:.65rem;color:rgba(245,237,214,0.7);display:block;margin-top:2px">{{ grp.get_category_display }}</small>
+          </div>
+        </div>
+        {% empty %}
+        <div style="grid-column:1/-1;text-align:center;padding:40px;color:rgba(245,237,214,0.5)">
+          No look groups available.
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- LAYER 3: Action Row & Comparison Triggers -->
+      <div class="gal-action-row rev d3 on" style="margin-top:50px">
+        <div>
+          <h4 style="font-family:var(--font-h);font-size:1.15rem;color:#fff;margin-bottom:4px">Coverage & Technical Specifications</h4>
+          <p style="font-size:0.8rem;color:rgba(245,237,214,0.7)">Compare vanity kits, longevity, and techniques side-by-side or customize your wedding day package.</p>
+        </div>
+        <div class="gal-action-btns">
+          <a href="{% url 'services' %}" class="btn-comp-trigger">
+            Explore Studio Services ↗
+          </a>
+          <a href="{% url 'packages' %}" class="btn-comp-trigger" style="background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#000">
+            Compare Bridal Suites ↗
+          </a>
+          <a href="{% url 'package_builder' %}" class="btn-comp-trigger" style="background:transparent;border-color:rgba(212,175,55,0.4)">
+            Build Custom Look ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 {% endblock %}
-{% block extra_css %}<style>
-.lookbook-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.lookbook-card{background:var(--card-bg);border:1px solid var(--card-border);overflow:hidden}.lookbook-card button{display:block;width:100%;padding:0;background:none;border:0;color:inherit;text-align:left;cursor:pointer}.lookbook-card img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;transition:transform .6s ease}.lookbook-card:hover img,.lookbook-card:focus-within img{transform:scale(1.04)}.lookbook-card span,.lookbook-card h2,.lookbook-card em{display:block;margin:16px 20px 0}.lookbook-card span{color:var(--gold);font-size:.68rem;text-transform:uppercase;letter-spacing:1.5px}.lookbook-card h2{font:500 1.5rem var(--font-h)}.lookbook-card em{padding-bottom:20px;color:var(--text-sub);font-size:.78rem;font-style:normal}.catalog-backlinks{display:flex;gap:12px;justify-content:center;margin-top:42px}@media(max-width:700px){.lookbook-grid{grid-template-columns:1fr 1fr}.lookbook-card h2{font-size:1.1rem}}@media(max-width:480px){.lookbook-grid{grid-template-columns:1fr}}
-</style>{% endblock %}
+
+{% block extra_css %}
+<style>
+.lookbook-page-wrap {
+  padding-bottom: 90px;
+  position: relative;
+  z-index: 1;
+}
+.lookbook-hero-sec {
+  background: transparent;
+  position: relative;
+  padding: 40px 0 60px;
+}
+</style>
+{% endblock %}
