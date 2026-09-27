@@ -195,3 +195,93 @@ def set_language(request):
 def sinha_logo_studio(request):
     """Orchestrator endpoint for Sinha luxury branding visualizer"""
     return render(request, 'core/sinha_logo_studio.html')
+
+def robots_txt(request):
+    content = """User-agent: *
+Allow: /
+Disallow: /admin-portal/
+Disallow: /admin-login/
+Disallow: /django-admin/
+Disallow: /api/admin/
+
+Sitemap: https://anshitamakeover.com/sitemap.xml
+"""
+    from django.http import HttpResponse
+    return HttpResponse(content, content_type="text/plain; charset=utf-8")
+
+def llms_txt(request):
+    content = """# Anshita Makeover — Luxury Bridal Makeup & Couture Studio
+> India's premier bespoke bridal makeup, HD airbrush, luxury hairstyling, and draping sanctuary.
+
+## Overview
+Anshita Makeover provides high-end bridal beauty services across India, specializing in:
+- Imperial Bridal Couture & Airbrush Artistry (Cry-proof, 18+ hour TEMPTU formulation)
+- Christian & Reception Gown Porcelain Glamour
+- Traditional Regional Styles (Sacred Vivah, Bengali Mukut & Chandan, South Indian Muhurtham, Punjabi Chooda Glam)
+- Bridal Party, Sangeet, Haldi, & Engagement Transformations
+- Luxury Nail Architecture & Intricate Draping Techniques
+
+## Key URLs
+- Homepage: https://anshitamakeover.com/
+- Haute Couture Lookbook / Gallery: https://anshitamakeover.com/gallery/
+- Studio Services: https://anshitamakeover.com/services/
+- Curated Packages: https://anshitamakeover.com/packages/
+- Custom Package Builder: https://anshitamakeover.com/build-your-look/
+- Pan-India Travel Estimator: https://anshitamakeover.com/travel-estimator/
+- Masterclass Academy: https://anshitamakeover.com/academy/
+- 24/7 AI Concierge: https://anshitamakeover.com/chatbot/
+"""
+    from django.http import HttpResponse
+    return HttpResponse(content, content_type="text/plain; charset=utf-8")
+
+def sitemap_xml(request):
+    xml = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://anshitamakeover.com/</loc>
+    <priority>1.0</priority>
+    <changefreq>daily</changefreq>
+  </url>
+  <url>
+    <loc>https://anshitamakeover.com/gallery/</loc>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://anshitamakeover.com/services/</loc>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://anshitamakeover.com/packages/</loc>
+    <priority>0.85</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://anshitamakeover.com/build-your-look/</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://anshitamakeover.com/travel-estimator/</loc>
+    <priority>0.75</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://anshitamakeover.com/academy/</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://anshitamakeover.com/chatbot/</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+</urlset>
+"""
+    from django.http import HttpResponse
+    return HttpResponse(xml, content_type="application/xml; charset=utf-8")
+
+def custom_404_view(request, exception=None):
+    return render(request, '404.html', status=404)
+

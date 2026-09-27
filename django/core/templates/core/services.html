@@ -79,18 +79,22 @@
               {{ svc.description }}
             </p>
 
-            <!-- Features and Inclusions List -->
+            <!-- Collapsible Features & Inclusions -->
             {% with features=svc.get_features_list %}
             {% if features %}
-            <div class="svc-split-inclusions">
-              <span style="font-size:.7rem;letter-spacing:1px;text-transform:uppercase;color:var(--gold);font-weight:700;display:block;margin-bottom:8px">Disciplines & Included Luxuries:</span>
-              <ul style="list-style:none;padding:0;margin:0 0 18px;display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:6px 14px">
+            <button type="button" class="svc-toggle-inc" onclick="toggleSvcDetails(this)" aria-expanded="false">
+              <span class="svc-toggle-text">View Full Inclusions & Kit</span>
+              <span class="svc-toggle-icon">▾</span>
+            </button>
+            <div class="svc-details-collapsible">
+              <div class="svc-split-inclusions">
+                <span style="grid-column:1/-1;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;color:var(--gold);font-weight:700;display:block;margin-bottom:4px">Disciplines & Included Luxuries:</span>
                 {% for f in features %}
-                <li style="font-size:.8rem;color:rgba(245,237,214,0.85);display:flex;align-items:center;gap:6px">
-                  <span style="color:var(--gold);font-size:.75rem">✦</span> {{ f }}
-                </li>
+                <div class="svc-split-inc-item">
+                  <span>✦</span> {{ f }}
+                </div>
                 {% endfor %}
-              </ul>
+              </div>
             </div>
             {% endif %}
             {% endwith %}

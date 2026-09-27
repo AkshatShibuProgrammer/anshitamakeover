@@ -42,5 +42,9 @@ urlpatterns = [
     path('sinha-logos/', views.sinha_logo_studio, name='sinha_logo_studio'),
     path('animation-lab/', views.animation_lab, name='animation_lab'),
     path('artist-onboarding/', views.artist_onboarding, name='artist_onboarding'),
+    path('robots.txt', views.robots_txt, name='robots_txt'),
+    path('sitemap.xml', views.sitemap_xml, name='sitemap_xml'),
+    path('llms.txt', views.llms_txt, name='llms_txt'),
 ]
+
 

@@ -975,11 +975,17 @@
           </p>
 
           {% if svc.get_features_list %}
-          <div class="svc-split-inc-title" style="font-size:0.72rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;margin-bottom:10px">WHAT IS INCLUDED IN THIS SERVICE:</div>
-          <div class="svc-split-inclusions">
-            {% for feat in svc.get_features_list %}
-            <div class="svc-split-inc-item"><span>✓</span> {{ feat }}</div>
-            {% endfor %}
+          <button type="button" class="svc-toggle-inc" onclick="toggleSvcDetails(this)" aria-expanded="false">
+            <span class="svc-toggle-text">View Full Inclusions & Kit</span>
+            <span class="svc-toggle-icon">▾</span>
+          </button>
+          <div class="svc-details-collapsible">
+            <div class="svc-split-inclusions">
+              <span style="grid-column:1/-1;font-size:0.72rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;display:block;margin-bottom:4px">WHAT IS INCLUDED IN THIS SERVICE:</span>
+              {% for feat in svc.get_features_list %}
+              <div class="svc-split-inc-item"><span>✓</span> {{ feat }}</div>
+              {% endfor %}
+            </div>
           </div>
           {% endif %}
 

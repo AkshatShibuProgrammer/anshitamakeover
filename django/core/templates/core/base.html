@@ -4,20 +4,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>{% block title %}Anshita Makeover — India's Premier Bridal Studio{% endblock %}</title>
 <meta name="description" content="{% block meta_description %}Anshita Makeover — India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio{% endblock %}">
 <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+<link rel="icon" type="image/jpeg" href="{% static 'core/images/logo.jpeg' %}">
+<link rel="apple-touch-icon" href="{% static 'core/images/logo.jpeg' %}">
+
+<!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Anshita Makeover">
 <meta property="og:title" content="{% block og_title %}Anshita Makeover — India's Premier Bridal Studio{% endblock %}">
 <meta property="og:description" content="Anshita Makeover — India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio">
-<title>{% block title %}Anshita Makeover — India's Premier Bridal Studio{% endblock %}</title>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BeautySalon","name":"Anshita Makeover","description":"Bridal makeup, hair artistry, nails and beauty studio services.","url":"{{ request.scheme }}://{{ request.get_host }}/","areaServed":"India"}</script>
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}">
+<meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Anshita Makeover — India's Premier Bridal Studio">
+<meta name="twitter:description" content="India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio">
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}">
+
+<!-- Structured Data: LocalBusiness & BridalSalon -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["BeautySalon", "LocalBusiness"],
+  "name": "Anshita Makeover",
+  "image": "{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/logo.jpeg' %}",
+  "description": "Luxury bespoke bridal makeup, HD airbrush artistry, couture hairstyling, and draping studio.",
+  "url": "https://anshitamakeover.com/",
+  "telephone": "+91-9876543210",
+  "priceRange": "₹₹₹",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "IN"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "India"
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "opens": "07:00",
+      "closes": "22:00"
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.12.0/headroom.min.js"></script>
+
 <link rel="stylesheet" href="{% static 'core/css/animations.css' %}">
 <script>
 (function() {
@@ -278,8 +320,8 @@ button{cursor:pointer;font-family:var(--font-b)}
 @media(max-width:768px){#cur-dot,#cur-ring{display:none !important}}
 
 /* ═══ PARTICLES & THREE.JS CANVAS ═══ */
-#three-bg{position:fixed;inset:0;z-index:2;pointer-events:none;width:100%;height:100%;opacity:0.88}
-#pcv{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0.88;display:none}
+#three-bg{position:fixed;inset:0;z-index:2;pointer-events:none;width:100%;height:100%;opacity:0.38}
+#pcv{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0.35;display:none}
 
 /* ═══ SCROLL RING (EVAGHER-INSPIRED CIRCULAR INDICATOR) ═══ */
 #scr{position:fixed;bottom:24px;right:24px;z-index:800;width:46px;height:46px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .3s cubic-bezier(.2,.8,.3,1),box-shadow .3s}
@@ -1181,270 +1223,559 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 }
 
 /* ═══ PICASA IMAGE VIEWER & INTERACTIVE EDITORIAL PEEK MODAL GALLERY ═══ */
+/* ═══ LUXURY EDITORIAL LOOKBOOK ALBUM VIEWER (REFERENCE SPECIFICATION) ═══ */
 .peek-gallery-modal{
   position:fixed;
   inset:0;
   z-index:9500;
   display:none;
-  align-items:center;
-  justify-content:center;
-  background:rgba(4, 3, 4, 0.96);
-  backdrop-filter:blur(32px) saturate(190%);
-  -webkit-backdrop-filter:blur(32px) saturate(190%);
+  background:rgba(8, 6, 8, 0.97);
+  backdrop-filter:blur(36px) saturate(180%);
+  -webkit-backdrop-filter:blur(36px) saturate(180%);
   overflow:hidden;
   user-select:none;
 }
 .peek-gallery-modal.open{
   display:flex;
+  flex-direction:column;
 }
 
-/* Big Prominent Cross Close Button (Picasa style) */
+/* Floating Close Button */
 .peek-gallery-close{
   position:absolute;
-  top:20px;
-  right:24px;
-  z-index:9520;
-  background:rgba(18, 14, 16, 0.9);
-  border:2px solid var(--gold, #D4AF37);
+  top:24px;
+  right:28px;
+  z-index:9540;
+  background:rgba(24, 18, 20, 0.85);
+  border:1px solid rgba(212,175,55,0.6);
   color:var(--gold-l, #F5E296);
-  width:52px;
-  height:52px;
+  width:44px;
+  height:44px;
   border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:1.75rem;
-  font-weight:700;
+  font-size:1.35rem;
+  font-weight:600;
   cursor:pointer;
   transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
-  box-shadow:0 8px 30px rgba(0,0,0,0.8), 0 0 20px rgba(212,175,55,0.4);
+  box-shadow:0 8px 24px rgba(0,0,0,0.8);
 }
 .peek-gallery-close:hover{
   background:var(--gold);
   color:#000;
-  transform:scale(1.12) rotate(90deg);
-  box-shadow:0 0 35px rgba(212,175,55,0.8);
+  transform:scale(1.1) rotate(90deg);
+  box-shadow:0 0 25px rgba(212,175,55,0.7);
 }
 
-.peek-album-rail{
-  position:absolute;
-  left:18px;
-  top:92px;
-  bottom:92px;
-  width:148px;
-  z-index:9515;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  overflow-y:auto;
-  padding:4px;
-  scrollbar-width:thin;
-  scrollbar-color:var(--gold) transparent;
-}
-.peek-album-chip{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  width:100%;
-  padding:6px;
-  text-align:left;
-  color:var(--cream);
-  background:rgba(18,14,16,.72);
-  border:1px solid rgba(212,175,55,.18);
-  border-radius:10px;
-  cursor:pointer;
-  transition:transform .3s var(--ease-luxury), border-color .3s, background .3s;
-}
-.peek-album-chip img{width:38px;height:48px;object-fit:cover;border-radius:6px;flex:none}
-.peek-album-chip span{font-size:.62rem;line-height:1.2;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.peek-album-chip:hover,.peek-album-chip.active{transform:translateX(4px);border-color:var(--gold);background:rgba(212,175,55,.14)}
-
-.peek-stage-track{
-  display:flex;
-  align-items:center;
-  justify-content:center;
+/* 3-Column Exhibition Container */
+.lookbook-exhibition-wrap{
+  display:grid;
+  grid-template-columns:300px 1fr 360px;
   width:100vw;
   height:100vh;
   position:relative;
-  gap:1.5vw;
-  padding-bottom:60px;
-  padding-top:20px;
-  will-change:transform;
-  transition:transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow:hidden;
 }
 
-/* Picasa Viewer Expansive Stage: Covers screen gracefully */
-.peek-slide-frame{
-  position:relative;
-  flex-shrink:0;
-  width:min(94vw, 1180px);
-  height:min(78vh, 740px);
-  border-radius:20px;
+/* LEFT COLUMN: Bridal Albums Drawer */
+.lb-sidebar{
+  background:linear-gradient(180deg, #130a0d 0%, #0d0709 100%);
+  border-right:1px solid rgba(212,175,55,0.18);
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  padding:32px 20px;
+  z-index:10;
   overflow:hidden;
-  border:1.5px solid rgba(212,175,55,0.4);
-  box-shadow:0 30px 100px rgba(0,0,0,0.95), 0 0 40px rgba(212,175,55,0.15);
-  transition:transform 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.45s ease, filter 0.45s ease;
-  background:#050405;
+}
+.lb-sidebar-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:28px;
+  padding-bottom:16px;
+  border-bottom:1px solid rgba(212,175,55,0.12);
+}
+.lb-sidebar-header span{
+  font-size:1.1rem;
+  color:var(--gold);
+}
+.lb-sidebar-header h3{
+  font-family:var(--font-b);
+  font-size:0.8rem;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:var(--gold);
+  font-weight:700;
+  margin:0;
+}
+.lb-album-list{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  overflow-y:auto;
+  flex:1;
+  padding-right:6px;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(212,175,55,0.4) transparent;
+}
+.lb-album-card{
+  display:grid;
+  grid-template-columns:32px 76px 1fr;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  background:transparent;
+  border:1px solid transparent;
+  border-radius:12px;
+  cursor:pointer;
+  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+  text-align:left;
+  width:100%;
+}
+.lb-album-card:hover{
+  background:rgba(212,175,55,0.06);
+  border-color:rgba(212,175,55,0.25);
+  transform:translateX(4px);
+}
+.lb-album-card.active{
+  background:linear-gradient(90deg, rgba(212,175,55,0.14) 0%, rgba(212,175,55,0.02) 100%);
+  border:1px solid rgba(212,175,55,0.5);
+  box-shadow:0 4px 20px rgba(0,0,0,0.5), inset 0 0 12px rgba(212,175,55,0.08);
+}
+.lb-album-num{
+  font-family:var(--font-h);
+  font-size:0.85rem;
+  color:rgba(245,237,214,0.45);
+}
+.lb-album-card.active .lb-album-num{
+  color:var(--gold);
+  font-weight:700;
+}
+.lb-album-thumb{
+  width:76px;
+  height:86px;
+  border-radius:8px;
+  object-fit:cover;
+  border:1px solid rgba(212,175,55,0.2);
+}
+.lb-album-info h4{
+  font-family:var(--font-h);
+  font-size:0.82rem;
+  color:var(--cream);
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin-bottom:5px;
+  line-height:1.2;
+}
+.lb-album-card.active .lb-album-info h4{
+  color:var(--gold-l);
+}
+.lb-album-info span{
+  font-size:0.62rem;
+  color:rgba(245,237,214,0.5);
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.lb-sidebar-footer{
+  margin-top:auto;
+  padding-top:16px;
+  border-top:1px solid rgba(212,175,55,0.12);
+}
+.lb-view-all-btn{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+  background:none;
+  border:none;
+  color:var(--gold);
+  font-size:0.75rem;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+  cursor:pointer;
+  padding:8px 0;
+  font-weight:600;
+  transition:color 0.2s ease;
+}
+.lb-view-all-btn:hover{
+  color:#fff;
+}
+
+/* CENTER COLUMN: Hero Visual Canvas & Bottom Filmstrip */
+.lb-stage-center{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100%;
+  padding:24px 36px 32px;
+  overflow:hidden;
+}
+.lb-hero-frame{
+  position:relative;
+  width:100%;
+  max-width:860px;
+  flex:1;
+  max-height:calc(100vh - 180px);
+  border-radius:18px;
+  overflow:hidden;
+  border:1.5px solid rgba(212,175,55,0.3);
+  box-shadow:0 30px 90px rgba(0,0,0,0.9);
+  background:#050406;
   display:flex;
   align-items:center;
   justify-content:center;
-  cursor:ew-resize;
+  transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
 }
-.peek-slide-frame img{
+.lb-hero-img{
   width:100%;
   height:100%;
-  object-fit:contain;
-  background:#030203;
+  object-fit:cover;
+  background:#050406;
+  transition:opacity 0.3s ease;
 }
-
-/* Peek Side Preview Framing */
-.peek-slide-prev, .peek-slide-next{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%) scale(0.82);
-  width:min(80vw, 820px);
-  height:min(66vh, 560px);
-  border-radius:18px;
-  overflow:hidden;
-  opacity:0.25;
-  filter:blur(2px) grayscale(40%);
-  pointer-events:none;
-  transition:all 0.45s cubic-bezier(0.16,1,0.3,1);
-  border:1px solid rgba(212,175,55,0.15);
-  background:#090608;
-}
-.peek-slide-prev{
-  left:calc(-80vw + 5vw);
-}
-.peek-slide-next{
-  right:calc(-80vw + 5vw);
-}
-.peek-slide-prev img, .peek-slide-next img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  background:#060406;
-}
-
-/* Nav arrows */
-.peek-arrow{
+.lb-hero-nav-arrow{
   position:absolute;
   top:50%;
   transform:translateY(-50%);
-  z-index:9505;
-  background:rgba(18,14,16,0.8);
-  border:1px solid rgba(212,175,55,0.35);
-  color:var(--gold);
-  width:50px;
-  height:50px;
+  width:46px;
+  height:46px;
   border-radius:50%;
+  background:rgba(18,14,16,0.75);
+  border:1px solid rgba(212,175,55,0.45);
+  color:var(--gold-l);
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:1.2rem;
+  font-size:1.15rem;
   cursor:pointer;
-  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
-  box-shadow:0 8px 30px rgba(0,0,0,0.6);
+  z-index:20;
+  transition:all 0.25s ease;
 }
-.peek-arrow:hover{
+.lb-hero-nav-arrow:hover{
   background:var(--gold);
-  color:var(--black);
+  color:#000;
   transform:translateY(-50%) scale(1.1);
-  box-shadow:0 0 25px rgba(212,175,55,0.6);
 }
-.peek-arrow-prev{left:24px}
-.peek-arrow-next{right:24px}
+.lb-hero-prev{left:18px}
+.lb-hero-next{right:18px}
 
-/* Footer Info Strip */
-.peek-footer-bar{
-  position:absolute;
-  bottom:16px;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:9508;
+/* Center Bottom Angle Filmstrip */
+.lb-filmstrip-bar{
   display:flex;
   align-items:center;
-  gap:16px;
-  background:rgba(16,12,14,0.92);
-  backdrop-filter:blur(22px);
-  -webkit-backdrop-filter:blur(22px);
-  border:1px solid rgba(212,175,55,0.3);
-  padding:8px 20px;
-  border-radius:30px;
-  box-shadow:0 12px 40px rgba(0,0,0,0.85);
-  max-width:92vw;
+  gap:12px;
+  margin-top:20px;
+  max-width:860px;
+  width:100%;
+  justify-content:center;
+  position:relative;
 }
-.peek-info-caption{
-  font-family:var(--font-h);
-  font-size:0.84rem;
-  color:var(--white);
-  max-width:min(420px, 35vw);
-  white-space:nowrap;
+.lb-filmstrip-track{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  overflow-x:auto;
+  padding:6px;
+  scrollbar-width:none;
+}
+.lb-filmstrip-track::-webkit-scrollbar{display:none}
+.lb-filmstrip-card{
+  width:72px;
+  height:72px;
+  border-radius:10px;
   overflow:hidden;
-  text-overflow:ellipsis;
+  border:1.5px solid rgba(212,175,55,0.2);
+  cursor:pointer;
+  flex-shrink:0;
+  opacity:0.6;
+  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+  background:#090608;
 }
-.peek-info-counter{
-  font-family:monospace;
-  font-size:0.75rem;
-  letter-spacing:2px;
+.lb-filmstrip-card:hover{
+  opacity:0.9;
+  border-color:var(--gold);
+  transform:translateY(-2px);
+}
+.lb-filmstrip-card.active{
+  opacity:1;
+  border:2px solid var(--gold-l);
+  box-shadow:0 0 16px rgba(212,175,55,0.5);
+  transform:scale(1.06);
+}
+.lb-filmstrip-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* RIGHT COLUMN: Editorial Description & Dedicated Video Card */
+.lb-detail-panel{
+  background:linear-gradient(180deg, #0f0a0d 0%, #080507 100%);
+  border-left:1px solid rgba(212,175,55,0.18);
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  padding:36px 28px;
+  z-index:10;
+  overflow-y:auto;
+}
+.lb-meta-tag{
+  font-size:0.66rem;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
   color:var(--gold);
   font-weight:700;
-  border-left:1px solid rgba(212,175,55,0.25);
-  padding-left:12px;
-  white-space:nowrap;
+  margin-bottom:10px;
+  display:block;
 }
-.peek-nav-hints{
-  font-size:0.62rem;
+.lb-album-title{
+  font-family:var(--font-h);
+  font-size:2.2rem;
+  line-height:1.15;
+  color:var(--gold-l);
+  margin-bottom:16px;
   letter-spacing:1px;
+}
+.lb-album-desc{
+  font-size:0.86rem;
+  color:rgba(245,237,214,0.72);
+  line-height:1.65;
+  margin-bottom:24px;
+}
+.lb-metrics-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:12px;
+  margin-bottom:28px;
+  padding-bottom:20px;
+  border-bottom:1px solid rgba(212,175,55,0.12);
+}
+.lb-metric-box{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:4px;
+}
+.lb-metric-val{
+  font-family:var(--font-h);
+  font-size:1.1rem;
+  font-weight:700;
+  color:var(--cream);
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.lb-metric-label{
+  font-size:0.6rem;
+  letter-spacing:1.5px;
   text-transform:uppercase;
   color:rgba(245,237,214,0.5);
-  border-left:1px solid rgba(212,175,55,0.25);
-  padding-left:12px;
 }
-.peek-ig-link{
+
+/* Dedicated Video Container with Autoplay / Pause Controls */
+.lb-video-container{
+  background:rgba(18,14,17,0.9);
+  border:1px solid rgba(212,175,55,0.3);
+  border-radius:14px;
+  overflow:hidden;
+  position:relative;
+  margin-bottom:24px;
+  box-shadow:0 12px 36px rgba(0,0,0,0.6);
+}
+.lb-video-media-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background:#000;
+  overflow:hidden;
+}
+.lb-video-elem{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.lb-video-play-btn{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:rgba(0,0,0,0.65);
+  backdrop-filter:blur(8px);
+  border:1.5px solid var(--gold);
+  color:var(--gold-l);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.25rem;
+  cursor:pointer;
+  transition:all 0.25s ease;
+  z-index:5;
+}
+.lb-video-play-btn:hover{
+  background:var(--gold);
+  color:#000;
+  transform:translate(-50%, -50%) scale(1.12);
+}
+.lb-video-controls{
+  padding:12px 14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:rgba(12,8,10,0.95);
+}
+.lb-video-time{
+  font-family:monospace;
+  font-size:0.68rem;
+  color:rgba(245,237,214,0.65);
+}
+.lb-video-progress{
+  flex:1;
+  height:4px;
+  background:rgba(255,255,255,0.15);
+  border-radius:2px;
+  position:relative;
+  cursor:pointer;
+}
+.lb-video-progress-fill{
+  position:absolute;
+  left:0;
+  top:0;
+  height:100%;
+  background:var(--gold);
+  width:35%;
+  border-radius:2px;
+}
+
+/* Bottom Action Buttons */
+.lb-actions-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:auto;
+}
+.lb-enquire-btn{
+  flex:1;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:12px 20px;
+  border-radius:9999px;
+  background:linear-gradient(135deg, #F0D060 0%, #D4AF37 50%, #A07820 100%);
+  color:#080808 !important;
+  font-weight:700;
+  font-size:0.78rem;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  text-decoration:none;
+  box-shadow:0 4px 18px rgba(212,175,55,0.4);
+  transition:all 0.3s ease;
+}
+.lb-enquire-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 28px rgba(212,175,55,0.6);
+}
+.lb-icon-btn{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(212,175,55,0.3);
+  color:var(--cream);
+  padding:11px 16px;
+  border-radius:9999px;
+  font-size:0.75rem;
+  cursor:pointer;
   display:inline-flex;
   align-items:center;
   gap:6px;
-  background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);
-  color:#fff;
-  font-size:0.68rem;
-  font-weight:700;
-  padding:6px 12px;
-  border-radius:20px;
   text-decoration:none;
-  letter-spacing:0.5px;
-  transition:all 0.3s ease;
-  white-space:nowrap;
+  transition:all 0.25s ease;
 }
-.peek-ig-link:hover{
-  transform:scale(1.05);
-  box-shadow:0 4px 15px rgba(253,29,29,0.4);
+.lb-icon-btn:hover{
+  background:rgba(212,175,55,0.14);
+  color:#fff;
+  border-color:var(--gold);
 }
 
-@media(max-width:768px){
-  .peek-album-rail{left:12px;right:12px;top:68px;bottom:auto;width:auto;height:58px;flex-direction:row;overflow-x:auto;overflow-y:hidden}
-  .peek-album-chip{width:132px;flex:none;height:52px}
-  .peek-album-chip img{width:30px;height:40px}
-  .peek-album-chip span{font-size:.58rem;-webkit-line-clamp:2}
-  .peek-arrow{display:none}
-  .peek-stage-track{padding-bottom:65px}
-  .peek-slide-frame{
-    width:92vw;
-    height:64vh;
+/* ════ MOBILE RESPONSIVE COUTURE LOOKBOOK (REFERENCE SPECIFICATION) ════ */
+@media(max-width:960px){
+  .lookbook-exhibition-wrap{
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    width:100vw;
   }
-  .peek-slide-prev{left:calc(-90vw + 4vw)}
-  .peek-slide-next{right:calc(-90vw + 4vw)}
-  .peek-footer-bar{
-    padding:8px 14px;
-    width:92vw;
+  .lb-sidebar{display:none}
+  .lb-detail-panel{display:none}
+  .lb-stage-center{
+    padding:0;
+    width:100vw;
+    height:100vh;
+    justify-content:center;
+  }
+  .lb-hero-frame{
+    width:100vw;
+    height:100vh;
+    max-width:100vw;
+    max-height:100vh;
+    border-radius:0;
+    border:none;
+  }
+  .lb-hero-img{
+    object-fit:cover;
+  }
+  .lb-mobile-header{
+    position:absolute;
+    top:20px;
+    left:20px;
+    right:20px;
+    display:flex;
     justify-content:space-between;
-    gap:10px;
-    bottom:12px;
+    align-items:center;
+    z-index:9530;
+    pointer-events:none;
   }
-  .peek-info-caption{
-    max-width:45vw;
+  .lb-mobile-header *{pointer-events:auto}
+  .lb-mobile-counter-wrap{
+    text-align:left;
   }
-  .peek-nav-hints{display:none}
+  .lb-mobile-title{
+    font-size:0.68rem;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:700;
+  }
+  .lb-mobile-counter{
+    font-size:0.88rem;
+    font-family:var(--font-h);
+    color:var(--cream);
+    margin-top:2px;
+  }
+  .lb-filmstrip-bar{
+    position:absolute;
+    bottom:24px;
+    left:0;
+    right:0;
+    margin:0;
+    max-width:100vw;
+    padding:0 14px;
+    z-index:9525;
+  }
+  .lb-filmstrip-track{
+    width:100%;
+    justify-content:center;
+  }
+  .lb-filmstrip-card{
+    width:60px;
+    height:60px;
+    border-radius:8px;
+  }
 }
 
 /* ═══ SERVICES: EDITORIAL SPLIT-ROW ARCHITECTURE ═══ */
@@ -1593,11 +1924,57 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   font-weight:700;
   margin-bottom:10px;
 }
+.svc-toggle-inc{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(212,175,55,0.06);
+  border:1px solid rgba(212,175,55,0.3);
+  color:var(--gold-l, #F0D060);
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:0.72rem;
+  font-weight:600;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-bottom:12px;
+}
+.svc-toggle-inc:hover{
+  background:rgba(212,175,55,0.16);
+  border-color:var(--gold);
+  color:#fff;
+  transform:translateY(-1px);
+}
+.svc-toggle-inc .svc-toggle-icon{
+  transition:transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display:inline-block;
+  font-size:0.75rem;
+}
+.svc-toggle-inc.open .svc-toggle-icon{
+  transform:rotate(180deg);
+}
+.svc-details-collapsible{
+  max-height:0;
+  overflow:hidden;
+  opacity:0;
+  transition:max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, margin-bottom 0.35s ease;
+  margin-bottom:0;
+}
+.svc-details-collapsible.open{
+  max-height:600px;
+  opacity:1;
+  margin-bottom:20px;
+}
 .svc-split-inclusions{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:8px 20px;
-  margin-bottom:24px;
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(212,175,55,0.12);
+  border-radius:12px;
+  padding:14px 16px;
 }
 .svc-split-inc-item{
   display:flex;
@@ -2160,17 +2537,17 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 .gf-btn{background:transparent;border:1px solid rgba(212,175,55,.2);color:rgba(245,237,214,.5);padding:6px 16px;border-radius:20px;font-size:.72rem;letter-spacing:1px;cursor:pointer;transition:all .2s}
 .gf-btn.active,.gf-btn:hover{background:rgba(212,175,55,.1);border-color:var(--gold);color:var(--gold)}
 .gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:0}
-.gal-item{border-radius:14px;overflow:hidden;position:relative;cursor:zoom-in;background:var(--dark2);aspect-ratio:3/4;border:1px solid rgba(212,175,55,.15);transition:all .3s}
+.gal-item{border-radius:14px;overflow:hidden;position:relative;cursor:zoom-in;background:var(--dark2);aspect-ratio:4/5;border:1px solid rgba(212,175,55,.15);transition:all .3s}
 .gal-item:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.6)}
-.gal-item img{width:100%;height:100%;object-fit:cover;object-position:center 15%;transition:transform .5s ease}
-.gal-item:hover img{transform:scale(1.05)}
+.gal-item img{width:100%;height:100%;object-fit:cover;object-position:center 20%;transition:transform .5s cubic-bezier(0.16, 1, 0.3, 1)}
+.gal-item:hover img{transform:scale(1.04)}
 .gal-ph{width:100%;height:100%;min-height:220px;background:linear-gradient(135deg,var(--dark2),var(--dark3));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all .4s}
-.gal-item:hover .gal-ph{transform:scale(1.05);filter:brightness(.6)}
+.gal-item:hover .gal-ph{transform:scale(1.04);filter:brightness(.6)}
 .gal-ph-i{font-size:1.8rem;opacity:.2}
 .gal-ph-l{font-size:.65rem;letter-spacing:1.5px;color:var(--gold);opacity:.35}
 .gal-ov{position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(123,28,46,.2));opacity:0;transition:opacity .4s;display:flex;align-items:center;justify-content:center;font-size:1.3rem}
 .gal-item:hover .gal-ov{opacity:1}
-.gal-item img{width:100%;height:100%;object-fit:cover}
+
 @media(max-width:600px){.gal-grid{grid-template-columns:repeat(2,1fr)}.gal-item:nth-child(1){grid-column:span 2}.gal-item:nth-child(7){grid-column:span 1}}
 
 /* ═══ EVENT MANAGEMENT ═══ */
@@ -5518,58 +5895,107 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
   </div>
 </div>
 
-<!-- ═══ INTERACTIVE EDITORIAL PEEK MODAL GALLERY (EVAGHER STYLE) ═══ -->
+<!-- ═══ LUXURY EDITORIAL LOOKBOOK ALBUM VIEWER (EVAGHER REFERENCE SPECIFICATION) ═══ -->
 <div class="peek-gallery-modal" id="editorial-peek-gallery" onclick="if(event.target===this)closePeekGallery()">
   <button class="peek-gallery-close" onclick="closePeekGallery()" aria-label="Close Lookbook">✕</button>
-  
-  <button class="peek-arrow peek-arrow-prev" onclick="prevPeekImage()" aria-label="Previous Media">❮</button>
-  <button class="peek-arrow peek-arrow-next" onclick="nextPeekImage()" aria-label="Next Media">❯</button>
 
-  <aside class="peek-album-rail" id="peek-album-rail" aria-label="Albums"></aside>
+  <div class="lookbook-exhibition-wrap" id="lookbook-exhibition-wrap">
+    <!-- LEFT PANEL: BRIDAL ALBUMS DRAWER -->
+    <aside class="lb-sidebar" id="lb-sidebar">
+      <div class="lb-sidebar-header">
+        <span>☰</span>
+        <h3>Bridal Albums</h3>
+      </div>
+      <div class="lb-album-list" id="lb-album-list">
+        <!-- Rendered dynamically by renderLookbookSidebar() -->
+      </div>
+      <div class="lb-sidebar-footer">
+        <button class="lb-view-all-btn" onclick="openLookbook('all')">
+          <span>📖 View All Albums</span>
+          <span>›</span>
+        </button>
+      </div>
+    </aside>
 
-  <div class="peek-stage-track" id="peek-stage-track">
-    <!-- Left Margin Peek Image -->
-    <div class="peek-slide-prev" id="peek-slide-prev" onclick="prevPeekImage()">
-      <img id="peek-img-prev" src="" alt="Previous Look">
-    </div>
+    <!-- CENTER PANEL: HERO EXHIBITION FRAME & BOTTOM ANGLE FILMSTRIP -->
+    <main class="lb-stage-center" id="lb-stage-center">
+      <!-- Mobile Floating Header Counter & Close -->
+      <div class="lb-mobile-header">
+        <div class="lb-mobile-counter-wrap">
+          <div class="lb-mobile-title" id="lb-mobile-album-tag">Bridal Album</div>
+          <div class="lb-mobile-counter" id="lb-mobile-counter">01 / 12</div>
+        </div>
+      </div>
 
-    <!-- Main Centered Active Image -->
-    <div class="peek-slide-frame" id="peek-slide-frame">
-      <img id="peek-img-active" src="" alt="Active Couture Look">
-      <video id="peek-video-active" controls playsinline preload="metadata" style="display:none;width:100%;height:100%;object-fit:contain"></video>
-      <iframe id="peek-youtube-active" title="Selected album video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen style="display:none;width:100%;height:100%;border:0"></iframe>
-    </div>
+      <!-- Navigation Arrows -->
+      <button class="lb-hero-nav-arrow lb-hero-prev" onclick="prevPeekImage()" aria-label="Previous Look">❮</button>
+      <button class="lb-hero-nav-arrow lb-hero-next" onclick="nextPeekImage()" aria-label="Next Look">❯</button>
 
-    <!-- Right Margin Peek Image -->
-    <div class="peek-slide-next" id="peek-slide-next" onclick="nextPeekImage()">
-      <img id="peek-img-next" src="" alt="Next Look">
-    </div>
-  </div>
+      <!-- Center Hero Frame -->
+      <div class="lb-hero-frame" id="lb-hero-frame">
+        <img id="peek-img-active" src="" alt="Bridal Haute Couture" class="lb-hero-img">
+      </div>
 
-  <!-- Related Ceremonies & Angle Variations Filmstrip -->
-  <div class="peek-related-container" id="peek-related-container" style="display:none">
-    <div class="peek-related-label">
-      <span id="peek-related-title">✦ Related Angles & Perspectives</span>
-      <span style="font-size:0.65rem;opacity:0.7">Tap to preview</span>
-    </div>
-    <div class="peek-related-strip" id="peek-related-strip"></div>
-  </div>
+      <!-- Center Bottom Angles Filmstrip -->
+      <div class="lb-filmstrip-bar" id="lb-filmstrip-bar">
+        <div class="lb-filmstrip-track" id="peek-related-strip">
+          <!-- Populated dynamically by updatePeekStage() -->
+        </div>
+      </div>
+    </main>
 
-  <!-- Bottom Floating Details Strip -->
-  <div class="peek-footer-bar">
-    <div class="peek-info-caption" id="peek-info-caption">Royal Bengali Bride · Mukut & Sandalwood Art</div>
-    <div class="peek-info-counter" id="peek-info-counter">01 / 10</div>
-    <div class="peek-nav-hints">
-      <span>↕ Mouse Scroll / ↔ Drag to Navigate · ESC to Close</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-      <a id="peek-ig-view" href="https://www.instagram.com/anshitamakeover21/" target="_blank" class="peek-ig-link">
-        <span id="peek-link-label">📸 View Media</span> ↗
-      </a>
-      <a id="peek-wa-inquire" href="https://wa.me/{{ whatsapp }}" target="_blank" class="btn-wa" style="padding:6px 14px;font-size:.68rem">
-        💬 Inquire Look
-      </a>
-    </div>
+    <!-- RIGHT PANEL: EDITORIAL ALBUM STORY & DEDICATED VIDEO CONTAINER -->
+    <aside class="lb-detail-panel" id="lb-detail-panel">
+      <span class="lb-meta-tag">CURRENT ALBUM</span>
+      <h2 class="lb-album-title" id="lb-album-title">GOLDEN HOUR</h2>
+      <p class="lb-album-desc" id="lb-album-desc">
+        A celebration of warm light, golden tones and timeless beauty. Curated bridal looks that glow with royal elegance.
+      </p>
+
+      <div class="lb-metrics-grid">
+        <div class="lb-metric-box">
+          <span class="lb-metric-val" id="lb-metric-images">🖼️ 24</span>
+          <span class="lb-metric-label">Images</span>
+        </div>
+        <div class="lb-metric-box">
+          <span class="lb-metric-val" id="lb-metric-videos">🎬 01</span>
+          <span class="lb-metric-label">Video</span>
+        </div>
+        <div class="lb-metric-box">
+          <span class="lb-metric-val" id="lb-metric-duration">⏱️ 03:30</span>
+          <span class="lb-metric-label">Duration</span>
+        </div>
+      </div>
+
+      <!-- Dedicated Video Container (Autoplay, Pause, Progress Bar) -->
+      <div class="lb-video-container" id="lb-video-container">
+        <div class="lb-video-media-wrap">
+          <video id="peek-video-active" class="lb-video-elem" playsinline muted loop preload="metadata"></video>
+          <iframe id="peek-youtube-active" class="lb-video-elem" title="Album Film" allow="autoplay; encrypted-media" allowfullscreen style="display:none;border:none"></iframe>
+          <button class="lb-video-play-btn" id="lb-video-play-btn" onclick="toggleLookbookVideo(event)">▶</button>
+        </div>
+        <div class="lb-video-controls">
+          <span class="lb-video-time" id="lb-video-cur-time">00:00</span>
+          <div class="lb-video-progress" id="lb-video-progress" onclick="seekLookbookVideo(event)">
+            <div class="lb-video-progress-fill" id="lb-video-progress-fill"></div>
+          </div>
+          <span class="lb-video-time" id="lb-video-tot-time">02:15</span>
+        </div>
+      </div>
+
+      <!-- Actions Row -->
+      <div class="lb-actions-row">
+        <a id="peek-share-btn" href="javascript:void(0)" onclick="shareCurrentLookbook()" class="lb-icon-btn">
+          <span>🔗</span> Share
+        </a>
+        <a id="peek-fav-btn" href="javascript:void(0)" onclick="toggleLookbookFav()" class="lb-icon-btn">
+          <span id="lb-fav-icon">♡</span> Favorite
+        </a>
+        <a id="peek-wa-inquire" href="https://wa.me/{{ whatsapp }}" target="_blank" class="lb-enquire-btn">
+          Enquire ➔
+        </a>
+      </div>
+    </aside>
   </div>
 </div>
 
@@ -5734,9 +6160,9 @@ window.charConciergeState = {
     for (let i = 0; i < posArr.length; i++) origHeadPos[i] = posArr[i];
 
     const headMat = new THREE.MeshStandardMaterial({
-      color: 0xFDE68A,
-      roughness: 0.25,
-      metalness: 0.85,
+      color: 0xF7D8BA, // Warm satin porcelain skin tone
+      roughness: 0.68, // Soft non-glossy skin texture
+      metalness: 0.18, // Matte, natural elegance (no harsh oily specular glare)
       wireframe: false
     });
     const headMesh = new THREE.Mesh(headGeo, headMat);
@@ -5746,8 +6172,8 @@ window.charConciergeState = {
     const tiaraGeo = new THREE.TorusGeometry(1.05, 0.08, 8, 28);
     const tiaraMat = new THREE.MeshStandardMaterial({
       color: 0xD4AF37,
-      metalness: 0.95,
-      roughness: 0.15
+      metalness: 0.75,
+      roughness: 0.35
     });
     const tiara = new THREE.Mesh(tiaraGeo, tiaraMat);
     tiara.rotation.x = Math.PI / 2.3;
@@ -5758,8 +6184,8 @@ window.charConciergeState = {
     const gemGeo = new THREE.OctahedronGeometry(0.3, 0);
     const gemMat = new THREE.MeshStandardMaterial({
       color: 0xC2607A,
-      metalness: 0.6,
-      roughness: 0.1
+      metalness: 0.4,
+      roughness: 0.3
     });
     const gem = new THREE.Mesh(gemGeo, gemMat);
     gem.position.set(0, 1.25, 0.35);
@@ -5804,6 +6230,18 @@ window.charConciergeState = {
     halo.rotation.x = Math.PI / 3;
     charGroup.add(halo);
 
+    // Method to set avatar emotional state
+    window.charConciergeState.setMood = function(mood, durationMs = 0) {
+      if (!window.charConciergeState) return;
+      window.charConciergeState.mood = mood;
+      if (durationMs > 0) {
+        clearTimeout(window.charConciergeState.moodResetTimer);
+        window.charConciergeState.moodResetTimer = setTimeout(() => {
+          if (window.charConciergeState) window.charConciergeState.mood = 'happy';
+        }, durationMs);
+      }
+    };
+
     // Cursor tracking variables for the 3D character
     let targetRotX = 0, targetRotY = 0;
     let currRotX = 0, currRotY = 0;
@@ -5828,12 +6266,12 @@ window.charConciergeState = {
     const toggleEl = document.getElementById('chat-toggle');
     if (toggleEl) {
       toggleEl.addEventListener('mouseenter', () => {
-        window.charConciergeState.mood = 'excited';
-        if (mouth) mouth.scale.set(1.3, 1.5, 1.3);
+        window.charConciergeState.setMood('excited', 3000);
       });
       toggleEl.addEventListener('mouseleave', () => {
-        window.charConciergeState.mood = 'happy';
-        if (mouth) mouth.scale.set(1, 1, 1);
+        if (window.charConciergeState.mood === 'excited') {
+          window.charConciergeState.setMood('happy');
+        }
       });
     }
 
@@ -5846,20 +6284,34 @@ window.charConciergeState = {
       currRotX += (targetRotX - currRotX) * 0.1;
       currRotY += (targetRotY - currRotY) * 0.1;
 
+      // Mood-reactive dynamics
+      const mood = window.charConciergeState.mood || 'happy';
+
       // Head floating bobbing motion
-      charGroup.position.y = Math.sin(time * 2.5) * 0.08;
-      charGroup.rotation.y = currRotY + Math.sin(time * 1.2) * 0.05;
-      charGroup.rotation.x = currRotX + Math.cos(time * 1.5) * 0.04;
+      const bobFreq = (mood === 'excited' || mood === 'celebrating') ? 3.5 : (mood === 'thinking' ? 1.2 : 2.5);
+      const bobAmp = (mood === 'excited' || mood === 'celebrating') ? 0.12 : (mood === 'thinking' ? 0.04 : 0.08);
+      charGroup.position.y = Math.sin(time * bobFreq) * bobAmp;
 
-      // Gem and halo spin
-      gem.rotation.y = time * 2;
-      halo.rotation.z = time * 0.6;
+      if (mood === 'thinking') {
+        // Pondering tilt
+        charGroup.rotation.z = Math.sin(time * 1.5) * 0.15;
+        charGroup.rotation.y = currRotY + 0.2;
+        charGroup.rotation.x = currRotX - 0.1;
+      } else {
+        charGroup.rotation.z = 0;
+        charGroup.rotation.y = currRotY + Math.sin(time * 1.2) * 0.05;
+        charGroup.rotation.x = currRotX + Math.cos(time * 1.5) * 0.04;
+      }
 
-      // Dynamic vertex wave / breathing deformation
+      // Gem and halo spin speed adapts to emotion
+      const spinMult = (mood === 'excited' || mood === 'celebrating') ? 2.5 : (mood === 'thinking' ? 0.5 : 1.0);
+      gem.rotation.y = time * 2 * spinMult;
+      halo.rotation.z = time * 0.6 * spinMult;
+
+      // Dynamic vertex breathing deformation
       const headPositions = headGeo.attributes.position.array;
-      const mood = window.charConciergeState.mood;
-      const deformFreq = mood === 'excited' ? 4.5 : 2.0;
-      const deformAmp = mood === 'excited' ? 0.08 : 0.035;
+      const deformFreq = mood === 'excited' ? 4.5 : (mood === 'thinking' ? 1.0 : 2.0);
+      const deformAmp = mood === 'excited' ? 0.06 : (mood === 'thinking' ? 0.02 : 0.035);
 
       for (let i = 0; i < headPositions.length; i += 3) {
         const ox = origHeadPos[i];
@@ -5872,14 +6324,40 @@ window.charConciergeState = {
       }
       headGeo.attributes.position.needsUpdate = true;
 
+      // Emotional Facial Expressions: Eyes & Smile
+      if (mouth) {
+        if (mood === 'excited' || mood === 'celebrating') {
+          mouth.scale.set(1.35, 1.5, 1.3);
+          mouth.rotation.x = 0.35;
+        } else if (mood === 'thinking') {
+          mouth.scale.set(0.7, 0.6, 0.9);
+          mouth.rotation.x = 0.1;
+        } else if (mood === 'recommending') {
+          mouth.scale.set(1.2, 1.2, 1.1);
+          mouth.rotation.x = 0.3;
+        } else {
+          // happy
+          mouth.scale.set(1, 1, 1);
+          mouth.rotation.x = 0.3;
+        }
+      }
+
       // Blinking expression every 4 seconds
       const blinkCycle = (time * 0.8) % 4.0;
       if (blinkCycle > 3.82) {
-        leftEye.scale.y = 0.1;
-        rightEye.scale.y = 0.1;
+        leftEye.scale.y = 0.08;
+        rightEye.scale.y = 0.08;
       } else {
-        leftEye.scale.y = (mood === 'excited' ? 1.4 : 1.2);
-        rightEye.scale.y = (mood === 'excited' ? 1.4 : 1.2);
+        if (mood === 'thinking') {
+          leftEye.scale.y = 0.65;
+          rightEye.scale.y = 1.1; // One eyebrow raised look
+        } else if (mood === 'excited' || mood === 'celebrating') {
+          leftEye.scale.y = 1.45;
+          rightEye.scale.y = 1.45;
+        } else {
+          leftEye.scale.y = 1.2;
+          rightEye.scale.y = 1.2;
+        }
       }
 
       renderer.render(scene, camera);
@@ -5935,9 +6413,9 @@ window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', duratio
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Particle count: 850 desktop, 420 mobile for rich celestial stardust
+    // Subtle luxury particle count: 48 desktop, 20 mobile (atmospheric stardust, never overshadowing text or faces)
     const isMobile = window.innerWidth <= 768;
-    const particleCount = isMobile ? 420 : 850;
+    const particleCount = isMobile ? 20 : 48;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
@@ -5945,19 +6423,17 @@ window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', duratio
     const scales = new Float32Array(particleCount);
 
     const colorPalette = [
-      new THREE.Color(0xFFDF73), // Brilliant Gold
-      new THREE.Color(0xD4AF37), // Pure Metallic Gold
-      new THREE.Color(0xFFF3D1), // Diamond Champagne
-      new THREE.Color(0xF5A3B8), // Rose Gold Shimmer
-      new THREE.Color(0xFFE89C), // Radiant Stardust
-      new THREE.Color(0xE07A94)  // Royal Velvet Rose
+      new THREE.Color(0xF0D060), // Soft Champagne Gold
+      new THREE.Color(0xD4AF37), // Pure Muted Gold
+      new THREE.Color(0xFFF0D4), // Soft Silk Cream
+      new THREE.Color(0xE8B4C0)  // Delicate Rose Gold
     ];
 
     for (let i = 0; i < particleCount; i++) {
       const idx = i * 3;
-      const x = (Math.random() - 0.5) * 130;
-      const y = (Math.random() - 0.5) * 105;
-      const z = (Math.random() - 0.5) * 75;
+      const x = (Math.random() - 0.5) * 140;
+      const y = (Math.random() - 0.5) * 110;
+      const z = (Math.random() - 0.5) * 60;
       positions[idx] = originalPositions[idx] = x;
       positions[idx + 1] = originalPositions[idx + 1] = y;
       positions[idx + 2] = originalPositions[idx + 2] = z;
@@ -5966,53 +6442,37 @@ window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', duratio
       colors[idx] = col.r;
       colors[idx + 1] = col.g;
       colors[idx + 2] = col.b;
-      scales[i] = 0.5 + Math.random() * 1.5;
+      scales[i] = 0.5 + Math.random() * 0.8;
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    // Haute Couture procedural 4-point star & radiant golden corona texture
+    // Pure soft Gaussian-blurred radial champagne stardust orb texture (no harsh spike lines)
     const pCanvas = document.createElement('canvas');
-    pCanvas.width = 128; pCanvas.height = 128;
+    pCanvas.width = 64; pCanvas.height = 64;
     const pCtx = pCanvas.getContext('2d');
     
-    // Radial soft corona
-    const pGrad = pCtx.createRadialGradient(64, 64, 0, 64, 64, 64);
-    pGrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
-    pGrad.addColorStop(0.2, 'rgba(255, 223, 115, 0.95)');
-    pGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.45)');
-    pGrad.addColorStop(0.8, 'rgba(194, 96, 122, 0.15)');
+    const pGrad = pCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    pGrad.addColorStop(0, 'rgba(255, 245, 220, 0.85)');
+    pGrad.addColorStop(0.25, 'rgba(212, 175, 55, 0.45)');
+    pGrad.addColorStop(0.6, 'rgba(212, 175, 55, 0.12)');
     pGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
     pCtx.fillStyle = pGrad;
     pCtx.beginPath();
-    pCtx.arc(64, 64, 64, 0, Math.PI * 2);
+    pCtx.arc(32, 32, 32, 0, Math.PI * 2);
     pCtx.fill();
-
-    // 4-Point Starlight Flare Spikes
-    pCtx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-    pCtx.lineWidth = 2.5;
-    pCtx.beginPath();
-    pCtx.moveTo(64, 16); pCtx.lineTo(64, 112);
-    pCtx.moveTo(16, 64); pCtx.lineTo(112, 64);
-    pCtx.stroke();
-
-    pCtx.strokeStyle = 'rgba(255, 235, 160, 0.5)';
-    pCtx.lineWidth = 1.2;
-    pCtx.beginPath();
-    pCtx.moveTo(32, 32); pCtx.lineTo(96, 96);
-    pCtx.moveTo(32, 96); pCtx.lineTo(96, 32);
-    pCtx.stroke();
 
     const pTexture = new THREE.CanvasTexture(pCanvas);
 
     const material = new THREE.PointsMaterial({
-      size: isMobile ? 3.2 : 4.5,
+      size: isMobile ? 1.6 : 2.4,
       map: pTexture,
       transparent: true,
       vertexColors: true,
       blending: THREE.AdditiveBlending,
-      depthWrite: false
+      depthWrite: false,
+      opacity: 0.65
     });
 
     const particles = new THREE.Points(geometry, material);
@@ -6064,8 +6524,8 @@ window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', duratio
       }
       geometry.attributes.position.needsUpdate = true;
 
-      // Subtle pulse to material size for sparkling star twinkle
-      material.size = (isMobile ? 3.2 : 4.5) + Math.sin(elapsedTime * 2.2) * 0.6;
+      // Subtle breathing pulse for gentle, non-intrusive shimmering stardust
+      material.size = (isMobile ? 1.6 : 2.4) + Math.sin(elapsedTime * 1.8) * 0.35;
 
       renderer.render(scene, camera);
     }
@@ -6343,6 +6803,27 @@ window.closeSideDrawer = function(){
 
 // Backward compatibility for legacy callers
 function toggleMob(){ toggleSideDrawer(); }
+
+/* ── Collapsible Service Inclusions & Kit Details ── */
+window.toggleSvcDetails = function(btn) {
+  if (!btn) return;
+  const container = btn.closest('.svc-split-right') || btn.parentElement;
+  if (!container) return;
+  const target = container.querySelector('.svc-details-collapsible');
+  if (!target) return;
+  const isOpen = target.classList.contains('open');
+  if (isOpen) {
+    target.classList.remove('open');
+    btn.classList.remove('open');
+    const labelSpan = btn.querySelector('.svc-toggle-text');
+    if (labelSpan) labelSpan.textContent = 'View Full Inclusions & Kit';
+  } else {
+    target.classList.add('open');
+    btn.classList.add('open');
+    const labelSpan = btn.querySelector('.svc-toggle-text');
+    if (labelSpan) labelSpan.textContent = 'Collapse Inclusions';
+  }
+};
 
 /* ═════════════════════════════════════════════════════════════════════
    ANSHITA VIP CART & COMBO PRIVILEGE ENGINE (E-COMMERCE TROUSSEAU)
@@ -7485,146 +7966,257 @@ let peekWheelLock = false;
 let peekTouchStartX = 0;
 let peekTouchStartY = 0;
 let peekTouchDeltaX = 0;
+let lookbookAutoTimer = null;
+const LOOKBOOK_AUTO_ADVANCE_MS = 30000; // 30 seconds auto-advance
 
-function updatePeekStage(){
-  const total = window.peekGalleryItems.length;
-  const curr = window.peekGalleryItems[window.currentPeekIndex];
-  const prevIdx = (window.currentPeekIndex - 1 + total) % total;
-  const nextIdx = (window.currentPeekIndex + 1) % total;
+function startLookbookAutoAdvance(){
+  stopLookbookAutoAdvance();
+  lookbookAutoTimer = setTimeout(() => {
+    nextPeekImage();
+  }, LOOKBOOK_AUTO_ADVANCE_MS);
+}
 
-  const prev = window.peekGalleryItems[prevIdx];
-  const next = window.peekGalleryItems[nextIdx];
-
-  const imgActive = document.getElementById('peek-img-active');
-  const imgPrev = document.getElementById('peek-img-prev');
-  const imgNext = document.getElementById('peek-img-next');
-  const captionEl = document.getElementById('peek-info-caption');
-  const counterEl = document.getElementById('peek-info-counter');
-  const waBtn = document.getElementById('peek-wa-inquire');
-  const igBtn = document.getElementById('peek-ig-view');
-
-  if(imgActive && curr) imgActive.src = curr.src || curr.thumbnail || '';
-  if(imgPrev && prev) imgPrev.src = prev.src || prev.thumbnail || '';
-  if(imgNext && next) imgNext.src = next.src || next.thumbnail || '';
-
-  const activeImg = document.getElementById('peek-img-active');
-  const activeVideo = document.getElementById('peek-video-active');
-  const activeYoutube = document.getElementById('peek-youtube-active');
-  const mediaType = curr && (curr.media_type || curr.type);
-  if(activeImg && activeVideo && activeYoutube){
-    activeImg.style.display = mediaType === 'video_file' || mediaType === 'youtube' ? 'none' : '';
-    activeVideo.style.display = mediaType === 'video_file' ? 'block' : 'none';
-    activeYoutube.style.display = mediaType === 'youtube' ? 'block' : 'none';
-    activeVideo.pause();
-    activeVideo.removeAttribute('src');
-    if(mediaType === 'video_file' && curr.video){
-      activeVideo.src = curr.video;
-      activeVideo.load();
-    }
-    if(mediaType === 'youtube' && (curr.youtube || curr.external_url)){
-      const raw = curr.youtube || curr.external_url;
-      const id = curr.embed_code || ((raw.match(/(?:v=|youtu\.be\/|shorts\/)([A-Za-z0-9_-]{11})/) || [])[1]);
-      if(id) activeYoutube.src = `https://www.youtube-nocookie.com/embed/${id}?rel=0`;
-    } else {
-      activeYoutube.removeAttribute('src');
-    }
-  }
-
-  if(captionEl && curr){
-    const groupBadge = (window.currentPeekGroupTitle && window.currentPeekGroupKey !== 'all') ? `✦ ${window.currentPeekGroupTitle} · ` : '';
-    captionEl.textContent = `${groupBadge}${curr.caption}`;
-  }
-  if(counterEl) counterEl.textContent = `${String(window.currentPeekIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
-
-  if(waBtn && curr){
-    waBtn.href = `https://wa.me/${WA}?text=` + encodeURIComponent(`Namaste! I would like to inquire about the look: ${curr.caption} (${curr.category}).`);
-  }
-  if(igBtn && curr){
-    const linkLabel = document.getElementById('peek-link-label');
-    if(curr.media_type === 'youtube' || curr.youtube){
-      igBtn.href = curr.youtube || curr.external_url;
-      if(linkLabel) linkLabel.textContent = '▶ Watch on YouTube';
-    } else if(curr.media_type === 'instagram' || curr.instagram){
-      igBtn.href = curr.instagram || curr.external_url;
-      if(linkLabel) linkLabel.textContent = '📸 View on Instagram';
-    } else if(curr.external_url){
-      igBtn.href = curr.external_url;
-      if(linkLabel) linkLabel.textContent = '↗ View Source';
-    } else {
-      igBtn.href = curr.src;
-      if(linkLabel) linkLabel.textContent = '🔍 High-Res View';
-    }
-  }
-
-  // Render Related Looks & Angles Filmstrip
-  const relatedBox = document.getElementById('peek-related-container');
-  const relatedStrip = document.getElementById('peek-related-strip');
-  const relatedTitle = document.getElementById('peek-related-title');
-
-  if (relatedBox && relatedStrip) {
-    if (total > 1) {
-      relatedBox.style.display = 'flex';
-      if (relatedTitle) {
-        relatedTitle.textContent = `✦ Related Angles & Views (${window.currentPeekIndex + 1} of ${total})`;
-      }
-      relatedStrip.innerHTML = '';
-      window.peekGalleryItems.forEach((itm, idx) => {
-        const card = document.createElement('div');
-        card.className = `peek-thumb-card${idx === window.currentPeekIndex ? ' active' : ''}`;
-        card.title = itm.caption || `Angle ${idx + 1}`;
-        card.onclick = (e) => {
-          e.stopPropagation();
-          window.currentPeekIndex = idx;
-          updatePeekStage();
-          triggerPeekFeedback('select');
-        };
-        const thumbImg = document.createElement('img');
-        thumbImg.src = itm.src;
-        thumbImg.alt = itm.caption || 'Bridal Detail';
-        card.appendChild(thumbImg);
-        relatedStrip.appendChild(card);
-      });
-    } else {
-      relatedBox.style.display = 'none';
-    }
+function stopLookbookAutoAdvance(){
+  if(lookbookAutoTimer){
+    clearTimeout(lookbookAutoTimer);
+    lookbookAutoTimer = null;
   }
 }
 
-function renderPeekAlbumRail(){
-  const rail = document.getElementById('peek-album-rail');
-  if(!rail || !window.lookbookGroups) return;
-  rail.innerHTML = '';
-  Object.entries(window.lookbookGroups).forEach(([key, group]) => {
-    if(!group || !group.items || !group.items.length) return;
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'peek-album-chip' + (key === window.currentPeekGroupKey ? ' active' : '');
-    button.title = group.title || key;
-    button.innerHTML = `<img src="${group.items[0].src || ''}" alt=""><span>${group.title || key}</span>`;
-    button.addEventListener('click', () => {
-      window.currentPeekGroupKey = key;
-      window.currentPeekGroupTitle = group.title || key;
-      window.peekGalleryItems = group.items || [];
-      window.currentPeekIndex = 0;
-      renderPeekAlbumRail();
-      updatePeekStage();
-    });
-    rail.appendChild(button);
+function renderLookbookSidebar(){
+  const listEl = document.getElementById('lb-album-list');
+  if(!listEl || !window.lookbookGroups) return;
+  listEl.innerHTML = '';
+
+  let idx = 1;
+  Object.entries(window.lookbookGroups).forEach(([key, grp]) => {
+    if(!grp || !grp.items || !grp.items.length) return;
+    const padNum = String(idx++).padStart(2, '0');
+    const isActive = (key === window.currentPeekGroupKey);
+    const firstImg = grp.items[0]?.src || grp.cover || '';
+    const imgCount = grp.items.length;
+    const hasVideo = grp.items.some(i => i.video_url || i.video || i.media_type === 'video_file' || i.media_type === 'youtube');
+    const countText = `${imgCount} IMAGES${hasVideo ? ' / 1 VIDEO' : ''}`;
+
+    const card = document.createElement('div');
+    card.className = `lb-album-card${isActive ? ' active' : ''}`;
+    card.onclick = () => {
+      window.openLookbook(key);
+    };
+    card.innerHTML = `
+      <span class="lb-album-num">${padNum}</span>
+      <img src="${firstImg}" alt="${grp.title || key}" class="lb-album-thumb" loading="lazy">
+      <div class="lb-album-info">
+        <h4>${grp.title || key}</h4>
+        <span>${countText}</span>
+      </div>
+    `;
+    listEl.appendChild(card);
   });
 }
 
+function updatePeekStage(){
+  const total = window.peekGalleryItems.length;
+  if(total === 0) return;
+  const curr = window.peekGalleryItems[window.currentPeekIndex];
+
+  // 1. Center Hero Image
+  const heroImg = document.getElementById('peek-img-active');
+  if(heroImg && curr){
+    heroImg.src = curr.src || curr.thumbnail || '';
+    heroImg.alt = curr.caption || 'Bridal Haute Couture';
+  }
+
+  // 2. Mobile Counter
+  const mobCounter = document.getElementById('lb-mobile-counter');
+  const mobTag = document.getElementById('lb-mobile-album-tag');
+  if(mobCounter) mobCounter.textContent = `${String(window.currentPeekIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+  if(mobTag && window.currentPeekGroupTitle) mobTag.textContent = window.currentPeekGroupTitle;
+
+  // 3. Right Panel Details
+  const titleEl = document.getElementById('lb-album-title');
+  const descEl = document.getElementById('lb-album-desc');
+  const imgCountEl = document.getElementById('lb-metric-images');
+  const vidCountEl = document.getElementById('lb-metric-videos');
+  const durEl = document.getElementById('lb-metric-duration');
+
+  const currGroup = window.lookbookGroups ? window.lookbookGroups[window.currentPeekGroupKey] : null;
+  const albumTitle = (currGroup && currGroup.title) || window.currentPeekGroupTitle || 'HAUTE COUTURE';
+  const albumDesc = (currGroup && currGroup.description) || (curr ? curr.caption : 'Curated bridal makeover and styling archive by Anshita Makeover.');
+
+  if(titleEl) titleEl.textContent = albumTitle.toUpperCase();
+  if(descEl) descEl.textContent = albumDesc;
+  if(imgCountEl) imgCountEl.textContent = `🖼️ ${String(total).padStart(2, '0')}`;
+
+  // Check if any item in this lookbook has video
+  const videoItem = window.peekGalleryItems.find(i => i.video_url || i.video || i.media_type === 'video_file' || i.media_type === 'youtube');
+  const vidBox = document.getElementById('lb-video-container');
+  const vidElem = document.getElementById('peek-video-active');
+  const ytElem = document.getElementById('peek-youtube-active');
+  const playBtn = document.getElementById('lb-video-play-btn');
+
+  if(vidCountEl) vidCountEl.textContent = videoItem ? '🎬 01' : '🎬 00';
+  if(durEl) durEl.textContent = videoItem ? '⏱️ 02:45' : '⏱️ --:--';
+
+  if(vidBox && vidElem && ytElem){
+    if(videoItem){
+      vidBox.style.display = 'block';
+      const vUrl = videoItem.video_url || videoItem.video;
+      if(vUrl){
+        ytElem.style.display = 'none';
+        ytElem.src = '';
+        vidElem.style.display = 'block';
+        if(vidElem.src !== vUrl) {
+          vidElem.src = vUrl;
+          vidElem.load();
+        }
+        // Autoplay muted as requested
+        const playPromise = vidElem.play();
+        if(playPromise !== undefined){
+          playPromise.then(() => {
+            if(playBtn) playBtn.textContent = '❚❚';
+          }).catch(() => {
+            if(playBtn) playBtn.textContent = '▶';
+          });
+        }
+      } else if(videoItem.external_url || videoItem.embed_code){
+        vidElem.style.display = 'none';
+        ytElem.style.display = 'block';
+        const raw = videoItem.external_url || '';
+        const id = videoItem.embed_code || ((raw.match(/(?:v=|youtu\.be\/|shorts\/)([A-Za-z0-9_-]{11})/) || [])[1]);
+        if(id) ytElem.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1`;
+        if(playBtn) playBtn.style.display = 'none';
+      }
+    } else {
+      // If no video in album, hide video container cleanly
+      vidBox.style.display = 'none';
+      vidElem.pause();
+    }
+  }
+
+  // 4. Center Bottom Filmstrip Thumbnails
+  const strip = document.getElementById('peek-related-strip');
+  if(strip){
+    strip.innerHTML = '';
+    window.peekGalleryItems.forEach((itm, idx) => {
+      const card = document.createElement('div');
+      card.className = `lb-filmstrip-card${idx === window.currentPeekIndex ? ' active' : ''}`;
+      card.onclick = (e) => {
+        e.stopPropagation();
+        window.currentPeekIndex = idx;
+        updatePeekStage();
+        startLookbookAutoAdvance();
+      };
+      card.innerHTML = `<img src="${itm.src || itm.thumbnail || ''}" alt="Angle ${idx + 1}" loading="lazy">`;
+      strip.appendChild(card);
+    });
+  }
+
+  // 5. Inquire link setup
+  const waBtn = document.getElementById('peek-wa-inquire');
+  if(waBtn && curr){
+    waBtn.href = `https://wa.me/${WA}?text=` + encodeURIComponent(`Namaste Anshita! I would like to reserve/inquire about the ${albumTitle} bridal look (${curr.caption}).`);
+  }
+
+  // Restart 30s progression timer
+  startLookbookAutoAdvance();
+}
+
+window.toggleLookbookVideo = function(e){
+  if(e) e.stopPropagation();
+  const v = document.getElementById('peek-video-active');
+  const btn = document.getElementById('lb-video-play-btn');
+  if(!v) return;
+  if(v.paused){
+    v.play().then(() => { if(btn) btn.textContent = '❚❚'; }).catch(()=>{});
+  } else {
+    v.pause();
+    if(btn) btn.textContent = '▶';
+  }
+};
+
+window.seekLookbookVideo = function(e){
+  const v = document.getElementById('peek-video-active');
+  const bar = document.getElementById('lb-video-progress');
+  if(!v || !bar || !v.duration) return;
+  const rect = bar.getBoundingClientRect();
+  const pos = (e.clientX - rect.left) / rect.width;
+  v.currentTime = pos * v.duration;
+};
+
+// Video time update listener
+(function initLookbookVideoSync(){
+  window.addEventListener('DOMContentLoaded', () => {
+    const v = document.getElementById('peek-video-active');
+    const fill = document.getElementById('lb-video-progress-fill');
+    const curTime = document.getElementById('lb-video-cur-time');
+    const totTime = document.getElementById('lb-video-tot-time');
+    if(!v) return;
+
+    v.addEventListener('timeupdate', () => {
+      if(v.duration && fill){
+        const pct = (v.currentTime / v.duration) * 100;
+        fill.style.width = pct + '%';
+        if(curTime) curTime.textContent = formatTime(v.currentTime);
+        if(totTime) totTime.textContent = formatTime(v.duration);
+      }
+    });
+
+    function formatTime(sec){
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+  });
+})();
+
+window.shareCurrentLookbook = function(){
+  const curr = window.peekGalleryItems[window.currentPeekIndex];
+  const url = window.location.origin + '/gallery/';
+  if(navigator.share){
+    navigator.share({
+      title: window.currentPeekGroupTitle || 'Anshita Makeover Lookbook',
+      text: curr ? curr.caption : 'Explore Anshita Makeover Bridal Couture Lookbook',
+      url: url
+    }).catch(()=>{});
+  } else {
+    navigator.clipboard?.writeText(url).then(() => {
+      if(typeof AnshitaCart !== 'undefined' && AnshitaCart.showToast) {
+        AnshitaCart.showToast('✦ Lookbook Link Copied to Clipboard!');
+      } else {
+        alert('✦ Lookbook Link Copied!');
+      }
+    });
+  }
+};
+
+window.toggleLookbookFav = function(){
+  const icon = document.getElementById('lb-fav-icon');
+  if(!icon) return;
+  const isFav = icon.textContent === '♥';
+  icon.textContent = isFav ? '♡' : '♥';
+  icon.style.color = isFav ? '' : 'var(--gold)';
+  if(typeof AnshitaCart !== 'undefined' && AnshitaCart.showToast) {
+    AnshitaCart.showToast(isFav ? 'Removed from favorites' : '✦ Added to your private wedding favorites!');
+  }
+};
+
 function openPeekGallery(startIndex){
   window.currentPeekIndex = (startIndex !== undefined && startIndex >= 0 && startIndex < window.peekGalleryItems.length) ? startIndex : 0;
-  renderPeekAlbumRail();
+  renderLookbookSidebar();
   updatePeekStage();
   const m = document.getElementById('editorial-peek-gallery');
   if(m){
     m.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
+  startLookbookAutoAdvance();
 }
 
 function closePeekGallery(){
+  stopLookbookAutoAdvance();
+  const v = document.getElementById('peek-video-active');
+  if(v) v.pause();
   const m = document.getElementById('editorial-peek-gallery');
   if(m){
     m.classList.remove('open');
@@ -7633,48 +8225,52 @@ function closePeekGallery(){
 }
 
 function nextPeekImage(){
+  if(!window.peekGalleryItems.length) return;
   window.currentPeekIndex = (window.currentPeekIndex + 1) % window.peekGalleryItems.length;
   updatePeekStage();
   triggerPeekFeedback('next');
 }
 
 function prevPeekImage(){
+  if(!window.peekGalleryItems.length) return;
   window.currentPeekIndex = (window.currentPeekIndex - 1 + window.peekGalleryItems.length) % window.peekGalleryItems.length;
   updatePeekStage();
   triggerPeekFeedback('prev');
 }
 
 function triggerPeekFeedback(dir){
-  const frame = document.getElementById('peek-slide-frame');
+  const frame = document.getElementById('lb-hero-frame');
   if(!frame) return;
-  const shift = dir === 'next' ? -12 : 12;
-  frame.style.transform = `scale(0.98) translateX(${shift}px)`;
+  const shift = dir === 'next' ? -10 : 10;
+  frame.style.transform = `scale(0.985) translateX(${shift}px)`;
   setTimeout(() => {
     frame.style.transform = 'scale(1) translateX(0)';
-  }, 250);
+  }, 220);
 }
 
-// Bi-Directional Wheel & Touch Navigation Listeners
+// Bi-Directional Wheel & Touch Navigation Listeners for Lookbook
 (function initPeekGestures(){
   const modal = document.getElementById('editorial-peek-gallery');
   if(!modal) return;
 
   // Mouse Wheel Navigation (Scroll Down or Right = Next, Scroll Up or Left = Previous)
   modal.addEventListener('wheel', (e) => {
+    // If scrolling inside sidebar or right panel, allow normal scroll
+    if(e.target.closest('#lb-sidebar') || e.target.closest('#lb-detail-panel')) return;
+
     e.preventDefault();
     if(peekWheelLock) return;
 
-    // Detect dominant axis scroll
     const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
 
     if(delta > 18){
       peekWheelLock = true;
       nextPeekImage();
-      setTimeout(() => { peekWheelLock = false; }, 420);
+      setTimeout(() => { peekWheelLock = false; }, 380);
     } else if(delta < -18){
       peekWheelLock = true;
       prevPeekImage();
-      setTimeout(() => { peekWheelLock = false; }, 420);
+      setTimeout(() => { peekWheelLock = false; }, 380);
     }
   }, { passive: false });
 
@@ -7690,45 +8286,18 @@ function triggerPeekFeedback(dir){
   modal.addEventListener('touchmove', (e) => {
     if(e.touches.length === 1){
       peekTouchDeltaX = e.touches[0].clientX - peekTouchStartX;
-      const deltaY = e.touches[0].clientY - peekTouchStartY;
-      // Slight responsive parallax while dragging
-      const frame = document.getElementById('peek-slide-frame');
-      if(frame && Math.abs(peekTouchDeltaX) > 10){
-        frame.style.transform = `translateX(${peekTouchDeltaX * 0.25}px)`;
-      }
     }
   }, { passive: true });
 
-  modal.addEventListener('touchend', (e) => {
-    const frame = document.getElementById('peek-slide-frame');
-    if(frame) frame.style.transform = '';
-
+  modal.addEventListener('touchend', () => {
     if(peekTouchDeltaX < -45){
-      // Swiped Left or dragged ➔ Next image
       nextPeekImage();
     } else if(peekTouchDeltaX > 45){
-      // Swiped Right ➔ Previous image
       prevPeekImage();
     }
   }, { passive: true });
 
-  // Picasa-style Direct Click Navigation (Clicking right side navigates Next, clicking left side navigates Previous)
-  const slideFrame = document.getElementById('peek-slide-frame');
-  if(slideFrame){
-    slideFrame.addEventListener('click', (e) => {
-      // If clicking inside interactive buttons or links, ignore
-      if(e.target.closest('a') || e.target.closest('button')) return;
-      const rect = slideFrame.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      if(clickX > rect.width * 0.52){
-        nextPeekImage();
-      } else if(clickX < rect.width * 0.48){
-        prevPeekImage();
-      }
-    });
-  }
-
-  // Keyboard navigation (Picasa Image Viewer: Left/Right, Up/Down, ESC)
+  // Keyboard navigation (Left/Right, Up/Down, ESC)
   window.addEventListener('keydown', (e) => {
     const isOpen = modal.classList.contains('open');
     if(!isOpen) return;
@@ -8243,6 +8812,9 @@ async function sendChat(){
   inp.value='';
   appendMsg(msg,'user');
   const typing=appendTyping();
+  if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
+    window.charConciergeState.setMood('thinking');
+  }
   try{
     const r=await fetch('/api/chatbot/',{
       method:'POST',
@@ -8257,7 +8829,17 @@ async function sendChat(){
     typing.remove();
     appendMsg(d.reply,'bot');
     chatSessionId=d.session_id||chatSessionId;
-  }catch(e){typing.remove();appendMsg('Kuch error aa gaya. WhatsApp karo: '+WA,'bot')}
+    if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
+      const isBookingOrOffer = d.reply && (d.reply.includes('₹') || d.reply.includes('Suite') || d.reply.includes('Package') || d.reply.includes('Book') || d.reply.includes('WhatsApp'));
+      window.charConciergeState.setMood(isBookingOrOffer ? 'recommending' : 'excited', 5000);
+    }
+  }catch(e){
+    typing.remove();
+    appendMsg('Kuch error aa gaya. WhatsApp karo: '+WA,'bot');
+    if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
+      window.charConciergeState.setMood('happy');
+    }
+  }
 }
 function renderMarkdownToHtml(md){
   if(!md) return '';
