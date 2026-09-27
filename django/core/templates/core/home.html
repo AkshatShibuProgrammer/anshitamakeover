@@ -863,11 +863,51 @@
       <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita!%20I%20would%20like%20to%20reserve%20a%20bridal%20consultation." target="_blank" class="btn-p">
         Reserve Consultation
       </a>
-      <a href="/#gallery" class="btn-o">
+      <a href="/services/" class="btn-o">
+        Explore Services
+      </a>
+      <a href="/gallery/" class="btn-o" style="border-color:rgba(212,175,55,0.4)">
         View Lookbook
       </a>
-      <a href="/academy/" class="btn-o" style="border-color:rgba(212,175,55,0.3)">
-        Haute Academy
+    </div>
+  </div>
+</section>
+
+<!-- ═══ OCCASION DISCOVERY: DIRECT EDITORIAL PATHWAYS ═══ -->
+<section id="occasions" style="background:var(--dark);padding:50px 0 30px;position:relative">
+  <div class="sw">
+    <div class="rev on" style="text-align:center;margin-bottom:28px">
+      <p class="sl" style="justify-content:center">✦ CURATED CEREMONY PATHWAYS</p>
+      <h2 class="sh" style="font-size:clamp(1.8rem, 3.5vw, 2.8rem)">Select Your Sacred Occasion</h2>
+      <div class="gdiv" style="margin:12px auto"></div>
+      <p class="ss" style="max-width:640px;margin:0 auto">Personalized artistry tailored for every milestone ceremony. Explore bespoke looks, specialized lighting kits, and curated suites.</p>
+    </div>
+
+    <div class="occasion-cards-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));gap:16px">
+      <a href="/services/?category=bridal" class="occasion-card" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;text-align:center;padding:26px 18px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;transition:transform 0.3s,border-color 0.3s">
+        <span style="font-size:1.8rem;margin-bottom:10px">👑</span>
+        <strong style="color:var(--cream);font-size:1.05rem;font-family:var(--font-h)">Wedding & Bridal</strong>
+        <span style="font-size:0.75rem;color:var(--gold);margin-top:6px">Pheras · HD & Airbrush ↗</span>
+      </a>
+      <a href="/services/?category=engagement" class="occasion-card" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;text-align:center;padding:26px 18px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;transition:transform 0.3s,border-color 0.3s">
+        <span style="font-size:1.8rem;margin-bottom:10px">💍</span>
+        <strong style="color:var(--cream);font-size:1.05rem;font-family:var(--font-h)">Engagement & Roka</strong>
+        <span style="font-size:0.75rem;color:var(--gold);margin-top:6px">Glass Skin · Soft Glam ↗</span>
+      </a>
+      <a href="/services/?category=sangeet" class="occasion-card" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;text-align:center;padding:26px 18px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;transition:transform 0.3s,border-color 0.3s">
+        <span style="font-size:1.8rem;margin-bottom:10px">✨</span>
+        <strong style="color:var(--cream);font-size:1.05rem;font-family:var(--font-h)">Reception & Cocktail</strong>
+        <span style="font-size:0.75rem;color:var(--gold);margin-top:6px">Red Carpet · Hollywood Waves ↗</span>
+      </a>
+      <a href="/services/?category=sangeet" class="occasion-card" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;text-align:center;padding:26px 18px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;transition:transform 0.3s,border-color 0.3s">
+        <span style="font-size:1.8rem;margin-bottom:10px">🌸</span>
+        <strong style="color:var(--cream);font-size:1.05rem;font-family:var(--font-h)">Haldi & Sangeet</strong>
+        <span style="font-size:0.75rem;color:var(--gold);margin-top:6px">Dance-Resistant · Floral Gajra ↗</span>
+      </a>
+      <a href="/services/?category=party" class="occasion-card" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;text-align:center;padding:26px 18px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;transition:transform 0.3s,border-color 0.3s">
+        <span style="font-size:1.8rem;margin-bottom:10px">👯‍♀️</span>
+        <strong style="color:var(--cream);font-size:1.05rem;font-family:var(--font-h)">Family & Bridesmaids</strong>
+        <span style="font-size:0.75rem;color:var(--gold);margin-top:6px">Entourage Ensemble · Party HD ↗</span>
       </a>
     </div>
   </div>
@@ -878,9 +918,9 @@
   <div class="sw">
     <div class="rev">
       <p class="sl">{{ t.services_sl|default:'Artistry Disciplines' }}</p>
-      <h2 class="sh">{{ t.services_sh|default:'Signature Services' }}</h2>
+      <h2 class="sh">{{ t.services_sh|default:'Featured Studio Services' }}</h2>
       <div class="gdiv"></div>
-      <p class="ss">{{ t.services_ss|default:'Precision techniques tailored to each bride. International master formulas, high-definition lighting optimization, and couture hair architecture.' }}</p>
+      <p class="ss">{{ t.services_ss|default:'A curated selection of our signature disciplines. Explore the complete catalogue for comprehensive specifications and package options.' }}</p>
     </div>
 
     <!-- Multi-Event & Package Privilege Notice Banner -->
@@ -892,11 +932,11 @@
           <p>The individual disciplines below represent standalone a-la-carte rates. When reserving two or more events or selecting our curated Wedding Celebration Suites, rates reflect privileged package pricing with bundled courtesies up to ₹27,000.</p>
         </div>
       </div>
-      <a href="#packages" class="sppb-btn">Explore Wedding Suites & Inclusions ↓</a>
+      <a href="/packages/" class="sppb-btn">Explore Wedding Suites & Inclusions ↓</a>
     </div>
 
     <div class="svc-split-list" style="margin-top:40px">
-      {% for svc in services %}
+      {% for svc in services|slice:":3" %}
       <div class="svc-split-card svc-card-{{ svc.id }} rev d{{ forloop.counter|default:1 }}" id="studio-svc-{{ svc.id }}" data-svc-id="{{ svc.id }}">
         <div class="svc-split-left" onclick="openLookbook('{{ svc.look_group_id|default:svc.category }}')" style="cursor:pointer">
           <img src="{{ svc.display_image }}" alt="{{ svc.title }}" class="svc-split-img">
@@ -943,9 +983,15 @@
           </div>
           {% endif %}
 
-          <div class="svc-split-actions" style="margin-top:20px">
-            <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20reserve%20{{ svc.title|urlencode }}." target="_blank" class="btn-wa" style="padding:11px 26px;font-size:0.78rem">
+          <div class="svc-split-actions" style="margin-top:20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20reserve%20{{ svc.title|urlencode }}." target="_blank" class="btn-wa" style="padding:10px 22px;font-size:0.78rem">
               Reserve {{ svc.title }}
+            </a>
+            <button type="button" class="btn-o" style="padding:9px 16px;font-size:0.75rem" onclick="AnshitaCart.addItem({id:'service-{{ svc.id }}',title:'{{ svc.title|escapejs }}',price:{{ svc.price|default:0 }},category:'{{ svc.category }}',image:'{{ svc.display_image|escapejs }}'})">
+              Add to Beauty Plan +
+            </button>
+            <a href="{% url 'service_detail' svc.id %}" style="font-size:0.78rem;color:var(--gold);text-decoration:underline;margin-left:4px">
+              View Details ↗
             </a>
           </div>
         </div>
@@ -953,6 +999,14 @@
       {% empty %}
       <p style="text-align:center;color:rgba(245,237,214,0.5);padding:40px">No services configured yet.</p>
       {% endfor %}
+    </div>
+
+    <!-- Discovery Link to Dedicated Full Catalogue -->
+    <div style="text-align:center;margin-top:40px">
+      <a href="/services/" class="btn-o" style="display:inline-flex;align-items:center;gap:8px;padding:12px 32px;font-size:0.85rem">
+        <span>Explore All Studio Disciplines</span>
+        <span>↗</span>
+      </a>
     </div>
   </div>
 </section>
@@ -1042,18 +1096,9 @@
       </div>
     </div>
 
-    <!-- LAYER 2: Filterable Masonry Real-Brides Gallery Grid -->
-    <div class="gal-filters rev d2" style="margin-top:10px">
-      <button class="gf-btn active" onclick="filterGal('all')">All Disciplines</button>
-      <button class="gf-btn" onclick="filterGal('bridal')">Bridal Suites</button>
-      <button class="gf-btn" onclick="filterGal('engagement')">Engagement & Roka</button>
-      <button class="gf-btn" onclick="filterGal('hair')">Hair & Draping</button>
-      <button class="gf-btn" onclick="filterGal('nails')">Nail Artistry</button>
-      <button class="gf-btn" onclick="filterGal('party')">Party & Side Glam</button>
-    </div>
-
-    <div class="gal-grid rev d2">
-      {% for grp in look_groups %}
+    <!-- LAYER 2: Curated 3-Album Lookbook Edit -->
+    <div class="gal-grid rev d2" style="margin-top:20px">
+      {% for grp in look_groups|slice:":3" %}
       <div class="gal-item lg-card-{{ grp.id }}" id="lookgroup-{{ grp.id }}" data-lg-id="{{ grp.id }}" data-cat="{{ grp.category }}" onclick="openLookbook('{{ grp.id }}')" style="cursor:pointer">
         <img src="{{ grp.display_cover }}?v=2" alt="{{ grp.name }}" loading="lazy">
         
@@ -1070,7 +1115,7 @@
         </div>
 
         <div class="gal-ov">
-          <span style="font-weight:700;letter-spacing:1px">🔍 Open Lookbook Folder</span>
+          <span style="font-weight:700;letter-spacing:1px">🔍 Open Album Peek</span>
           <strong style="font-size:.78rem;color:var(--gold-l);display:block;margin-top:6px">{{ grp.makeup_type|default:grp.name }}</strong>
           <small style="font-size:.65rem;color:rgba(245,237,214,0.7);display:block;margin-top:2px">{{ grp.get_category_display }}</small>
         </div>
@@ -1080,6 +1125,14 @@
         No look groups available.
       </div>
       {% endfor %}
+    </div>
+
+    <!-- Editorial CTA to Dedicated Gallery -->
+    <div style="text-align:center;margin-top:35px">
+      <a href="/gallery/" class="btn-o" style="display:inline-flex;align-items:center;gap:8px;padding:12px 32px;font-size:0.85rem">
+        <span>View Full Lookbook Archive</span>
+        <span>↗</span>
+      </a>
     </div>
 
     <!-- LAYER 3: Action Row & Comparison Triggers (Replacing in-page clutter with modal precision) -->
@@ -1095,7 +1148,7 @@
         <button class="btn-comp-trigger" style="background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#000" onclick="openPackageCompareModal()">
           Compare Bridal Suites
         </button>
-        <a href="#packages" class="btn-comp-trigger" style="background:transparent;border-color:rgba(212,175,55,0.4)">
+        <a href="/packages/" class="btn-comp-trigger" style="background:transparent;border-color:rgba(212,175,55,0.4)">
           View All Suites ↓
         </a>
       </div>
