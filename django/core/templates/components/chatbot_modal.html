@@ -72,8 +72,15 @@
       <button class="chat-send" onclick="sendChat()" title="Send Message">➤</button>
     </div>
   </div>
-  <button class="chat-toggle" id="chat-toggle" onclick="toggleChat()" title="Anshita AI Concierge">
-    💬
-    <span class="chat-pulse-ping"></span>
-  </button>
+  <div class="chat-toggle-wrap" id="chat-toggle-wrap">
+    <div class="chat-speech-bubble" id="chat-speech-bubble" onclick="toggleChat()">
+      <span class="csb-text" id="csb-text">✨ Namaste! May I help you?</span>
+      <span class="csb-sub" id="csb-sub">AI Wedding Concierge</span>
+      <div class="csb-tail"></div>
+    </div>
+    <button class="chat-toggle" id="chat-toggle" onclick="toggleChat()" title="Anshita 3D AI Concierge" aria-label="Open 3D Concierge">
+      <canvas id="char-3d-canvas" class="char-3d-canvas" width="60" height="60"></canvas>
+      <span class="chat-pulse-ping"></span>
+    </button>
+  </div>
 </div>

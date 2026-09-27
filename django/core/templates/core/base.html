@@ -244,7 +244,17 @@ window.addEventListener('DOMContentLoaded', () => {
 html{scroll-behavior:smooth;font-size:16px;overflow-x:hidden;max-width:100vw;width:100%}
 body{background:var(--bg-main);color:var(--text-main);font-family:var(--font-b);overflow-x:hidden;max-width:100vw;width:100%;position:relative;padding-top:var(--nav-h);transition:background-color .35s ease, color .35s ease}
 /* Keep the custom pointer as an enhancement, never as the only pointer affordance. */
-@media (pointer:fine) and (prefers-reduced-motion:no-preference){body.has-custom-cursor{cursor:none}}
+@media (pointer:fine) and (prefers-reduced-motion:no-preference){
+  body.has-custom-cursor,
+  body.has-custom-cursor a,
+  body.has-custom-cursor button,
+  body.has-custom-cursor .btn-p,
+  body.has-custom-cursor .btn-o,
+  body.has-custom-cursor input,
+  body.has-custom-cursor select {
+    cursor: none !important;
+  }
+}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.vector-path,.preloader-curtain,.preloader-stage{animation:none!important;transition:none!important}.hero-slide,.pkg-card,.rev-card,.gal-item,.evt-card,.svc-card,.about-card-wrap,.calc-card,.reel-card{transition:none!important;transform:none!important}#three-bg,#pcv{display:none!important}}
 
 [data-theme="light"] nav#mnav{background:rgba(250,247,242,0.92)!important;border-bottom:1px solid rgba(154,123,28,0.25)!important;box-shadow:0 8px 24px rgba(0,0,0,0.06)!important}
@@ -260,10 +270,12 @@ a{text-decoration:none;color:inherit}
 button{cursor:pointer;font-family:var(--font-b)}
 
 /* ═══ CURSOR ═══ */
-#cur-dot,#cur-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%)}
-#cur-dot{width:8px;height:8px;background:var(--gold)}
-#cur-ring{width:34px;height:34px;border:1.5px solid var(--gold);opacity:.7;transition:transform .15s,border-color .2s}
-@media(max-width:768px){#cur-dot,#cur-ring{display:none}}
+#cur-dot,#cur-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:999999;border-radius:50%;transform:translate(-50%,-50%);will-change:left,top,transform}
+#cur-dot{width:8px;height:8px;background:var(--gold);box-shadow:0 0 8px rgba(212,175,55,0.8);transition:opacity 0.2s}
+#cur-ring{width:34px;height:34px;border:1.5px solid var(--gold);opacity:.85;box-shadow:0 0 10px rgba(212,175,55,0.3);transition:transform .15s cubic-bezier(0.16,1,0.3,1),border-color .2s,background .2s,opacity .2s}
+[data-theme="light"] #cur-dot{background:#8B6F1A !important;box-shadow:0 0 8px rgba(139,111,26,0.6) !important}
+[data-theme="light"] #cur-ring{border-color:#8B6F1A !important;box-shadow:0 0 10px rgba(139,111,26,0.3) !important}
+@media(max-width:768px){#cur-dot,#cur-ring{display:none !important}}
 
 /* ═══ PARTICLES & THREE.JS CANVAS ═══ */
 #three-bg{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%}
@@ -281,7 +293,7 @@ button{cursor:pointer;font-family:var(--font-b)}
 
 /* ═══ SCROLL SKEW (EVAGHER-INSPIRED HAUTE COUTURE DYNAMICS) ═══ */
 :root { --scroll-skew: 0deg; }
-.pkg-card, .rev-card, .gal-item, .evt-card, .svc-card, .about-card-wrap, .calc-card, .reel-card {
+.pkg-card, .rev-card, .gal-item, .evt-card, .svc-card, .about-card-wrap, .calc-card, .reel-card, .editorial-card, .lookbook-card, .catalog-card {
   transform: skewY(var(--scroll-skew, 0deg));
   transition: transform 0.12s cubic-bezier(.25,1,.5,1), box-shadow .3s, border-color .3s;
   will-change: transform;
@@ -2361,42 +2373,108 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   touch-action: auto !important;
   pointer-events: auto !important;
 }
-.chat-toggle {
-  width: 52px;
-  height: 52px;
+.chat-toggle-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.char-3d-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
   border-radius: 50%;
-  background: linear-gradient(135deg, #181216 0%, #0d0a0c 100%);
-  border: 1.5px solid rgba(212, 175, 55, 0.7);
-  color: var(--gold);
-  font-size: 1.35rem;
+  pointer-events: none;
+}
+.chat-speech-bubble {
+  position: absolute;
+  left: 68px;
+  bottom: 6px;
+  background: rgba(18, 12, 16, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(212, 175, 55, 0.55);
+  border-radius: 16px;
+  padding: 8px 16px;
+  white-space: nowrap;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(212,175,55,0.25);
   cursor: pointer;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.7), 0 0 20px rgba(212,175,55,0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: bubbleFloat 3.5s ease-in-out infinite alternate;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), border-color 0.3s;
+  z-index: 10;
+}
+.chat-speech-bubble:hover {
+  transform: translateY(-3px) scale(1.04);
+  border-color: var(--gold);
+}
+.chat-speech-bubble .csb-text {
+  font-family: var(--font-b, 'Outfit', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #FFF6E5;
+  letter-spacing: 0.5px;
+}
+.chat-speech-bubble .csb-sub {
+  font-size: 0.62rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
+}
+.csb-tail {
+  position: absolute;
+  left: -7px;
+  bottom: 14px;
+  width: 12px;
+  height: 12px;
+  background: rgba(18, 12, 16, 0.95);
+  border-left: 1.5px solid rgba(212, 175, 55, 0.55);
+  border-bottom: 1.5px solid rgba(212, 175, 55, 0.55);
+  transform: rotate(45deg);
+}
+@keyframes bubbleFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-5px); }
+}
+.chat-toggle {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #2a1b24 0%, #100b0e 80%, #050304 100%);
+  border: 1.8px solid rgba(212, 175, 55, 0.85);
+  color: var(--gold);
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.8), 0 0 25px rgba(212,175,55,0.45);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   touch-action: none;
+  overflow: hidden;
+  padding: 0;
 }
 .chat-toggle:active {
   cursor: grabbing;
 }
 .chat-toggle:hover {
-  transform: translateY(-2px) scale(1.08);
-  border-color: var(--gold-l);
-  color: #FFF;
-  box-shadow: 0 12px 36px rgba(212,175,55,0.55);
+  transform: translateY(-2px) scale(1.1);
+  border-color: #FFF;
+  box-shadow: 0 14px 40px rgba(212,175,55,0.7), 0 0 35px rgba(212,175,55,0.5);
 }
 .chat-pulse-ping {
   position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 14px;
-  height: 14px;
+  top: 2px;
+  right: 2px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
   background: #22c55e;
   border: 2px solid #000;
   animation: pingPulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  z-index: 5;
 }
 @keyframes pingPulse {
   0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
@@ -4661,9 +4739,26 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
   z-index: 850;
 }
 [data-theme="light"] .chat-toggle {
-  background: linear-gradient(135deg, #A88620, #8B6F1A) !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 4px 20px rgba(139,111,26,0.3) !important;
+  background: radial-gradient(circle at 35% 35%, #F5EFE6 0%, #EDE4D3 80%, #E2D4BD 100%) !important;
+  border-color: #8B6F1A !important;
+  color: #8B6F1A !important;
+  box-shadow: 0 6px 20px rgba(139,111,26,0.25) !important;
+}
+[data-theme="light"] .chat-speech-bubble {
+  background: #FFFFFF !important;
+  border-color: rgba(154, 123, 28, 0.45) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1), 0 0 15px rgba(154,123,28,0.15) !important;
+}
+[data-theme="light"] .chat-speech-bubble .csb-text {
+  color: #1A1410 !important;
+}
+[data-theme="light"] .chat-speech-bubble .csb-sub {
+  color: #8B6F1A !important;
+}
+[data-theme="light"] .csb-tail {
+  background: #FFFFFF !important;
+  border-left-color: rgba(154, 123, 28, 0.45) !important;
+  border-bottom-color: rgba(154, 123, 28, 0.45) !important;
 }
 [data-theme="light"] .chat-box {
   background: #FFFFFF !important;
@@ -5550,15 +5645,276 @@ let chatSessionId = localStorage.getItem('anshita_chat_session') || Math.random(
 try{ localStorage.setItem('anshita_chat_session', chatSessionId); }catch(e){}
 let adminLoggedIn = {% if user.is_authenticated %}true{% else %}false{% endif %};
 
-/* ── Cursor ── */
-const cdot=document.getElementById('cur-dot'),cring=document.getElementById('cur-ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cdot.style.left=mx+'px';cdot.style.top=my+'px'});
-(function anim(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;cring.style.left=rx+'px';cring.style.top=ry+'px';requestAnimationFrame(anim)})();
-document.querySelectorAll('a,button,.svc-card,.pkg-card,.art-card,.gal-item,.cpn-opt,.evt-card').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cring.style.transform='translate(-50%,-50%) scale(1.8)';cring.style.borderColor='var(--rose)'});
-  el.addEventListener('mouseleave',()=>{cring.style.transform='translate(-50%,-50%) scale(1)';cring.style.borderColor='var(--gold)'});
+/* ── Cursor (Gold Dot & Smooth Interpolated Trailing Ring) ── */
+const cdot = document.getElementById('cur-dot');
+const cring = document.getElementById('cur-ring');
+let mx = window.innerWidth / 2, my = window.innerHeight / 2, rx = mx, ry = my;
+
+// Ensure custom cursor activates on mouse movement
+document.addEventListener('mousemove', e => {
+  mx = e.clientX;
+  my = e.clientY;
+  if (!document.body.classList.contains('has-custom-cursor') && window.matchMedia('(pointer:fine)').matches) {
+    document.body.classList.add('has-custom-cursor');
+  }
+  if (cdot) {
+    cdot.style.left = mx + 'px';
+    cdot.style.top = my + 'px';
+  }
 });
+
+(function animCursor() {
+  rx += (mx - rx) * 0.14;
+  ry += (my - ry) * 0.14;
+  if (cring) {
+    cring.style.left = rx + 'px';
+    cring.style.top = ry + 'px';
+  }
+  requestAnimationFrame(animCursor);
+})();
+
+// Dynamic hover delegation: supports existing and dynamically loaded elements
+document.addEventListener('mouseover', e => {
+  const target = e.target.closest('a, button, .svc-card, .pkg-card, .art-card, .gal-item, .cpn-opt, .evt-card, .editorial-card, .lookbook-card, .catalog-card, .chat-speech-bubble, .chat-toggle, .btn-p, .btn-o, .filter-chip, .fcp-checkout-btn, .fcp-open-drawer');
+  if (target && cring) {
+    cring.style.transform = 'translate(-50%, -50%) scale(1.85)';
+    cring.style.borderColor = 'var(--rose)';
+    cring.style.backgroundColor = 'rgba(232, 164, 184, 0.12)';
+  }
+});
+
+document.addEventListener('mouseout', e => {
+  const target = e.target.closest('a, button, .svc-card, .pkg-card, .art-card, .gal-item, .cpn-opt, .evt-card, .editorial-card, .lookbook-card, .catalog-card, .chat-speech-bubble, .chat-toggle, .btn-p, .btn-o, .filter-chip, .fcp-checkout-btn, .fcp-open-drawer');
+  if (target && cring) {
+    cring.style.transform = 'translate(-50%, -50%) scale(1)';
+    cring.style.borderColor = 'var(--gold)';
+    cring.style.backgroundColor = 'transparent';
+  }
+});
+
+/* ── 3D CHARACTER CONCIERGE & CURSOR-REACTIVE AVATAR ── */
+window.charConciergeState = {
+  mood: 'happy', // 'happy', 'excited', 'thinking', 'recommending'
+  speechTimer: null
+};
+
+(function init3DCharacterConcierge() {
+  const canvas = document.getElementById('char-3d-canvas');
+  if (!canvas || typeof THREE === 'undefined') return;
+
+  try {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.set(0, 0, 4.2);
+
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(60, 60);
+
+    // Luxury Lights
+    const ambientLight = new THREE.AmbientLight(0xfff5eb, 1.4);
+    scene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0xF0D060, 2.2);
+    dirLight1.position.set(3, 4, 5);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0xE8A4B8, 1.6);
+    dirLight2.position.set(-3, -2, 3);
+    scene.add(dirLight2);
+
+    // Group for Head & Tiara & Expression
+    const charGroup = new THREE.Group();
+    scene.add(charGroup);
+
+    // Jewel Avatar Head: Faceted Icosahedron Sphere
+    const headGeo = new THREE.IcosahedronGeometry(1.2, 3);
+    const posArr = headGeo.attributes.position.array;
+    const origHeadPos = new Float32Array(posArr.length);
+    for (let i = 0; i < posArr.length; i++) origHeadPos[i] = posArr[i];
+
+    const headMat = new THREE.MeshStandardMaterial({
+      color: 0xFDE68A,
+      roughness: 0.25,
+      metalness: 0.85,
+      wireframe: false
+    });
+    const headMesh = new THREE.Mesh(headGeo, headMat);
+    charGroup.add(headMesh);
+
+    // Royal Crown / Tiara
+    const tiaraGeo = new THREE.TorusGeometry(1.05, 0.08, 8, 28);
+    const tiaraMat = new THREE.MeshStandardMaterial({
+      color: 0xD4AF37,
+      metalness: 0.95,
+      roughness: 0.15
+    });
+    const tiara = new THREE.Mesh(tiaraGeo, tiaraMat);
+    tiara.rotation.x = Math.PI / 2.3;
+    tiara.position.y = 0.55;
+    charGroup.add(tiara);
+
+    // Crown Center Gem (Ruby / Velvet Rose)
+    const gemGeo = new THREE.OctahedronGeometry(0.3, 0);
+    const gemMat = new THREE.MeshStandardMaterial({
+      color: 0xC2607A,
+      metalness: 0.6,
+      roughness: 0.1
+    });
+    const gem = new THREE.Mesh(gemGeo, gemMat);
+    gem.position.set(0, 1.25, 0.35);
+    charGroup.add(gem);
+
+    // Expressive Eyes (Left & Right)
+    const eyeGeo = new THREE.SphereGeometry(0.18, 16, 16);
+    const eyeMat = new THREE.MeshBasicMaterial({ color: 0x1A1016 });
+    const leftEye = new THREE.Mesh(eyeGeo, eyeMat);
+    leftEye.position.set(-0.42, 0.18, 1.05);
+    leftEye.scale.set(1, 1.2, 0.4);
+    charGroup.add(leftEye);
+
+    const rightEye = new THREE.Mesh(eyeGeo, eyeMat);
+    rightEye.position.set(0.42, 0.18, 1.05);
+    rightEye.scale.set(1, 1.2, 0.4);
+    charGroup.add(rightEye);
+
+    // Eye Sparkle Highlights
+    const sparkGeo = new THREE.SphereGeometry(0.06, 8, 8);
+    const sparkMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+    const leftSpark = new THREE.Mesh(sparkGeo, sparkMat);
+    leftSpark.position.set(-0.38, 0.24, 1.15);
+    charGroup.add(leftSpark);
+
+    const rightSpark = new THREE.Mesh(sparkGeo, sparkMat);
+    rightSpark.position.set(0.46, 0.24, 1.15);
+    charGroup.add(rightSpark);
+
+    // Expressive Smile / Curved Arc
+    const mouthGeo = new THREE.TorusGeometry(0.28, 0.05, 6, 16, Math.PI);
+    const mouthMat = new THREE.MeshBasicMaterial({ color: 0x9B2C3E });
+    const mouth = new THREE.Mesh(mouthGeo, mouthMat);
+    mouth.position.set(0, -0.32, 1.08);
+    mouth.rotation.x = 0.3;
+    charGroup.add(mouth);
+
+    // Orbiting Golden Halo Ring
+    const haloGeo = new THREE.RingGeometry(1.6, 1.66, 32);
+    const haloMat = new THREE.MeshBasicMaterial({ color: 0xD4AF37, side: THREE.DoubleSide });
+    const halo = new THREE.Mesh(haloGeo, haloMat);
+    halo.rotation.x = Math.PI / 3;
+    charGroup.add(halo);
+
+    // Cursor tracking variables for the 3D character
+    let targetRotX = 0, targetRotY = 0;
+    let currRotX = 0, currRotY = 0;
+
+    window.addEventListener('mousemove', e => {
+      // Calculate normalized vector from toggle position
+      const toggle = document.getElementById('chat-toggle');
+      if (!toggle) return;
+      const rect = toggle.getBoundingClientRect();
+      const charCenterX = rect.left + rect.width / 2;
+      const charCenterY = rect.top + rect.height / 2;
+
+      const deltaX = (e.clientX - charCenterX) / window.innerWidth;
+      const deltaY = (e.clientY - charCenterY) / window.innerHeight;
+
+      // Range for rotation
+      targetRotY = Math.max(-0.75, Math.min(0.75, deltaX * 2.2));
+      targetRotX = Math.max(-0.6, Math.min(0.6, deltaY * 2.2));
+    });
+
+    // Toggle button hover expression change
+    const toggleEl = document.getElementById('chat-toggle');
+    if (toggleEl) {
+      toggleEl.addEventListener('mouseenter', () => {
+        window.charConciergeState.mood = 'excited';
+        if (mouth) mouth.scale.set(1.3, 1.5, 1.3);
+      });
+      toggleEl.addEventListener('mouseleave', () => {
+        window.charConciergeState.mood = 'happy';
+        if (mouth) mouth.scale.set(1, 1, 1);
+      });
+    }
+
+    let clock = new THREE.Clock();
+    function renderChar() {
+      requestAnimationFrame(renderChar);
+      const time = clock.getElapsedTime();
+
+      // Smooth tracking toward cursor
+      currRotX += (targetRotX - currRotX) * 0.1;
+      currRotY += (targetRotY - currRotY) * 0.1;
+
+      // Head floating bobbing motion
+      charGroup.position.y = Math.sin(time * 2.5) * 0.08;
+      charGroup.rotation.y = currRotY + Math.sin(time * 1.2) * 0.05;
+      charGroup.rotation.x = currRotX + Math.cos(time * 1.5) * 0.04;
+
+      // Gem and halo spin
+      gem.rotation.y = time * 2;
+      halo.rotation.z = time * 0.6;
+
+      // Dynamic vertex wave / breathing deformation
+      const headPositions = headGeo.attributes.position.array;
+      const mood = window.charConciergeState.mood;
+      const deformFreq = mood === 'excited' ? 4.5 : 2.0;
+      const deformAmp = mood === 'excited' ? 0.08 : 0.035;
+
+      for (let i = 0; i < headPositions.length; i += 3) {
+        const ox = origHeadPos[i];
+        const oy = origHeadPos[i + 1];
+        const oz = origHeadPos[i + 2];
+        const disp = Math.sin(time * deformFreq + ox * 3.0 + oy * 2.0) * deformAmp;
+        headPositions[i] = ox + ox * disp;
+        headPositions[i + 1] = oy + oy * disp;
+        headPositions[i + 2] = oz + oz * disp;
+      }
+      headGeo.attributes.position.needsUpdate = true;
+
+      // Blinking expression every 4 seconds
+      const blinkCycle = (time * 0.8) % 4.0;
+      if (blinkCycle > 3.82) {
+        leftEye.scale.y = 0.1;
+        rightEye.scale.y = 0.1;
+      } else {
+        leftEye.scale.y = (mood === 'excited' ? 1.4 : 1.2);
+        rightEye.scale.y = (mood === 'excited' ? 1.4 : 1.2);
+      }
+
+      renderer.render(scene, camera);
+    }
+    renderChar();
+  } catch (e) {
+    console.debug('3D Character Concierge notice:', e);
+  }
+})();
+
+// Function to update the speech bubble with animated entry
+window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', durationMs = 8000) {
+  const bubble = document.getElementById('chat-speech-bubble');
+  const textEl = document.getElementById('csb-text');
+  const subEl = document.getElementById('csb-sub');
+  if (!bubble || !textEl) return;
+
+  textEl.innerHTML = text;
+  if (subEl && sub) subEl.textContent = sub;
+
+  bubble.style.display = 'flex';
+  bubble.style.animation = 'none';
+  void bubble.offsetWidth; // Trigger reflow
+  bubble.style.animation = 'bubbleFloat 3.5s ease-in-out infinite alternate';
+
+  if (window.charConciergeState) {
+    window.charConciergeState.mood = 'recommending';
+    clearTimeout(window.charConciergeState.speechTimer);
+    if (durationMs > 0) {
+      window.charConciergeState.speechTimer = setTimeout(() => {
+        if (window.charConciergeState) window.charConciergeState.mood = 'happy';
+      }, durationMs);
+    }
+  }
+};
 
 /* ── THREE.JS LIQUID GOLD & CELESTIAL STARDUST CANVAS (EVAGHER-INSPIRED) ── */
 (function initThreeBackground() {
@@ -6038,6 +6394,24 @@ const AnshitaCart = {
     this.save();
     this.openDrawer();
     this.showToast(`✦ Added to Trousseau: ${service.title}`);
+
+    // Contextual Concierge Dialogue Triggers
+    if (typeof window.setConciergeSpeech === 'function') {
+      const isPkgOrCombo = !!service.isCombo || (service.category === 'bridal') || (service.title && service.title.toLowerCase().includes('package'));
+      if (isPkgOrCombo) {
+        // If package chosen: suggest add-on services at lowest bundle cost
+        window.setConciergeSpeech(
+          `✨ <strong>Royal Choice!</strong> Add Hair Artistry or Side Makeup at an exclusive <em>₹2,500 VIP rate</em>?`,
+          '💎 Concierge Privilege Offer'
+        );
+      } else {
+        // If single service chosen: suggest full bridal package with perks
+        window.setConciergeSpeech(
+          `💄 <strong>Exquisite!</strong> Looking for our all-inclusive <em>Bridal Package</em> with 2 free side makeups?`,
+          '👑 Package Recommendation'
+        );
+      }
+    }
   },
 
   removeItem(index) {
@@ -7738,6 +8112,23 @@ function detectUserRegionAndRecommendLanguages() {
     const isBhojpuri = userLoc.includes('varanasi') || userLoc.includes('patna') || userLoc.includes('gorakhpur') || userLoc.includes('ballia') || userLoc.includes('bhojpur') || userLoc.includes('gaya') || userLoc.includes('chhapra');
     const isMaharashtra = userLoc.includes('nagpur') || userLoc.includes('mumbai') || userLoc.includes('pune');
 
+    const speechGreetings = {
+      'bundelkhandi': 'राम-राम! का मदद कर सकत हैं आपकी?',
+      'baghelkhandi': 'प्रणाम! कइसन मदद चाहि?',
+      'bhojpuri': 'प्रणाम! हम रउआ का कइसे मदद करीं?',
+      'marathi': 'नमस्कार! मी आपली काय मदत करू शकते?',
+      'hindi': 'नमस्ते! मैं आपकी कैसे सहायता कर सकती हूँ?',
+      'english': '✨ Namaste! May I help you?'
+    };
+
+    let detectedLang = savedLang || 'hindi';
+    if (!savedLang) {
+      if (isBundelkhand) detectedLang = 'bundelkhandi';
+      else if (isBaghelkhand) detectedLang = 'baghelkhandi';
+      else if (isBhojpuri) detectedLang = 'bhojpuri';
+      else if (isMaharashtra) detectedLang = 'marathi';
+    }
+
     if (subTitle) {
       if (isBundelkhand) {
         subTitle.innerHTML = '✦ <strong>बुंदेलखंड विशेष</strong>: आपन बुंदेली बोली में बतराय के लाने नीचे चुनो:';
@@ -7749,10 +8140,32 @@ function detectUserRegionAndRecommendLanguages() {
         subTitle.innerHTML = '✦ अपने क्षेत्र व पसंद की भाषा या क्षेत्रीय बोली चुनें:';
       }
     }
+
+    // Set speech bubble text according to region
+    const greetText = speechGreetings[detectedLang] || speechGreetings['hindi'];
+    if (typeof window.setConciergeSpeech === 'function') {
+      window.setConciergeSpeech(greetText, 'Anshita AI Concierge', 0);
+    }
   } catch (e) {
     console.debug('Region sensing error:', e);
   }
 }
+
+// IP-based Geo Location detection (Async refinement)
+(function detectUserGeoIP() {
+  try {
+    fetch('https://ipapi.co/json/', { cache: 'force-cache' })
+      .then(res => res.json())
+      .then(data => {
+        if (!data || !data.city) return;
+        const city = (data.city || '').toLowerCase();
+        const region = (data.region || '').toLowerCase();
+        localStorage.setItem('user_city_choice', city + ' ' + region);
+        detectUserRegionAndRecommendLanguages();
+      })
+      .catch(() => {});
+  } catch (err) {}
+})();
 
 window.selectChatLanguage = function(langCode, langName) {
   window.selectedChatLanguage = langCode;
@@ -7764,6 +8177,19 @@ window.selectChatLanguage = function(langCode, langName) {
     chipsContainer.querySelectorAll('.chat-lang-chip').forEach(c => c.classList.remove('active'));
     const btn = event ? event.currentTarget : chipsContainer.querySelector(`[onclick*="'${langCode}'"]`);
     if (btn) btn.classList.add('active');
+  }
+
+  // Update Speech Bubble greeting text
+  const speechGreetings = {
+    'bundelkhandi': 'राम-राम! का मदद कर सकत हैं आपकी?',
+    'baghelkhandi': 'प्रणाम! कइसन मदद चाहि?',
+    'bhojpuri': 'प्रणाम! हम रउआ का कइसे मदद करीं?',
+    'marathi': 'नमस्कार! मी आपली काय मदत करू शकते?',
+    'hindi': 'नमस्ते! मैं आपकी कैसे सहायता कर सकती हूँ?',
+    'english': '✨ Namaste! May I help you?'
+  };
+  if (typeof window.setConciergeSpeech === 'function' && speechGreetings[langCode]) {
+    window.setConciergeSpeech(speechGreetings[langCode], 'Anshita AI Concierge', 0);
   }
 
   // Add system feedback in chat
