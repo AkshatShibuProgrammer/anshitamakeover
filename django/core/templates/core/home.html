@@ -874,7 +874,7 @@
 </section>
 
 <!-- ═══ OCCASION DISCOVERY: DIRECT EDITORIAL PATHWAYS ═══ -->
-<section id="occasions" style="background:var(--dark);padding:50px 0 30px;position:relative">
+<section id="occasions" style="padding:50px 0 30px;position:relative">
   <div class="sw">
     <div class="rev on" style="text-align:center;margin-bottom:28px">
       <p class="sl" style="justify-content:center">✦ CURATED CEREMONY PATHWAYS</p>
@@ -913,249 +913,285 @@
   </div>
 </section>
 
-<!-- ═══ SERVICES: CURATED COUTURE DISCIPLINES ═══ -->
-<section id="services" style="background:var(--dark)">
+<!-- ═══ UNIFIED HAUTE COUTURE SERVICES & GALLERY SHOWCASE (OPTION A: POWERPOINT MORPH) ═══ -->
+<section id="services" style="position:relative;overflow:visible;padding:60px 0 30px">
+  <div id="gallery" style="position:absolute;top:0;left:0"></div>
+  <div class="editorial-watermark" style="top:12%">EDITORIAL COUTURE</div>
   <div class="sw">
-    <div class="rev">
-      <p class="sl">{{ t.services_sl|default:'Artistry Disciplines' }}</p>
-      <h2 class="sh">{{ t.services_sh|default:'Featured Studio Services' }}</h2>
-      <div class="gdiv"></div>
-      <p class="ss">{{ t.services_ss|default:'A curated selection of our signature disciplines. Explore the complete catalogue for comprehensive specifications and package options.' }}</p>
+    <div class="rev" style="text-align:center">
+      <p class="sl" style="justify-content:center">{{ t.services_sl|default:'Signature Disciplines & Lookbook' }}</p>
+      <h2 class="sh" style="font-size:2.4rem">{{ t.services_sh|default:'Haute Couture Bridal Atelier & Craft' }}</h2>
+      <div class="gdiv" style="margin:12px auto"></div>
+      <p class="ss" style="max-width:720px;margin:0 auto">Experience the pinnacle of Indian bridal artistry. Scroll through our signature service disciplines with real-time morphing specifications, authentic client portraits, and 1-click trousseau reservation.</p>
     </div>
 
-    <!-- Multi-Event & Package Privilege Notice Banner -->
-    <div class="svc-package-privilege-banner rev d1">
-      <div class="sppb-left">
-        <div class="sppb-icon" style="color:var(--gold)">✦</div>
-        <div class="sppb-text">
-          <h4>Multi-Event Celebrations & Bespoke Packages</h4>
-          <p>The individual disciplines below represent standalone a-la-carte rates. When reserving two or more events or selecting our curated Wedding Celebration Suites, rates reflect privileged package pricing with bundled courtesies up to ₹27,000.</p>
+    <!-- ═══ EVAGHER HAUTE COUTURE SCROLL-MORPH SHOWCASE (PPT MORPH PRECISION) ═══ -->
+    <div class="ev-morph-container" id="evMorphContainer">
+      <div class="ev-morph-viewport" id="evMorphViewport">
+        
+        <!-- Topbar -->
+        <div class="ev-topbar">
+          <div class="ev-top-left">
+            <span class="ev-brand-pill">EDITORIAL COUTURE ARCHIVE</span>
+            <span class="ev-sep">·</span>
+            <div class="ev-look-counter">LOOK <span id="evActiveNum">01</span> / 06</div>
+          </div>
+          <div class="ev-top-right">
+            <div class="ev-track-bar">
+              <div class="ev-track-fill" id="evTrackFill"></div>
+            </div>
+            <span class="ev-scroll-hint">SCROLL TO MORPH ↓</span>
+          </div>
         </div>
-      </div>
-      <a href="/packages/" class="sppb-btn">Explore Wedding Suites & Inclusions ↓</a>
-    </div>
 
-    <div class="svc-split-list" style="margin-top:40px">
-      {% for svc in services|slice:":3" %}
-      <div class="svc-split-card svc-card-{{ svc.id }} rev d{{ forloop.counter|default:1 }}" id="studio-svc-{{ svc.id }}" data-svc-id="{{ svc.id }}">
-        <div class="svc-split-left" onclick="openLookbook('{{ svc.look_group_id|default:svc.category }}')" style="cursor:pointer">
-          <img src="{{ svc.display_image }}" alt="{{ svc.title }}" class="svc-split-img">
-          <span class="svc-split-badge">{{ svc.get_category_display }}</span>
-          <div class="svc-split-zoom-hint">
-            <span>✦ View Real Transformations</span>
-            <span style="color:var(--gold)">Explore ↗</span>
-          </div>
-        </div>
-        <div class="svc-split-right">
-          <div class="svc-split-discipline">
-            <span>✦</span> {{ svc.discipline }}
-          </div>
-          <h3 class="svc-split-title">{{ svc.title }}</h3>
+        <!-- Main Split Stage Grid -->
+        <div class="ev-grid-stage">
           
-          <!-- Clean Pricing Presentation (Actual Booking Price + Crossed-Out Original MRP + Bundle Note) -->
-          <div class="svc-split-price-box" style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:10px 0 14px">
-            <span class="svc-split-price-val" style="font-size:1.45rem;font-weight:700;color:var(--gold)">
-              ₹{{ svc.price|floatformat:0 }}
-            </span>
-            {% if svc.discount_price and svc.discount_price > svc.price %}
-            <span style="text-decoration:line-through;color:rgba(245,237,214,0.45);font-size:1.02rem" title="Standard Regular Rate">
-              ₹{{ svc.discount_price|floatformat:0 }}
-            </span>
-            {% endif %}
-            {% if svc.bundle_note %}
-            <span style="background:rgba(212,175,55,0.12);border:1px solid rgba(212,175,55,0.35);color:var(--gold-l);padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:600;letter-spacing:0.5px">
-              {{ svc.bundle_note }}
-            </span>
-            {% endif %}
-          </div>
+          <!-- Visual Column: Pinned Haute Couture Portrait Frame -->
+          <div class="ev-visual-col">
+            <div class="ev-portrait-frame" id="evPortraitFrame">
+              
+              <!-- 6 Layered Morph Plates (PowerPoint Morph in 3D Depth) -->
+              <div class="ev-plate active" data-index="0" onclick="openLookbook('royal_crimson')">
+                <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah Royal Crimson Bride" class="ev-morph-img">
+                <div class="ev-plate-overlay"></div>
+              </div>
+              <div class="ev-plate" data-index="1" onclick="openLookbook('christian_ivory')">
+                <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Christian Bridal Couture Suite" class="ev-morph-img">
+                <div class="ev-plate-overlay"></div>
+              </div>
+              <div class="ev-plate" data-index="2" onclick="openLookbook('fuchsia_palace')">
+                <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia Silk & Emerald Palace" class="ev-morph-img">
+                <div class="ev-plate-overlay"></div>
+              </div>
+              <div class="ev-plate" data-index="3" onclick="openLookbook('maroon_velvet')">
+                <img src="{% static 'core/images/curated/dsc09702.jpg' %}?v=2" alt="Palace Maroon Velvet Heritage" class="ev-morph-img">
+                <div class="ev-plate-overlay"></div>
+              </div>
+              <div class="ev-plate" data-index="4" onclick="openLookbook('maroon_veil')">
+                <img src="{% static 'core/images/curated/ig_post_DRP0QCODVfD.jpg' %}" alt="Ring Ceremony Sheer Maroon Veil" class="ev-morph-img">
+                <div class="ev-plate-overlay"></div>
+              </div>
+              <div class="ev-plate" data-index="5" onclick="openLookbook('bengali_heritage')">
+                <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Traditional Kolkata Banarasi & Chandan" class="ev-morph-img">
+                <div class="ev-plate-overlay"></div>
+              </div>
 
-          <!-- Crisp, Concise Luxury Editorial Description -->
-          <p class="svc-split-desc" style="font-size:0.88rem;line-height:1.6;color:rgba(245,237,214,0.85);margin-bottom:18px">
-            {{ svc.description }}
-          </p>
+              <!-- Floating Album Peek Trigger Tag -->
+              <div class="ev-img-peek-tag" id="evImgPeekTag" onclick="openCurrentMorphLookbook()">
+                <span>📖 Open Complete 4K Lookbook & Reels</span>
+                <span>↗</span>
+              </div>
 
-          {% if svc.get_features_list %}
-          <button type="button" class="svc-toggle-inc" onclick="toggleSvcDetails(this)" aria-expanded="false">
-            <span class="svc-toggle-text">View Full Inclusions & Kit</span>
-            <span class="svc-toggle-icon">▾</span>
-          </button>
-          <div class="svc-details-collapsible">
-            <div class="svc-split-inclusions">
-              <span style="grid-column:1/-1;font-size:0.72rem;letter-spacing:1.5px;color:var(--gold);font-weight:700;display:block;margin-bottom:4px">WHAT IS INCLUDED IN THIS SERVICE:</span>
-              {% for feat in svc.get_features_list %}
-              <div class="svc-split-inc-item"><span>✓</span> {{ feat }}</div>
-              {% endfor %}
+              <!-- Mobile Quick Step Arrows -->
+              <div class="ev-mob-arrows">
+                <button type="button" class="ev-mob-arr-btn" onclick="stepMorphSlide(-1)" aria-label="Previous Look">←</button>
+                <button type="button" class="ev-mob-arr-btn" onclick="stepMorphSlide(1)" aria-label="Next Look">→</button>
+              </div>
             </div>
           </div>
-          {% endif %}
 
-          <div class="svc-split-actions" style="margin-top:20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-            <a href="https://wa.me/{{ whatsapp }}?text=Namaste!%20I%20would%20like%20to%20reserve%20{{ svc.title|urlencode }}." target="_blank" class="btn-wa" style="padding:10px 22px;font-size:0.78rem">
-              Reserve {{ svc.title }}
-            </a>
-            <button type="button" class="btn-o" style="padding:9px 16px;font-size:0.75rem" onclick="AnshitaCart.addItem({id:'service-{{ svc.id }}',title:'{{ svc.title|escapejs }}',price:{{ svc.price|default:0 }},category:'{{ svc.category }}',image:'{{ svc.display_image|escapejs }}'})">
-              Add to Beauty Plan +
-            </button>
-            <a href="{% url 'service_detail' svc.id %}" style="font-size:0.78rem;color:var(--gold);text-decoration:underline;margin-left:4px">
-              View Details ↗
-            </a>
+          <!-- Details Column: Pinned Haute Couture Details Console -->
+          <div class="ev-details-col">
+            <div class="ev-details-card" id="evDetailsCard">
+              <div class="ev-details-stage" id="evDetailsStage">
+                
+                <!-- Slide 01: Royal Crimson -->
+                <div class="ev-detail-slide active" data-index="0">
+                  <div class="ev-badge-row">
+                    <span class="ev-disc-badge">Signature Discipline 01 · 4 Angles</span>
+                    <span class="ev-price-tag">₹25,000 · Master Suite</span>
+                  </div>
+                  <h2 class="ev-title">Imperial Bridal Couture & Airbrush Artistry</h2>
+                  <p class="ev-desc">Micro-buffed HD & atomized TEMPTU airbrush bases ensuring 18+ hour cry-proof and sweat resilience for royal pheras.</p>
+                  <div class="ev-specs-grid">
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Longevity</span><strong class="ev-spec-val">24+ Hours Cry-Proof</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Primary Technique</span><strong class="ev-spec-val">Atomized Airbrush</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Vanity Kit</span><strong class="ev-spec-val">Dior, CT, Huda, NARS</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Ceremony Aura</span><strong class="ev-spec-val">Sacred Royal Mandap</strong></div>
+                  </div>
+                  <div class="ev-actions-row">
+                    <button type="button" class="btn-gold" onclick="AnshitaCart.addItem({id:'service-bridal-airbrush',title:'Imperial Bridal Couture & Airbrush Artistry',price:25000,category:'bridal',image:'/static/core/images/curated/royal_crimson_bride_angle3.jpg'})">
+                      <span>Add to Trousseau +</span>
+                    </button>
+                    <button type="button" class="btn-outline" onclick="openLookbook('royal_crimson')">
+                      <span>View 4K Album ↗</span>
+                    </button>
+                    <a href="https://api.whatsapp.com/send?phone={{ whatsapp|default:'917879223442' }}&text=Namaste!%20I%20would%20like%20to%20reserve%20Imperial%20Bridal%20Couture%20(₹25,000)." target="_blank" class="btn-outline" style="border-color:rgba(37,211,102,0.5);color:#4ade80">
+                      <span>WhatsApp ✦</span>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Slide 02: Christian Ivory -->
+                <div class="ev-detail-slide" data-index="1">
+                  <div class="ev-badge-row">
+                    <span class="ev-disc-badge">Signature Discipline 02 · Church Couture</span>
+                    <span class="ev-price-tag">₹22,000 · Cathedral Suite</span>
+                  </div>
+                  <h2 class="ev-title">Christian Bridal Couture & Cathedral Veil</h2>
+                  <p class="ev-desc">Bespoke church ceremony styling featuring luminous porcelain HD airbrush, off-shoulder ivory gown framing, and multi-tier cathedral veil anchoring.</p>
+                  <div class="ev-specs-grid">
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Longevity</span><strong class="ev-spec-val">18–20 Hours Wear</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Primary Technique</span><strong class="ev-spec-val">Porcelain Glass-Skin</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Vanity Kit</span><strong class="ev-spec-val">Estée Lauder, MAC Pro, NARS</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Ceremony Aura</span><strong class="ev-spec-val">Cathedral Nuptials & Reception</strong></div>
+                  </div>
+                  <div class="ev-actions-row">
+                    <button type="button" class="btn-gold" onclick="AnshitaCart.addItem({id:'service-christian-veil',title:'Christian Bridal Couture & Cathedral Veil',price:22000,category:'bridal',image:'/static/core/images/curated/reception_ivory_bride.jpg'})">
+                      <span>Add to Trousseau +</span>
+                    </button>
+                    <button type="button" class="btn-outline" onclick="openLookbook('christian_ivory')">
+                      <span>View 4K Album ↗</span>
+                    </button>
+                    <a href="https://api.whatsapp.com/send?phone={{ whatsapp|default:'917879223442' }}&text=Namaste!%20I%20would%20like%20to%20reserve%20Christian%20Bridal%20Couture%20(₹22,000)." target="_blank" class="btn-outline" style="border-color:rgba(37,211,102,0.5);color:#4ade80">
+                      <span>WhatsApp ✦</span>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Slide 03: Fuchsia Palace -->
+                <div class="ev-detail-slide" data-index="2">
+                  <div class="ev-badge-row">
+                    <span class="ev-disc-badge">Signature Discipline 03 · 4K Recreated</span>
+                    <span class="ev-price-tag">₹28,000 · Royal Heritage</span>
+                  </div>
+                  <h2 class="ev-title">Imperial Fuchsia Silk & Emerald Palace Suite</h2>
+                  <p class="ev-desc">Majestic heritage styling with rose-dew HD radiance, gilded cut-crease eye artistry, and Zambian emerald choker settings.</p>
+                  <div class="ev-specs-grid">
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Longevity</span><strong class="ev-spec-val">20+ Hours Cry-Proof</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Primary Technique</span><strong class="ev-spec-val">Gilded Cut-Crease HD</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Vanity Kit</span><strong class="ev-spec-val">Dior Prestige, Anastasia, Huda</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Ceremony Aura</span><strong class="ev-spec-val">Palace Grand Reception</strong></div>
+                  </div>
+                  <div class="ev-actions-row">
+                    <button type="button" class="btn-gold" onclick="AnshitaCart.addItem({id:'service-fuchsia-palace',title:'Imperial Fuchsia Silk & Emerald Palace Suite',price:28000,category:'bridal',image:'/static/core/images/curated/fuchsia_emerald_bride_hq.jpg'})">
+                      <span>Add to Trousseau +</span>
+                    </button>
+                    <button type="button" class="btn-outline" onclick="openLookbook('fuchsia_palace')">
+                      <span>View 4K Album ↗</span>
+                    </button>
+                    <a href="https://api.whatsapp.com/send?phone={{ whatsapp|default:'917879223442' }}&text=Namaste!%20I%20would%20like%20to%20reserve%20Imperial%20Fuchsia%20Palace%20Suite%20(₹28,000)." target="_blank" class="btn-outline" style="border-color:rgba(37,211,102,0.5);color:#4ade80">
+                      <span>WhatsApp ✦</span>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Slide 04: Maroon Velvet -->
+                <div class="ev-detail-slide" data-index="3">
+                  <div class="ev-badge-row">
+                    <span class="ev-disc-badge">Authentic DSLR Shoot · 6 Angles</span>
+                    <span class="ev-price-tag">₹26,000 · Velvet Royal</span>
+                  </div>
+                  <h2 class="ev-title">Palace Maroon Velvet Heritage Couture</h2>
+                  <p class="ev-desc">Deep wine velvet lehenga, hand-embroidered gold zardozi, antique polki nath, and double royal veil architecture.</p>
+                  <div class="ev-specs-grid">
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Longevity</span><strong class="ev-spec-val">24 Hours Cry-Proof</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Primary Technique</span><strong class="ev-spec-val">Micro-Buffed Royal Matte</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Vanity Kit</span><strong class="ev-spec-val">Charlotte Tilbury, MAC, Bobbi Brown</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Ceremony Aura</span><strong class="ev-spec-val">Heritage Fort & Vivah</strong></div>
+                  </div>
+                  <div class="ev-actions-row">
+                    <button type="button" class="btn-gold" onclick="AnshitaCart.addItem({id:'service-maroon-velvet',title:'Palace Maroon Velvet Heritage Couture',price:26000,category:'bridal',image:'/static/core/images/curated/dsc09702.jpg'})">
+                      <span>Add to Trousseau +</span>
+                    </button>
+                    <button type="button" class="btn-outline" onclick="openLookbook('maroon_velvet')">
+                      <span>View 4K Album ↗</span>
+                    </button>
+                    <a href="https://api.whatsapp.com/send?phone={{ whatsapp|default:'917879223442' }}&text=Namaste!%20I%20would%20like%20to%20reserve%20Palace%20Maroon%20Velvet%20Couture%20(₹26,000)." target="_blank" class="btn-outline" style="border-color:rgba(37,211,102,0.5);color:#4ade80">
+                      <span>WhatsApp ✦</span>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Slide 05: Maroon Veil -->
+                <div class="ev-detail-slide" data-index="4">
+                  <div class="ev-badge-row">
+                    <span class="ev-disc-badge">Signature Discipline 05 · Ring Ceremony</span>
+                    <span class="ev-price-tag">₹18,000 · Glam Suite</span>
+                  </div>
+                  <h2 class="ev-title">Ring Ceremony & Sheer Maroon Veil Radiance</h2>
+                  <p class="ev-desc">Enchanting sheer gold-bordered veil framing, warm smokey cut-crease eyes, and delicate maang tikka alignment.</p>
+                  <div class="ev-specs-grid">
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Longevity</span><strong class="ev-spec-val">16+ Hours Longwear</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Primary Technique</span><strong class="ev-spec-val">Soft Glam Smokey HD</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Vanity Kit</span><strong class="ev-spec-val">Too Faced, Laura Mercier, Fenty</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Ceremony Aura</span><strong class="ev-spec-val">Ring Ceremony & Sangeet</strong></div>
+                  </div>
+                  <div class="ev-actions-row">
+                    <button type="button" class="btn-gold" onclick="AnshitaCart.addItem({id:'service-maroon-veil',title:'Ring Ceremony & Sheer Maroon Veil Radiance',price:18000,category:'roka',image:'/static/core/images/curated/ig_post_DRP0QCODVfD.jpg'})">
+                      <span>Add to Trousseau +</span>
+                    </button>
+                    <button type="button" class="btn-outline" onclick="openLookbook('maroon_veil')">
+                      <span>View 4K Album ↗</span>
+                    </button>
+                    <a href="https://api.whatsapp.com/send?phone={{ whatsapp|default:'917879223442' }}&text=Namaste!%20I%20would%20like%20to%20reserve%20Ring%20Ceremony%20Radiance%20(₹18,000)." target="_blank" class="btn-outline" style="border-color:rgba(37,211,102,0.5);color:#4ade80">
+                      <span>WhatsApp ✦</span>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Slide 06: Bengali Heritage -->
+                <div class="ev-detail-slide" data-index="5">
+                  <div class="ev-badge-row">
+                    <span class="ev-disc-badge">Cultural Specialty Heritage · 4 Photos</span>
+                    <span class="ev-price-tag">₹24,000 · Cultural Master</span>
+                  </div>
+                  <h2 class="ev-title">Traditional Kolkata Banarasi & Chandan Art</h2>
+                  <p class="ev-desc">Intricate forehead sandalwood artwork, artisanal glitter cut-crease eye makeup, and pure silk Banarasi draping with sacred alta grace.</p>
+                  <div class="ev-specs-grid">
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Longevity</span><strong class="ev-spec-val">20+ Hours Water-Resistant</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Primary Technique</span><strong class="ev-spec-val">Handcrafted Chandan Art</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Vanity Kit</span><strong class="ev-spec-val">Kryolan Pro, MAC, PAC HD</strong></div>
+                    <div class="ev-spec-item"><span class="ev-spec-lbl">Ceremony Aura</span><strong class="ev-spec-val">Saat Paake Bandha & Shubho Drishti</strong></div>
+                  </div>
+                  <div class="ev-actions-row">
+                    <button type="button" class="btn-gold" onclick="AnshitaCart.addItem({id:'service-bengali-chandan',title:'Traditional Kolkata Banarasi & Chandan Art',price:24000,category:'bridal',image:'/static/core/images/curated/bengali_bride_mukut_chandan.jpg'})">
+                      <span>Add to Trousseau +</span>
+                    </button>
+                    <button type="button" class="btn-outline" onclick="openLookbook('bengali_heritage')">
+                      <span>View 4K Album ↗</span>
+                    </button>
+                    <a href="https://api.whatsapp.com/send?phone={{ whatsapp|default:'917879223442' }}&text=Namaste!%20I%20would%20like%20to%20reserve%20Traditional%20Banarasi%20Art%20(₹24,000)." target="_blank" class="btn-outline" style="border-color:rgba(37,211,102,0.5);color:#4ade80">
+                      <span>WhatsApp ✦</span>
+                    </a>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Milestone Pips -->
+              <div class="ev-pips-row">
+                <button type="button" class="ev-pip active" onclick="jumpToMorphSlide(0)" title="Royal Crimson">01</button>
+                <button type="button" class="ev-pip" onclick="jumpToMorphSlide(1)" title="Christian Ivory">02</button>
+                <button type="button" class="ev-pip" onclick="jumpToMorphSlide(2)" title="Fuchsia Palace">03</button>
+                <button type="button" class="ev-pip" onclick="jumpToMorphSlide(3)" title="Maroon Velvet">04</button>
+                <button type="button" class="ev-pip" onclick="jumpToMorphSlide(4)" title="Ring Ceremony">05</button>
+                <button type="button" class="ev-pip" onclick="jumpToMorphSlide(5)" title="Bengali Heritage">06</button>
+              </div>
+
+            </div>
           </div>
-        </div>
-      </div>
-      {% empty %}
-      <p style="text-align:center;color:rgba(245,237,214,0.5);padding:40px">No services configured yet.</p>
-      {% endfor %}
-    </div>
 
-    <!-- Discovery Link to Dedicated Full Catalogue -->
-    <div style="text-align:center;margin-top:40px">
-      <a href="/services/" class="btn-o" style="display:inline-flex;align-items:center;gap:8px;padding:12px 32px;font-size:0.85rem">
-        <span>Explore All Studio Disciplines</span>
-        <span>↗</span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ LAYER 1, 2 & 3: EDITORIAL SERVICE GALLERY & CRAFT SHOWCASE ═══ -->
-<section id="gallery" style="background:var(--dark);position:relative;overflow:hidden;padding:70px 0">
-  <div class="editorial-watermark" style="top:15%">EDITORIAL COUTURE</div>
-  <div class="sw">
-    <div class="rev">
-      <p class="sl">{{ t.gallery_sl|default:'Artistry Showcase & Disciplines' }}</p>
-      <h2 class="sh">{{ t.gallery_sh|default:'Signature Craft & Lookbook Gallery' }}</h2>
-      <div class="gdiv"></div>
-      <p class="ss">Experience the pinnacle of Indian bridal artistry. Seamlessly explore our signature service disciplines, view real transformations, and compare bespoke coverage.</p>
-    </div>
-
-    <!-- LAYER 1: Dynamic Auto-Rotating Hero Service Showcase Carousel -->
-    <div class="gal-showcase-hero rev d1" id="galShowcaseHero">
-      <!-- Slide 1: Sacred Vivah Royal Crimson Bride -->
-      <div class="gal-slide active" data-slide="0" onclick="openLookbook('royal_crimson')" style="cursor:pointer">
-        <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah Royal Crimson Bride" class="gal-slide-img">
-        <div class="gal-slide-overlay"></div>
-        <div class="gal-slide-caption">
-          <span class="gal-slide-badge">Signature Discipline 01 · 4 Angles</span>
-          <h3>Imperial Bridal Couture & Airbrush Artistry</h3>
-          <p>Micro-buffed HD & atomized TEMPTU airbrush bases ensuring 18+ hour cry-proof and sweat resilience for royal pheras.</p>
         </div>
-      </div>
-      <!-- Slide 2: Christian Bridal Couture Suite -->
-      <div class="gal-slide" data-slide="1" onclick="openLookbook('christian_ivory')" style="cursor:pointer">
-        <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Christian Bridal Couture Suite" class="gal-slide-img">
-        <div class="gal-slide-overlay"></div>
-        <div class="gal-slide-caption">
-          <span class="gal-slide-badge">Signature Discipline 02 · Couture Suite</span>
-          <h3>Christian Bridal Couture & Cathedral Veil</h3>
-          <p>Bespoke church ceremony styling featuring luminous porcelain HD airbrush, off-shoulder ivory gown framing, and multi-tier cathedral veil anchoring.</p>
-        </div>
-      </div>
-      <!-- Slide 3: Imperial Fuchsia & Emerald Palace Bride (Recreated 4K) -->
-      <div class="gal-slide" data-slide="2" onclick="openLookbook('fuchsia_palace')" style="cursor:pointer">
-        <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia & Emerald Palace Bride" class="gal-slide-img">
-        <div class="gal-slide-overlay"></div>
-        <div class="gal-slide-caption">
-          <span class="gal-slide-badge">Signature Discipline 03 · 4K Recreated</span>
-          <h3>Imperial Fuchsia Silk & Emerald Palace Suite</h3>
-          <p>Majestic heritage styling with rose-dew HD radiance, gilded cut-crease eye artistry, and Zambian emerald choker settings.</p>
-        </div>
-      </div>
-      <!-- Slide 4: Palace Maroon Velvet Heritage (Telegram DSLR Shoot) -->
-      <div class="gal-slide" data-slide="3" onclick="openLookbook('maroon_velvet')" style="cursor:pointer">
-        <img src="{% static 'core/images/curated/dsc09702.jpg' %}?v=2" alt="Palace Maroon Velvet Heritage" class="gal-slide-img">
-        <div class="gal-slide-overlay"></div>
-        <div class="gal-slide-caption">
-          <span class="gal-slide-badge">Authentic DSLR Shoot · 6 Angles</span>
-          <h3>Palace Maroon Velvet Heritage Couture</h3>
-          <p>Deep wine velvet lehenga, hand-embroidered gold zardozi, antique polki nath, and double royal veil architecture.</p>
-        </div>
-      </div>
-      <!-- Slide 5: Ring Ceremony Sheer Maroon Veil Bride -->
-      <div class="gal-slide" data-slide="4" onclick="openLookbook('maroon_veil')" style="cursor:pointer">
-        <img src="{% static 'core/images/curated/ig_post_DRP0QCODVfD.jpg' %}" alt="Ring Ceremony Sheer Maroon Veil Bride" class="gal-slide-img">
-        <div class="gal-slide-overlay"></div>
-        <div class="gal-slide-caption">
-          <span class="gal-slide-badge">Signature Discipline 05 · Ring Ceremony</span>
-          <h3>Ring Ceremony & Sheer Maroon Veil Radiance</h3>
-          <p>Enchanting sheer gold-bordered veil framing, warm smokey cut-crease eyes, and delicate maang tikka alignment.</p>
-        </div>
-      </div>
-      <!-- Slide 6: Traditional Kolkata Banarasi & Chandan Art -->
-      <div class="gal-slide" data-slide="5" onclick="openLookbook('bengali_heritage')" style="cursor:pointer">
-        <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Traditional Bengali Mukut & Chandan" class="gal-slide-img">
-        <div class="gal-slide-overlay"></div>
-        <div class="gal-slide-caption">
-          <span class="gal-slide-badge">Cultural Specialty Heritage · 4 Photos</span>
-          <h3>Traditional Kolkata Banarasi & Chandan Art</h3>
-          <p>Intricate forehead sandalwood artwork, artisanal glitter cut-crease eye makeup, and pure silk Banarasi draping with sacred alta grace.</p>
-        </div>
-      </div>
-
-      <!-- Navigation Dots -->
-      <div class="gal-hero-dots">
-        <span class="gal-hero-dot active" onclick="setGalHeroSlide(0)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(1)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(2)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(3)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(4)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(5)"></span>
       </div>
     </div>
 
-    <!-- LAYER 2: Curated 3-Album Lookbook Edit -->
-    <div class="gal-grid rev d2" style="margin-top:20px">
-      {% for grp in look_groups|slice:":3" %}
-      <div class="gal-item lg-card-{{ grp.id }}" id="lookgroup-{{ grp.id }}" data-lg-id="{{ grp.id }}" data-cat="{{ grp.category }}" onclick="openLookbook('{{ grp.id }}')" style="cursor:pointer">
-        <img src="{{ grp.display_cover }}?v=2" alt="{{ grp.name }}" loading="lazy">
-        
-        <!-- Person & Makeup Type Folder Badges -->
-        <div style="position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:center;z-index:3;pointer-events:none">
-          {% if grp.client_name %}
-          <span style="background:rgba(20,16,18,0.92);backdrop-filter:blur(8px);border:1px solid rgba(212,175,55,0.6);border-radius:14px;padding:4px 10px;font-size:0.68rem;font-weight:700;color:var(--gold);letter-spacing:0.5px">
-            👤 {{ grp.client_name }}
-          </span>
-          {% endif %}
-          <span style="background:rgba(0,0,0,0.75);border-radius:12px;padding:3px 8px;font-size:0.62rem;color:rgba(245,237,214,0.9);letter-spacing:0.5px">
-            {{ grp.media_items.count }} Media
-          </span>
-        </div>
-
-        <div class="gal-ov">
-          <span style="font-weight:700;letter-spacing:1px">🔍 Open Album Peek</span>
-          <strong style="font-size:.78rem;color:var(--gold-l);display:block;margin-top:6px">{{ grp.makeup_type|default:grp.name }}</strong>
-          <small style="font-size:.65rem;color:rgba(245,237,214,0.7);display:block;margin-top:2px">{{ grp.get_category_display }}</small>
-        </div>
-      </div>
-      {% empty %}
-      <div style="grid-column:1/-1;text-align:center;padding:40px;color:rgba(245,237,214,0.5)">
-        No look groups available.
-      </div>
-      {% endfor %}
-    </div>
-
-    <!-- Editorial CTA to Dedicated Gallery -->
-    <div style="text-align:center;margin-top:35px">
-      <a href="/gallery/" class="btn-o" style="display:inline-flex;align-items:center;gap:8px;padding:12px 32px;font-size:0.85rem">
-        <span>View Full Lookbook Archive</span>
-        <span>↗</span>
-      </a>
-    </div>
-
-    <!-- LAYER 3: Action Row & Comparison Triggers (Replacing in-page clutter with modal precision) -->
-    <div class="gal-action-row rev d3">
+    <!-- UNIFIED STUDIO DISCOVERY & COMPARISON BRIDGE (OPTION A) -->
+    <div class="gal-action-row rev d3" style="margin-top:30px">
       <div>
-        <h4 style="font-family:var(--font-h);font-size:1.15rem;color:#fff;margin-bottom:4px">Coverage & Technical Specifications</h4>
-        <p style="font-size:0.8rem;color:rgba(245,237,214,0.7)">Compare vanity kits, longevity, and techniques side-by-side or customize your wedding day package.</p>
+        <h4 style="font-family:var(--font-h);font-size:1.2rem;color:#fff;margin-bottom:4px">Bespoke Inclusions & Technical Specifications</h4>
+        <p style="font-size:0.82rem;color:rgba(245,237,214,0.7)">Review our complete 20+ service catalogue, compare vanity kits side-by-side, or explore multi-event celebration packages.</p>
       </div>
       <div class="gal-action-btns">
-        <button class="btn-comp-trigger" onclick="openServiceCompareModal()">
-          Compare Studio Services
+        <button type="button" class="btn-comp-trigger" onclick="openServiceCompareModal()">
+          ⚡ Compare All Disciplines
         </button>
-        <button class="btn-comp-trigger" style="background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#000" onclick="openPackageCompareModal()">
-          Compare Bridal Suites
-        </button>
-        <a href="/packages/" class="btn-comp-trigger" style="background:transparent;border-color:rgba(212,175,55,0.4)">
-          View All Suites ↓
+        <a href="/services/" class="btn-comp-trigger" style="background:rgba(212,175,55,0.12);border-color:var(--gold);color:var(--gold-l);text-decoration:none">
+          Explore All 20+ Services ↗
+        </a>
+        <a href="#packages" class="btn-comp-trigger" style="background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#000;font-weight:700;text-decoration:none">
+          View Celebration Packages ↓
         </a>
       </div>
     </div>
@@ -1405,7 +1441,7 @@
 </div>
 
 <!-- ═══ CURATED WEDDING CELEBRATION PACKAGES (MULTI-SERVICE BUNDLES) ═══ -->
-<section id="packages" style="background:var(--dark);position:relative">
+<section id="packages" style="position:relative">
   <div class="sw">
     <div class="rev">
       <p class="sl">{{ t.packages_sl|default:'Multi-Event Celebrations' }}</p>
@@ -2007,7 +2043,7 @@
 
 
 <!-- ═══ EVENT MANAGEMENT & PRODUCTION (SEPARATED DIVISION) ═══ -->
-<section id="events" style="background:var(--black);border-top:1px solid rgba(212,175,55,.15);border-bottom:1px solid rgba(212,175,55,.15);position:relative">
+<section id="events" style="border-top:1px solid rgba(212,175,55,.15);border-bottom:1px solid rgba(212,175,55,.15);position:relative">
   <div class="sw">
     <div class="rev">
       <p class="sl">{{ t.events_sl|default:'Dedicated Production Division' }}</p>
@@ -2087,7 +2123,7 @@
 </section>
 
 <!-- ═══ HAUTE COUTURE REELS & STUDIO MOTION ═══ -->
-<section id="reels" style="background:var(--black);position:relative;padding:75px 0 65px;border-top:1px solid rgba(212,175,55,.15);border-bottom:1px solid rgba(212,175,55,.15);overflow:hidden">
+<section id="reels" style="position:relative;padding:75px 0 65px;border-top:1px solid rgba(212,175,55,.15);border-bottom:1px solid rgba(212,175,55,.15);overflow:hidden">
   <div class="editorial-watermark" style="top:22%">STUDIO MOTION REELS</div>
   <div class="sw">
     <div class="rev" style="text-align:center">
@@ -2211,7 +2247,7 @@
 <!-- Gallery was relocated directly following Services as part of the editorial architecture overhaul -->
 
 <!-- ═══ ABOUT THE COUTURIER (INTERACTIVE EDITORIAL CARD) ═══ -->
-<section id="about" style="background:var(--black)">
+<section id="about">
   <div class="sw">
     <div class="rev" style="text-align:center;margin-bottom:36px">
       <p class="sl" style="justify-content:center">{{ t.about_sl|default:'The Couturier' }}</p>
@@ -2358,14 +2394,14 @@
   <div class="f-logo"><img src="{% static 'core/images/logo.jpeg' %}" alt="Anshita Makeover"></div>
   <p class="f-tag">{{ t.footer_tag|default:'✦ Transforming Beauty, Celebrating Elegance ✦' }}</p>
   <div class="f-links">
-    <a href="/#services">{{ t.nav_services|default:'Services' }}</a>
-    <a href="/#packages">{{ t.nav_packages|default:'Packages' }}</a>
+    <a href="/services/">{{ t.nav_services|default:'Services' }}</a>
+    <a href="/packages/">{{ t.nav_packages|default:'Packages' }}</a>
     <a href="/#outstation">{{ t.nav_outstation|default:'Destination Weddings' }}</a>
     <a href="/#reviews">{{ t.nav_reviews|default:'Reviews' }}</a>
     <a href="/#about">{{ t.nav_about|default:'About' }}</a>
     <a href="/#events">{{ t.nav_events|default:'Events' }}</a>
     <a href="/academy/">{{ t.nav_academy|default:'Academy' }}</a>
-    <a href="/#gallery">{{ t.nav_gallery|default:'Gallery' }}</a>
+    <a href="/gallery/">{{ t.nav_gallery|default:'Gallery' }}</a>
   </div>
   <div class="f-socials">
     <a href="https://www.instagram.com/anshitamakeover21/" target="_blank" class="soc-btn" title="Instagram">IG</a>
@@ -3472,31 +3508,150 @@ async function executeAdminAiCommand(){
   }
 }
 
-// ═══ 3-LAYER GALLERY SHOWCASE CAROUSEL ═══
-let currentGalSlide = 0;
-const totalGalSlides = 6;
-let galHeroTimer = null;
+// ═══ EVAGHER HAUTE COUTURE PINNED SCROLL-MORPH ENGINE (PPT MORPH PRECISION) ═══
+const evMorphKeys = [
+  'royal_crimson',
+  'christian_ivory',
+  'fuchsia_palace',
+  'maroon_velvet',
+  'maroon_veil',
+  'bengali_heritage'
+];
 
-function setGalHeroSlide(idx){
-  currentGalSlide = idx;
-  const slides = document.querySelectorAll('.gal-slide');
-  const dots = document.querySelectorAll('.gal-hero-dot');
-  slides.forEach((s, i) => {
-    if(i === idx) s.classList.add('active');
-    else s.classList.remove('active');
+let currentMorphSlide = 0;
+let evScrollTriggerInstance = null;
+
+function applyEvMorphSlide(idx, force = false) {
+  if (idx === currentMorphSlide && !force) return;
+  currentMorphSlide = idx;
+
+  const plates = document.querySelectorAll('.ev-plate');
+  const detailSlides = document.querySelectorAll('.ev-detail-slide');
+  const pips = document.querySelectorAll('.ev-pip');
+
+  // PPT Morph: Plates smoothly transition in 3D depth & blur
+  plates.forEach((p, i) => {
+    if (i === idx) {
+      p.classList.remove('exited');
+      p.classList.add('active');
+    } else if (i < idx) {
+      p.classList.remove('active');
+      p.classList.add('exited');
+    } else {
+      p.classList.remove('active', 'exited');
+    }
   });
-  dots.forEach((d, i) => {
-    if(i === idx) d.classList.add('active');
-    else d.classList.remove('active');
+
+  // PPT Morph: Detail Slides smoothly transition in 3D depth & blur
+  detailSlides.forEach((s, i) => {
+    if (i === idx) {
+      s.classList.remove('exited');
+      s.classList.add('active');
+    } else if (i < idx) {
+      s.classList.remove('active');
+      s.classList.add('exited');
+    } else {
+      s.classList.remove('active', 'exited');
+    }
   });
+
+  // Pips update
+  pips.forEach((pip, i) => {
+    if (i === idx) pip.classList.add('active');
+    else pip.classList.remove('active');
+  });
+
+  // Track progress bar fill
+  const pct = ((idx + 1) / evMorphKeys.length) * 100;
+  const trackFill = document.getElementById('evTrackFill');
+  if (trackFill) trackFill.style.width = pct + '%';
+
+  const numEl = document.getElementById('evActiveNum');
+  if (numEl) numEl.innerText = String(idx + 1).padStart(2, '0');
 }
 
-function startGalHeroAutoRotate(){
-  if(galHeroTimer) clearInterval(galHeroTimer);
-  galHeroTimer = setInterval(() => {
-    currentGalSlide = (currentGalSlide + 1) % totalGalSlides;
-    setGalHeroSlide(currentGalSlide);
-  }, 3500);
+function openCurrentMorphLookbook() {
+  const key = evMorphKeys[currentMorphSlide];
+  if (key && typeof openLookbook === 'function') {
+    openLookbook(key);
+  }
+}
+
+function jumpToMorphSlide(idx) {
+  if (evScrollTriggerInstance) {
+    const start = evScrollTriggerInstance.start;
+    const end = evScrollTriggerInstance.end;
+    const targetScroll = start + (idx / (evMorphKeys.length - 1)) * (end - start);
+    if (window.lenis) {
+      window.lenis.scrollTo(targetScroll, { duration: 1.0 });
+    } else {
+      window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+    }
+  } else {
+    applyEvMorphSlide(idx);
+  }
+}
+
+function stepMorphSlide(dir) {
+  const next = Math.max(0, Math.min(evMorphKeys.length - 1, currentMorphSlide + dir));
+  jumpToMorphSlide(next);
+}
+
+// Initialize Evagher ScrollTrigger Pinned Scrub
+function initEvagherMorphScroll() {
+  const container = document.getElementById('evMorphContainer');
+  const viewport = document.getElementById('evMorphViewport');
+  if (!container || !viewport || typeof ScrollTrigger === 'undefined') return;
+
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+  }
+
+  if (evScrollTriggerInstance) {
+    evScrollTriggerInstance.kill();
+  }
+
+  evScrollTriggerInstance = ScrollTrigger.create({
+    trigger: container,
+    pin: viewport,
+    start: 'top top',
+    end: 'bottom bottom',
+    scrub: 0.5,
+    onUpdate: (self) => {
+      const count = evMorphKeys.length;
+      const raw = self.progress * (count - 1);
+      const targetIdx = Math.min(count - 1, Math.max(0, Math.round(raw)));
+      applyEvMorphSlide(targetIdx);
+    }
+  });
+
+  ScrollTrigger.refresh();
+
+  // Mobile Touch Swipe Handling
+  const stage = document.getElementById('evPortraitFrame');
+  if (stage && !stage._hasTouchListener) {
+    stage._hasTouchListener = true;
+    let touchStartX = 0, touchStartY = 0;
+    stage.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].clientX;
+      touchStartY = e.changedTouches[0].clientY;
+    }, { passive: true });
+    stage.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+        if (dx < 0) stepMorphSlide(1);
+        else stepMorphSlide(-1);
+      }
+    }, { passive: true });
+  }
+}
+
+window.addEventListener('load', () => {
+  setTimeout(initEvagherMorphScroll, 150);
+});
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  setTimeout(initEvagherMorphScroll, 200);
 }
 
 // ═══ COMPARISON MODAL POPUP HANDLERS ═══
@@ -3681,12 +3836,10 @@ function sendTravelQuoteWhatsApp(){
 // Initialize calculator and showcase on page load
 document.addEventListener('DOMContentLoaded', () => {
   updateCalc();
-  startGalHeroAutoRotate();
   loadCityDistances().then(() => calculateTravelEstimate());
 });
 if(document.readyState === 'complete' || document.readyState === 'interactive'){
   updateCalc();
-  startGalHeroAutoRotate();
   loadCityDistances().then(() => calculateTravelEstimate());
 }
 </script>
