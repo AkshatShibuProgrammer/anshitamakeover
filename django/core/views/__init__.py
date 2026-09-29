@@ -2,7 +2,7 @@ from .common import get_site_settings, get_active_coupon
 from .public import (
     home, academy, travel_estimator, cart_page, chatbot_page, set_language,
     sinha_logo_studio, animation_lab, services_page, service_detail,
-    packages_page, package_detail, gallery_page, booking_enquiry,
+    packages_page, package_detail, gallery_page, gallery_album_detail, booking_enquiry,
     package_builder, package_builder_api, admin_booking_enquiries,
     robots_txt, sitemap_xml, llms_txt, custom_404_view
 )
@@ -28,6 +28,12 @@ __all__ = [
     'set_language',
     'sinha_logo_studio',
     'animation_lab',
+    'services_page',
+    'service_detail',
+    'packages_page',
+    'package_detail',
+    'gallery_page',
+    'gallery_album_detail',
     'chatbot_api',
     'gemini_chat',
     'admin_ai_command',

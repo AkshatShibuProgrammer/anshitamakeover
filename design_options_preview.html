@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anshita Makeover — Design Options Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Alex+Brush&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --gold: #D4AF37;
+  --gold-l: #F5D77F;
+  --dark: #080307;
+  --cream: #F5EED6;
+  --maroon: #5C1A2E;
+}
+
+/* ── NAV ── */
+.option-nav {
+  position: fixed; top:0; left:0; right:0; z-index:9999;
+  background: rgba(8,3,7,0.97);
+  border-bottom: 1px solid rgba(212,175,55,0.3);
+  display: flex; align-items:center; justify-content:center; gap:4px;
+  padding: 12px 20px;
+  font-family: 'Inter', sans-serif;
+}
+.option-nav span {
+  color: rgba(245,237,214,0.5);
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-right: 12px;
+}
+.opt-btn {
+  padding: 8px 22px;
+  border: 1px solid rgba(212,175,55,0.3);
+  background: transparent;
+  color: rgba(212,175,55,0.6);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 30px;
+  transition: all 0.3s;
+}
+.opt-btn.active, .opt-btn:hover {
+  background: var(--gold);
+  color: #080307;
+  border-color: var(--gold);
+}
+
+/* ── PAGES ── */
+.design-page { display: none; margin-top: 53px; }
+.design-page.active { display: block; }
+
+/* ──────────────────────────────────
+   OPTION A: SPLIT PORTAL
+────────────────────────────────── */
+#option-a {
+  height: 100vh;
+  display: flex;
+  background: var(--dark);
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+/* Top bar */
+.a-topbar {
+  position: absolute; top: 0; left:0; right:0; z-index: 10;
+  display: flex; justify-content:space-between; align-items:center;
+  padding: 24px 40px;
+}
+.a-lang { font-size: 0.65rem; letter-spacing: 2px; color: rgba(255,255,255,0.5); }
+.a-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  letter-spacing: 4px;
+  color: #fff;
+  text-transform: uppercase;
+  position: absolute; left:50%; transform:translateX(-50%);
+}
+.a-logo em { font-style: italic; color: var(--gold); }
+.a-nav { display:flex; gap:28px; }
+.a-nav a { font-size: 0.62rem; letter-spacing: 2.5px; color: rgba(255,255,255,0.65); text-decoration:none; text-transform: uppercase; }
+
+/* Split halves */
+.a-left {
+  width: 50%;
+  position: relative;
+  overflow: hidden;
+}
+.a-left img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+.a-right {
+  width: 50%;
+  background: #080307;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: 80px;
+}
+
+/* Giant outlined letters spanning both halves */
+.a-giant-letters {
+  position: absolute;
+  top: 50%;
+  left: 18%;
+  transform: translateY(-50%);
+  z-index: 5;
+  pointer-events: none;
+  line-height: 1;
+  display: flex;
+  gap: 0;
+}
+.a-giant-letter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(160px, 18vw, 280px);
+  font-weight: 300;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.55);
+  text-stroke: 1.5px rgba(255,255,255,0.55);
+  line-height: 0.9;
+  letter-spacing: -10px;
+}
+
+/* Right content */
+.a-right-content {
+  z-index: 6;
+  position: relative;
+}
+.a-cursive {
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(28px, 4vw, 56px);
+  color: rgba(255,255,255,0.92);
+  margin-bottom: 14px;
+  display: block;
+}
+.a-location {
+  font-size: 0.65rem;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  margin-bottom: 50px;
+}
+.a-arrow {
+  display: block;
+  width: 40px; height: 40px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  color: rgba(255,255,255,0.5);
+  font-size: 1rem;
+  cursor: pointer;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+
+/* Vertical side text */
+.a-vertical {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: rotate(90deg) translateX(-50%);
+  font-size: 0.55rem;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.25);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Scroll preview label */
+.a-scroll-preview {
+  position: absolute; bottom: 0; left:0; right:0;
+  background: linear-gradient(to top, rgba(8,3,7,0.98), transparent);
+  padding: 80px 40px 30px;
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  color: rgba(212,175,55,0.5);
+  text-transform: uppercase;
+  text-align: center;
+}
+/* After-scroll preview for option A */
+.a-scroll-section {
+  background: var(--dark);
+  padding: 80px 60px;
+  display: flex;
+  gap: 80px;
+  align-items: center;
+  border-top: 1px solid rgba(212,175,55,0.1);
+}
+.a-card-photo {
+  width: 45%;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.a-card-photo img { width:100%; height:100%; object-fit:cover; }
+.a-card-text { flex: 1; }
+.a-card-label {
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: block;
+}
+.a-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 3.5vw, 52px);
+  color: rgba(245,237,214,0.92);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 24px;
+}
+.a-card-cta {
+  font-family: 'Alex Brush', cursive;
+  font-size: 1.5rem;
+  color: var(--gold);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.a-card-cta::after { content: '→'; font-family: 'Inter'; font-size: 1rem; }
+
+
+/* ──────────────────────────────────
+   OPTION B: DARK MONOLITH
+────────────────────────────────── */
+#option-b {
+  background: var(--dark);
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+.b-canvas {
+  position: fixed; inset:53px 0 0 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.b-hero {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 55% 45%;
+  min-height: calc(100vh - 53px);
+}
+.b-photo {
+  position: relative;
+  overflow: hidden;
+}
+.b-photo img {
+  width:100%; height:100%;
+  object-fit: cover;
+  object-position: center top;
+}
+.b-photo::after {
+  content:'';
+  position:absolute; inset:0;
+  background: linear-gradient(to right, transparent 60%, var(--dark) 100%);
+}
+.b-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 60px 60px 20px;
+  position: relative;
+}
+.b-topnav {
+  position: absolute;
+  top: 0; left:0; right:0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 40px;
+  z-index: 10;
+}
+.b-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  letter-spacing: 5px;
+  color: var(--gold-l);
+  text-transform: uppercase;
+}
+.b-nav a {
+  font-size: 0.62rem;
+  letter-spacing: 2px;
+  color: rgba(212,175,55,0.6);
+  text-decoration: none;
+  text-transform: uppercase;
+  margin-left: 22px;
+}
+.b-sub {
+  font-size: 0.62rem;
+  letter-spacing: 3px;
+  color: rgba(212,175,55,0.55);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.b-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 4.5vw, 64px);
+  font-weight: 700;
+  color: var(--gold-l);
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.b-tag {
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: rgba(212,175,55,0.45);
+  text-transform: uppercase;
+  margin-bottom: 36px;
+}
+.b-badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+.b-badge {
+  padding: 7px 14px;
+  background: rgba(212,175,55,0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(212,175,55,0.2);
+  border-radius: 20px;
+  font-size: 0.68rem;
+  color: var(--gold-l);
+  letter-spacing: 0.5px;
+}
+.b-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+.b-cta-wa {
+  padding: 13px 26px;
+  background: #25D366;
+  color: #fff;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+}
+.b-cta-gold {
+  padding: 12px 26px;
+  border: 1px solid var(--gold);
+  color: var(--gold-l);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+}
+/* Stardust canvas */
+#b-three { position:fixed; inset:53px 0 0 0; z-index:1; pointer-events:none; }
+
+/* 3 Cards section */
+.b-cards-section {
+  position: relative; z-index: 2;
+  padding: 80px 60px;
+  background: rgba(8,3,7,0.6);
+  border-top: 1px solid rgba(212,175,55,0.1);
+}
+.b-section-label {
+  font-size: 0.62rem;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.b-section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 3.5vw, 48px);
+  color: var(--gold-l);
+  text-align: center;
+  margin-bottom: 50px;
+}
+.b-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.b-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 4/5.5;
+  border: 1px solid rgba(212,175,55,0.15);
+  background: rgba(18,10,16,0.5);
+  backdrop-filter: blur(8px);
+  transition: transform 0.4s ease, border-color 0.4s ease;
+  cursor: pointer;
+}
+.b-card:hover { transform: translateY(-8px); border-color: rgba(212,175,55,0.5); }
+.b-card img { width:100%; height:100%; object-fit:cover; transition: transform 0.7s ease; }
+.b-card:hover img { transform: scale(1.05); }
+.b-card-overlay {
+  position:absolute; inset:0;
+  background: linear-gradient(to top, rgba(8,3,7,0.95) 0%, transparent 55%);
+}
+.b-card-pill {
+  position:absolute; top:14px; left:14px;
+  padding: 4px 12px;
+  background: rgba(8,3,7,0.75);
+  border: 1px solid rgba(212,175,55,0.3);
+  border-radius: 20px;
+  font-size: 0.62rem;
+  letter-spacing: 1.5px;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.b-card-bottom {
+  position: absolute;
+  bottom: 18px; left:16px; right:16px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+}
+.b-card-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--gold-l);
+}
+.b-card-btn {
+  padding: 7px 14px;
+  border: 1px solid rgba(212,175,55,0.5);
+  border-radius: 20px;
+  font-size: 0.62rem;
+  color: var(--gold-l);
+  white-space: nowrap;
+  background: rgba(212,175,55,0.12);
+  text-decoration: none;
+}
+
+
+/* ──────────────────────────────────
+   OPTION C: EVAGHER EXACT STYLE
+────────────────────────────────── */
+#option-c { background: var(--dark); }
+
+/* Same hero as A */
+.c-hero {
+  height: calc(100vh - 53px);
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+.c-topbar {
+  position: absolute; top:0; left:0; right:0; z-index:10;
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 24px 40px;
+}
+.c-lang { font-size:0.62rem; letter-spacing:2px; color: rgba(255,255,255,0.4); }
+.c-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; letter-spacing: 5px;
+  color: #fff; text-transform:uppercase;
+  position:absolute; left:50%; transform:translateX(-50%);
+}
+.c-logo em { font-style:italic; color:var(--gold); }
+.c-nav { display:flex; gap:24px; }
+.c-nav a { font-size:0.6rem; letter-spacing:2px; color:rgba(255,255,255,0.55); text-decoration:none; text-transform:uppercase; }
+
+.c-left { width:50%; position:relative; overflow:hidden; }
+.c-left img { width:100%; height:100%; object-fit:cover; object-position:center top; }
+.c-right {
+  width:50%; background:#080307;
+  display:flex; flex-direction:column; justify-content:center;
+  padding-left: 80px; position:relative;
+}
+.c-giant {
+  position:absolute; top:50%; left:22%; transform:translateY(-50%);
+  z-index:5; pointer-events:none;
+  display:flex; gap:0;
+}
+.c-letter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(140px, 17vw, 260px);
+  font-weight: 300;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255,255,255,0.45);
+  line-height:0.9;
+  letter-spacing: -10px;
+}
+.c-cursive { font-family:'Alex Brush',cursive; font-size:3rem; color:rgba(255,255,255,0.9); display:block; margin-bottom:10px; z-index:6; position:relative; }
+.c-loc { font-size:0.62rem; letter-spacing:4px; color:rgba(255,255,255,0.35); text-transform:uppercase; z-index:6; position:relative; margin-bottom:50px; }
+.c-arrow-btn { display:flex; align-items:center; justify-content:center; width:38px; height:38px; border:1px solid rgba(255,255,255,0.2); border-radius:50%; color:rgba(255,255,255,0.4); z-index:6; position:relative; animation:bounce 2s infinite; }
+
+/* SCROLL SECTION — warm ivory */
+.c-scroll-section {
+  background: var(--cream);
+  padding: 100px 60px;
+}
+.c-scroll-heading {
+  margin-bottom: 70px;
+}
+.c-scroll-big {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: clamp(60px, 9vw, 130px);
+  color: #1a1a1a;
+  line-height: 0.9;
+  text-transform: uppercase;
+  letter-spacing: -2px;
+}
+.c-scroll-big em {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 0;
+}
+
+/* Alternating cards */
+.c-cards { display:flex; flex-direction:column; gap:80px; }
+.c-alt-card {
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.c-alt-card.right { direction:rtl; }
+.c-alt-card.right > * { direction:ltr; }
+.c-alt-photo {
+  aspect-ratio: 4/5;
+  overflow:hidden;
+  position:relative;
+}
+.c-alt-photo img { width:100%; height:100%; object-fit:cover; transition: transform 0.8s ease; }
+.c-alt-card:hover .c-alt-photo img { transform: scale(1.03); }
+
+.c-alt-text {}
+.c-alt-label {
+  font-size:0.6rem; letter-spacing:3px; color:#999;
+  text-transform:uppercase; margin-bottom:16px; display:block;
+}
+.c-alt-title {
+  font-family:'Playfair Display', serif;
+  font-size:clamp(28px, 3.5vw, 52px);
+  color: #1a1a1a;
+  font-weight:400; line-height:1.1;
+  margin-bottom:28px;
+}
+.c-alt-cta {
+  font-family:'Alex Brush', cursive;
+  font-size:1.6rem;
+  color: #8B5E1A;
+  text-decoration:none;
+  display:flex; align-items:center; gap:12px;
+}
+.c-alt-cta span { font-family:'Inter'; font-size:0.9rem; }
+
+/* ── LABEL TAGS ── */
+.design-label {
+  background: rgba(212,175,55,0.12);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border-radius: 4px;
+  text-align: center;
+  margin: 0 auto;
+  display: block;
+  max-width: fit-content;
+}
+.section-divider {
+  padding: 20px;
+  text-align:center;
+  background: rgba(8,3,7,0.95);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: rgba(212,175,55,0.6);
+  text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+
+<!-- FIXED TOP NAV -->
+<nav class="option-nav">
+  <span>Choose Design →</span>
+  <button class="opt-btn active" onclick="showOption('a')">⭐ Option A — Split Portal</button>
+  <button class="opt-btn" onclick="showOption('b')">Option B — Dark Monolith</button>
+  <button class="opt-btn" onclick="showOption('c')">Option C — Evagher Exact</button>
+</nav>
+
+<!-- ═══════════════════════════════ OPTION A ═══════════════════════════════ -->
+<div id="option-a" class="design-page active">
+
+  <!-- HERO -->
+  <section style="height:calc(100vh - 53px); position:relative; overflow:hidden; display:flex;">
+    <div class="a-topbar">
+      <span class="a-lang">{EN} / हिन्दी</span>
+      <div class="a-logo">ANSHITA <em>&</em> MAKEOVER</div>
+      <nav class="a-nav">
+        <a href="#">Gallery</a>
+        <a href="#">Services</a>
+      </nav>
+    </div>
+
+    <!-- Giant outlined letters spanning both halves -->
+    <div class="a-giant-letters">
+      <span class="a-giant-letter">A</span>
+      <span class="a-giant-letter">M</span>
+    </div>
+
+    <!-- Left: bride photo -->
+    <div class="a-left">
+      <img src="/static/core/images/curated/royal_crimson_bride_angle3.jpg" alt="Royal Crimson Bride" onerror="this.style.background='linear-gradient(135deg,#5C1A2E,#2a0a14)'; this.removeAttribute('src')">
+    </div>
+
+    <!-- Right: pure black -->
+    <div class="a-right">
+      <div class="a-right-content">
+        <span class="a-cursive">Bridal Couturier</span>
+        <span class="a-location">Jabalpur · India</span>
+        <div class="a-arrow">˅</div>
+      </div>
+      <div class="a-vertical">Lookbook · Contact · About</div>
+    </div>
+  </section>
+
+  <div class="section-divider">↓ Scroll — As you scroll down, alternating portrait cards appear below</div>
+
+  <!-- SCROLL SECTION: Alternating cards (dark, editorial) -->
+  <div class="a-scroll-section">
+    <span class="a-card-label">✦ Editorial {Bridal} · 01 / 03</span>
+    <div style="margin-bottom:40px">
+      <div style="font-family:'Inter';font-size:clamp(50px,7vw,100px);font-weight:800;color:rgba(245,237,214,0.08);letter-spacing:-2px;line-height:0.9;text-transform:uppercase;">BRIDAL<br><span style="font-family:'Cormorant Garamond';font-weight:300;font-style:italic;">Couture</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;">
+      <div class="a-card-photo">
+        <img src="/static/core/images/curated/royal_crimson_bride_angle3.jpg" alt="Bride 1" onerror="this.style.background='linear-gradient(135deg,#5C1A2E,#2a0a14)'; this.removeAttribute('src')">
+      </div>
+      <div class="a-card-text">
+        <span class="a-card-label">✦ Signature Discipline 01 · 4 Angles · Sacred Vivah</span>
+        <h2 class="a-card-title">Imperial Crimson<br>Bridal Couture</h2>
+        <a href="#" class="a-card-cta">— View Lookbook</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="a-scroll-section" style="background:rgba(20,8,16,0.6);">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;">
+      <div class="a-card-text" style="padding-left:40px">
+        <span class="a-card-label">✦ Signature Discipline 02 · Church Couture</span>
+        <h2 class="a-card-title">Ivory Cathedral<br>Reception Glamour</h2>
+        <a href="#" class="a-card-cta">— View Lookbook</a>
+      </div>
+      <div class="a-card-photo">
+        <img src="/static/core/images/curated/reception_ivory_bride.jpg" alt="Bride 2" onerror="this.style.background='linear-gradient(135deg,#2a2a3a,#0a0a14)'; this.removeAttribute('src')">
+      </div>
+    </div>
+  </div>
+
+  <div class="a-scroll-section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;">
+      <div class="a-card-photo">
+        <img src="/static/core/images/curated/fuchsia_emerald_bride_hq.jpg" alt="Bride 3" onerror="this.style.background='linear-gradient(135deg,#2a0a2a,#0a0514)'; this.removeAttribute('src')">
+      </div>
+      <div class="a-card-text">
+        <span class="a-card-label">✦ Signature Discipline 03 · Heritage Palace</span>
+        <h2 class="a-card-title">Imperial Fuchsia<br>Emerald Palace Suite</h2>
+        <a href="#" class="a-card-cta">— View Lookbook</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════ OPTION B ═══════════════════════════════ -->
+<div id="option-b" class="design-page">
+  <canvas id="b-three"></canvas>
+
+  <!-- Hero -->
+  <div class="b-hero" style="position:relative;">
+    <div class="b-topnav">
+      <div class="b-logo">ANSHITA MAKEOVER</div>
+      <nav class="b-nav">
+        <a href="#">Gallery</a>
+        <a href="#">Services</a>
+        <a href="#">Packages</a>
+      </nav>
+    </div>
+    <div class="b-photo">
+      <img src="/static/core/images/curated/royal_crimson_bride_angle3.jpg" alt="Bride" onerror="this.style.background='linear-gradient(135deg,#5C1A2E,#2a0a14)'; this.removeAttribute('src')">
+    </div>
+    <div class="b-panel">
+      <p class="b-sub">✦ Haute Couture Bridal · India</p>
+      <h1 class="b-brand">ANSHITA<br>MAKEOVER</h1>
+      <p class="b-tag">✦ Haute Couture Bridal · Jabalpur · Pan-India ✦</p>
+      <div class="b-badges">
+        <span class="b-badge">✦ 500+ Brides</span>
+        <span class="b-badge">8+ Years</span>
+        <span class="b-badge">Dior & CT Kit</span>
+        <span class="b-badge">Pan-India</span>
+      </div>
+      <div class="b-ctas">
+        <a href="#" class="b-cta-wa">Reserve Consultation</a>
+        <a href="#" class="b-cta-gold">View Lookbook →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 Cards -->
+  <div class="b-cards-section">
+    <p class="b-section-label">✦ Editorial Lookbook</p>
+    <h2 class="b-section-title">Signature Bridal Transformations</h2>
+    <div class="b-grid">
+      <div class="b-card">
+        <img src="/static/core/images/curated/royal_crimson_bride_angle3.jpg" alt="Royal Crimson" onerror="this.style.background='linear-gradient(135deg,#5C1A2E,#2a0a14)'; this.removeAttribute('src')">
+        <div class="b-card-overlay"></div>
+        <span class="b-card-pill">Sacred Vivah</span>
+        <div class="b-card-bottom">
+          <div class="b-card-name">Royal Crimson</div>
+          <a href="#" class="b-card-btn">Explore →</a>
+        </div>
+      </div>
+      <div class="b-card">
+        <img src="/static/core/images/curated/reception_ivory_bride.jpg" alt="Ivory" onerror="this.style.background='linear-gradient(135deg,#2a2a3a,#0a0a18)'; this.removeAttribute('src')">
+        <div class="b-card-overlay"></div>
+        <span class="b-card-pill">Reception</span>
+        <div class="b-card-bottom">
+          <div class="b-card-name">Ivory Glamour</div>
+          <a href="#" class="b-card-btn">Explore →</a>
+        </div>
+      </div>
+      <div class="b-card">
+        <img src="/static/core/images/curated/fuchsia_emerald_bride_hq.jpg" alt="Emerald" onerror="this.style.background='linear-gradient(135deg,#2a0a2a,#0a0514)'; this.removeAttribute('src')">
+        <div class="b-card-overlay"></div>
+        <span class="b-card-pill">Heritage Palace</span>
+        <div class="b-card-bottom">
+          <div class="b-card-name">Imperial Emerald</div>
+          <a href="#" class="b-card-btn">Explore →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ OPTION C ═══════════════════════════════ -->
+<div id="option-c" class="design-page">
+
+  <!-- Hero: dark split (same as A) -->
+  <section class="c-hero">
+    <div class="c-topbar">
+      <span class="c-lang">{EN} / हिन्दी</span>
+      <div class="c-logo">ANSHITA <em>&</em> MAKEOVER</div>
+      <nav class="c-nav">
+        <a href="#">Looks</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+
+    <div class="c-giant">
+      <span class="c-letter">A</span>
+      <span class="c-letter">N</span>
+    </div>
+
+    <div class="c-left">
+      <img src="/static/core/images/curated/royal_crimson_bride_angle3.jpg" alt="Bride" onerror="this.style.background='linear-gradient(135deg,#5C1A2E,#2a0a14)'; this.removeAttribute('src')">
+    </div>
+    <div class="c-right">
+      <span style="font-family:'Cormorant Garamond';font-size:clamp(140px,17vw,240px);font-weight:300;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,0.4);position:absolute;right:40px;top:50%;transform:translateY(-50%);z-index:3;line-height:0.9">M</span>
+      <span class="c-cursive" style="position:relative;z-index:6">Bridal Couturier</span>
+      <span class="c-loc" style="position:relative;z-index:6">Jabalpur, India</span>
+      <div class="c-arrow-btn" style="position:relative;z-index:6">˅</div>
+    </div>
+  </section>
+
+  <div class="section-divider">↓ Scroll — Background shifts from dark → warm ivory cream (like evagher.com)</div>
+
+  <!-- Scroll: Warm Ivory Background with alternating cards -->
+  <section class="c-scroll-section">
+    <div class="c-scroll-heading">
+      <div class="c-scroll-big">BRIDAL<br><em>Couture</em></div>
+    </div>
+
+    <div class="c-cards">
+      <!-- Card 1: Photo Left, Text Right -->
+      <div class="c-alt-card">
+        <div class="c-alt-photo">
+          <img src="/static/core/images/curated/royal_crimson_bride_angle3.jpg" alt="Royal Crimson" onerror="this.style.background='linear-gradient(135deg,#c9a05a,#8B5E1A)'; this.removeAttribute('src')">
+        </div>
+        <div class="c-alt-text">
+          <span class="c-alt-label">Editorial {Bridal} · 01 / 03</span>
+          <h2 class="c-alt-title">Imperial Crimson<br>Bridal Couture</h2>
+          <a href="#" class="c-alt-cta">— View Lookbook <span>→</span></a>
+        </div>
+      </div>
+
+      <!-- Card 2: Photo Right, Text Left -->
+      <div class="c-alt-card right">
+        <div class="c-alt-photo">
+          <img src="/static/core/images/curated/reception_ivory_bride.jpg" alt="Ivory" onerror="this.style.background='linear-gradient(135deg,#ddd,#999)'; this.removeAttribute('src')">
+        </div>
+        <div class="c-alt-text">
+          <span class="c-alt-label">Editorial {Reception} · 02 / 03</span>
+          <h2 class="c-alt-title">Ivory Cathedral<br>Veil & Glass-Skin</h2>
+          <a href="#" class="c-alt-cta">— View Lookbook <span>→</span></a>
+        </div>
+      </div>
+
+      <!-- Card 3: Photo Left, Text Right -->
+      <div class="c-alt-card">
+        <div class="c-alt-photo">
+          <img src="/static/core/images/curated/fuchsia_emerald_bride_hq.jpg" alt="Emerald" onerror="this.style.background='linear-gradient(135deg,#7a3a7a,#3a0a3a)'; this.removeAttribute('src')">
+        </div>
+        <div class="c-alt-text">
+          <span class="c-alt-label">Editorial {Palace} · 03 / 03</span>
+          <h2 class="c-alt-title">Imperial Fuchsia<br>Emerald Heritage</h2>
+          <a href="#" class="c-alt-cta">— View Lookbook <span>→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+function showOption(id) {
+  document.querySelectorAll('.design-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('option-'+id).classList.add('active');
+  event.target.classList.add('active');
+  if (id === 'b') initStardust();
+}
+
+// Three.js-like stardust for Option B
+function initStardust() {
+  const canvas = document.getElementById('b-three');
+  if (!canvas || canvas._init) return;
+  canvas._init = true;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = Array.from({length:80}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 1.8 + 0.3,
+    vx: (Math.random()-0.5)*0.3,
+    vy: (Math.random()-0.5)*0.3,
+    alpha: Math.random() * 0.6 + 0.1,
+    pulse: Math.random() * Math.PI * 2,
+    color: ['#D4AF37','#F5D77F','#FFF8E7','#E8B4C0'][Math.floor(Math.random()*4)]
+  }));
+
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p => {
+      p.pulse += 0.02;
+      const a = p.alpha * (0.5 + 0.5*Math.sin(p.pulse));
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = a;
+      ctx.fill();
+      p.x += p.vx; p.y += p.vy;
+      if (p.x<0) p.x=canvas.width;
+      if (p.x>canvas.width) p.x=0;
+      if (p.y<0) p.y=canvas.height;
+      if (p.y>canvas.height) p.y=0;
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+</script>
+</body>
+</html>

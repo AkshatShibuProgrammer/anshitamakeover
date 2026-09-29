@@ -5,7 +5,7 @@
     <div class="chat-hdr" id="chat-hdr" title="Drag to move">
       <div class="chat-hdr-info">
         <div class="chat-avatar-wrap">
-          <img src="{% static 'core/images/logo.jpeg' %}" alt="Anshita AI Concierge">
+          <img src="{% static 'core/images/brand/ai_concierge_smile.png' %}" alt="Anshita AI Concierge">
           <span class="chat-status-dot"></span>
         </div>
         <div>
@@ -30,7 +30,7 @@
         <button type="button" class="chat-ctrl-btn chat-close-btn" onclick="toggleChat()" title="Dock Chat">✕</button>
       </div>
     </div>
-    <div class="chat-msgs" id="chat-msgs">
+    <div class="chat-msgs" id="chat-msgs" data-lenis-prevent>
       <!-- AI Welcome Greeting -->
       <div class="msg bot">
         Namaste and welcome to Anshita Makeover! ✨ I am your 24/7 AI Wedding Concierge.<br><br>
@@ -72,15 +72,44 @@
       <button class="chat-send" onclick="sendChat()" title="Send Message">➤</button>
     </div>
   </div>
-  <div class="chat-toggle-wrap" id="chat-toggle-wrap">
-    <div class="chat-speech-bubble" id="chat-speech-bubble" onclick="toggleChat()">
-      <span class="csb-text" id="csb-text">✨ Namaste! May I help you?</span>
-      <span class="csb-sub" id="csb-sub">AI Wedding Concierge</span>
+  <div class="chat-toggle-wrap char-pre-entry" id="chat-toggle-wrap">
+    <!-- Royal Entrance Golden Portal Ring -->
+    <div class="char-entry-portal" id="charEntryPortal"></div>
+
+    <!-- Luxury Speech & Quick Actions Bubble -->
+    <div class="chat-speech-bubble" id="chat-speech-bubble">
+      <div class="csb-header" onclick="toggleChat()">
+        <span class="csb-tag">✨ ROYAL AI CONCIERGE</span>
+        <span class="csb-text" id="csb-text">Namaste! May I help you find your dream bridal look?</span>
+      </div>
+      <div class="csb-quick-chips">
+        <button type="button" class="csb-chip" onclick="quickAskConcierge('Tell me about your Signature Bridal Suites')">👑 Bridal Looks</button>
+        <button type="button" class="csb-chip" onclick="quickAskConcierge('How much does outstation travel cost?')">✈️ Travel Rates</button>
+        <button type="button" class="csb-chip" onclick="toggleChat()">💬 Chat</button>
+      </div>
       <div class="csb-tail"></div>
     </div>
-    <button class="chat-toggle" id="chat-toggle" onclick="toggleChat()" title="Anshita 3D AI Concierge" aria-label="Open 3D Concierge">
-      <canvas id="char-3d-canvas" class="char-3d-canvas" width="60" height="60"></canvas>
-      <span class="chat-pulse-ping"></span>
+
+    <button class="chat-toggle" id="chat-toggle" onclick="toggleChat()" title="Anshita Royal AI Concierge — Click to Chat" aria-label="Open AI Concierge">
+      <!-- 3D Living Cursor-Reactive Character Stage -->
+      <div class="char-3d-stage" id="char3dStage">
+        <!-- High-Performance Retina Gaze Canvas -->
+        <canvas id="charGazeCanvas" width="700" height="700" class="char-gaze-canvas"></canvas>
+
+        <!-- Expression Overlays -->
+        <img src="{% static 'core/images/brand/concierge_mouth_talk.png' %}" class="char-overlay char-mouth-talk" id="charMouthTalk" alt="Anshita Concierge Speaking">
+        <img src="{% static 'core/images/brand/concierge_wink.png' %}" class="char-overlay char-wink" id="charLayerWink" alt="Anshita Concierge Winking">
+
+        <!-- Specular 3D Jewelry & Skin Highlighter -->
+        <div class="char-specular-shine" id="charSpecularShine"></div>
+      </div>
+
+      <!-- Concentric Spun-Gold Breathing Aura Rings -->
+      <span class="medallion-aura"></span>
+      <span class="medallion-ring-pulse"></span>
+
+      <!-- Emerald Jewel Live Beacon -->
+      <span class="medallion-online-dot" title="Online & At Your Service"></span>
     </button>
   </div>
 </div>

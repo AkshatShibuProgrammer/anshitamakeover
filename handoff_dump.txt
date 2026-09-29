@@ -1,0 +1,127 @@
+<USER_REQUEST>
+fetch [rena/01a0d489-anshitamakeover](https://github.com/AkshatShibuProgrammer/anshitamakeover/tree/arena%2F01a0d489-anshitamakeover)
+from cloud and replace local version with cloud any doubt then ask and rerun
+# Anshita Makeover — Implementation Handoff
+
+## Repository
+
+- Repository: `AkshatShibuProgrammer/anshitamakeover`
+- Branch: `arena/01a0d489-anshitamakeover`
+- Pull request: https://github.com/AkshatShibuProgrammer/anshitamakeover/pull/2
+- Base branch: `24092026`
+
+The next AI should treat the repository as the source of truth and audit the current working tree before changing anything.
+
+---
+
+# 1. Original product plan
+
+The site was planned as a luxury bridal makeup and beauty studio website with a clear editorial structure.
+
+## Homepage purpose
+
+The homepage should be a concise discovery and conversion page, not the entire website.
+
+It should include:
+
+1. Existing opening animation/preloader.
+2. Hero section with:
+   - Bridal positioning.
+   - Strong visual.
+   - Primary Services CTA.
+   - Gallery/lookbook CTA.
+   - Beauty Plan/booking CTA.
+3. Occasion discovery:
+   - Wedding/Bridal.
+   - Engagement/Roka.
+   - Reception/Cocktail.
+   - Haldi/Sangeet.
+   - Family/Bridesmaids.
+4. Small featured services section:
+   - Only strongest services.
+   - Maximum approximately three to six cards.
+   - Starting-from prices.
+   - Links to dedicated service pages.
+5. Small featured gallery/lookbook section:
+   - Only strongest album cards.
+   - No full gallery grid on homepage.
+   - Clicking opens the hybrid album viewer.
+6. Trust section near the bottom:
+   - Sinha Family Group logo.
+   - Accurate relationship/context.
+   - Reviews or trust proof.
+   - Location/travel positioning.
+7. Final conversion section:
+   - Beauty Plan.
+   - Build Your Look.
+   - WhatsApp enquiry.
+   - Direct booking.
+
+The homepage should not contain the complete services catalogue, full package catalogue, giant comparison matrices, or a long duplicated gallery.
+
+---
+
+# 2
+<truncated 10185 bytes>
+ck --dry-run
+python manage.py showmigrations
+```
+
+Navigation audit:
+
+```bash
+grep -R 'href="/#services"\|href="/#packages"\|href="/#gallery"' \
+  -n django/core/templates
+```
+
+Route audit:
+
+```bash
+grep -R "services_page\|gallery_page\|packages_page\|animation_lab" \
+  -n django/core
+```
+
+Git/PR audit:
+
+```bash
+git status
+git diff origin/arena/01a0d489-anshitamakeover...HEAD
+gh pr view 2
+```
+
+---
+
+# 12. Definition of done
+
+The work is complete only when all of the following are true:
+
+- Homepage matches the agreed editorial structure.
+- Homepage does not contain the complete catalogue.
+- Services is a proper dedicated page.
+- Packages is a proper dedicated page.
+- Gallery is a proper dedicated page.
+- Gallery viewer handles image, video, and mixed albums.
+- All shared navigation uses dedicated routes.
+- Beauty Plan booking is server-verified.
+- Package builder is guarded.
+- Animation is preserved and accessible.
+- Duplicate migrations are removed.
+- Fresh migrations succeed.
+- No missing imports/routes/templates.
+- No stale navigation anchors remain.
+- Working tree is clean.
+- PR contains the final state.
+- Unit/API/smoke/performance suites pass.
+- Browser-level visual verification is completed.
+- E2E/BDD limitations are explicitly documented if dependencies remain unavailable.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-09-27T02:04:33+05:30.
+
+The user's current state is as follows:
+Active Document: f:\Code by Akshat\Anshita\anshitamakeover aiarena\workspace-01a06312-9f47-7052-a276-d661b1051b1c\django\core\models.py (LANGUAGE_PYTHON)
+Cursor is on line: 520
+Other open documents:
+- f:\Code by Akshat\Anshita\anshitamakeover aiarena\workspace-01a06312-9f47-7052-a276-d661b1051b1c\django\core\models.py (LANGUAGE_PYTHON)
+- f:\Code by Akshat\Anshita\anshitamakeover aiarena\workspace-01a06312-9f47-7052-a276-d661b1051b1c\django\core\migrations\0013_lookgroup_is_published_lookgroup_seo_description_and_more.py (LANGUAGE_PYTHON)
+</ADDITIONAL_METADATA>

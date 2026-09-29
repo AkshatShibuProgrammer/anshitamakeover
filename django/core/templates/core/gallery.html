@@ -1,172 +1,1418 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Haute Couture Lookbook & Artistry Gallery — Anshita Makeover{% endblock %}
-{% block meta_description %}Explore Anshita Makeover's curated bridal lookbook, multi-angle transformations, editorial couture suites, and real client albums across India.{% endblock %}
-
-{% block content %}
-<main class="lookbook-page-wrap">
-  <!-- ═══ GALLERY HERO ═══ -->
-  <section class="lookbook-hero-sec">
-    <div class="editorial-watermark" style="top:25%">EDITORIAL COUTURE</div>
-    <div class="sw">
-      <div class="rev on">
-        <p class="sl">✦ HAUTE ARTISTRY ARCHIVE</p>
-        <h1 class="sh" style="font-size:clamp(2.5rem, 5vw, 4.2rem);margin-bottom:14px">Real Transformations. Every Sacred Angle.</h1>
-        <div class="gdiv"></div>
-        <p class="ss" style="max-width:720px;margin:0 auto">
-          Explore our signature bridal disciplines, multi-angle portfolios, and real client transformations. Click any lookbook album to launch the interactive high-definition peek viewer.
-        </p>
-      </div>
-
-      <!-- LAYER 1: Dynamic Auto-Rotating Hero Service Showcase Carousel -->
-      <div class="gal-showcase-hero rev d1 on" id="galShowcaseHero" style="margin-top:40px">
-        <!-- Slide 1: Sacred Vivah Royal Crimson Bride -->
-        <div class="gal-slide active" data-slide="0" onclick="openLookbook('royal_crimson')" style="cursor:pointer">
-          <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Sacred Vivah Royal Crimson Bride" class="gal-slide-img">
-          <div class="gal-slide-overlay"></div>
-          <div class="gal-slide-caption">
-            <span class="gal-slide-badge">Signature Discipline 01 · 4 Angles</span>
-            <h3>Imperial Bridal Couture & Airbrush Artistry</h3>
-            <p>Micro-buffed HD & atomized TEMPTU airbrush bases ensuring 18+ hour cry-proof and sweat resilience for royal pheras.</p>
-          </div>
-        </div>
-        <!-- Slide 2: Christian Bridal Couture Suite -->
-        <div class="gal-slide" data-slide="1" onclick="openLookbook('christian_ivory')" style="cursor:pointer">
-          <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Christian Bridal Couture Suite" class="gal-slide-img">
-          <div class="gal-slide-overlay"></div>
-          <div class="gal-slide-caption">
-            <span class="gal-slide-badge">Signature Discipline 02 · Couture Suite</span>
-            <h3>Christian Bridal Couture & Cathedral Veil</h3>
-            <p>Bespoke church ceremony styling featuring luminous porcelain HD airbrush, off-shoulder ivory gown framing, and multi-tier cathedral veil anchoring.</p>
-          </div>
-        </div>
-        <!-- Slide 3: Imperial Fuchsia & Emerald Palace Bride (Recreated 4K) -->
-        <div class="gal-slide" data-slide="2" onclick="openLookbook('fuchsia_palace')" style="cursor:pointer">
-          <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia & Emerald Palace Bride" class="gal-slide-img">
-          <div class="gal-slide-overlay"></div>
-          <div class="gal-slide-caption">
-            <span class="gal-slide-badge">Signature Discipline 03 · 4K Recreated</span>
-            <h3>Imperial Fuchsia Silk & Emerald Palace Suite</h3>
-            <p>Majestic heritage styling with rose-dew HD radiance, gilded cut-crease eye artistry, and Zambian emerald choker settings.</p>
-          </div>
-        </div>
-        <!-- Slide 4: Palace Maroon Velvet Heritage (DSLR Shoot) -->
-        <div class="gal-slide" data-slide="3" onclick="openLookbook('maroon_velvet')" style="cursor:pointer">
-          <img src="{% static 'core/images/curated/dsc09702.jpg' %}?v=2" alt="Palace Maroon Velvet Heritage" class="gal-slide-img">
-          <div class="gal-slide-overlay"></div>
-          <div class="gal-slide-caption">
-            <span class="gal-slide-badge">Authentic DSLR Shoot · 6 Angles</span>
-            <h3>Palace Maroon Velvet Heritage Couture</h3>
-            <p>Deep wine velvet lehenga, hand-embroidered gold zardozi, antique polki nath, and double royal veil architecture.</p>
-          </div>
-        </div>
-        <!-- Slide 5: Ring Ceremony Sheer Maroon Veil Bride -->
-        <div class="gal-slide" data-slide="4" onclick="openLookbook('maroon_veil')" style="cursor:pointer">
-          <img src="{% static 'core/images/curated/ig_post_DRP0QCODVfD.jpg' %}" alt="Ring Ceremony Sheer Maroon Veil Bride" class="gal-slide-img">
-          <div class="gal-slide-overlay"></div>
-          <div class="gal-slide-caption">
-            <span class="gal-slide-badge">Signature Discipline 05 · Ring Ceremony</span>
-            <h3>Ring Ceremony & Sheer Maroon Veil Radiance</h3>
-            <p>Enchanting sheer gold-bordered veil framing, warm smokey cut-crease eyes, and delicate maang tikka alignment.</p>
-          </div>
-        </div>
-        <!-- Slide 6: Traditional Kolkata Banarasi & Chandan Art -->
-        <div class="gal-slide" data-slide="5" onclick="openLookbook('bengali_heritage')" style="cursor:pointer">
-          <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Traditional Bengali Mukut & Chandan" class="gal-slide-img">
-          <div class="gal-slide-overlay"></div>
-          <div class="gal-slide-caption">
-            <span class="gal-slide-badge">Cultural Specialty Heritage · 4 Photos</span>
-            <h3>Traditional Kolkata Banarasi & Chandan Art</h3>
-            <p>Intricate forehead sandalwood artwork, artisanal glitter cut-crease eye makeup, and pure silk Banarasi draping with sacred alta grace.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Navigation Dots -->
-      <div class="gal-hero-dots">
-        <span class="gal-hero-dot active" onclick="setGalHeroSlide(0)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(1)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(2)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(3)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(4)"></span>
-        <span class="gal-hero-dot" onclick="setGalHeroSlide(5)"></span>
-      </div>
-
-      <!-- LAYER 2: Filterable Real-Brides Gallery Grid -->
-      <div class="gal-filters rev d2 on" style="margin-top:30px">
-        <button class="gf-btn active" onclick="filterGal('all')">All Disciplines</button>
-        <button class="gf-btn" onclick="filterGal('bridal')">Bridal Suites</button>
-        <button class="gf-btn" onclick="filterGal('engagement')">Engagement & Roka</button>
-        <button class="gf-btn" onclick="filterGal('hair')">Hair & Draping</button>
-        <button class="gf-btn" onclick="filterGal('nails')">Nail Artistry</button>
-        <button class="gf-btn" onclick="filterGal('party')">Party & Side Glam</button>
-      </div>
-
-      <div class="gal-grid rev d2 on" style="margin-top:24px">
-        {% for grp in look_groups %}
-        <div class="gal-item lg-card-{{ grp.id }}" id="lookgroup-{{ grp.id }}" data-lg-id="{{ grp.id }}" data-cat="{{ grp.category }}" onclick="openLookbook('{{ grp.id }}')" style="cursor:pointer">
-          <img src="{{ grp.display_cover }}?v=2" alt="{{ grp.name }}" loading="lazy">
-          
-          <!-- Person & Makeup Type Folder Badges -->
-          <div style="position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:center;z-index:3;pointer-events:none">
-            {% if grp.client_name %}
-            <span style="background:rgba(20,16,18,0.92);backdrop-filter:blur(8px);border:1px solid rgba(212,175,55,0.6);border-radius:14px;padding:4px 10px;font-size:0.68rem;font-weight:700;color:var(--gold);letter-spacing:0.5px">
-              👤 {{ grp.client_name }}
-            </span>
-            {% endif %}
-            <span style="background:rgba(0,0,0,0.75);border-radius:12px;padding:3px 8px;font-size:0.62rem;color:rgba(245,237,214,0.9);letter-spacing:0.5px">
-              {{ grp.media_items.count }} Media
-            </span>
-          </div>
-
-          <div class="gal-ov">
-            <span style="font-weight:700;letter-spacing:1px">🔍 Open Lookbook Folder</span>
-            <strong style="font-size:.78rem;color:var(--gold-l);display:block;margin-top:6px">{{ grp.makeup_type|default:grp.name }}</strong>
-            <small style="font-size:.65rem;color:rgba(245,237,214,0.7);display:block;margin-top:2px">{{ grp.get_category_display }}</small>
-          </div>
-        </div>
-        {% empty %}
-        <div style="grid-column:1/-1;text-align:center;padding:40px;color:rgba(245,237,214,0.5)">
-          No look groups available.
-        </div>
-        {% endfor %}
-      </div>
-
-      <!-- LAYER 3: Action Row & Comparison Triggers -->
-      <div class="gal-action-row rev d3 on" style="margin-top:50px">
-        <div>
-          <h4 style="font-family:var(--font-h);font-size:1.15rem;color:#fff;margin-bottom:4px">Coverage & Technical Specifications</h4>
-          <p style="font-size:0.8rem;color:rgba(245,237,214,0.7)">Compare vanity kits, longevity, and techniques side-by-side or customize your wedding day package.</p>
-        </div>
-        <div class="gal-action-btns">
-          <a href="{% url 'services' %}" class="btn-comp-trigger">
-            Explore Studio Services ↗
-          </a>
-          <a href="{% url 'packages' %}" class="btn-comp-trigger" style="background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#000">
-            Compare Bridal Suites ↗
-          </a>
-          <a href="{% url 'package_builder' %}" class="btn-comp-trigger" style="background:transparent;border-color:rgba(212,175,55,0.4)">
-            Build Custom Look ↗
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-</main>
-{% endblock %}
+{% block title %}Haute Couture Cinema Gallery & Bridal Lookbook — Anshita Makeover{% endblock %}
+{% block meta_description %}Immerse yourself in Anshita Makeover's 4K Bridal Cinema Studio. Browse curated albums, multi-angle bridal portraits, authentic Instagram reels, and reserve bespoke bridal couture looks.{% endblock %}
 
 {% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@600;700;800;900&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-.lookbook-page-wrap {
-  padding-bottom: 90px;
-  position: relative;
-  z-index: 1;
+/* ═══ LUXURY BRIDAL CINEMA & LOOKBOOK STUDIO (OPTION C COMPATIBLE) ═══ */
+:root {
+  --cinema-bg: #090307;
+  --cinema-panel-bg: rgba(18, 7, 14, 0.94);
+  --cinema-card-bg: rgba(28, 11, 22, 0.7);
+  --cinema-card-active: linear-gradient(135deg, rgba(82, 22, 45, 0.85), rgba(42, 12, 25, 0.95));
+  --cinema-gold: #d4af37;
+  --cinema-gold-l: #f5d77f;
+  --cinema-gold-d: #a88728;
+  --cinema-border: rgba(212, 175, 55, 0.22);
+  --cinema-border-active: rgba(212, 175, 55, 0.75);
 }
-.lookbook-hero-sec {
-  background: transparent;
+
+body {
+  background: var(--cinema-bg) !important;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+#three-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.85 !important;
+}
+
+.cinema-page-wrapper {
   position: relative;
-  padding: 40px 0 60px;
+  z-index: 2;
+  width: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 85px 24px 60px;
+  box-sizing: border-box;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Master Studio Grid (Left Sidebar + Main Theater) */
+.cinema-studio-layout {
+  display: grid;
+  grid-template-columns: 310px 1fr;
+  gap: 24px;
+  width: 100%;
+  background: var(--cinema-panel-bg);
+  border: 1px solid var(--cinema-border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.85), inset 0 0 35px rgba(212, 175, 55, 0.04);
+}
+
+@media (max-width: 1080px) {
+  .cinema-studio-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══ VERTICAL LINE: LEFT SIDEBAR WITH ALL ALBUMS ═══ */
+.cinema-sidebar {
+  background: rgba(12, 4, 9, 0.98);
+  border-right: 1px solid var(--cinema-border);
+  display: flex;
+  flex-direction: column;
+  padding: 22px 16px;
+  box-sizing: border-box;
+  max-height: calc(100vh - 120px);
+}
+
+.cinema-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.cinema-sidebar-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.82rem;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--cinema-gold);
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cinema-album-count-badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--cinema-gold-l);
+}
+
+.cinema-albums-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding-right: 6px;
+  flex: 1;
+}
+
+.cinema-albums-list::-webkit-scrollbar {
+  width: 4px;
+}
+.cinema-albums-list::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 4px;
+}
+
+/* Album Item Card in Vertical Line */
+.cinema-album-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--cinema-card-bg);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.28s ease;
+  position: relative;
+}
+
+.cinema-album-item:hover {
+  background: rgba(48, 16, 32, 0.85);
+  border-color: rgba(212, 175, 55, 0.5);
+  transform: translateX(4px);
+}
+
+.cinema-album-item.active {
+  background: var(--cinema-card-active);
+  border-color: var(--cinema-gold);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), inset 0 0 14px rgba(212, 175, 55, 0.2);
+}
+
+.cinema-album-thumb {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: #000;
+}
+
+.cinema-album-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.cinema-album-item:hover .cinema-album-thumb img {
+  transform: scale(1.1);
+}
+
+.cinema-album-play-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  color: var(--cinema-gold-l);
+  font-size: 0.85rem;
+}
+
+.cinema-album-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+}
+
+.cinema-album-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+
+.cinema-album-count {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.67rem;
+  color: rgba(245, 237, 214, 0.65);
+  letter-spacing: 0.3px;
+}
+
+/* Inline Admin Edit Button on Album Card */
+.cinema-album-admin-edit {
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: var(--cinema-gold);
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: none;
+}
+.cinema-album-admin-edit:hover {
+  background: var(--cinema-gold);
+  color: #000;
+}
+body.is-admin .cinema-album-admin-edit {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ═══ MAIN CINEMA STAGE & CONTROLS ═══ */
+.cinema-main-stage {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 24px 22px;
+  box-sizing: border-box;
+  background: radial-gradient(circle at 65% 35%, rgba(42, 14, 28, 0.6) 0%, rgba(10, 4, 8, 0.98) 75%);
+}
+
+@media (max-width: 768px) {
+  .cinema-main-stage {
+    padding: 16px 12px 18px;
+  }
+}
+
+/* Top Utility Header */
+.cinema-top-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.cinema-current-album-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cinema-current-album-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--cinema-gold);
+  font-weight: 700;
+}
+.cinema-current-album-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.cinema-top-tools {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.cinema-icon-btn {
+  background: transparent;
+  border: none;
+  color: rgba(245, 237, 214, 0.7);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.cinema-icon-btn:hover {
+  color: var(--cinema-gold);
+  transform: scale(1.12);
+}
+
+/* Cinema Screen Viewport */
+.cinema-viewport {
+  position: relative;
+  width: 100%;
+  height: clamp(420px, 58vh, 580px);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid var(--cinema-border);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cinema-media-element {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  filter: brightness(0.92) contrast(1.04);
+  transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.35s ease;
+}
+
+video.cinema-media-element {
+  background: #000;
+  object-fit: contain;
+}
+
+.cinema-overlay-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.45) 75%, rgba(0, 0, 0, 0.88) 100%),
+    linear-gradient(to right, rgba(0, 0, 0, 0.35) 0%, transparent 40%, rgba(0, 0, 0, 0.85) 80%);
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.4s ease;
+}
+
+/* Center Golden Play Button */
+.cinema-center-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: rgba(22, 9, 17, 0.8);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 2px solid var(--cinema-gold);
+  box-shadow: 0 0 35px rgba(212, 175, 55, 0.55), inset 0 0 18px rgba(212, 175, 55, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  animation: playOrbBreathing 3s ease-in-out infinite;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease;
+}
+
+@keyframes playOrbBreathing {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.45), inset 0 0 15px rgba(212, 175, 55, 0.25);
+    border-color: rgba(212, 175, 55, 0.75);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    box-shadow: 0 0 45px rgba(212, 175, 55, 0.75), inset 0 0 24px rgba(212, 175, 55, 0.5);
+    border-color: var(--cinema-gold-l);
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+.cinema-center-play:hover {
+  transform: translate(-50%, -50%) scale(1.12);
+  background: rgba(82, 22, 45, 0.85);
+  box-shadow: 0 0 50px rgba(212, 175, 55, 0.9);
+}
+
+.cinema-center-play svg {
+  width: 32px;
+  height: 32px;
+  fill: var(--cinema-gold-l);
+  margin-left: 4px;
+}
+
+.cinema-center-play.playing {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Right-Side Typographic Overlay with Authentic Details */
+.cinema-hero-typography {
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  max-width: 440px;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: auto;
+}
+
+.cinema-tag-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--cinema-gold);
+  margin-bottom: 8px;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+
+.cinema-headline-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: 8px;
+}
+
+.cinema-headline-craft {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.4rem, 2.3vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #fff;
+  line-height: 1.1;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.85);
+}
+
+.cinema-headline-brides {
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(2.6rem, 4.4vw, 4.2rem);
+  color: #f7a9be;
+  line-height: 0.95;
+  margin-top: -4px;
+  text-shadow: 0 4px 25px rgba(0,0,0,0.9), 0 0 20px rgba(247, 169, 190, 0.4);
+}
+
+.cinema-ornament-line {
+  color: var(--cinema-gold);
+  font-size: 0.9rem;
+  margin: 6px 0 10px;
+  opacity: 0.8;
+}
+
+.cinema-subtext-moments {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  color: rgba(245, 237, 214, 0.85);
+  line-height: 1.55;
+  margin-bottom: 14px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+}
+
+/* Real-Time Instagram & WhatsApp Badges */
+.cinema-detail-badges {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.cinema-ig-link-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(225, 48, 108, 0.2);
+  border: 1px solid rgba(225, 48, 108, 0.5);
+  color: #fff;
+  border-radius: 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+.cinema-ig-link-badge:hover {
+  background: rgba(225, 48, 108, 0.6);
+  border-color: #e1306c;
+  transform: translateY(-2px);
+}
+
+.cinema-book-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  color: #0b0307;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border-radius: 26px;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
+  transition: all 0.3s ease;
+}
+
+.cinema-book-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(212, 175, 55, 0.55);
+  background: linear-gradient(135deg, #f5d77f, #d4af37);
+}
+
+@media (max-width: 900px) {
+  .cinema-hero-typography {
+    right: auto;
+    left: 20px;
+    bottom: 20px;
+    top: auto;
+    transform: none;
+    text-align: left;
+    align-items: flex-start;
+  }
+  .cinema-headline-block {
+    align-items: flex-start;
+  }
+  .cinema-detail-badges {
+    justify-content: flex-start;
+  }
+}
+
+/* Scrubber Control Bar */
+.cinema-control-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 18px;
+  background: rgba(14, 5, 10, 0.95);
+  border-top: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 0 0 14px 14px;
+}
+
+.ctrl-btn {
+  background: transparent;
+  border: none;
+  color: rgba(245, 237, 214, 0.8);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.ctrl-btn:hover {
+  color: var(--cinema-gold);
+}
+
+.cinema-time-display {
+  font-size: 0.74rem;
+  color: rgba(245, 237, 214, 0.7);
+  font-family: monospace;
+  white-space: nowrap;
+}
+
+.cinema-progress-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+}
+
+.cinema-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--cinema-gold);
+  border-radius: 2px;
+  position: relative;
+}
+
+.cinema-progress-fill::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: -4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--cinema-gold-l);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.8);
+}
+
+.cinema-right-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ═══ HORIZONTAL LINE: ALL PHOTOS & VIDEOS OF SELECTED ALBUM ═══ */
+.cinema-filmstrip-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  position: relative;
+}
+
+.filmstrip-nav-arrow {
+  width: 38px;
+  height: 84px;
+  background: rgba(20, 8, 16, 0.9);
+  border: 1px solid var(--cinema-border);
+  color: var(--cinema-gold);
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+.filmstrip-nav-arrow:hover {
+  background: rgba(45, 15, 30, 0.95);
+  border-color: var(--cinema-gold);
+}
+
+.filmstrip-items-scroll {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  width: 100%;
+  padding: 6px 2px;
+}
+
+.filmstrip-items-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+.filmstrip-items-scroll::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.35);
+  border-radius: 4px;
+}
+
+.filmstrip-card {
+  position: relative;
+  width: 150px;
+  height: 90px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(212, 175, 55, 0.22);
+  cursor: pointer;
+  background: #000;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.filmstrip-card:hover {
+  border-color: var(--cinema-gold);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.75);
+}
+
+.filmstrip-card.active {
+  border-color: var(--cinema-gold-l);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.7), 0 8px 24px rgba(0,0,0,0.8);
+  transform: translateY(-2px);
+}
+
+.filmstrip-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.filmstrip-card:hover img {
+  transform: scale(1.08);
+}
+
+.filmstrip-type-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--cinema-gold-l);
+  font-size: 0.58rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.filmstrip-title-badge {
+  position: absolute;
+  bottom: 0;
+  inset-x: 0;
+  padding: 6px 8px 4px;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.64rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ═══ ADMIN EDIT ALBUM MODAL ═══ */
+.admin-album-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(14px);
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.admin-album-modal.active {
+  display: flex;
+}
+.admin-album-modal-box {
+  background: rgba(22, 9, 18, 0.98);
+  border: 1.5px solid var(--cinema-gold);
+  border-radius: 16px;
+  width: min(520px, 100%);
+  padding: 26px 30px;
+  box-shadow: 0 25px 80px rgba(0,0,0,0.9), 0 0 35px rgba(212, 175, 55, 0.2);
+}
+.adm-modal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.25rem;
+  color: var(--cinema-gold);
+  margin: 0 0 16px;
+}
+.adm-modal-label {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(245, 237, 214, 0.7);
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+.adm-modal-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  box-sizing: border-box;
+}
+.adm-modal-input:focus {
+  outline: none;
+  border-color: var(--cinema-gold);
+}
+.adm-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+.adm-modal-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.adm-modal-btn.cancel {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.7);
+}
+.adm-modal-btn.save {
+  background: var(--cinema-gold);
+  border: none;
+  color: #000;
+}
+.adm-modal-btn.save:hover {
+  background: var(--cinema-gold-l);
 }
 </style>
+{% endblock %}
+
+{% block content %}
+<main class="cinema-page-wrapper">
+  
+  <div class="cinema-studio-layout">
+    
+    <!-- ═══ VERTICAL LINE: LEFT SIDEBAR WITH ALL ALBUMS ═══ -->
+    <aside class="cinema-sidebar">
+      <div class="cinema-sidebar-header">
+        <h2 class="cinema-sidebar-title">
+          <span>YOUR ALBUMS</span>
+          <span class="cinema-album-count-badge" id="albumTotalCountBadge">12</span>
+        </h2>
+        {% if user.is_authenticated %}
+        <span style="font-size:0.62rem;background:rgba(212,175,55,0.2);color:var(--cinema-gold);padding:2px 6px;border-radius:4px;font-weight:700">Admin Mode</span>
+        {% endif %}
+      </div>
+
+      <div class="cinema-albums-list" id="cinemaAlbumsList">
+        <!-- Rendered dynamically by JavaScript from cinema_albums_json -->
+      </div>
+    </aside>
+
+    <!-- ═══ MAIN CINEMA STAGE & FILMSTRIP ═══ -->
+    <section class="cinema-main-stage">
+      
+      <!-- Top Utility Header -->
+      <div class="cinema-top-actions">
+        <div class="cinema-current-album-indicator">
+          <span class="cinema-current-album-tag" id="cinemaCurrentTag">ALBUM</span>
+          <span class="cinema-current-album-title" id="cinemaCurrentTitle">Kuhu — Kolkata Banarasi & Chandan Art</span>
+          {% if user.is_authenticated %}
+          <button type="button" class="cinema-album-admin-edit" onclick="openAdminAlbumEditModal()" title="Admin: Customize Album Details">
+            ✏️ Edit Album
+          </button>
+          {% endif %}
+        </div>
+
+        <div class="cinema-top-tools">
+          <button type="button" class="cinema-icon-btn" title="View Services Catalogue" onclick="location.href='/services/'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          </button>
+          <button type="button" class="cinema-icon-btn" title="Share Album" onclick="shareCurrentAlbum()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+          </button>
+          <button type="button" class="cinema-icon-btn" title="Fullscreen View" onclick="toggleCinemaFullscreen()">
+            ⛶
+          </button>
+        </div>
+      </div>
+
+      <!-- Cinema Screen Viewport -->
+      <div class="cinema-viewport" id="cinemaViewport">
+        <video src="" class="cinema-media-element" id="cinemaMainVideo" playsinline loop style="display: none;"></video>
+        <img src="" alt="Bridal Cinema Stage" class="cinema-media-element" id="cinemaMainMedia">
+        
+        <div class="cinema-overlay-vignette"></div>
+
+        <!-- Center Golden Play Button -->
+        <div class="cinema-center-play" id="cinemaPlayTrigger" onclick="toggleCinemaPlay()" title="Play Cinema Reel">
+          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        </div>
+
+        <!-- Right-Side Typographic Overlay with Authentic Details -->
+        <div class="cinema-hero-typography">
+          <p class="cinema-tag-eyebrow" id="cinemaEyebrow">TRADITIONAL BENGALI · VIVAH</p>
+          <div class="cinema-headline-block">
+            <span class="cinema-headline-craft" id="cinemaCraftH">CRAFTING TIMELESS</span>
+            <span class="cinema-headline-brides" id="cinemaBridesH">Brides</span>
+          </div>
+          <div class="cinema-ornament-line">❖</div>
+          <p class="cinema-subtext-moments" id="cinemaSubMoments">
+            Authentic Kolkata Banarasi silk draping, hand-painted red and white sacred Chandan motifs, and 18-hour cry-proof airbrush glow.
+          </p>
+          
+          <div class="cinema-detail-badges">
+            <a href="#" target="_blank" rel="noopener" class="cinema-ig-link-badge" id="cinemaIgLinkBadge" style="display: none;">
+              <span>📸 View on Instagram ↗</span>
+            </a>
+          </div>
+
+          <a href="#" target="_blank" class="cinema-book-btn" id="cinemaBookBtn">
+            <span>RESERVE THIS LOOK</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Scrubber Control Bar -->
+      <div class="cinema-control-bar">
+        <button type="button" class="ctrl-btn" id="cinemaPlayIconBtn" onclick="toggleCinemaPlay()" title="Play / Pause">
+          ▶
+        </button>
+        <button type="button" class="ctrl-btn" id="cinemaAudioBtn" onclick="toggleCinemaAudio()" title="Mute / Unmute">
+          🔊
+        </button>
+        <span class="cinema-time-display" id="cinemaTimeDisplay">00:00 / 00:33</span>
+        
+        <div class="cinema-progress-track" onclick="scrubCinemaProgress(event)">
+          <div class="cinema-progress-fill" id="cinemaProgressFill"></div>
+        </div>
+
+        <div class="cinema-right-tools">
+          <button type="button" class="ctrl-btn" title="Fullscreen" onclick="toggleCinemaFullscreen()">⛶</button>
+        </div>
+      </div>
+
+      <!-- ═══ HORIZONTAL LINE: ALL PHOTOS & VIDEOS OF CURRENT ALBUM ═══ -->
+      <div class="cinema-filmstrip-strip">
+        <button type="button" class="filmstrip-nav-arrow" onclick="scrollFilmstrip(-260)" aria-label="Previous Items">‹</button>
+        
+        <div class="filmstrip-items-scroll" id="filmstripScroll">
+          <!-- Populated dynamically with all photos and videos of selected album -->
+        </div>
+
+        <button type="button" class="filmstrip-nav-arrow" onclick="scrollFilmstrip(260)" aria-label="Next Items">›</button>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ═══ REGAL SINHA FAMILY GROUP EMBLEM AT BOTTOM ═══ -->
+  <footer style="margin-top: 60px; padding: 40px 0 20px; border-top: 1px solid rgba(212,175,55,0.15); text-align: center;">
+    {% include 'core/includes/sinha_c2_footer_crest.html' %}
+  </footer>
+
+</main>
+
+<!-- ═══ ADMIN CUSTOMIZE ALBUM MODAL ═══ -->
+{% if user.is_authenticated %}
+<div class="admin-album-modal" id="adminAlbumModal">
+  <div class="admin-album-modal-box">
+    <h3 class="adm-modal-title">⚙️ Customize Album Details</h3>
+    <input type="hidden" id="admModalAlbumId" value="">
+    
+    <label class="adm-modal-label">Album Display Name *</label>
+    <input type="text" class="adm-modal-input" id="admModalAlbumName" placeholder="e.g. Kuhu — Traditional Kolkata Banarasi & Chandan Art">
+
+    <label class="adm-modal-label">Client / Model Name</label>
+    <input type="text" class="adm-modal-input" id="admModalClientName" placeholder="e.g. Kuhu Banerjee">
+
+    <label class="adm-modal-label">Makeup Style / Technique</label>
+    <input type="text" class="adm-modal-input" id="admModalMakeupType" placeholder="e.g. Traditional Bengali Mukut & Chandan Art">
+
+    <label class="adm-modal-label">Category</label>
+    <select class="adm-modal-input" id="admModalCategory" style="background:#11050d">
+      <option value="bridal">Bridal Suites</option>
+      <option value="reception">Reception & Cocktail</option>
+      <option value="engagement">Engagement & Roka</option>
+      <option value="sangeet">Sangeet & Haldi</option>
+      <option value="hair">Hair & Draping</option>
+      <option value="party">Party & Side Glam</option>
+      <option value="studio">Studio & Masterclass</option>
+    </select>
+
+    <div class="adm-modal-actions">
+      <button type="button" class="adm-modal-btn cancel" onclick="closeAdminAlbumEditModal()">Cancel</button>
+      <button type="button" class="adm-modal-btn save" id="admModalSaveBtn" onclick="saveAdminAlbumCustomization()">Save Customization</button>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// ═══ DYNAMIC 4K CINEMA STUDIO CONTROLLER ═══
+const rawAlbumsData = {{ cinema_albums_json|default:'[]'|safe }};
+let allCinemaAlbums = Array.isArray(rawAlbumsData) ? rawAlbumsData : [];
+let activeAlbumIndex = 0;
+let activeItemIndex = 0;
+let isPlaying = false;
+let playInterval = null;
+let currentSeconds = 0;
+
+// Mark body as admin if user is staff
+{% if user.is_authenticated %}
+document.body.classList.add('is-admin');
+{% endif %}
+
+// 1. Initialize Vertical Line (All Albums Sidebar)
+function renderVerticalAlbumsSidebar() {
+  const container = document.getElementById('cinemaAlbumsList');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const countBadge = document.getElementById('albumTotalCountBadge');
+  if (countBadge) countBadge.textContent = allCinemaAlbums.length;
+
+  allCinemaAlbums.forEach((alb, idx) => {
+    const itemEl = document.createElement('div');
+    itemEl.className = `cinema-album-item ${idx === activeAlbumIndex ? 'active' : ''}`;
+    itemEl.dataset.albumIdx = idx;
+    itemEl.onclick = (e) => {
+      // Don't trigger album switch if clicking admin edit button
+      if (e.target.closest('.cinema-album-admin-edit')) return;
+      selectCinemaAlbum(idx);
+    };
+
+    const hasVideo = alb.items.some(it => it.media_type === 'video_file' || (it.video_url && it.video_url.length > 0));
+    const coverUrl = alb.cover || (alb.items[0] ? alb.items[0].src : '/static/core/images/curated/royal_crimson_bride_angle3.jpg');
+
+    itemEl.innerHTML = `
+      <div class="cinema-album-thumb">
+        <img src="${coverUrl}" alt="${alb.name}">
+        ${hasVideo ? '<span class="cinema-album-play-icon">▶</span>' : ''}
+      </div>
+      <div class="cinema-album-info">
+        <span class="cinema-album-name" title="${alb.name}">${alb.name}</span>
+        <span class="cinema-album-count">${alb.items.length} Media · ${alb.category_display || alb.category}</span>
+      </div>
+      {% if user.is_authenticated %}
+      <button type="button" class="cinema-album-admin-edit" onclick="openAdminAlbumEditModal(${idx})" title="Edit Album Name">
+        ✏️
+      </button>
+      {% endif %}
+    `;
+    container.appendChild(itemEl);
+  });
+}
+
+// 2. Select Album from Vertical Line -> Populate Horizontal Line
+function selectCinemaAlbum(albumIdx) {
+  if (albumIdx < 0 || albumIdx >= allCinemaAlbums.length) return;
+  activeAlbumIndex = albumIdx;
+  activeItemIndex = 0;
+
+  // Update vertical line active class
+  document.querySelectorAll('.cinema-album-item').forEach((el, i) => {
+    el.classList.toggle('active', i === albumIdx);
+  });
+
+  const album = allCinemaAlbums[albumIdx];
+
+  // Update Top Indicator
+  const tagEl = document.getElementById('cinemaCurrentTag');
+  const titleEl = document.getElementById('cinemaCurrentTitle');
+  if (tagEl) tagEl.textContent = (album.category_display || album.category).toUpperCase();
+  if (titleEl) titleEl.textContent = album.name;
+
+  // Populate Horizontal Filmstrip with ALL photos & videos of this album
+  renderHorizontalMediaFilmstrip(album);
+
+  // Load first item into cinema viewport
+  loadCinemaMedia(0);
+}
+
+// 3. Render Horizontal Line (All Photos & Videos of Selected Album)
+function renderHorizontalMediaFilmstrip(album) {
+  const container = document.getElementById('filmstripScroll');
+  if (!container) return;
+  container.innerHTML = '';
+
+  album.items.forEach((item, itemIdx) => {
+    const card = document.createElement('div');
+    card.className = `filmstrip-card ${itemIdx === activeItemIndex ? 'active' : ''}`;
+    card.dataset.itemIdx = itemIdx;
+    card.onclick = () => loadCinemaMedia(itemIdx);
+
+    let typeBadge = '📷 Photo';
+    if (item.media_type === 'video_file' || item.video_url) {
+      typeBadge = '▶ 4K Video';
+    } else if (item.media_type === 'instagram') {
+      typeBadge = '📸 Reel';
+    }
+
+    card.innerHTML = `
+      <img src="${item.src}" alt="${item.title || album.name}">
+      <span class="filmstrip-type-badge">${typeBadge}</span>
+      <span class="filmstrip-title-badge">${item.title || `Look 0${itemIdx + 1}`}</span>
+    `;
+    container.appendChild(card);
+  });
+
+  // Scroll filmstrip back to beginning
+  container.scrollTo({ left: 0, behavior: 'smooth' });
+
+  // GSAP stagger wave entrance for horizontal cards
+  if (typeof gsap !== 'undefined') {
+    gsap.from('#filmstripScroll .filmstrip-card', {
+      opacity: 0,
+      y: 16,
+      scale: 0.94,
+      stagger: 0.045,
+      duration: 0.4,
+      ease: 'power2.out'
+    });
+  }
+}
+
+// 4. Load Single Media Item into Main Cinema Stage & Update Authentic Details
+function loadCinemaMedia(itemIdx) {
+  const album = allCinemaAlbums[activeAlbumIndex];
+  if (!album || !album.items || itemIdx < 0 || itemIdx >= album.items.length) return;
+  activeItemIndex = itemIdx;
+
+  const item = album.items[itemIdx];
+
+  const mainMedia = document.getElementById('cinemaMainMedia');
+  const mainVideo = document.getElementById('cinemaMainVideo');
+  const playTrigger = document.getElementById('cinemaPlayTrigger');
+  const iconBtn = document.getElementById('cinemaPlayIconBtn');
+  const craftH = document.getElementById('cinemaCraftH');
+  const bridesH = document.getElementById('cinemaBridesH');
+  const eyebrow = document.getElementById('cinemaEyebrow');
+  const subM = document.getElementById('cinemaSubMoments');
+  const timeDisplay = document.getElementById('cinemaTimeDisplay');
+  const fill = document.getElementById('cinemaProgressFill');
+  const bookBtn = document.getElementById('cinemaBookBtn');
+  const igBadge = document.getElementById('cinemaIgLinkBadge');
+
+  // Smooth media transition
+  if (typeof gsap !== 'undefined' && mainMedia) {
+    gsap.fromTo(mainMedia, { opacity: 0.5, scale: 0.99 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' });
+  }
+
+  // Pause previous video
+  if (mainVideo) {
+    mainVideo.pause();
+    mainVideo.currentTime = 0;
+  }
+  isPlaying = false;
+  if (playTrigger) playTrigger.classList.remove('playing');
+  if (iconBtn) iconBtn.textContent = '▶';
+  if (playInterval) clearInterval(playInterval);
+
+  // Handle Video vs Image
+  const hasRealVideo = (item.media_type === 'video_file' || (item.video_url && item.video_url.length > 0));
+  if (hasRealVideo) {
+    if (mainVideo) {
+      mainVideo.src = item.video_url;
+      mainVideo.style.display = 'block';
+    }
+    if (mainMedia) mainMedia.style.display = 'none';
+    if (playTrigger) playTrigger.style.display = 'flex';
+  } else {
+    if (mainVideo) mainVideo.style.display = 'none';
+    if (mainMedia) {
+      mainMedia.style.display = 'block';
+      mainMedia.style.opacity = '0.35';
+      setTimeout(() => {
+        mainMedia.src = item.src;
+        mainMedia.style.opacity = '1';
+      }, 120);
+    }
+    // For images, keep play orb for cinematic Ken-Burns zoom simulation
+    if (playTrigger) playTrigger.style.display = 'flex';
+  }
+
+  // Update Authentic Typography & Details
+  if (eyebrow) {
+    eyebrow.textContent = `${(album.category_display || album.category).toUpperCase()} · ${album.client_name ? album.client_name.toUpperCase() : 'COUTURE'}`;
+  }
+  if (craftH) {
+    craftH.textContent = (item.title || album.name).toUpperCase();
+  }
+  if (bridesH) {
+    bridesH.textContent = album.client_name ? album.client_name : 'Brides';
+  }
+  if (subM) {
+    subM.textContent = item.caption || album.description || 'Sculpting regal perfection with 18-hour cry-proof radiance for your sacred celebration.';
+  }
+
+  const durationSec = item.duration_seconds || 35;
+  const durStr = String(durationSec).padStart(2, '0');
+  if (timeDisplay) timeDisplay.textContent = `00:00 / 00:${durStr}`;
+  if (fill) fill.style.width = '0%';
+
+  // Real Instagram Link
+  if (igBadge) {
+    if (item.external_url && item.external_url.includes('instagram.com')) {
+      igBadge.href = item.external_url;
+      igBadge.style.display = 'inline-flex';
+    } else {
+      igBadge.style.display = 'none';
+    }
+  }
+
+  // WhatsApp Booking CTA
+  if (bookBtn) {
+    const inquiryText = encodeURIComponent(`Namaste Anshita! I saw the "${album.name}" album in your 4K Cinema Gallery (Look: ${item.title || 'Bridal Suite'}) and would love to reserve my wedding date.`);
+    bookBtn.href = `https://wa.me/{{ whatsapp|default:'917879223442' }}?text=${inquiryText}`;
+  }
+
+  // Update active state on horizontal filmstrip cards
+  document.querySelectorAll('.filmstrip-card').forEach((card, i) => {
+    card.classList.toggle('active', i === itemIdx);
+  });
+}
+
+// 5. Scroll Horizontal Line
+function scrollFilmstrip(px) {
+  const container = document.getElementById('filmstripScroll');
+  if (container) {
+    container.scrollBy({ left: px, behavior: 'smooth' });
+  }
+}
+
+// 6. Play / Pause Controller
+function toggleCinemaPlay() {
+  const btn = document.getElementById('cinemaPlayTrigger');
+  const iconBtn = document.getElementById('cinemaPlayIconBtn');
+  const media = document.getElementById('cinemaMainMedia');
+  const video = document.getElementById('cinemaMainVideo');
+  const album = allCinemaAlbums[activeAlbumIndex];
+  const item = album.items[activeItemIndex];
+
+  isPlaying = !isPlaying;
+
+  if (isPlaying) {
+    if (btn) btn.classList.add('playing');
+    if (iconBtn) iconBtn.textContent = '⏸';
+
+    const hasRealVideo = (item.media_type === 'video_file' || (item.video_url && item.video_url.length > 0));
+    if (hasRealVideo && video) {
+      video.play().catch(e => console.log('Autoplay policy caught:', e));
+    } else if (media) {
+      media.style.transform = 'scale(1.05)';
+    }
+
+    if (playInterval) clearInterval(playInterval);
+    const totalDuration = item.duration_seconds || (video && video.duration ? video.duration : 35);
+
+    playInterval = setInterval(() => {
+      const timeDisplay = document.getElementById('cinemaTimeDisplay');
+      const fill = document.getElementById('cinemaProgressFill');
+      if (hasRealVideo && video && video.duration) {
+        currentSeconds = Math.floor(video.currentTime);
+        const durSecs = Math.floor(video.duration);
+        if (timeDisplay) timeDisplay.textContent = `00:${String(currentSeconds).padStart(2, '0')} / 00:${String(durSecs).padStart(2, '0')}`;
+        if (fill) fill.style.width = ((video.currentTime / video.duration) * 100) + '%';
+      } else {
+        currentSeconds = (currentSeconds + 1) % totalDuration;
+        if (timeDisplay) timeDisplay.textContent = `00:${String(currentSeconds).padStart(2, '0')} / 00:${String(totalDuration).padStart(2, '0')}`;
+        if (fill) fill.style.width = ((currentSeconds / totalDuration) * 100) + '%';
+      }
+    }, 500);
+  } else {
+    if (btn) btn.classList.remove('playing');
+    if (iconBtn) iconBtn.textContent = '▶';
+    if (video) video.pause();
+    if (media) media.style.transform = 'scale(1)';
+    if (playInterval) clearInterval(playInterval);
+  }
+}
+
+// 7. Scrubber Progress Click
+function scrubCinemaProgress(e) {
+  const track = e.currentTarget;
+  const rect = track.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+  const pct = Math.max(0, Math.min(1, clickX / rect.width));
+  const fill = document.getElementById('cinemaProgressFill');
+  if (fill) fill.style.width = (pct * 100) + '%';
+
+  const album = allCinemaAlbums[activeAlbumIndex];
+  const item = album.items[activeItemIndex];
+  const video = document.getElementById('cinemaMainVideo');
+  const hasRealVideo = (item.media_type === 'video_file' || (item.video_url && item.video_url.length > 0));
+
+  const totalDuration = item.duration_seconds || (video && video.duration ? video.duration : 35);
+  if (hasRealVideo && video && video.duration) {
+    video.currentTime = pct * video.duration;
+  }
+  currentSeconds = Math.round(pct * totalDuration);
+  const timeDisplay = document.getElementById('cinemaTimeDisplay');
+  if (timeDisplay) timeDisplay.textContent = `00:${String(currentSeconds).padStart(2, '0')} / 00:${String(totalDuration).padStart(2, '0')}`;
+}
+
+// 8. Audio Toggle
+let isMuted = false;
+function toggleCinemaAudio() {
+  const video = document.getElementById('cinemaMainVideo');
+  const audioBtn = document.getElementById('cinemaAudioBtn');
+  if (!video) return;
+  isMuted = !isMuted;
+  video.muted = isMuted;
+  if (audioBtn) audioBtn.textContent = isMuted ? '🔇' : '🔊';
+}
+
+// 9. Fullscreen
+function toggleCinemaFullscreen() {
+  const viewport = document.getElementById('cinemaViewport');
+  if (!viewport) return;
+  if (!document.fullscreenElement) {
+    if (viewport.requestFullscreen) viewport.requestFullscreen();
+    else if (viewport.webkitRequestFullscreen) viewport.webkitRequestFullscreen();
+  } else {
+    if (document.exitFullscreen) document.exitFullscreen();
+  }
+}
+
+// 10. Share Album
+function shareCurrentAlbum() {
+  const album = allCinemaAlbums[activeAlbumIndex];
+  if (!album) return;
+  if (navigator.share) {
+    navigator.share({
+      title: `${album.name} — Anshita Makeover 4K Cinema Lookbook`,
+      text: `View the haute couture bridal collection: ${album.name}`,
+      url: window.location.href
+    }).catch(e => console.log('Share canceled'));
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    alert(`Link to "${album.name}" copied to clipboard! ✨`);
+  }
+}
+
+// ═══ ADMIN CUSTOMIZE ALBUM CONTROLLER ═══
+function openAdminAlbumEditModal(albumIdx = activeAlbumIndex) {
+  const album = allCinemaAlbums[albumIdx];
+  if (!album) return;
+
+  const modal = document.getElementById('adminAlbumModal');
+  const idInp = document.getElementById('admModalAlbumId');
+  const nameInp = document.getElementById('admModalAlbumName');
+  const clientInp = document.getElementById('admModalClientName');
+  const makeupInp = document.getElementById('admModalMakeupType');
+  const catInp = document.getElementById('admModalCategory');
+
+  if (modal && idInp && nameInp && clientInp && makeupInp && catInp) {
+    idInp.value = album.id;
+    nameInp.value = album.name;
+    clientInp.value = album.client_name || '';
+    makeupInp.value = album.makeup_type || '';
+    catInp.value = album.category || 'bridal';
+    modal.classList.add('active');
+  }
+}
+
+function closeAdminAlbumEditModal() {
+  const modal = document.getElementById('adminAlbumModal');
+  if (modal) modal.classList.remove('active');
+}
+
+async function saveAdminAlbumCustomization() {
+  const id = document.getElementById('admModalAlbumId').value;
+  const name = document.getElementById('admModalAlbumName').value.trim();
+  const clientName = document.getElementById('admModalClientName').value.trim();
+  const makeupType = document.getElementById('admModalMakeupType').value.trim();
+  const category = document.getElementById('admModalCategory').value;
+
+  if (!name) {
+    alert('Please enter an album name.');
+    return;
+  }
+
+  const btn = document.getElementById('admModalSaveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  const fd = new FormData();
+  fd.append('csrfmiddlewaretoken', getCsrf());
+  fd.append('id', id);
+  fd.append('name', name);
+  fd.append('client_name', clientName);
+  fd.append('makeup_type', makeupType);
+  fd.append('category', category);
+
+  try {
+    const res = await fetch('/api/admin/lookgroup/', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.ok) {
+      // Update local memory
+      const album = allCinemaAlbums.find(a => a.id == id);
+      if (album) {
+        album.name = name;
+        album.client_name = clientName;
+        album.makeup_type = makeupType;
+        album.category = category;
+      }
+      renderVerticalAlbumsSidebar();
+      selectCinemaAlbum(activeAlbumIndex);
+      closeAdminAlbumEditModal();
+      alert(`Album updated successfully to "${name}"!`);
+    } else {
+      alert(data.error || 'Failed to update album.');
+    }
+  } catch(e) {
+    alert('An error occurred while saving.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save Customization';
+  }
+}
+
+// 11. Kickoff On Page Load
+document.addEventListener('DOMContentLoaded', () => {
+  renderVerticalAlbumsSidebar();
+
+  // Check URL param for auto open
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetSlug = urlParams.get('album');
+  if (targetSlug) {
+    const foundIdx = allCinemaAlbums.findIndex(a => a.slug === targetSlug || a.id == targetSlug);
+    if (foundIdx !== -1) {
+      selectCinemaAlbum(foundIdx);
+      return;
+    }
+  }
+
+  // Default to first album
+  selectCinemaAlbum(0);
+});
+</script>
 {% endblock %}

@@ -1,9 +1,9 @@
 import json
 from django.shortcuts import render, redirect, get_object_or_404
-from ..models import StudioService, MakeupPackage, BookingEnquiry
+from django.http import JsonResponse, Http404
+from django.core.paginator import Paginator
+from ..models import StudioService, MakeupPackage, BookingEnquiry, LookGroup, LookMediaItem
 from .common import admin_required
-
-from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from features.public_ops.public_service import (
     compile_home_context,
@@ -121,11 +121,109 @@ def services_page(request):
     return render(request, 'core/services.html', context)
 
 def gallery_page(request):
-    """Dedicated data-driven lookbook catalogue."""
+    """Dedicated data-driven lookbook catalogue with category filtering and pagination."""
     lang = request.GET.get('lang') or request.COOKIES.get('lang', 'english')
     context = compile_home_context(lang)
-    context['gallery_category'] = request.GET.get('category', 'all')
+    category = request.GET.get('category', 'all')
+    page_num = request.GET.get('page', 1)
+
+    albums_qs = LookGroup.objects.filter(is_active=True, is_published=True).prefetch_related('media_items').order_by('order', 'id')
+    if category and category != 'all':
+        albums_qs = albums_qs.filter(category=category)
+
+    paginator = Paginator(albums_qs, 9)
+    page_obj = paginator.get_page(page_num)
+
+    all_albums = LookGroup.objects.filter(is_active=True, is_published=True).prefetch_related('media_items').order_by('order', 'id')
+    cinema_albums_data = []
+    for alb in all_albums:
+        media_list = []
+        for itm in alb.media_items.filter(is_published=True).order_by('order', 'id'):
+            thumb = itm.display_thumb
+            video_url = itm.video_file.url if itm.video_file else ''
+            if not video_url and itm.media_type in ('video_file', 'youtube', 'instagram'):
+                alb_lower = (alb.name + ' ' + (alb.client_name or '')).lower()
+                if 'kuhu' in alb_lower or 'bengali' in alb_lower:
+                    video_url = '/static/core/images/curated/bengali_bride_reel.mp4'
+                elif 'crimson' in alb_lower or 'maroon' in alb_lower:
+                    video_url = '/static/core/images/curated/anshita_bridal_reel.mp4'
+
+            media_list.append({
+                'id': itm.id,
+                'media_type': itm.media_type,
+                'title': itm.title or alb.name,
+                'caption': itm.caption or itm.title or alb.name,
+                'src': thumb,
+                'video_url': video_url,
+                'external_url': itm.external_url,
+                'embed_code': itm.embed_code,
+                'duration_seconds': itm.duration_seconds or (33 if 'kuhu' in alb.slug else (45 if 'crimson' in alb.slug else 40)),
+            })
+        if not media_list and alb.display_cover:
+            media_list.append({
+                'id': 0,
+                'media_type': 'image',
+                'title': alb.name,
+                'caption': alb.makeup_type or alb.name,
+                'src': alb.display_cover,
+                'video_url': '',
+                'external_url': '',
+                'embed_code': '',
+                'duration_seconds': 45,
+            })
+        cinema_albums_data.append({
+            'id': alb.id,
+            'name': alb.name,
+            'slug': alb.slug,
+            'client_name': alb.client_name,
+            'makeup_type': alb.makeup_type,
+            'category': alb.category,
+            'category_display': alb.get_category_display(),
+            'cover': alb.display_cover,
+            'description': alb.description,
+            'photo_count': alb.photo_count,
+            'video_count': alb.video_count,
+            'count_summary': alb.count_summary,
+            'items': media_list,
+        })
+
+    context['gallery_category'] = category
+    context['selected_category'] = category
+    context['look_groups_paginated'] = page_obj
+    context['all_albums'] = all_albums
+    context['cinema_albums_json'] = json.dumps(cinema_albums_data)
+    context['total_albums'] = albums_qs.count()
+    context['auto_open_album'] = request.GET.get('album', '')
     return render(request, 'core/gallery.html', context)
+
+def gallery_album_detail(request, group_id=None, slug=None):
+    """Dedicated lookbook album page displaying all photos, reels, and video files with full editorial specs."""
+    lang = request.GET.get('lang') or request.COOKIES.get('lang', 'english')
+    context = compile_home_context(lang)
+
+    if group_id is not None:
+        album = get_object_or_404(LookGroup, id=group_id, is_active=True, is_published=True)
+    elif slug:
+        album = get_object_or_404(LookGroup, slug=slug, is_active=True, is_published=True)
+    else:
+        raise Http404("Album not found")
+
+    media_items = list(album.media_items.filter(is_published=True).order_by('order', 'id'))
+    photos = [m for m in media_items if m.media_type == 'image']
+    videos = [m for m in media_items if m.media_type != 'image']
+
+    prev_album = LookGroup.objects.filter(is_active=True, is_published=True, order__lt=album.order).order_by('-order').first()
+    next_album = LookGroup.objects.filter(is_active=True, is_published=True, order__gt=album.order).order_by('order').first()
+    related_albums = LookGroup.objects.filter(is_active=True, is_published=True, category=album.category).exclude(pk=album.pk)[:4]
+
+    context['album'] = album
+    context['media_items'] = media_items
+    context['photos'] = photos
+    context['videos'] = videos
+    context['prev_album'] = prev_album
+    context['next_album'] = next_album
+    context['related_albums'] = related_albums
+    return render(request, 'core/gallery_album_detail.html', context)
 
 def service_detail(request, slug):
     """Dedicated service detail page; slug currently resolves by stable service id slug."""

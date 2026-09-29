@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evagher Scroll-Morph Prototype</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <style>
+    :root {
+      --bg: #090408;
+      --gold: #D4AF37;
+      --gold-l: #F5E6A3;
+      --gold-d: #AA820A;
+      --font-h: 'Playfair Display', Georgia, serif;
+      --font-b: 'Outfit', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: #fff;
+      font-family: var(--font-b);
+      overflow-x: hidden;
+    }
+
+    .spacer-sec {
+      height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #120810;
+      border-bottom: 1px solid rgba(212,175,55,0.2);
+    }
+
+    /* ═══ EVAGHER SCROLL-MORPH SECTION ═══ */
+    .ev-scroll-container {
+      position: relative;
+      width: 100%;
+      height: 380vh; /* Scroll runway driving the 6 morph steps */
+      background: #090408;
+    }
+
+    .ev-morph-viewport {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      background: radial-gradient(circle at 60% 40%, #1d0c17 0%, #0d060a 65%, #050204 100%);
+      padding: 20px 4vw;
+    }
+
+    /* Topbar */
+    .ev-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 50px;
+      z-index: 10;
+      border-bottom: 1px solid rgba(212,175,55,0.15);
+      padding-bottom: 12px;
+    }
+    .ev-top-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ev-brand-pill {
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .ev-look-counter {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-h);
+    }
+    .ev-look-counter span {
+      color: var(--gold-l);
+      font-size: 1.15rem;
+    }
+    .ev-top-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .ev-track-bar {
+      width: 140px;
+      height: 3px;
+      background: rgba(212,175,55,0.2);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+    .ev-track-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 16.66%;
+      background: linear-gradient(90deg, var(--gold-d), var(--gold-l));
+      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ev-scroll-hint {
+      font-size: 0.68rem;
+      letter-spacing: 1.5px;
+      color: rgba(245,237,214,0.6);
+      text-transform: uppercase;
+    }
+
+    /* Grid Stage */
+    .ev-grid-stage {
+      display: grid;
+      grid-template-columns: 1.05fr 1.15fr;
+      gap: 4vw;
+      align-items: center;
+      height: calc(100vh - 100px);
+      max-width: 1440px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Visual Column / Pinned Portrait Frame */
+    .ev-visual-col {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ev-portrait-frame {
+      width: 100%;
+      height: 74vh;
+      max-height: 700px;
+      border-radius: 26px;
+      border: 1.5px solid rgba(212,175,55,0.45);
+      box-shadow: 0 25px 65px rgba(0,0,0,0.85), inset 0 0 30px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+      background: #000;
+    }
+    .ev-plate {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transform: scale(1.08);
+      filter: blur(6px);
+      transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), filter 0.75s ease;
+      pointer-events: none;
+    }
+    .ev-plate.active {
+      opacity: 1;
+      transform: scale(1);
+      filter: blur(0px);
+      pointer-events: auto;
+      z-index: 2;
+    }
+    .ev-plate.exited {
+      opacity: 0;
+      transform: scale(0.95);
+      filter: blur(6px);
+      z-index: 1;
+    }
+    .ev-plate img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .ev-plate-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10,5,8,0.1) 0%, rgba(10,5,8,0.6) 80%, rgba(10,5,8,0.92) 100%);
+      pointer-events: none;
+    }
+
+    /* Floating Album Tag on Image */
+    .ev-img-peek-tag {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(18, 10, 16, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(212,175,55,0.45);
+      border-radius: 16px;
+      padding: 10px 18px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      z-index: 5;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .ev-img-peek-tag:hover {
+      transform: translateY(-2px);
+      border-color: var(--gold);
+    }
+
+    /* Mobile Nav Arrows inside Image Frame */
+    .ev-mob-arrows {
+      display: none;
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      gap: 6px;
+      z-index: 6;
+    }
+    .ev-mob-arr-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Details Column / Pinned Console */
+    .ev-details-col {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ev-details-card {
+      width: 100%;
+      padding: 34px 40px;
+      background: rgba(18, 10, 16, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1.2px solid rgba(212,175,55,0.3);
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+      position: relative;
+    }
+
+    .ev-badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .ev-disc-badge {
+      background: rgba(212,175,55,0.18);
+      border: 1px solid var(--gold);
+      color: var(--gold-l);
+      font-size: 0.72rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      transition: all 0.4s ease;
+    }
+    .ev-price-tag {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.5px;
+    }
+
+    .ev-title {
+      font-family: var(--font-h);
+      font-size: 2.3rem;
+      color: #FFF6E5;
+      line-height: 1.2;
+      margin-bottom: 14px;
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
+    }
+    .ev-desc {
+      font-size: 0.95rem;
+      color: rgba(245,237,214,0.85);
+      line-height: 1.6;
+      margin-bottom: 22px;
+      min-height: 50px;
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
+    }
+
+    /* Specs Grid */
+    .ev-specs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+    .ev-spec-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 12px;
+      padding: 10px 14px;
+    }
+    .ev-spec-lbl {
+      display: block;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(245,237,214,0.55);
+      margin-bottom: 2px;
+    }
+    .ev-spec-val {
+      font-size: 0.82rem;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Actions */
+    .ev-actions-row {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold-d), var(--gold));
+      color: #000;
+      font-weight: 700;
+      padding: 12px 26px;
+      border-radius: 28px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.88rem;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 18px rgba(212,175,55,0.35);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(212,175,55,0.5);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--gold);
+      border: 1.5px solid rgba(212,175,55,0.6);
+      font-weight: 600;
+      padding: 11px 22px;
+      border-radius: 28px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    .btn-outline:hover {
+      background: rgba(212,175,55,0.12);
+      border-color: var(--gold);
+    }
+
+    /* Milestone Pips */
+    .ev-pips-row {
+      display: flex;
+      gap: 8px;
+      border-top: 1px solid rgba(212,175,55,0.15);
+      padding-top: 18px;
+    }
+    .ev-pip {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(212,175,55,0.3);
+      color: rgba(245,237,214,0.6);
+      padding: 6px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+    .ev-pip.active {
+      background: var(--gold);
+      color: #000;
+      border-color: var(--gold);
+      transform: scale(1.05);
+    }
+
+    /* ═══ MOBILE RESPONSIVE ADAPTATION ═══ */
+    @media (max-width: 900px) {
+      .ev-scroll-container {
+        height: 320vh;
+      }
+      .ev-morph-viewport {
+        padding: 10px 14px;
+        justify-content: flex-start;
+        gap: 8px;
+      }
+      .ev-topbar {
+        height: 36px;
+        padding-bottom: 6px;
+      }
+      .ev-grid-stage {
+        display: flex;
+        flex-direction: column;
+        height: calc(100dvh - 55px);
+        gap: 8px;
+      }
+      .ev-visual-col {
+        height: 44vh;
+        width: 100%;
+        flex-shrink: 0;
+      }
+      .ev-portrait-frame {
+        height: 100%;
+        border-radius: 18px;
+      }
+      .ev-img-peek-tag {
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        padding: 8px 12px;
+        font-size: 0.72rem;
+      }
+      .ev-mob-arrows {
+        display: flex;
+      }
+      .ev-details-col {
+        flex: 1;
+        width: 100%;
+        min-height: 0;
+      }
+      .ev-details-card {
+        padding: 14px 16px;
+        border-radius: 16px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow-y: auto;
+      }
+      .ev-title {
+        font-size: 1.35rem;
+        margin-bottom: 6px;
+      }
+      .ev-desc {
+        font-size: 0.8rem;
+        line-height: 1.4;
+        margin-bottom: 10px;
+        min-height: auto;
+      }
+      .ev-specs-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+      .ev-spec-item {
+        padding: 6px 10px;
+      }
+      .ev-spec-lbl {
+        font-size: 0.58rem;
+      }
+      .ev-spec-val {
+        font-size: 0.72rem;
+      }
+      .ev-actions-row {
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .btn-gold, .btn-outline {
+        padding: 9px 16px;
+        font-size: 0.78rem;
+        flex: 1;
+        justify-content: center;
+      }
+      .ev-pips-row {
+        padding-top: 8px;
+        gap: 4px;
+        justify-content: space-between;
+      }
+      .ev-pip {
+        padding: 4px 8px;
+        font-size: 0.65rem;
+        flex: 1;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="spacer-sec">
+    <h2>Scroll down to enter Evagher Haute Couture Morph Stage ↓</h2>
+  </div>
+
+  <!-- ═══ EVAGHER PINNED SCROLL MORPH STAGE ═══ -->
+  <div class="ev-scroll-container" id="evScrollContainer">
+    <div class="ev-morph-viewport" id="evMorphViewport">
+      
+      <!-- Topbar -->
+      <div class="ev-topbar">
+        <div class="ev-top-left">
+          <span class="ev-brand-pill">EDITORIAL COUTURE ARCHIVE</span>
+          <span style="color:var(--gold);opacity:0.4">·</span>
+          <div class="ev-look-counter">LOOK <span id="evActiveNum">01</span> / 06</div>
+        </div>
+        <div class="ev-top-right">
+          <div class="ev-track-bar">
+            <div class="ev-track-fill" id="evTrackFill"></div>
+          </div>
+          <span class="ev-scroll-hint">SCROLL TO MORPH ↓</span>
+        </div>
+      </div>
+
+      <!-- Main Split Grid Stage -->
+      <div class="ev-grid-stage">
+        
+        <!-- Visual Column -->
+        <div class="ev-visual-col">
+          <div class="ev-portrait-frame" id="evPortraitFrame">
+            
+            <div class="ev-plate active" data-index="0">
+              <img src="/static/core/images/curated/royal_crimson_bride_angle3.jpg" alt="Sacred Vivah Royal Crimson Bride">
+              <div class="ev-plate-overlay"></div>
+            </div>
+            <div class="ev-plate" data-index="1">
+              <img src="/static/core/images/curated/reception_ivory_bride.jpg" alt="Christian Bridal Couture Suite">
+              <div class="ev-plate-overlay"></div>
+            </div>
+            <div class="ev-plate" data-index="2">
+              <img src="/static/core/images/curated/fuchsia_emerald_bride_hq.jpg" alt="Imperial Fuchsia Silk & Emerald Palace">
+              <div class="ev-plate-overlay"></div>
+            </div>
+            <div class="ev-plate" data-index="3">
+              <img src="/static/core/images/curated/dsc09702.jpg" alt="Palace Maroon Velvet Heritage">
+              <div class="ev-plate-overlay"></div>
+            </div>
+            <div class="ev-plate" data-index="4">
+              <img src="/static/core/images/curated/ig_post_DRP0QCODVfD.jpg" alt="Ring Ceremony Sheer Maroon Veil">
+              <div class="ev-plate-overlay"></div>
+            </div>
+            <div class="ev-plate" data-index="5">
+              <img src="/static/core/images/curated/bengali_bride_mukut_chandan.jpg" alt="Traditional Kolkata Banarasi & Chandan">
+              <div class="ev-plate-overlay"></div>
+            </div>
+
+            <!-- Peek Lookbook trigger button -->
+            <div class="ev-img-peek-tag" onclick="alert('Open Lookbook modal: ' + morphData[currentSlideIndex].key)">
+              <span>📖 Open Full 4K Lookbook Album & Reels</span>
+              <span>↗</span>
+            </div>
+
+            <!-- Mobile quick navigation buttons -->
+            <div class="ev-mob-arrows">
+              <button class="ev-mob-arr-btn" onclick="stepSlide(-1)">←</button>
+              <button class="ev-mob-arr-btn" onclick="stepSlide(1)">→</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Details Column -->
+        <div class="ev-details-col">
+          <div class="ev-details-card" id="evDetailsCard">
+            
+            <div class="ev-badge-row">
+              <span class="ev-disc-badge" id="evDiscBadge">Signature Discipline 01 · 4 Angles</span>
+              <span class="ev-price-tag" id="evPriceTag">₹25,000 · Master Suite</span>
+            </div>
+
+            <h2 class="ev-title" id="evTitle">Imperial Bridal Couture & Airbrush Artistry</h2>
+
+            <p class="ev-desc" id="evDesc">
+              Micro-buffed HD & atomized TEMPTU airbrush bases ensuring 18+ hour cry-proof and sweat resilience for royal pheras.
+            </p>
+
+            <div class="ev-specs-grid">
+              <div class="ev-spec-item">
+                <span class="ev-spec-lbl">Longevity</span>
+                <strong class="ev-spec-val" id="evSpecLongevity">24+ Hours Cry-Proof</strong>
+              </div>
+              <div class="ev-spec-item">
+                <span class="ev-spec-lbl">Primary Technique</span>
+                <strong class="ev-spec-val" id="evSpecTechnique">Atomized Airbrush</strong>
+              </div>
+              <div class="ev-spec-item">
+                <span class="ev-spec-lbl">Vanity Kit</span>
+                <strong class="ev-spec-val" id="evSpecKit">Dior, CT, Huda, NARS</strong>
+              </div>
+              <div class="ev-spec-item">
+                <span class="ev-spec-lbl">Ceremony Aura</span>
+                <strong class="ev-spec-val" id="evSpecCeremony">Sacred Royal Mandap</strong>
+              </div>
+            </div>
+
+            <div class="ev-actions-row">
+              <button class="btn-gold" id="evCtaBtn">
+                <span>View Complete Album</span>
+                <span>↗</span>
+              </button>
+              <a href="#" class="btn-outline" id="evConsultBtn">
+                <span>Reserve Look</span>
+                <span>✦</span>
+              </a>
+            </div>
+
+            <!-- Milestone Pips -->
+            <div class="ev-pips-row">
+              <button class="ev-pip active" onclick="jumpToSlide(0)">01</button>
+              <button class="ev-pip" onclick="jumpToSlide(1)">02</button>
+              <button class="ev-pip" onclick="jumpToSlide(2)">03</button>
+              <button class="ev-pip" onclick="jumpToSlide(3)">04</button>
+              <button class="ev-pip" onclick="jumpToSlide(4)">05</button>
+              <button class="ev-pip" onclick="jumpToSlide(5)">06</button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer-sec">
+    <h2>Next Section (Packages / Services continue smoothly)</h2>
+  </div>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const morphData = [
+      {
+        key: 'royal_crimson',
+        num: '01',
+        badge: 'Signature Discipline 01 · 4 Angles',
+        title: 'Imperial Bridal Couture & Airbrush Artistry',
+        desc: 'Micro-buffed HD & atomized TEMPTU airbrush bases ensuring 18+ hour cry-proof and sweat resilience for royal pheras.',
+        price: '₹25,000 · Master Suite',
+        longevity: '24+ Hours Cry-Proof',
+        technique: 'Atomized Airbrush',
+        kit: 'Dior, CT, Huda, NARS',
+        ceremony: 'Sacred Royal Mandap'
+      },
+      {
+        key: 'christian_ivory',
+        num: '02',
+        badge: 'Signature Discipline 02 · Church Couture',
+        title: 'Christian Bridal Couture & Cathedral Veil',
+        desc: 'Bespoke church ceremony styling featuring luminous porcelain HD airbrush, off-shoulder ivory gown framing, and multi-tier cathedral veil anchoring.',
+        price: '₹22,000 · Cathedral Suite',
+        longevity: '18–20 Hours Wear',
+        technique: 'Porcelain Glass-Skin',
+        kit: 'Estée Lauder, MAC Pro, NARS',
+        ceremony: 'Cathedral Nuptials & Reception'
+      },
+      {
+        key: 'fuchsia_palace',
+        num: '03',
+        badge: 'Signature Discipline 03 · 4K Recreated',
+        title: 'Imperial Fuchsia Silk & Emerald Palace Suite',
+        desc: 'Majestic heritage styling with rose-dew HD radiance, gilded cut-crease eye artistry, and Zambian emerald choker settings.',
+        price: '₹28,000 · Royal Heritage',
+        longevity: '20+ Hours Cry-Proof',
+        technique: 'Gilded Cut-Crease HD',
+        kit: 'Dior Prestige, Anastasia, Huda',
+        ceremony: 'Palace Grand Reception'
+      },
+      {
+        key: 'maroon_velvet',
+        num: '04',
+        badge: 'Authentic DSLR Shoot · 6 Angles',
+        title: 'Palace Maroon Velvet Heritage Couture',
+        desc: 'Deep wine velvet lehenga, hand-embroidered gold zardozi, antique polki nath, and double royal veil architecture.',
+        price: '₹26,000 · Velvet Royal',
+        longevity: '24 Hours Cry-Proof',
+        technique: 'Micro-Buffed Royal Matte',
+        kit: 'Charlotte Tilbury, MAC, Bobbi Brown',
+        ceremony: 'Heritage Fort & Vivah'
+      },
+      {
+        key: 'maroon_veil',
+        num: '05',
+        badge: 'Signature Discipline 05 · Ring Ceremony',
+        title: 'Ring Ceremony & Sheer Maroon Veil Radiance',
+        desc: 'Enchanting sheer gold-bordered veil framing, warm smokey cut-crease eyes, and delicate maang tikka alignment.',
+        price: '₹18,000 · Glam Suite',
+        longevity: '16+ Hours Longwear',
+        technique: 'Soft Glam Smokey HD',
+        kit: 'Too Faced, Laura Mercier, Fenty',
+        ceremony: 'Ring Ceremony & Sangeet'
+      },
+      {
+        key: 'bengali_heritage',
+        num: '06',
+        badge: 'Cultural Specialty Heritage · 4 Photos',
+        title: 'Traditional Kolkata Banarasi & Chandan Art',
+        desc: 'Intricate forehead sandalwood artwork, artisanal glitter cut-crease eye makeup, and pure silk Banarasi draping with sacred alta grace.',
+        price: '₹24,000 · Cultural Master',
+        longevity: '20+ Hours Water-Resistant',
+        technique: 'Handcrafted Chandan Art',
+        kit: 'Kryolan Pro, MAC, PAC HD',
+        ceremony: 'Saat Paake Bandha & Shubho Drishti'
+      }
+    ];
+
+    let currentSlideIndex = 0;
+    const plates = document.querySelectorAll('.ev-plate');
+    const pips = document.querySelectorAll('.ev-pip');
+
+    function applySlideContent(idx) {
+      if (idx === currentSlideIndex) return;
+      currentSlideIndex = idx;
+      const data = morphData[idx];
+
+      // Update Plates (PPT Morph Transition)
+      plates.forEach((p, i) => {
+        if (i === idx) {
+          p.classList.remove('exited');
+          p.classList.add('active');
+        } else if (i < idx) {
+          p.classList.remove('active');
+          p.classList.add('exited');
+        } else {
+          p.classList.remove('active', 'exited');
+        }
+      });
+
+      // Update Pips
+      pips.forEach((pip, i) => {
+        if (i === idx) pip.classList.add('active');
+        else pip.classList.remove('active');
+      });
+
+      // Update Progress Track Bar
+      const pct = ((idx + 1) / morphData.length) * 100;
+      document.getElementById('evTrackFill').style.width = pct + '%';
+      document.getElementById('evActiveNum').innerText = data.num;
+
+      // PPT Morph Text Transition (Staggered translateY + Fade)
+      const title = document.getElementById('evTitle');
+      const desc = document.getElementById('evDesc');
+      const badge = document.getElementById('evDiscBadge');
+      const price = document.getElementById('evPriceTag');
+
+      title.style.transform = 'translateY(12px)';
+      title.style.opacity = '0';
+      desc.style.transform = 'translateY(12px)';
+      desc.style.opacity = '0';
+
+      setTimeout(() => {
+        badge.innerText = data.badge;
+        price.innerText = data.price;
+        title.innerText = data.title;
+        desc.innerText = data.desc;
+
+        document.getElementById('evSpecLongevity').innerText = data.longevity;
+        document.getElementById('evSpecTechnique').innerText = data.technique;
+        document.getElementById('evSpecKit').innerText = data.kit;
+        document.getElementById('evSpecCeremony').innerText = data.ceremony;
+
+        title.style.transform = 'translateY(0)';
+        title.style.opacity = '1';
+        desc.style.transform = 'translateY(0)';
+        desc.style.opacity = '1';
+      }, 150);
+    }
+
+    // GSAP ScrollTrigger Pinned Scrub Morph
+    const scrollContainer = document.getElementById('evScrollContainer');
+    
+    ScrollTrigger.create({
+      trigger: scrollContainer,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.6,
+      onUpdate: (self) => {
+        // self.progress goes from 0 to 1
+        const count = morphData.length;
+        // Map progress to [0, count - 1]
+        const raw = self.progress * (count - 1);
+        const targetIdx = Math.min(count - 1, Math.max(0, Math.round(raw)));
+        applySlideContent(targetIdx);
+      }
+    });
+
+    // Mobile / Interactive helpers
+    function stepSlide(dir) {
+      const next = Math.max(0, Math.min(morphData.length - 1, currentSlideIndex + dir));
+      jumpToSlide(next);
+    }
+
+    function jumpToSlide(idx) {
+      const st = ScrollTrigger.getById('evScrollTrigger') || ScrollTrigger.getAll().find(s => s.trigger === scrollContainer);
+      if (st) {
+        const targetScroll = st.start + (idx / (morphData.length - 1)) * (st.end - st.start);
+        window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+      } else {
+        applySlideContent(idx);
+      }
+    }
+
+    // Touch Swipe Support for Mobile
+    let touchStartX = 0;
+    const stage = document.getElementById('evPortraitFrame');
+    stage.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].clientX;
+    }, { passive: true });
+    stage.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 45) {
+        if (dx < 0) stepSlide(1);
+        else stepSlide(-1);
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>

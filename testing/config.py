@@ -1,5 +1,6 @@
 """Shared configuration for all Anshita Makeover test programs."""
 import os
+import sys
 from pathlib import Path
 
 TESTING_DIR = Path(__file__).resolve().parent
@@ -44,11 +45,15 @@ def find_python(auto_provision=True):
     if os.environ.get('PYTHON'):
         return os.environ['PYTHON']
 
-    venv_py = REPO_ROOT / 'testenv' / 'bin' / 'python'
+    if _has_django(sys.executable):
+        return sys.executable
+
+    # Windows venv scripts vs unix bin
+    venv_py = REPO_ROOT / 'testenv' / ('Scripts' if os.name == 'nt' else 'bin') / ('python.exe' if os.name == 'nt' else 'python')
     if venv_py.exists() and _has_django(str(venv_py)):
         return str(venv_py)
 
-    system_py = shutil.which('python3') or 'python3'
+    system_py = shutil.which('python') or shutil.which('python3') or sys.executable
     if _has_django(system_py):
         return system_py
 

@@ -75,6 +75,12 @@ def compile_home_context(lang):
             if thumb and not thumb.startswith('http') and not thumb.startswith('/'):
                 thumb = '/' + thumb
             video_url = itm.video_file.url if itm.video_file else ''
+            if not video_url and itm.media_type in ('video_file', 'youtube', 'instagram'):
+                lg_lower = (lg.name + ' ' + (lg.client_name or '')).lower()
+                if 'kuhu' in lg_lower or 'bengali' in lg_lower:
+                    video_url = '/static/core/images/curated/bengali_bride_reel.mp4'
+                elif 'rajak' in lg_lower or 'maroon' in lg_lower or 'crimson' in lg_lower:
+                    video_url = '/static/core/images/curated/anshita_bridal_reel.mp4'
             items.append({
                 'src': thumb,
                 'video_url': video_url,

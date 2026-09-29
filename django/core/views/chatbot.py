@@ -295,9 +295,9 @@ CRITICAL BUSINESS INSTRUCTIONS:
 - If user says "only bridal makeup", "sirf bridal", "not package", "single day", "ek din ka", or asks specifically for single bridal look without packages:
   Quote ONLY Standalone Single-Day Bridal options (Royal Bridal HD/Airbrush ₹35,000 / today ₹29,750, or Traditional Banarasi ₹25,000 / today ₹21,250).
 
-3. PRICE OBJECTIONS & NEGOTIATION ("yeh toh bahut mehnga h", "expensive", "too costly", "budget kam h", "discount", "kam karo"):
+3. PRICE OBJECTIONS & NEGOTIATION ("yeh toh bahut mehnga h", "expensive", "too costly", "budget kam h", "discount", "kam karo", or mentions budget below standard/floor):
 - Reply warmly in the user's language: Explain that 100% original international luxury brands (TEMPTU, Charlotte Tilbury, MAC) and medical-grade hygiene are used.
-- Offer the authorized floor rate using VIP code {today_code}.
+- When user offers or asks for a rate below our floor (e.g. ₹20,000), ALWAYS respectfully state our authorized floor rate (e.g. ₹26,250 for Imperial Royal HD Bridal Suite) as the absolute lowest possible privilege rate using VIP code {today_code}. Never quote below that authorized floor.
 - Highlight the bonus perk: 2 family side makeups are completely FREE (saving ₹7,000).
 - Direct to WhatsApp: https://wa.me/{wa_number}?text=Namaste!%20AI%20Concierge%20granted%20me%20a%20Special%20Privilege%20Rate%20with%20VIP%20code%20{today_code}.
 
@@ -331,7 +331,7 @@ CRITICAL BUSINESS INSTRUCTIONS:
         }
 
         try:
-            resp = requests.post(url, json=payload, timeout=15)
+            resp = requests.post(url, json=payload, timeout=3)
             if resp.status_code == 200:
                 data = resp.json()
                 candidates = data.get('candidates', [])
@@ -346,7 +346,7 @@ CRITICAL BUSINESS INSTRUCTIONS:
                     "temperature": 0.4,
                     "maxOutputTokens": 2048,
                 }
-                resp2 = requests.post(url, json=payload, timeout=15)
+                resp2 = requests.post(url, json=payload, timeout=3)
                 if resp2.status_code == 200:
                     data2 = resp2.json()
                     candidates2 = data2.get('candidates', [])

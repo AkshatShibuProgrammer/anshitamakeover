@@ -1,52 +1,421 @@
 {% load static %}
-<!-- ARCHITECTURAL LEFT SIDE DRAWER COMPONENT (EVAGHER HAUTE STYLE) -->
-<div class="side-drawer-backdrop" id="side-drawer-backdrop" onclick="closeSideDrawer()"></div>
-<aside class="side-drawer" id="side-drawer" aria-label="Main Navigation Drawer">
-  <div>
-    <div class="side-drawer-hdr">
-      <div style="display:flex;align-items:center;gap:10px">
-        <img src="{% static 'core/images/brand/anshita_haute_emblem.png' %}" alt="Emblem" style="height:38px;width:auto">
-        <div style="display:flex;flex-direction:column;line-height:1.1">
-          <span style="font-family:var(--font-h);font-size:1rem;color:var(--white);letter-spacing:2px">ANSHITA</span>
-          <span style="font-size:.56rem;letter-spacing:2px;color:var(--gold)">MAKEOVER</span>
-        </div>
-      </div>
-      <button class="side-drawer-close" onclick="closeSideDrawer()" aria-label="Close Navigation">✕</button>
-    </div>
+<!-- ANSHITA MAKEOVER — FULL-SCREEN OVERLAY DRAWER (Evagher Style) -->
 
-    <ul class="side-nav-links">
-      <li><a href="/#hero" onclick="closeSideDrawer()"><span class="nav-idx">01</span> {{ t.nav_home|default:'Home & Couture' }}</a></li>
-      <li><a href="{% url 'services' %}" onclick="closeSideDrawer()"><span class="nav-idx">02</span> {{ t.nav_services|default:'Signature Artistry' }}</a></li>
-      <li><a href="{% url 'packages' %}" onclick="closeSideDrawer()"><span class="nav-idx">03</span> {{ t.nav_packages|default:'Bridal Packages' }}</a></li>
-      <li><a href="/cart/" onclick="closeSideDrawer()"><span class="nav-idx">04</span> 🛍️ {{ t.nav_cart_full|default:'Bridal Cart & Trousseau' }}</a></li>
-      <li><a href="/#package-compare" onclick="closeSideDrawer()"><span class="nav-idx">05</span> Compare Suites Matrix</a></li>
-      <li><a href="/#calc-section" onclick="closeSideDrawer()"><span class="nav-idx">05</span> Budget Estimator</a></li>
-      <li><a href="{% url 'gallery' %}" onclick="closeSideDrawer()"><span class="nav-idx">06</span> {{ t.nav_gallery|default:'Editorial Gallery' }}</a></li>
-      <li><a href="/travel-estimator/" onclick="closeSideDrawer()"><span class="nav-idx">07</span> {{ t.nav_travel_estimator|default:'Travel Estimator' }}</a></li>
-      <li><a href="/#outstation" onclick="closeSideDrawer()"><span class="nav-idx">08</span> {{ t.nav_outstation|default:'Pan-India Destinations' }}</a></li>
-      <li><a href="/academy/" onclick="closeSideDrawer()"><span class="nav-idx">09</span> {{ t.nav_academy|default:'Haute Academy' }}</a></li>
-      <li><a href="/#about" onclick="closeSideDrawer()"><span class="nav-idx">10</span> {{ t.nav_about|default:'The Artist' }}</a></li>
-      <li><a href="/#reviews" onclick="closeSideDrawer()"><span class="nav-idx">11</span> {{ t.nav_reviews|default:'Bride Testimonials' }}</a></li>
-    </ul>
+<!-- Overlay backdrop -->
+<div class="sd-overlay" id="side-drawer-backdrop" onclick="closeSideDrawer()"></div>
+
+<!-- Full-screen drawer panel -->
+<aside class="sd-panel" id="side-drawer" aria-label="Main Navigation Menu" aria-hidden="true">
+
+  <!-- Close button -->
+  <button class="sd-close" onclick="closeSideDrawer()" aria-label="Close Menu">
+    <span></span><span></span>
+  </button>
+
+  <!-- Brand mark top-left -->
+  <div class="sd-brand">
+    <img src="{% static 'core/images/brand/anshita_haute_emblem.png' %}" alt="Anshita Makeover Emblem" class="sd-emblem">
   </div>
 
-  <div class="side-drawer-footer">
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <span style="font-size:0.68rem;letter-spacing:2px;color:rgba(212,175,55,0.75);text-transform:uppercase">LANGUAGE / भाषा:</span>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
+  <!-- Editorial Peek Background Image Canvas -->
+  <div class="sd-peek-canvas" id="sd-peek-canvas" aria-hidden="true">
+    <div class="sd-peek-layer" data-bg="home" style="background-image: url('{% static 'core/images/curated/royal_crimson_bride_main.jpg' %}');"></div>
+    <div class="sd-peek-layer" data-bg="gallery" style="background-image: url('{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}');"></div>
+    <div class="sd-peek-layer" data-bg="services" style="background-image: url('{% static 'core/images/curated/anshita_artistry_brush_action.jpg' %}');"></div>
+    <div class="sd-peek-layer" data-bg="packages" style="background-image: url('{% static 'core/images/curated/reception_ivory_bride.jpg' %}');"></div>
+    <div class="sd-peek-layer" data-bg="about" style="background-image: url('{% static 'core/images/anshita_hero_portrait.png' %}');"></div>
+    <div class="sd-peek-layer" data-bg="travel" style="background-image: url('{% static 'core/images/curated/IMG-20250807-WA0373.jpg' %}');"></div>
+    <div class="sd-peek-layer" data-bg="academy" style="background-image: url('{% static 'core/images/curated/anshita_masterclass_session.jpg' %}');"></div>
+    <div class="sd-peek-overlay"></div>
+  </div>
+
+  <!-- Main nav links -->
+  <nav class="sd-nav">
+    <ul class="sd-links">
+      <li class="sd-item">
+        <a href="/" onclick="closeSideDrawer()" class="sd-link" data-preview-key="home">
+          <span class="sd-idx">01</span>
+          <span class="sd-link-text">{{ t.nav_home|default:'Home' }}</span>
+        </a>
+      </li>
+      <li class="sd-item">
+        <a href="{% url 'gallery' %}" onclick="closeSideDrawer()" class="sd-link" data-preview-key="gallery">
+          <span class="sd-idx">02</span>
+          <span class="sd-link-text">{{ t.nav_gallery|default:'Haute Couture Gallery' }}</span>
+        </a>
+      </li>
+      <li class="sd-item">
+        <a href="{% url 'services' %}" onclick="closeSideDrawer()" class="sd-link" data-preview-key="services">
+          <span class="sd-idx">03</span>
+          <span class="sd-link-text">{{ t.nav_services|default:'Signature Services' }}</span>
+        </a>
+      </li>
+      <li class="sd-item">
+        <a href="{% url 'packages' %}" onclick="closeSideDrawer()" class="sd-link" data-preview-key="packages">
+          <span class="sd-idx">04</span>
+          <span class="sd-link-text">{{ t.nav_packages|default:'Bespoke Wedding Suites' }}</span>
+        </a>
+      </li>
+      <li class="sd-item">
+        <a href="/#about" onclick="closeSideDrawer()" class="sd-link" data-preview-key="about">
+          <span class="sd-idx">05</span>
+          <span class="sd-link-text">{{ t.nav_about|default:'About Anshita Sinha' }}</span>
+        </a>
+      </li>
+      <li class="sd-item">
+        <a href="/travel-estimator/" onclick="closeSideDrawer()" class="sd-link" data-preview-key="travel">
+          <span class="sd-idx">06</span>
+          <span class="sd-link-text">{{ t.nav_travel_estimator|default:'Pan-India Travel Estimator' }}</span>
+        </a>
+      </li>
+      <li class="sd-item">
+        <a href="/academy/" onclick="closeSideDrawer()" class="sd-link" data-preview-key="academy">
+          <span class="sd-idx">07</span>
+          <span class="sd-link-text">{{ t.nav_academy|default:'Bridal Masterclass & Academy' }}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Bottom: social + language + WA -->
+  <div class="sd-footer">
+    <!-- Social -->
+    <div class="sd-socials">
+      <a href="https://instagram.com/anshitamakeover21" target="_blank" rel="noopener" class="sd-social-link" title="Instagram">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </a>
+      <a href="https://wa.me/{{ whatsapp }}" target="_blank" rel="noopener" class="sd-social-link" title="WhatsApp">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      </a>
+    </div>
+
+    <!-- Language -->
+    <div class="sd-lang">
+      <span class="sd-lang-label">LANGUAGE / भाषा</span>
+      <div class="sd-lang-btns">
         <button class="lang-btn {% if lang == 'english' or not lang %}active{% endif %}" onclick="setLang('english')">EN</button>
         <button class="lang-btn {% if lang == 'hindi' or lang == 'hinglish' %}active{% endif %}" onclick="setLang('hindi')">हिन्दी</button>
-        <button class="lang-btn {% if lang == 'bhojpuri' %}active{% endif %}" onclick="setLang('bhojpuri')">भोजपुरी</button>
         <button class="lang-btn {% if lang == 'marathi' %}active{% endif %}" onclick="setLang('marathi')">मराठी</button>
         <button class="lang-btn {% if lang == 'bundelkhandi' %}active{% endif %}" onclick="setLang('bundelkhandi')">बुंदेलखंडी</button>
       </div>
     </div>
-    <div class="side-drawer-info">
-      <strong>Private Studio Jabalpur · Destination Bookings</strong><br>
-      Founder & Celebrity Makeup Artist: Anshita Sinha
-    </div>
-    <a href="https://wa.me/{{ whatsapp }}" target="_blank" class="btn-wa" style="text-align:center;padding:12px;font-size:.78rem">
-      💬 Reserve VIP Consultation
+
+    <!-- WA reserve button -->
+    <a href="https://wa.me/{{ whatsapp }}" target="_blank" rel="noopener" class="sd-wa-btn">
+      💬 Reserve Consultation
     </a>
+
+    <p class="sd-tagline">Private Studio · Jabalpur · Pan-India</p>
   </div>
+
 </aside>
+
+<style>
+/* ═══════════════════════════════════════════════════════
+   FULL-SCREEN OVERLAY DRAWER — EVAGHER STYLE
+═══════════════════════════════════════════════════════ */
+
+/* Backdrop */
+.sd-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1099;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+.sd-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Panel: slides in from left using clip-path */
+.sd-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: #080307;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 60px 50px;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+  overflow: hidden;
+}
+.sd-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 20%, rgba(92, 26, 46, 0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+.sd-panel.open {
+  clip-path: inset(0 0% 0 0);
+}
+
+/* Close button */
+.sd-close {
+  position: absolute;
+  top: 24px; right: 28px;
+  width: 48px; height: 48px;
+  background: none;
+  border: 1px solid rgba(245, 237, 214, 0.15);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.sd-close:hover {
+  border-color: rgba(212, 175, 55, 0.6);
+  transform: rotate(90deg);
+}
+.sd-close span {
+  position: absolute;
+  width: 18px;
+  height: 1.5px;
+  background: rgba(245, 237, 214, 0.8);
+  border-radius: 2px;
+}
+.sd-close span:first-child { transform: rotate(45deg); }
+.sd-close span:last-child  { transform: rotate(-45deg); }
+
+/* Brand emblem */
+.sd-brand {
+  position: absolute;
+  top: 24px; left: 28px;
+}
+.sd-emblem {
+  height: 40px;
+  width: auto;
+  filter: drop-shadow(0 0 8px rgba(212,175,55,0.3));
+}
+
+/* Nav links */
+.sd-links {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sd-item {
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sd-panel.open .sd-item:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
+.sd-panel.open .sd-item:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.22s; }
+.sd-panel.open .sd-item:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.29s; }
+.sd-panel.open .sd-item:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.36s; }
+.sd-panel.open .sd-item:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 0.43s; }
+.sd-panel.open .sd-item:nth-child(6) { opacity: 1; transform: translateY(0); transition-delay: 0.50s; }
+.sd-panel.open .sd-item:nth-child(7) { opacity: 1; transform: translateY(0); transition-delay: 0.57s; }
+
+.sd-link {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  text-decoration: none;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(245, 237, 214, 0.06);
+  transition: gap 0.3s ease;
+}
+.sd-link:hover { gap: 28px; }
+.sd-link:hover .sd-link-text { color: var(--gold, #D4AF37); }
+
+.sd-idx {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 2px;
+  color: rgba(212, 175, 55, 0.5);
+  flex-shrink: 0;
+  width: 24px;
+}
+.sd-link-text {
+  font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 300;
+  color: rgba(245, 237, 214, 0.9);
+  line-height: 1.1;
+  transition: color 0.25s ease;
+  text-transform: capitalize;
+}
+
+/* Footer */
+.sd-footer {
+  position: absolute;
+  bottom: 40px; left: 60px; right: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease 0.6s, transform 0.5s ease 0.6s;
+}
+.sd-panel.open .sd-footer {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.sd-socials {
+  display: flex;
+  gap: 16px;
+}
+.sd-social-link {
+  color: rgba(245, 237, 214, 0.4);
+  transition: color 0.2s ease;
+}
+.sd-social-link:hover { color: var(--gold, #D4AF37); }
+
+.sd-lang { display: flex; flex-direction: column; gap: 6px; }
+.sd-lang-label {
+  font-size: 0.58rem;
+  letter-spacing: 2px;
+  color: rgba(212, 175, 55, 0.5);
+  text-transform: uppercase;
+}
+.sd-lang-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.sd-wa-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: rgba(37, 211, 102, 0.12);
+  border: 1px solid rgba(37, 211, 102, 0.35);
+  border-radius: 30px;
+  color: #25D366;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.5px;
+  align-self: flex-start;
+  transition: all 0.25s ease;
+}
+.sd-wa-btn:hover {
+  background: rgba(37, 211, 102, 0.2);
+  border-color: rgba(37, 211, 102, 0.7);
+}
+
+.sd-tagline {
+  font-size: 0.62rem;
+  letter-spacing: 2px;
+  color: rgba(245, 237, 214, 0.25);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* ═══ Editorial Hover Peek Canvas ═══ */
+.sd-peek-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+.sd-peek-layer {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: scale(1.08);
+  filter: blur(2px) brightness(0.65) saturate(1.2);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sd-peek-layer.active {
+  opacity: 0.28;
+  transform: scale(1.0);
+}
+.sd-peek-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 30%, rgba(8, 3, 7, 0.85) 100%),
+              linear-gradient(180deg, rgba(8, 3, 7, 0.4) 0%, rgba(8, 3, 7, 0.95) 100%);
+  pointer-events: none;
+}
+.sd-nav, .sd-footer, .sd-brand, .sd-close {
+  position: relative;
+  z-index: 2;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .sd-panel { padding: 70px 30px 40px; }
+  .sd-link-text { font-size: 2rem; }
+  .sd-footer { left: 30px; right: 30px; bottom: 30px; }
+  .sd-peek-layer.active { opacity: 0.16; }
+}
+
+/* ── Keyboard escape support ── */
+</style>
+
+<script>
+// Editorial Hover Peek functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const links = document.querySelectorAll('.sd-link[data-preview-key]');
+  const layers = document.querySelectorAll('.sd-peek-layer');
+
+  links.forEach(link => {
+    link.addEventListener('mouseenter', function() {
+      const key = this.dataset.previewKey;
+      layers.forEach(layer => {
+        if (layer.dataset.bg === key) {
+          layer.classList.add('active');
+        } else {
+          layer.classList.remove('active');
+        }
+      });
+    });
+  });
+
+  const navContainer = document.querySelector('.sd-nav');
+  if (navContainer) {
+    navContainer.addEventListener('mouseleave', function() {
+      layers.forEach(layer => layer.classList.remove('active'));
+    });
+  }
+});
+
+// Override existing toggleSideDrawer to use new classes
+window.toggleSideDrawer = function() {
+  const panel    = document.getElementById('side-drawer');
+  const backdrop = document.getElementById('side-drawer-backdrop');
+  if (!panel) return;
+  const isOpen = panel.classList.contains('open');
+  if (isOpen) {
+    closeSideDrawer();
+  } else {
+    openSideDrawer();
+  }
+};
+
+function openSideDrawer() {
+  const panel    = document.getElementById('side-drawer');
+  const backdrop = document.getElementById('side-drawer-backdrop');
+  panel.classList.add('open');
+  panel.setAttribute('aria-hidden', 'false');
+  backdrop.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSideDrawer() {
+  const panel    = document.getElementById('side-drawer');
+  const backdrop = document.getElementById('side-drawer-backdrop');
+  if (!panel) return;
+  panel.classList.remove('open');
+  panel.setAttribute('aria-hidden', 'true');
+  backdrop.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Escape key closes drawer
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeSideDrawer();
+});
+</script>
