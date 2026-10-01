@@ -1677,62 +1677,412 @@ body[data-page-zone="dark"] .services-callout-text p {
   }
 }
 
-/* ═══ SECTION 5: CLIENT TESTIMONIALS ═══ */
+/* ═══ SECTION 5: LUXURY REVIEWS MARQUEE & INTERACTIVE SHOWCASE (STANZZA / JUAN MORA BENCHMARK) ═══ */
 .testimonials-sec {
-  padding: 100px 6vw;
-  background: var(--page-bg);
+  padding: 110px 0 100px;
+  background: radial-gradient(circle at 50% 20%, rgba(38, 14, 28, 0.6) 0%, rgba(8, 3, 8, 0.98) 70%, #050205 100%);
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+.testimonials-sec::before {
+  content: '';
+  position: absolute;
+  top: -150px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 350px;
+  background: radial-gradient(ellipse, rgba(212, 175, 55, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+.testimonials-sec::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #050205 0%, transparent 8%, transparent 92%, #050205 100%);
+  pointer-events: none;
+  z-index: 5;
+}
+.testimonials-header {
+  max-width: 900px;
+  margin: 0 auto 40px;
+  padding: 0 6vw;
   text-align: center;
   position: relative;
-  transition: background 0.6s ease;
+  z-index: 6;
 }
-.testimonials-wrap {
-  max-width: 800px;
-  margin: 0 auto;
+.testimonials-meta-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Mono', 'Inter', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 3px;
+  color: var(--gold-l, #f5edd6);
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 6px 16px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
 }
-.testimonial-quote {
+.testimonials-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #fff;
+  letter-spacing: -0.5px;
+  margin-bottom: 14px;
+}
+.testimonials-title span {
   font-style: italic;
-  font-weight: 300;
-  line-height: 1.35;
-  color: var(--page-text);
-  margin-bottom: 24px;
-  min-height: 120px;
+  background: linear-gradient(135deg, #f5edd6 20%, #d4af37 60%, #aa8022 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.testimonials-sub {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  color: rgba(245, 237, 214, 0.7);
+  max-width: 680px;
+  margin: 0 auto 30px;
+  line-height: 1.6;
+}
+
+/* Controls & Filter Bar */
+.testimonials-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1240px;
+  margin: 0 auto 32px;
+  padding: 0 6vw;
+  position: relative;
+  z-index: 6;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.testimonials-filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.testi-filter-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: rgba(245, 237, 214, 0.7);
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.testi-filter-btn:hover {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: rgba(212, 175, 55, 0.5);
+  color: #fff;
+}
+.testi-filter-btn.active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(139, 94, 26, 0.4));
+  border-color: #D4AF37;
+  color: #F5EDD6;
+  font-weight: 600;
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.25);
+}
+.testimonials-nav-btns {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.testi-nav-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  background: rgba(20, 8, 16, 0.8);
+  color: #F5EDD6;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.4s ease;
-}
-.testimonial-author {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.78rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #8B5E1A;
-  margin-bottom: 8px;
-}
-.testimonial-stars {
-  color: #d4af37;
-  font-size: 0.95rem;
-  letter-spacing: 2px;
-  margin-bottom: 28px;
-}
-.testimonial-dots {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-.testi-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(139, 94, 26, 0.3);
+  font-size: 1.2rem;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(10px);
 }
-.testi-dot.active {
-  background: #8B5E1A;
-  transform: scale(1.3);
+.testi-nav-arrow:hover {
+  background: #D4AF37;
+  color: #050205;
+  border-color: #F5EDD6;
+  transform: scale(1.08);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+.testi-flow-indicator {
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  color: rgba(212, 175, 55, 0.85);
+  font-family: 'Space Mono', monospace;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.testi-flow-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 8px #4ade80;
+  animation: pulseGreen 2s infinite ease-in-out;
+}
+@keyframes pulseGreen {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Marquee / Ribbon Carousel Track */
+.testimonials-marquee-viewport {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: relative;
+  z-index: 4;
+  padding: 24px 0 36px;
+  cursor: grab;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.testimonials-marquee-viewport::-webkit-scrollbar {
+  display: none;
+}
+.testimonials-marquee-viewport:active {
+  cursor: grabbing;
+}
+.testimonials-marquee-track {
+  display: flex;
+  gap: 28px;
+  width: max-content;
+  will-change: transform;
+  animation: testimonialsMarquee 42s linear infinite;
+  padding: 0 4vw;
+}
+.testimonials-marquee-viewport:hover .testimonials-marquee-track,
+.testimonials-marquee-viewport.is-paused .testimonials-marquee-track {
+  animation-play-state: paused !important;
+}
+
+@keyframes testimonialsMarquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Individual Review Card (Never Cropped) */
+.testi-card {
+  width: 390px;
+  min-width: 390px;
+  max-width: 390px;
+  background: linear-gradient(155deg, rgba(28, 12, 22, 0.95) 0%, rgba(12, 5, 12, 0.98) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 22px;
+  padding: 30px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(212, 175, 55, 0.15);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+  user-select: none;
+}
+.testi-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.65), 0 0 30px rgba(212, 175, 55, 0.2);
+}
+.testi-card-quote-bg {
+  position: absolute;
+  top: 14px;
+  right: 22px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 5rem;
+  line-height: 1;
+  color: rgba(212, 175, 55, 0.08);
+  pointer-events: none;
+  font-weight: 700;
+}
+.testi-card-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.testi-avatar-frame {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: 2px solid #D4AF37;
+  padding: 2px;
+  background: linear-gradient(135deg, #d4af37, #8b5e1a);
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.35);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.testi-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+.testi-client-meta {
+  flex: 1;
+  min-width: 0;
+}
+.testi-client-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #F5EDD6;
+  margin: 0 0 3px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.testi-client-event {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  color: #D4AF37;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.testi-client-loc {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: rgba(245, 237, 214, 0.5);
+  letter-spacing: 0.5px;
+}
+.testi-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  width: fit-content;
+}
+.testi-badge-comp {
+  background: rgba(212, 175, 55, 0.18);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: #f7e7b4;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+}
+.testi-badge-bride {
+  background: rgba(236, 72, 153, 0.15);
+  border: 1px solid rgba(236, 72, 153, 0.4);
+  color: #fbcfe8;
+}
+.testi-badge-glam {
+  background: rgba(147, 51, 234, 0.15);
+  border: 1px solid rgba(147, 51, 234, 0.4);
+  color: #e9d5ff;
+}
+.testi-stars-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.testi-stars-text {
+  color: #D4AF37;
+  font-size: 0.92rem;
+  letter-spacing: 2px;
+}
+.testi-score-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: rgba(245, 237, 214, 0.8);
+  font-weight: 700;
+}
+.testi-quote-content {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.15rem;
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.5;
+  color: rgba(245, 237, 214, 0.92);
+  margin-bottom: 22px;
+  flex: 1;
+}
+.testi-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid rgba(212, 175, 55, 0.12);
+  font-size: 0.72rem;
+  color: rgba(245, 237, 214, 0.6);
+}
+.testi-ig-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #D4AF37;
+  text-decoration: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.7rem;
+  transition: color 0.2s ease;
+}
+.testi-ig-tag:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.testi-album-link {
+  color: #f5edd6;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.2s ease;
+}
+.testi-album-link:hover {
+  transform: translateX(3px);
+  color: #D4AF37;
+}
+
+@media (max-width: 768px) {
+  .testi-card {
+    width: 320px;
+    min-width: 320px;
+    max-width: 320px;
+    padding: 24px 20px;
+  }
+  .testimonials-controls-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 /* ═══ SECTION 6: ABOUT ANSHITA SINHA (HIGH CONTRAST & CRYSTAL-CLEAR READABILITY) ═══ */
@@ -2329,17 +2679,17 @@ body[data-page-zone="dark"] .about-metric-item span {
     <div class="cylinder-stage" id="cylinderStage" aria-label="3D Rotating Bridal Album Showcase">
       <div class="cylinder-carousel" id="cylinderCarousel">
         
-        <!-- Card 1: Kuhu (Bengali Bride Reel) -->
+        <!-- Card 1: Kuhu Khare (Bengali Bride Competition Artistry) -->
         <a href="{% url 'gallery' %}?album=kuhu-kolkata-banarasi-chandan" class="cylinder-card" data-idx="0">
           <div class="hg-card-thumb">
             <span class="hg-card-badge">▶ 4K Reel</span>
-            <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Kuhu — Traditional Bengali Mukut & Chandan" loading="lazy">
+            <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Kuhu Khare — Traditional Bengali Mukut & Chandan (Competition Artistry)" loading="lazy">
             <div class="hg-card-play-orb">▶</div>
           </div>
           <div class="hg-card-info">
-            <span class="hg-card-eyebrow">CULTURAL · VIVAH</span>
-            <h3 class="hg-card-name">Kuhu</h3>
-            <p class="hg-card-desc">Traditional Bengali Mukut & Sacred Red Chandan Artistry.</p>
+            <span class="hg-card-eyebrow">COMPETITION ARTISTRY · BENGALI BRIDE</span>
+            <h3 class="hg-card-name">Kuhu Khare</h3>
+            <p class="hg-card-desc">Hand-Painted Chandan & Mukut placement sculpted for bridal competition participation.</p>
             <span class="hg-card-cta-link">Watch Cinema Reel →</span>
           </div>
         </a>
@@ -2651,19 +3001,227 @@ body[data-page-zone="dark"] .about-metric-item span {
   </div>
 </div>
 
-<!-- ═══ SECTION 5: CLIENT TESTIMONIALS ═══ -->
-<section class="testimonials-sec" id="testimonials">
-  <div class="testimonials-wrap">
-    <span class="looks-eyebrow">WORDS OF LOVE</span>
-    <div class="testimonial-quote" id="testiQuoteText">
-      "She transformed me into the bride I always dreamed of being. 18 hours later through tears and celebrations, my makeup remained completely immaculate."
+<!-- ═══ SECTION 5: CLIENT TESTIMONIALS & REVIEWS MARQUEE ═══ -->
+<section class="testimonials-sec" id="testimonials" aria-label="Client Reviews and Testimonials">
+  <div class="testimonials-header">
+    <div class="testimonials-meta-tag">
+      <span>★ 4.98 RATING</span>
+      <span>•</span>
+      <span>100+ BRIDES CELEBRATED</span>
     </div>
-    <div class="testimonial-author" id="testiAuthorText">— Priya Sharma, Bhopal · Royal Vivah</div>
-    <div class="testimonial-stars">★★★★★</div>
-    <div class="testimonial-dots">
-      <span class="testi-dot active" onclick="setTestimonial(0)"></span>
-      <span class="testi-dot" onclick="setTestimonial(1)"></span>
-      <span class="testi-dot" onclick="setTestimonial(2)"></span>
+    <h2 class="testimonials-title">Words of Devotion & <span>Royal Transformations</span></h2>
+    <p class="testimonials-sub">
+      Authentic praise from celebrated brides, royal vivahs, and award-winning competition participations sculpted by Anshita Sinha.
+    </p>
+  </div>
+
+  <!-- Interactive Filter & Navigation Bar -->
+  <div class="testimonials-controls-row">
+    <div class="testimonials-filters" id="testiFilters">
+      <button type="button" class="testi-filter-btn active" data-filter="all" onclick="filterReviews('all', this)">✨ All Praise</button>
+      <button type="button" class="testi-filter-btn" data-filter="competition" onclick="filterReviews('competition', this)">🏆 Competition Artistry</button>
+      <button type="button" class="testi-filter-btn" data-filter="bridal" onclick="filterReviews('bridal', this)">👑 Bridal Vivah</button>
+      <button type="button" class="testi-filter-btn" data-filter="glam" onclick="filterReviews('glam', this)">🌟 Sangeet & Reception</button>
+    </div>
+
+    <div class="testimonials-nav-btns">
+      <div class="testi-flow-indicator" id="testiFlowStatus">
+        <span class="testi-flow-dot"></span>
+        <span>Auto-flow active</span>
+      </div>
+      <button type="button" class="testi-nav-arrow" onclick="scrollReviews('left')" title="Previous Review" aria-label="Previous Review">‹</button>
+      <button type="button" class="testi-nav-arrow" onclick="scrollReviews('right')" title="Next Review" aria-label="Next Review">›</button>
+    </div>
+  </div>
+
+  <!-- Marquee / Horizontal Ribbon Track (Hover to Pause / Drag to Scroll) -->
+  <div class="testimonials-marquee-viewport" id="testimonialsViewport">
+    <div class="testimonials-marquee-track" id="testimonialsTrack">
+      
+      <!-- Card 1: Kuhu Khare (Bengali Bride Competition Artistry) -->
+      <div class="testi-card" data-category="competition">
+        <div class="testi-card-quote-bg">“</div>
+        <div>
+          <div class="testi-card-head">
+            <div class="testi-avatar-frame">
+              <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Kuhu Khare Bengali Bride Competition Makeup" class="testi-avatar-img" loading="lazy">
+            </div>
+            <div class="testi-client-meta">
+              <h4 class="testi-client-name">Kuhu Khare</h4>
+              <div class="testi-client-event">Bengali Bride Artistry</div>
+              <div class="testi-client-loc">Competition Participation · Showcase Arena</div>
+            </div>
+          </div>
+          <div class="testi-badge-pill testi-badge-comp">🏆 Competition Artistry</div>
+          <div class="testi-stars-row">
+            <span class="testi-stars-text">★★★★★</span>
+            <span class="testi-score-num">5.0 / 5.0</span>
+          </div>
+          <p class="testi-quote-content">
+            "Anshita's Bengali bride artistry for my competition participation was breathtaking — the intricate hand-painted Chandan motifs, authentic Mukut placement, and radiant 18-hour cry-proof base won unanimous admiration under stage lights. Truly the gold standard of bridal couture!"
+          </p>
+        </div>
+        <div class="testi-card-foot">
+          <a href="https://instagram.com/anshitamakeover21" target="_blank" rel="noopener" class="testi-ig-tag">
+            <span>📸 Reel Dap4JkvKL1E</span>
+          </a>
+          <a href="{% url 'gallery' %}?album=kuhu-kolkata-banarasi-chandan" class="testi-album-link">
+            <span>View Lookbook ↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 2: Thakur Shivani (Royal Sangeet & Engagement Glam) -->
+      <div class="testi-card" data-category="glam">
+        <div class="testi-card-quote-bg">“</div>
+        <div>
+          <div class="testi-card-head">
+            <div class="testi-avatar-frame">
+              <img src="{% static 'core/images/curated/ig_post_DSrKrDHiLNPGzQHnwZkcRe3YUoC5fCc24nWZjQ0.jpg' %}" alt="Thakur Shivani Sangeet Glam" class="testi-avatar-img" loading="lazy">
+            </div>
+            <div class="testi-client-meta">
+              <h4 class="testi-client-name">Thakur Shivani</h4>
+              <div class="testi-client-event">Royal Sangeet & Engagement</div>
+              <div class="testi-client-loc">Jabalpur (@shiviiiiii24)</div>
+            </div>
+          </div>
+          <div class="testi-badge-pill testi-badge-glam">✨ Verified Client</div>
+          <div class="testi-stars-row">
+            <span class="testi-stars-text">★★★★★</span>
+            <span class="testi-score-num">5.0 / 5.0</span>
+          </div>
+          <p class="testi-quote-content">
+            "The dewy glass-skin finish and royal jewel-tone eye makeup Anshita sculpted lasted through 6 hours of high-energy dancing! Not a smudge or crease in sight. The warmth and attention to detail made me feel like absolute royalty."
+          </p>
+        </div>
+        <div class="testi-card-foot">
+          <a href="https://www.instagram.com/shiviiiiii24/" target="_blank" rel="noopener" class="testi-ig-tag">
+            <span>📸 @shiviiiiii24</span>
+          </a>
+          <span style="font-size:0.68rem;color:rgba(212,175,55,0.7)">Winter Celebrations</span>
+        </div>
+      </div>
+
+      <!-- Card 3: Miss Rajak (Imperial Crimson Vivah) -->
+      <div class="testi-card" data-category="bridal">
+        <div class="testi-card-quote-bg">“</div>
+        <div>
+          <div class="testi-card-head">
+            <div class="testi-avatar-frame">
+              <img src="{% static 'core/images/curated/royal_crimson_bride_main.jpg' %}" alt="Miss Rajak Imperial Crimson Bride" class="testi-avatar-img" loading="lazy">
+            </div>
+            <div class="testi-client-meta">
+              <h4 class="testi-client-name">Miss Rajak</h4>
+              <div class="testi-client-event">Imperial Crimson Vivah</div>
+              <div class="testi-client-loc">Jabalpur Heritage Vivah</div>
+            </div>
+          </div>
+          <div class="testi-badge-pill testi-badge-bride">👑 Verified Royal Bride</div>
+          <div class="testi-stars-row">
+            <span class="testi-stars-text">★★★★★</span>
+            <span class="testi-score-num">5.0 / 5.0</span>
+          </div>
+          <p class="testi-quote-content">
+            "From dual dupatta draping to the delicate floral hair bun and velvet base, every single element was immaculate. Anshita understands cultural vivah traditions with effortless mastery. 10/10 recommendation!"
+          </p>
+        </div>
+        <div class="testi-card-foot">
+          <a href="https://instagram.com/anshitamakeover21" target="_blank" rel="noopener" class="testi-ig-tag">
+            <span>📸 @anshitamakeover21</span>
+          </a>
+          <a href="{% url 'gallery' %}?album=sacred-vivah-royal-crimson" class="testi-album-link">
+            <span>View Lookbook ↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 4: Dr. Ritu Saxena (Cathedral Reception & Glass-Skin Glam) -->
+      <div class="testi-card" data-category="glam">
+        <div class="testi-card-quote-bg">“</div>
+        <div>
+          <div class="testi-card-head">
+            <div class="testi-avatar-frame">
+              <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Dr. Ritu Saxena Reception Bride" class="testi-avatar-img" loading="lazy">
+            </div>
+            <div class="testi-client-meta">
+              <h4 class="testi-client-name">Dr. Ritu Saxena</h4>
+              <div class="testi-client-event">Cathedral Reception & Glam</div>
+              <div class="testi-client-loc">Jabalpur Reception Suite</div>
+            </div>
+          </div>
+          <div class="testi-badge-pill testi-badge-glam">🌟 Porcelain Glass-Skin</div>
+          <div class="testi-stars-row">
+            <span class="testi-stars-text">★★★★★</span>
+            <span class="testi-score-num">5.0 / 5.0</span>
+          </div>
+          <p class="testi-quote-content">
+            "The soft porcelain glass skin for my reception felt so lightweight yet photographed like a luxury magazine cover. Guests kept asking who did my makeup all evening. World-class luxury artistry!"
+          </p>
+        </div>
+        <div class="testi-card-foot">
+          <span class="testi-ig-tag">📸 Verified Event</span>
+          <span style="font-size:0.68rem;color:rgba(212,175,55,0.7)">Cathedral Reception</span>
+        </div>
+      </div>
+
+      <!-- Card 5: Priya Sharma (Royal Vivah & Pheras) -->
+      <div class="testi-card" data-category="bridal">
+        <div class="testi-card-quote-bg">“</div>
+        <div>
+          <div class="testi-card-head">
+            <div class="testi-avatar-frame">
+              <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Priya Sharma Royal Bride" class="testi-avatar-img" loading="lazy">
+            </div>
+            <div class="testi-client-meta">
+              <h4 class="testi-client-name">Priya Sharma</h4>
+              <div class="testi-client-event">Royal Vivah & Sacred Pheras</div>
+              <div class="testi-client-loc">Bhopal Heritage Palace</div>
+            </div>
+          </div>
+          <div class="testi-badge-pill testi-badge-bride">👑 18-Hr Cry-Proof Base</div>
+          <div class="testi-stars-row">
+            <span class="testi-stars-text">★★★★★</span>
+            <span class="testi-score-num">5.0 / 5.0</span>
+          </div>
+          <p class="testi-quote-content">
+            "She transformed me into the bride I always dreamed of being. 18 hours later through emotional tears and non-stop celebrations, my makeup remained completely immaculate. Anshita is a true master."
+          </p>
+        </div>
+        <div class="testi-card-foot">
+          <span class="testi-ig-tag">📸 Destination Vivah</span>
+          <span style="font-size:0.68rem;color:rgba(212,175,55,0.7)">Bhopal Palace</span>
+        </div>
+      </div>
+
+      <!-- Card 6: Isha Dugar (Traditional Kolkata Vivah) -->
+      <div class="testi-card" data-category="bridal">
+        <div class="testi-card-quote-bg">“</div>
+        <div>
+          <div class="testi-card-head">
+            <div class="testi-avatar-frame">
+              <img src="{% static 'core/images/curated/bengali_bride_regal_portrait.jpg' %}" alt="Isha Dugar Bengali Bride" class="testi-avatar-img" loading="lazy">
+            </div>
+            <div class="testi-client-meta">
+              <h4 class="testi-client-name">Isha Dugar</h4>
+              <div class="testi-client-event">Traditional Bengali Vivah</div>
+              <div class="testi-client-loc">Kolkata Heritage Vivah</div>
+            </div>
+          </div>
+          <div class="testi-badge-pill testi-badge-bride">👑 Banarasi & Chandan</div>
+          <div class="testi-stars-row">
+            <span class="testi-stars-text">★★★★★</span>
+            <span class="testi-score-num">5.0 / 5.0</span>
+          </div>
+          <p class="testi-quote-content">
+            "The Chandan art on my forehead was painted with razor-sharp symmetry and the mukut stayed firmly in place from morning sindoor daan until the final bidaai. Unrivaled cultural bridal artistry."
+          </p>
+        </div>
+        <div class="testi-card-foot">
+          <span class="testi-ig-tag">📸 Heritage Vivah</span>
+          <span style="font-size:0.68rem;color:rgba(212,175,55,0.7)">Kolkata Wedding</span>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -3431,48 +3989,89 @@ function toggleServiceTicker(el) {
   }
 }
 
-// ═══ TESTIMONIALS AUTO CROSSFADE ═══
-const testimonialsData = [
-  {
-    quote: '"She transformed me into the bride I always dreamed of being. 18 hours later through tears and celebrations, my makeup remained completely immaculate."',
-    author: '— Priya Sharma, Bhopal · Royal Vivah'
-  },
-  {
-    quote: '"The soft porcelain glass skin for my reception felt so lightweight yet photographed like a luxury magazine cover. Truly world-class artistry."',
-    author: '— Dr. Ritu Saxena, Jabalpur · Cathedral Reception'
-  },
-  {
-    quote: '"Her eye for jewelry pairing and traditional chandan detailing is unmatched. Anshita is the gold standard of bridal couture."',
-    author: '— Shreya Banerjee, Kolkata · Heritage Vivah'
-  }
-];
+// ═══ SECTION 5: LUXURY REVIEWS MARQUEE & INTERACTIVE CONTROLLER ═══
+(function initTestimonialsMarquee() {
+  const viewport = document.getElementById('testimonialsViewport');
+  const track = document.getElementById('testimonialsTrack');
+  const flowStatus = document.getElementById('testiFlowStatus');
+  if (!viewport || !track) return;
 
-let currentTestiIdx = 0;
+  // 1. Clone cards for infinite seamless loop
+  const originalCards = Array.from(track.children);
+  originalCards.forEach(card => {
+    const clone = card.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    track.appendChild(clone);
+  });
 
-function setTestimonial(idx) {
-  currentTestiIdx = idx;
-  const quoteEl = document.getElementById('testiQuoteText');
-  const authorEl = document.getElementById('testiAuthorText');
-  const dots = document.querySelectorAll('.testi-dot');
+  // 2. Hover / Interaction states
+  viewport.addEventListener('mouseenter', () => {
+    viewport.classList.add('is-paused');
+    if (flowStatus) flowStatus.innerHTML = '<span class="testi-flow-dot" style="background:#f59e0b;box-shadow:0 0 8px #f59e0b"></span><span>Paused for reading</span>';
+  });
 
-  if (quoteEl && authorEl) {
-    quoteEl.style.opacity = '0';
-    authorEl.style.opacity = '0';
-    setTimeout(() => {
-      quoteEl.textContent = testimonialsData[idx].quote;
-      authorEl.textContent = testimonialsData[idx].author;
-      quoteEl.style.opacity = '1';
-      authorEl.style.opacity = '1';
-    }, 250);
-  }
+  viewport.addEventListener('mouseleave', () => {
+    viewport.classList.remove('is-paused');
+    if (flowStatus) flowStatus.innerHTML = '<span class="testi-flow-dot"></span><span>Auto-flow active</span>';
+  });
 
-  dots.forEach((dot, i) => dot.classList.toggle('active', i === idx));
+  // 3. Mouse Drag-to-Scroll Physics
+  let isDown = false;
+  let startX, scrollLeft;
+
+  viewport.addEventListener('mousedown', (e) => {
+    isDown = true;
+    viewport.classList.add('is-paused');
+    startX = e.pageX - viewport.offsetLeft;
+    scrollLeft = viewport.scrollLeft;
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (isDown) {
+      isDown = false;
+      viewport.classList.remove('is-paused');
+    }
+  });
+
+  viewport.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - viewport.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    viewport.scrollLeft = scrollLeft - walk;
+  });
+})();
+
+// Scroll by card with next/prev buttons
+function scrollReviews(direction) {
+  const viewport = document.getElementById('testimonialsViewport');
+  if (!viewport) return;
+  const cardWidth = 418; // card width (390px) + gap (28px)
+  const offset = direction === 'left' ? -cardWidth : cardWidth;
+  viewport.scrollBy({ left: offset, behavior: 'smooth' });
 }
 
-setInterval(() => {
-  currentTestiIdx = (currentTestiIdx + 1) % testimonialsData.length;
-  setTestimonial(currentTestiIdx);
-}, 6000);
+// Filter reviews by category
+function filterReviews(category, btnEl) {
+  const track = document.getElementById('testimonialsTrack');
+  const filterBtns = document.querySelectorAll('.testi-filter-btn');
+  if (!track) return;
+
+  filterBtns.forEach(btn => btn.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+
+  const cards = track.querySelectorAll('.testi-card');
+  cards.forEach(card => {
+    const cardCat = card.getAttribute('data-category');
+    if (category === 'all' || cardCat === category) {
+      card.style.display = 'flex';
+      card.style.opacity = '1';
+    } else {
+      card.style.display = 'none';
+      card.style.opacity = '0';
+    }
+  });
+}
 
 // ═══ SPEC-007: CountUp Metric Counters (TSK-007.05) ═══
 (function initMetricCounters() {

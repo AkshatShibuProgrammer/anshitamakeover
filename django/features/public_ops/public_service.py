@@ -62,7 +62,7 @@ def compile_home_context(lang):
                 s.discount_percent = 0
 
     event_packages = EventPackage.objects.filter(is_active=True).order_by('id')
-    reviews = CustomerReview.objects.filter(is_active=True).order_by('-order', '-created_at')[:8]
+    reviews = CustomerReview.objects.filter(is_active=True).order_by('order', '-created_at')[:8]
     media_reels = MediaItem.objects.filter(is_active=True, is_featured=True).order_by('-created_at')[:6]
     look_groups = LookGroup.objects.filter(is_active=True).prefetch_related('media_items').order_by('order', 'id')
 
