@@ -2804,15 +2804,17 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 
 /* ═══ 3D LIVING CONCIERGE CHARACTER STAGE & CANVAS ═══ */
 .char-3d-stage {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 2px;
   border-radius: 50%;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 30%, #30101f, #0d040a);
+  background: radial-gradient(circle at 45% 35%, #2a0b1c 0%, #15050e 65%, #080206 100%);
   perspective: 550px;
   transform-style: preserve-3d;
   will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .char-gaze-canvas {
   width: 100%;
@@ -2820,22 +2822,7 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   border-radius: 50%;
   display: block;
   pointer-events: none;
-  object-fit: cover;
-}
-.char-overlay {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.14s ease-out;
-  user-select: none;
-  z-index: 3;
-}
-.char-overlay.active {
-  opacity: 1;
+  object-fit: contain;
 }
 .char-specular-shine {
   position: absolute;
@@ -2843,8 +2830,8 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   pointer-events: none;
   z-index: 4;
   border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.05) 45%, transparent 65%);
   mix-blend-mode: overlay;
-  transition: background 0.08s ease;
 }
 
 /* ═══ ROYAL ENTRANCE ANIMATION & GOLDEN PORTAL ═══ */
@@ -3389,6 +3376,38 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 }
 .chat-inp::placeholder { color: rgba(245,237,214,.3); }
 .chat-inp:focus { border-color: var(--gold); }
+.chat-mic-btn {
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: var(--gold);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .25s ease;
+  flex-shrink: 0;
+}
+.chat-mic-btn:hover {
+  background: rgba(212, 175, 55, 0.3);
+  border-color: var(--gold);
+  transform: scale(1.08);
+  color: #FFF;
+}
+.chat-mic-btn.recording {
+  background: #DC2626 !important;
+  border-color: #EF4444 !important;
+  color: #FFF !important;
+  animation: micPulse 1.2s ease-in-out infinite;
+  box-shadow: 0 0 16px rgba(220, 38, 38, 0.6);
+}
+@keyframes micPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 8px rgba(220, 38, 38, 0.4); }
+  50% { transform: scale(1.12); box-shadow: 0 0 20px rgba(239, 68, 68, 0.8); }
+}
+
 .chat-send {
   background: linear-gradient(135deg, var(--gold-d), var(--gold));
   border: none;
@@ -6952,12 +6971,13 @@ window.quickAskConcierge = function(query) {
   }
 };
 
-/* ── 24K IMPERIAL GOLD CONCIERGE MEDALLION CONTROLLER ── */
-(function initRoyalConciergeMedallion() {
+/* ── 3D PIXAR-STYLE CUTE KID AI CONCIERGE ("ASHA") CONTROLLER ── */
+(function initAshaPixarConcierge() {
   const toggleWrap = document.getElementById('chat-toggle-wrap');
   const toggle = document.getElementById('chat-toggle');
   const portal = document.getElementById('charEntryPortal');
-  if (!toggle || !toggleWrap) return;
+  const canvas = document.getElementById('ashaMascotCanvas');
+  if (!toggle || !toggleWrap || !canvas || typeof THREE === 'undefined') return;
 
   // Royal Entrance Controller
   window.triggerConciergeEntrance = function() {
@@ -6975,42 +6995,405 @@ window.quickAskConcierge = function(query) {
     }, 1000);
   };
 
-  // Luxury 3D Cursor Tilt Parallax for the Medallion
-  let targetTiltX = 0, targetTiltY = 0;
-  let currentTiltX = 0, currentTiltY = 0;
+  // 1. Three.js Scene, Camera, and WebGL Renderer
+  const width = canvas.width || 168;
+  const height = canvas.height || 168;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
+  camera.position.set(0, 0.08, 3.1);
 
+  const renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    alpha: true,
+    antialias: true,
+    powerPreference: 'high-performance'
+  });
+  renderer.setSize(width, height, false);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+  // 2. Three-Point Studio Lighting (Natural, Warm, Flattering for Golden Indian Skin)
+  const ambientLight = new THREE.AmbientLight(0xFFEFE2, 0.85);
+  scene.add(ambientLight);
+
+  const keyLight = new THREE.DirectionalLight(0xFFE4C4, 0.85);
+  keyLight.position.set(1.2, 1.8, 2.4);
+  scene.add(keyLight);
+
+  const fillLight = new THREE.DirectionalLight(0xFAD4C0, 0.45);
+  fillLight.position.set(-1.6, -0.3, 1.5);
+  scene.add(fillLight);
+
+  const rimLight = new THREE.DirectionalLight(0xE5B842, 0.65);
+  rimLight.position.set(0, 2.0, -1.5);
+  scene.add(rimLight);
+
+  // 3. Materials — Authentic Warm Indian Golden-Wheat Skin & Luxurious Bridal Fabrics
+  const skinMaterial = new THREE.MeshStandardMaterial({
+    color: 0xBA7742, // Rich authentic Indian golden-wheat / honey-caramel skin tone
+    roughness: 0.62,
+    metalness: 0.02
+  });
+
+  const blushMaterial = new THREE.MeshStandardMaterial({
+    color: 0xCF5A50, // Subtle soft warm terracotta rose blush
+    roughness: 0.70,
+    metalness: 0.01,
+    transparent: true,
+    opacity: 0.35
+  });
+
+  const hairMaterial = new THREE.MeshStandardMaterial({
+    color: 0x160F0B, // Natural soft black-brown hair
+    roughness: 0.48,
+    metalness: 0.06
+  });
+
+  const goldMaterial = new THREE.MeshStandardMaterial({
+    color: 0xE2BA45, // 22K/24K Kundan Gold
+    roughness: 0.25,
+    metalness: 0.85
+  });
+
+  const rubyMaterial = new THREE.MeshStandardMaterial({
+    color: 0xBD182A,
+    roughness: 0.25,
+    metalness: 0.35
+  });
+
+  const pearlMaterial = new THREE.MeshStandardMaterial({
+    color: 0xFFFDF8,
+    roughness: 0.18,
+    metalness: 0.12
+  });
+
+  const bridalRedMaterial = new THREE.MeshStandardMaterial({
+    color: 0x981423, // Sacred Vivah Crimson Red velvet
+    roughness: 0.55,
+    metalness: 0.12
+  });
+
+  const chunniSheerMaterial = new THREE.MeshStandardMaterial({
+    color: 0xB5182D,
+    roughness: 0.4,
+    metalness: 0.1,
+    transparent: true,
+    opacity: 0.92,
+    side: THREE.DoubleSide
+  });
+
+  // 4. Character Root & Cute Toddler Head Geometry
+  const mascotGroup = new THREE.Group();
+  scene.add(mascotGroup);
+
+  const headGroup = new THREE.Group();
+  headGroup.position.set(0, 0.02, 0);
+  mascotGroup.add(headGroup);
+
+  // Chubby cute baby toddler head (wider cheeks, round toddler chin)
+  const headGeo = new THREE.SphereGeometry(0.72, 36, 36);
+  const headMesh = new THREE.Mesh(headGeo, skinMaterial);
+  headMesh.scale.set(1.08, 0.94, 0.96);
+  headGroup.add(headMesh);
+
+  // Soft Natural Blushing Cheeks
+  const leftCheekGeo = new THREE.SphereGeometry(0.20, 20, 20);
+  const leftCheek = new THREE.Mesh(leftCheekGeo, blushMaterial);
+  leftCheek.position.set(-0.35, -0.15, 0.52);
+  leftCheek.scale.set(1.1, 0.65, 0.32);
+  headGroup.add(leftCheek);
+
+  const rightCheek = new THREE.Mesh(leftCheekGeo, blushMaterial);
+  rightCheek.position.set(0.35, -0.15, 0.52);
+  rightCheek.scale.set(1.1, 0.65, 0.32);
+  headGroup.add(rightCheek);
+
+  // Dainty Cute Little Toddler Button Nose (uses skinMaterial for seamless organic blend)
+  const noseGeo = new THREE.SphereGeometry(0.038, 16, 16);
+  const nose = new THREE.Mesh(noseGeo, skinMaterial);
+  nose.position.set(0, -0.06, 0.70);
+  nose.scale.set(1.0, 0.72, 0.65);
+  headGroup.add(nose);
+
+  // Joyful Sweet Kid Smile
+  const smileCurve = new THREE.QuadraticBezierCurve3(
+    new THREE.Vector3(-0.16, -0.20, 0.66),
+    new THREE.Vector3(0, -0.30, 0.69),
+    new THREE.Vector3(0.16, -0.20, 0.66)
+  );
+  const smileGeo = new THREE.TubeGeometry(smileCurve, 18, 0.022, 8, false);
+  const smile = new THREE.Mesh(smileGeo, new THREE.MeshBasicMaterial({ color: 0x6E101D }));
+  headGroup.add(smile);
+
+  // 5. Giant Round Pixar Cartoon Eyes (Expressive Toddler Proportions)
+  function createEyeAssembly(xPos) {
+    const eyeAssembly = new THREE.Group();
+    eyeAssembly.position.set(xPos, 0.08, 0.54);
+
+    // Eye Sclera (White)
+    const scleraGeo = new THREE.SphereGeometry(0.24, 32, 32);
+    const sclera = new THREE.Mesh(scleraGeo, new THREE.MeshStandardMaterial({
+      color: 0xFFFFFF,
+      roughness: 0.15,
+      metalness: 0.02
+    }));
+    eyeAssembly.add(sclera);
+
+    // Pupil Pivot (Movable with gaze kinematics)
+    const pupilPivot = new THREE.Group();
+    pupilPivot.position.set(0, 0, 0.23);
+
+    // Outer Limbal Ring
+    const limbalGeo = new THREE.CircleGeometry(0.15, 32);
+    const limbal = new THREE.Mesh(limbalGeo, new THREE.MeshBasicMaterial({ color: 0x1A0903 }));
+    pupilPivot.add(limbal);
+
+    // Deep Warm Amber Honey Iris
+    const irisGeo = new THREE.CircleGeometry(0.135, 32);
+    const iris = new THREE.Mesh(irisGeo, new THREE.MeshBasicMaterial({ color: 0x8C4415 }));
+    iris.position.z = 0.003;
+    pupilPivot.add(iris);
+
+    // Golden Sunlight Fleck Ring
+    const innerIrisGeo = new THREE.CircleGeometry(0.098, 24);
+    const innerIris = new THREE.Mesh(innerIrisGeo, new THREE.MeshBasicMaterial({ color: 0xD48430 }));
+    innerIris.position.z = 0.006;
+    pupilPivot.add(innerIris);
+
+    // Large Toddler Disney Pupil
+    const pupilGeo = new THREE.CircleGeometry(0.072, 24);
+    const pupil = new THREE.Mesh(pupilGeo, new THREE.MeshBasicMaterial({ color: 0x060606 }));
+    pupil.position.z = 0.009;
+    pupilPivot.add(pupil);
+
+    // Double Glossy Pixar Catchlight Glints
+    const mainGlintGeo = new THREE.CircleGeometry(0.036, 16);
+    const mainGlint = new THREE.Mesh(mainGlintGeo, new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+    mainGlint.position.set(0.040, 0.044, 0.012);
+    pupilPivot.add(mainGlint);
+
+    const secGlintGeo = new THREE.CircleGeometry(0.016, 12);
+    const secGlint = new THREE.Mesh(secGlintGeo, new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+    secGlint.position.set(-0.034, -0.036, 0.012);
+    pupilPivot.add(secGlint);
+
+    eyeAssembly.add(pupilPivot);
+
+    // Upper Eyelid for Blinking
+    const eyelidGeo = new THREE.SphereGeometry(0.245, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.5);
+    const eyelid = new THREE.Mesh(eyelidGeo, skinMaterial);
+    eyelid.rotation.x = -Math.PI * 0.55;
+    eyelid.position.set(0, 0.01, 0.01);
+    eyeAssembly.add(eyelid);
+
+    return { assembly: eyeAssembly, pupilPivot: pupilPivot, eyelid: eyelid };
+  }
+
+  const leftEye = createEyeAssembly(-0.25);
+  const rightEye = createEyeAssembly(0.25);
+  headGroup.add(leftEye.assembly);
+  headGroup.add(rightEye.assembly);
+
+  // 6. Cute Little Girl Hair & Bridal Chunni Headpiece
+  const hairBackGeo = new THREE.SphereGeometry(0.76, 32, 28);
+  const hairBack = new THREE.Mesh(hairBackGeo, hairMaterial);
+  hairBack.position.set(0, 0.06, -0.12);
+  hairBack.scale.set(1.05, 1.05, 1.05);
+  headGroup.add(hairBack);
+
+  // Soft Front Baby Bangs
+  const bangLeftGeo = new THREE.SphereGeometry(0.26, 20, 20);
+  const bangLeft = new THREE.Mesh(bangLeftGeo, hairMaterial);
+  bangLeft.position.set(-0.24, 0.52, 0.52);
+  bangLeft.scale.set(1.15, 0.42, 0.55);
+  bangLeft.rotation.z = 0.20;
+  headGroup.add(bangLeft);
+
+  const bangRight = new THREE.Mesh(bangLeftGeo, hairMaterial);
+  bangRight.position.set(0.24, 0.52, 0.52);
+  bangRight.scale.set(1.15, 0.42, 0.55);
+  bangRight.rotation.z = -0.20;
+  headGroup.add(bangRight);
+
+  // Cute Little Top Bun
+  const bunGeo = new THREE.SphereGeometry(0.28, 22, 22);
+  const bun = new THREE.Mesh(bunGeo, hairMaterial);
+  bun.position.set(0, 0.74, 0.02);
+  bun.scale.set(1.1, 0.78, 0.95);
+  headGroup.add(bun);
+
+  // Sacred Indian Bridal Red Chunni draped behind head and shoulders (framing veil)
+  // phi from ~1.0*PI to 2.0*PI covers +X through -Z to -X in Three.js coordinate system (strictly z <= 0)
+  const chunniGeo = new THREE.SphereGeometry(0.83, 32, 20, Math.PI * 0.96, Math.PI * 1.08, 0, Math.PI * 0.65);
+  const chunni = new THREE.Mesh(chunniGeo, chunniSheerMaterial);
+  chunni.position.set(0, 0.08, -0.06);
+  chunni.scale.set(1.06, 1.04, 1.08);
+  headGroup.add(chunni);
+
+  // Gold Zari Border outlining the Chunni dupatta arch across crown
+  const zariBorderGeo = new THREE.TorusGeometry(0.83, 0.022, 12, 40, Math.PI);
+  const zariBorder = new THREE.Mesh(zariBorderGeo, goldMaterial);
+  zariBorder.position.set(0, 0.22, 0.04);
+  zariBorder.rotation.x = Math.PI * 0.35;
+  headGroup.add(zariBorder);
+
+  // 7. Royal Gold Bridal Maang Tikka (Dainty for Child)
+  const tikkaChainGeo = new THREE.CylinderGeometry(0.01, 0.01, 0.32, 8);
+  const tikkaChain = new THREE.Mesh(tikkaChainGeo, goldMaterial);
+  tikkaChain.position.set(0, 0.52, 0.67);
+  tikkaChain.rotation.x = 0.20;
+  headGroup.add(tikkaChain);
+
+  const tikkaPendantGeo = new THREE.SphereGeometry(0.055, 16, 16);
+  const tikkaPendant = new THREE.Mesh(tikkaPendantGeo, goldMaterial);
+  tikkaPendant.position.set(0, 0.37, 0.71);
+  tikkaPendant.scale.set(1.1, 1.25, 0.7);
+  headGroup.add(tikkaPendant);
+
+  const rubyCenterGeo = new THREE.SphereGeometry(0.028, 12, 12);
+  const rubyCenter = new THREE.Mesh(rubyCenterGeo, rubyMaterial);
+  rubyCenter.position.set(0, 0.37, 0.75);
+  headGroup.add(rubyCenter);
+
+  // Tiny Cute Gold Jhumka Earrings (positioned at cute toddler earlobes)
+  function createJhumka(xPos) {
+    const jhumka = new THREE.Group();
+    jhumka.position.set(xPos, -0.16, 0.38);
+
+    const studGeo = new THREE.SphereGeometry(0.042, 12, 12);
+    const stud = new THREE.Mesh(studGeo, goldMaterial);
+    jhumka.add(stud);
+
+    const bellGeo = new THREE.ConeGeometry(0.058, 0.068, 14, 1, true);
+    const bell = new THREE.Mesh(bellGeo, goldMaterial);
+    bell.position.y = -0.068;
+    bell.rotation.x = Math.PI;
+    jhumka.add(bell);
+
+    const pearlGeo = new THREE.SphereGeometry(0.024, 8, 8);
+    const pearl = new THREE.Mesh(pearlGeo, pearlMaterial);
+    pearl.position.y = -0.11;
+    jhumka.add(pearl);
+
+    return jhumka;
+  }
+  headGroup.add(createJhumka(-0.46));
+  headGroup.add(createJhumka(0.46));
+
+  // 8. Royal Crimson Bridal Attire & Gold Embroidery Collar
+  const capeGeo = new THREE.CylinderGeometry(0.38, 0.95, 0.52, 32, 1, true);
+  const cape = new THREE.Mesh(capeGeo, bridalRedMaterial);
+  cape.position.set(0, -0.68, 0.02);
+  headGroup.add(cape);
+
+  const collarTrimGeo = new THREE.TorusGeometry(0.40, 0.038, 12, 32);
+  const collarTrim = new THREE.Mesh(collarTrimGeo, goldMaterial);
+  collarTrim.position.set(0, -0.42, 0.02);
+  collarTrim.rotation.x = Math.PI * 0.5;
+  headGroup.add(collarTrim);
+
+  // 9. Interactive Kinematics & Living Motion Engine
+  let targetGazeX = 0, targetGazeY = 0;
+  let currentGazeX = 0, currentGazeY = 0;
+  let isHovered = false;
+  let isBlinking = false;
+  let blinkProgress = 0;
+  let nextBlinkTime = performance.now() + 3500;
+
+  // Track Mouse Coordinates Across Entire Viewport
   window.addEventListener('mousemove', (e) => {
     const rect = toggle.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+    
+    // Normalize coordinates [-1, 1] relative to toggle center
+    const maxRange = Math.max(window.innerWidth, window.innerHeight);
+    const dx = (e.clientX - centerX) / (maxRange * 0.55);
+    const dy = (e.clientY - centerY) / (maxRange * 0.55);
 
-    if (dist < 350) {
-      targetTiltX = ((e.clientX - centerX) / 350) * 12;
-      targetTiltY = -((e.clientY - centerY) / 350) * 12;
-    } else {
-      targetTiltX = 0;
-      targetTiltY = 0;
-    }
+    targetGazeX = Math.max(-1, Math.min(1, dx));
+    targetGazeY = Math.max(-1, Math.min(1, dy));
   }, { passive: true });
 
-  function animateMedallion() {
-    currentTiltX += (targetTiltX - currentTiltX) * 0.1;
-    currentTiltY += (targetTiltY - currentTiltY) * 0.1;
-    const inner = toggle.querySelector('.medallion-inner');
-    if (inner) {
-      inner.style.transform = `perspective(400px) rotateY(${currentTiltX.toFixed(2)}deg) rotateX(${currentTiltY.toFixed(2)}deg)`;
-    }
-    requestAnimationFrame(animateMedallion);
-  }
-  requestAnimationFrame(animateMedallion);
+  // Hover Excitement Response
+  toggle.addEventListener('mouseenter', () => {
+    isHovered = true;
+    if (window.charConciergeState) window.charConciergeState.mood = 'excited';
+  });
 
+  toggle.addEventListener('mouseleave', () => {
+    isHovered = false;
+    if (window.charConciergeState) window.charConciergeState.mood = 'happy';
+  });
+
+  // Animation Loop (60 FPS with Battery Conservation)
+  let animationFrameId = null;
+
+  function renderAsha(timestamp) {
+    // Throttle / Pause when tab is hidden or modal opened
+    if (document.hidden) {
+      animationFrameId = requestAnimationFrame(renderAsha);
+      return;
+    }
+
+    // Kinematic Dampening (lerp)
+    currentGazeX += (targetGazeX - currentGazeX) * 0.085;
+    currentGazeY += (targetGazeY - currentGazeY) * 0.085;
+
+    // Head 3D Yaw & Pitch
+    headGroup.rotation.y = currentGazeX * 0.42; // max ~24 degrees
+    headGroup.rotation.x = currentGazeY * 0.28; // max ~16 degrees
+    headGroup.rotation.z = -currentGazeX * 0.08; // subtle playful head tilt
+
+    // Pupils Spherical Shift
+    const pupilShiftX = currentGazeX * 0.052;
+    const pupilShiftY = -currentGazeY * 0.048;
+    leftEye.pupilPivot.position.set(pupilShiftX, pupilShiftY, 0.24);
+    rightEye.pupilPivot.position.set(pupilShiftX, pupilShiftY, 0.24);
+
+    // Idle Breathing & Floating Oscillation
+    const breathing = Math.sin(timestamp * 0.0024) * 0.032;
+    mascotGroup.position.y = breathing;
+
+    // Hover Bounce / Celebration Scale
+    const targetScale = isHovered ? 1.08 : 1.0;
+    mascotGroup.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.12);
+
+    // Organic Disney Blink Mechanism
+    if (timestamp > nextBlinkTime && !isBlinking) {
+      isBlinking = true;
+      blinkProgress = 0;
+    }
+
+    if (isBlinking) {
+      blinkProgress += 0.18;
+      if (blinkProgress <= 1.0) {
+        // Closing eyelid smoothly over eye
+        const blinkAmount = Math.sin(blinkProgress * Math.PI);
+        leftEye.eyelid.rotation.x = -Math.PI * 0.55 + blinkAmount * 1.65;
+        rightEye.eyelid.rotation.x = -Math.PI * 0.55 + blinkAmount * 1.65;
+      } else {
+        isBlinking = false;
+        leftEye.eyelid.rotation.x = -Math.PI * 0.55;
+        rightEye.eyelid.rotation.x = -Math.PI * 0.55;
+        // Schedule next random blink between 3.5s and 6.0s
+        nextBlinkTime = timestamp + 3500 + Math.random() * 2500;
+      }
+    }
+
+    renderer.render(scene, camera);
+    animationFrameId = requestAnimationFrame(renderAsha);
+  }
+
+  animationFrameId = requestAnimationFrame(renderAsha);
+
+  // Trigger Royal Entrance
   setTimeout(() => {
     if (typeof window.triggerConciergeEntrance === 'function') {
       window.triggerConciergeEntrance();
     }
   }, 2200);
 })();
+
 
 
 
@@ -9710,6 +10093,87 @@ document.addEventListener('DOMContentLoaded', () => {
   detectUserRegionAndRecommendLanguages();
 });
 
+// Speech-to-Text Recognition for Asha Concierge
+let speechRecognitionInstance = null;
+let isRecordingSpeech = false;
+
+window.toggleSpeechToText = function() {
+  const micBtn = document.getElementById('chat-mic-btn');
+  const inp = document.getElementById('chat-inp');
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert("Speech recognition is supported in modern Chrome, Edge, and Safari browsers.");
+    return;
+  }
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (isRecordingSpeech && speechRecognitionInstance) {
+    speechRecognitionInstance.stop();
+    return;
+  }
+
+  try {
+    speechRecognitionInstance = new SpeechRecognition();
+    speechRecognitionInstance.continuous = false;
+    speechRecognitionInstance.interimResults = true;
+
+    // Detect language code from selectedChatLanguage
+    const langMap = {
+      'hindi': 'hi-IN',
+      'marathi': 'mr-IN',
+      'bundelkhandi': 'hi-IN',
+      'bhojpuri': 'hi-IN',
+      'english': 'en-IN'
+    };
+    speechRecognitionInstance.lang = langMap[window.selectedChatLanguage || 'hindi'] || 'hi-IN';
+
+    speechRecognitionInstance.onstart = function() {
+      isRecordingSpeech = true;
+      if (micBtn) micBtn.classList.add('recording');
+      if (inp) inp.placeholder = "Listening... Speak now 🎙️";
+      if (window.charConciergeState) window.charConciergeState.mood = 'listening';
+    };
+
+    speechRecognitionInstance.onresult = function(event) {
+      let finalTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        } else {
+          inp.value = event.results[i][0].transcript;
+        }
+      }
+      if (finalTranscript) {
+        inp.value = finalTranscript;
+      }
+    };
+
+    speechRecognitionInstance.onerror = function(event) {
+      console.warn("Speech recognition error:", event.error);
+      stopSpeechRecording();
+    };
+
+    speechRecognitionInstance.onend = function() {
+      stopSpeechRecording();
+      if (inp && inp.value.trim().length > 1) {
+        setTimeout(() => sendChat(), 300);
+      }
+    };
+
+    speechRecognitionInstance.start();
+  } catch (err) {
+    console.error("Speech recognition start failed:", err);
+    stopSpeechRecording();
+  }
+
+  function stopSpeechRecording() {
+    isRecordingSpeech = false;
+    if (micBtn) micBtn.classList.remove('recording');
+    if (inp) inp.placeholder = "Ask anything about bridal, hair, bookings...";
+    if (window.charConciergeState) window.charConciergeState.mood = 'happy';
+  }
+};
+
 function chatKey(e){if(e.key==='Enter')sendChat()}
 async function sendChat(){
   const inp=document.getElementById('chat-inp');
@@ -10056,5 +10520,20 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
 
 {% block extra_js %}{% endblock %}
+
+<!-- WhatsApp Instant Booking FAB (SPEC-007 TSK-007.03) -->
+<a id="whatsapp-fab"
+   href="https://wa.me/{{ whatsapp|default:'917879223442' }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20book%20a%20bridal%20consultation.&utm_source=website&utm_medium=whatsapp_fab&utm_campaign=bridal_2024"
+   target="_blank"
+   rel="noopener noreferrer"
+   aria-label="Book a consultation on WhatsApp"
+   title="Book on WhatsApp">
+  <!-- WhatsApp SVG Icon -->
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+  <span class="fab-pulse-ring"></span>
+</a>
+
 </body>
 </html>
