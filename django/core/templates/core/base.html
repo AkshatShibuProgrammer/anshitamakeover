@@ -2923,6 +2923,17 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   transform: translateY(0) scale(1);
   animation: bubbleFloat 4s ease-in-out infinite alternate;
 }
+/* STRICT SUPPRESSION: Zero speech bubble popups when chatting or when chat window is open */
+#chat-box.open ~ #chat-toggle-wrap #chat-speech-bubble,
+#chat-box.open + #chat-toggle-wrap #chat-speech-bubble,
+.chat-container:has(#chat-box.open) #chat-speech-bubble,
+body.chat-is-open #chat-speech-bubble {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(12px) scale(0.92) !important;
+}
 .chat-speech-bubble:hover {
   border-color: var(--gold);
 }
@@ -6960,13 +6971,42 @@ document.addEventListener('mouseout', e => {
 /* ── AI ROYAL CONCIERGE STATE & QUICK ACTIONS ── */
 window.charConciergeState = {
   mood: 'happy',
-  speechTimer: null
+  speechTimer: null,
+  setMood: function(newMood, autoResetMs = 6000) {
+    this.mood = newMood;
+    // Reflect expression in chat header avatar
+    const badge = document.querySelector('.chat-royal-monogram');
+    if (badge) {
+      const moodEmojis = {
+        'happy': '👑',
+        'sad': '🥺',
+        'pouting': '🥺',
+        'thinking': '🤔',
+        'thinking_coupon': '💡',
+        'offering_deal': '🎁',
+        'celebrating': '🎉',
+        'deal_done': '🎉',
+        'excited': '✨',
+        'recommending': '✨'
+      };
+      badge.textContent = moodEmojis[newMood] || '👑';
+    }
+
+    if (autoResetMs > 0 && newMood !== 'happy') {
+      clearTimeout(this.speechTimer);
+      this.speechTimer = setTimeout(() => {
+        this.mood = 'happy';
+        const b = document.querySelector('.chat-royal-monogram');
+        if (b) b.textContent = '👑';
+      }, autoResetMs);
+    }
+  }
 };
 
 window.quickAskConcierge = function(query) {
   if (typeof toggleChat === 'function') {
     const box = document.getElementById('chat-box');
-    if (!box || box.style.display !== 'flex') {
+    if (!box || !box.classList.contains('open')) {
       toggleChat();
     }
   }
@@ -7229,6 +7269,68 @@ window.quickAskConcierge = function(query) {
   bun.scale.set(1.1, 0.78, 0.95);
   headGroup.add(bun);
 
+  // 6b. Adorable Articulated Bunny Ears (Sketchfab Hafiene "Cute Rabbit" caliber)
+  const earInnerMat = new THREE.MeshStandardMaterial({
+    color: 0xF7A8B8, // Soft warm velvety pink inner ear
+    roughness: 0.65,
+    metalness: 0.02
+  });
+
+  function createBunnyEar(isLeft) {
+    const pivot = new THREE.Group();
+    // Pivot at top crown
+    pivot.position.set(isLeft ? -0.25 : 0.25, 0.70, 0.02);
+
+    // Outer Velvety Ear
+    const earOuterGeo = new THREE.CylinderGeometry(0.12, 0.05, 0.88, 20);
+    const earOuter = new THREE.Mesh(earOuterGeo, skinMaterial);
+    earOuter.position.y = 0.42;
+    earOuter.scale.set(1.0, 1.0, 0.35); // flattened soft floppy ear profile
+    pivot.add(earOuter);
+
+    // Inner Pink Velvet Inset
+    const earInnerGeo = new THREE.CylinderGeometry(0.08, 0.025, 0.76, 16);
+    const earInner = new THREE.Mesh(earInnerGeo, earInnerMat);
+    earInner.position.set(0, 0.42, 0.018);
+    earInner.scale.set(0.9, 0.95, 0.25);
+    pivot.add(earInner);
+
+    // Tiny Dainty Gold Ear-ring / Kundan Stud at tip
+    const earTipJewelGeo = new THREE.TorusGeometry(0.045, 0.012, 8, 16);
+    const earTipJewel = new THREE.Mesh(earTipJewelGeo, goldMaterial);
+    earTipJewel.position.set(isLeft ? -0.05 : 0.05, 0.80, 0.01);
+    earTipJewel.rotation.y = Math.PI * 0.5;
+    pivot.add(earTipJewel);
+
+    return pivot;
+  }
+
+  const leftEar = createBunnyEar(true);
+  const rightEar = createBunnyEar(false);
+  headGroup.add(leftEar);
+  headGroup.add(rightEar);
+
+  // Cute Whiskers (Dainty rabbit whisker dots on cheeks)
+  function createWhiskerDots(xPos) {
+    const whiskerGroup = new THREE.Group();
+    whiskerGroup.position.set(xPos, -0.15, 0.54);
+    const dotGeo = new THREE.SphereGeometry(0.014, 8, 8);
+    const dotMat = new THREE.MeshBasicMaterial({ color: 0x5C2B14 });
+    const offsets = [
+      [-0.04, 0.02, 0],
+      [0.0, 0.0, 0.02],
+      [-0.03, -0.02, 0]
+    ];
+    offsets.forEach(([ox, oy, oz]) => {
+      const d = new THREE.Mesh(dotGeo, dotMat);
+      d.position.set(xPos > 0 ? ox : -ox, oy, oz);
+      whiskerGroup.add(d);
+    });
+    return whiskerGroup;
+  }
+  headGroup.add(createWhiskerDots(-0.35));
+  headGroup.add(createWhiskerDots(0.35));
+
   // Sacred Indian Bridal Red Chunni draped behind head and shoulders (framing veil)
   // phi from ~1.0*PI to 2.0*PI covers +X through -Z to -X in Three.js coordinate system (strictly z <= 0)
   const chunniGeo = new THREE.SphereGeometry(0.83, 32, 20, Math.PI * 0.96, Math.PI * 1.08, 0, Math.PI * 0.65);
@@ -7347,20 +7449,135 @@ window.quickAskConcierge = function(query) {
     currentGazeX += (targetGazeX - currentGazeX) * 0.085;
     currentGazeY += (targetGazeY - currentGazeY) * 0.085;
 
-    // Head 3D Yaw & Pitch
-    headGroup.rotation.y = currentGazeX * 0.42; // max ~24 degrees
-    headGroup.rotation.x = currentGazeY * 0.28; // max ~16 degrees
-    headGroup.rotation.z = -currentGazeX * 0.08; // subtle playful head tilt
+    // Mood-Driven Emotional Kinematics (Rabbit / Cute Robot Caliber)
+    const mood = (window.charConciergeState && window.charConciergeState.mood) || 'happy';
+    let moodGazeOffX = 0, moodGazeOffY = 0;
+    let moodHeadTiltZ = 0, moodHeadPitchX = 0, moodHeadYawY = 0;
+    let moodEyelidBase = -Math.PI * 0.55;
+    let moodBounce = 0;
+
+    // Organic Bunny Ear Dynamics & Spontaneous Twitches
+    let earL_Z = 0.16, earR_Z = -0.16;
+    let earL_X = -0.05, earR_X = -0.05;
+    let earL_Y = 0, earR_Y = 0;
+
+    // Spontaneous rabbit ear twitch cycle every 3.8s
+    const twitchCycle = (timestamp * 0.001) % 3.8;
+    let twitchKick = 0;
+    if (twitchCycle > 3.4) {
+      twitchKick = Math.sin((twitchCycle - 3.4) * 45) * 0.16;
+    }
+
+    // Bunny Nose live micro-wiggle
+    if (nose) {
+      nose.position.y = -0.06 + Math.sin(timestamp * 0.012) * 0.005;
+    }
+
+    if (mood === 'sad' || mood === 'pouting') {
+      // Melancholy / Disinterest / Rejection: Drooped head, drooped floppy ears, sorrowful wobble
+      moodGazeOffY = 0.50;
+      moodHeadPitchX = 0.24;
+      moodHeadTiltZ = Math.sin(timestamp * 0.003) * 0.04;
+      moodEyelidBase = -Math.PI * 0.30; // half-drooped sad puppy-dog eyelids
+      moodBounce = Math.sin(timestamp * 0.0016) * 0.015 - 0.025; // sad slump
+
+      // Ears droop and flop downwards all the way against the cheeks!
+      earL_Z = -0.80 + Math.sin(timestamp * 0.003) * 0.04;
+      earR_Z = 0.80 - Math.sin(timestamp * 0.003) * 0.04;
+      earL_X = 0.38;
+      earR_X = 0.38;
+
+      if (smile) {
+        smile.scale.set(0.85, -1.0, 1.0);
+        smile.position.set(0, -0.42, 0.04); // flipped into downturned sad pout
+      }
+    } else if (mood === 'thinking' || mood === 'thinking_coupon') {
+      // Pondering / Generating Discount: Head cocked curious, one ear cocks, eyes look up-right
+      moodGazeOffX = 0.60;
+      moodGazeOffY = -0.50;
+      moodHeadYawY = 0.26;
+      moodHeadPitchX = -0.16;
+      moodHeadTiltZ = -0.22;
+      moodEyelidBase = -Math.PI * 0.48;
+      moodBounce = Math.sin(timestamp * 0.0035) * 0.025;
+
+      // Curious ear cock: left ear leans sideways, right ear twitches
+      earL_Z = 0.52;
+      earL_X = -0.14;
+      earR_Z = -0.08 + (twitchKick * 1.6);
+      earR_X = 0.10;
+
+      if (smile) {
+        smile.scale.set(0.60, 0.65, 0.7);
+        smile.position.set(0.03, -0.04, 0.02); // cute thoughtful purse
+      }
+    } else if (mood === 'offering_deal' || mood === 'recommending') {
+      // Offering a Deal: Head leans forward, ears perk alertly, wide cartoon eyes, perky bounce
+      moodHeadPitchX = -0.16;
+      moodHeadYawY = Math.sin(timestamp * 0.004) * 0.08;
+      moodEyelidBase = -Math.PI * 0.72; // wide cartoon eyes
+      moodBounce = Math.abs(Math.sin(timestamp * 0.0065)) * 0.055; // cheerful bounce
+
+      // Ears perked forward eagerly towards user
+      earL_Z = 0.22;
+      earR_Z = -0.22;
+      earL_X = -0.28 + Math.sin(timestamp * 0.006) * 0.08;
+      earR_X = -0.28 + Math.sin(timestamp * 0.006) * 0.08;
+
+      if (smile) {
+        smile.scale.set(1.25, 1.35, 1.0);
+        smile.position.set(0, 0.02, 0);
+      }
+    } else if (mood === 'celebrating' || mood === 'deal_done' || mood === 'excited') {
+      // Deal Done / Celebrating: Double joyful celebration bounce, beaming smile, wiggling ears!
+      moodHeadPitchX = Math.sin(timestamp * 0.009) * 0.12;
+      moodHeadYawY = Math.sin(timestamp * 0.007) * 0.15;
+      moodHeadTiltZ = Math.cos(timestamp * 0.008) * 0.10;
+      moodEyelidBase = -Math.PI * 0.65;
+      moodBounce = Math.abs(Math.sin(timestamp * 0.009)) * 0.09; // energetic celebratory bounce
+
+      // Ears flap and wiggle joyfully with high energy
+      earL_Z = 0.14 + Math.sin(timestamp * 0.018) * 0.24;
+      earR_Z = -0.14 - Math.sin(timestamp * 0.018) * 0.24;
+      earL_X = -0.12;
+      earR_X = -0.12;
+
+      if (smile) {
+        smile.scale.set(1.35, 1.5, 1.0);
+        smile.position.set(0, 0.03, 0);
+      }
+    } else {
+      // Default Sweet Happy / Idle
+      earL_Z = 0.18 + Math.sin(timestamp * 0.0022) * 0.04 + (twitchKick * 0.6);
+      earR_Z = -0.18 - Math.sin(timestamp * 0.0028) * 0.04 + twitchKick;
+      earL_X = -0.05;
+      earR_X = -0.05;
+
+      if (smile) {
+        smile.scale.set(1.0, 1.0, 1.0);
+        smile.position.set(0, 0, 0);
+      }
+    }
+
+    if (leftEar && rightEar) {
+      leftEar.rotation.set(earL_X, earL_Y, earL_Z);
+      rightEar.rotation.set(earR_X, earR_Y, earR_Z);
+    }
+
+    // Head 3D Yaw, Pitch & Playful Tilt
+    headGroup.rotation.y = (currentGazeX * 0.42) + moodHeadYawY;
+    headGroup.rotation.x = (currentGazeY * 0.28) + moodHeadPitchX;
+    headGroup.rotation.z = (-currentGazeX * 0.08) + moodHeadTiltZ;
 
     // Pupils Spherical Shift
-    const pupilShiftX = currentGazeX * 0.052;
-    const pupilShiftY = -currentGazeY * 0.048;
+    const pupilShiftX = (currentGazeX * 0.052) + (moodGazeOffX * 0.04);
+    const pupilShiftY = (-currentGazeY * 0.048) - (moodGazeOffY * 0.04);
     leftEye.pupilPivot.position.set(pupilShiftX, pupilShiftY, 0.24);
     rightEye.pupilPivot.position.set(pupilShiftX, pupilShiftY, 0.24);
 
     // Idle Breathing & Floating Oscillation
     const breathing = Math.sin(timestamp * 0.0024) * 0.032;
-    mascotGroup.position.y = breathing;
+    mascotGroup.position.y = breathing + moodBounce;
 
     // Hover Bounce / Celebration Scale
     const targetScale = isHovered ? 1.08 : 1.0;
@@ -7377,15 +7594,18 @@ window.quickAskConcierge = function(query) {
       if (blinkProgress <= 1.0) {
         // Closing eyelid smoothly over eye
         const blinkAmount = Math.sin(blinkProgress * Math.PI);
-        leftEye.eyelid.rotation.x = -Math.PI * 0.55 + blinkAmount * 1.65;
-        rightEye.eyelid.rotation.x = -Math.PI * 0.55 + blinkAmount * 1.65;
+        leftEye.eyelid.rotation.x = moodEyelidBase + blinkAmount * 1.65;
+        rightEye.eyelid.rotation.x = moodEyelidBase + blinkAmount * 1.65;
       } else {
         isBlinking = false;
-        leftEye.eyelid.rotation.x = -Math.PI * 0.55;
-        rightEye.eyelid.rotation.x = -Math.PI * 0.55;
+        leftEye.eyelid.rotation.x = moodEyelidBase;
+        rightEye.eyelid.rotation.x = moodEyelidBase;
         // Schedule next random blink between 3.5s and 6.0s
         nextBlinkTime = timestamp + 3500 + Math.random() * 2500;
       }
+    } else {
+      leftEye.eyelid.rotation.x = moodEyelidBase;
+      rightEye.eyelid.rotation.x = moodEyelidBase;
     }
 
     renderer.render(scene, camera);
@@ -7412,6 +7632,12 @@ let isHoveringBubble = false;
 let conciergeCycleIndex = 0;
 
 window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', durationMs = 7000) {
+  const chatBox = document.getElementById('chat-box');
+  // CRITICAL: NEVER show external speech bubble popup when chat window is actively open or user is chatting!
+  if (document.body.classList.contains('chat-is-open') || (chatBox && chatBox.classList.contains('open'))) {
+    return;
+  }
+
   const bubble = document.getElementById('chat-speech-bubble');
   const textEl = document.getElementById('csb-text');
   const subEl = document.getElementById('csb-sub');
@@ -7435,11 +7661,7 @@ window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', duratio
   bubble.classList.add('active');
 
   if (window.charConciergeState) {
-    window.charConciergeState.mood = 'recommending';
-    clearTimeout(window.charConciergeState.speechTimer);
-    window.charConciergeState.speechTimer = setTimeout(() => {
-      if (window.charConciergeState) window.charConciergeState.mood = 'happy';
-    }, 3500);
+    window.charConciergeState.setMood('recommending', 3500);
   }
 
   // Automatically dismiss after durationMs (default 7 seconds)
@@ -7457,7 +7679,7 @@ window.hideConciergeSpeech = function() {
   if (!bubble) return;
   bubble.classList.remove('active');
 
-  // Schedule next helpful tip after 8 seconds of rest if chat box is closed
+  // Schedule next helpful tip after 8 seconds of rest ONLY if chat box is closed/minimized
   clearTimeout(conciergeCycleTimer);
   conciergeCycleTimer = setTimeout(() => {
     const chatBox = document.getElementById('chat-box');
@@ -7469,25 +7691,30 @@ window.hideConciergeSpeech = function() {
 
 // Periodic Concierge Insights rotation (adapts to current language & region)
 function triggerNextConciergePrompt() {
+  const chatBox = document.getElementById('chat-box');
+  if (document.body.classList.contains('chat-is-open') || (chatBox && chatBox.classList.contains('open'))) {
+    return; // Completely suppress popups while chatting
+  }
+
   const lang = localStorage.getItem('anshita_chat_lang') || 'hindi';
   const tipsByLang = {
     'bundelkhandi': [
-      { text: '✨ राम-राम! किए का सिंगार या ब्याह पैकेज के बारे में पूछने चाहत हो?', sub: 'AI Wedding Concierge' },
+      { text: '🙏 राम-राम जी! Anshita Makeover में आपका स्वागत है! ✨ ब्याह सिंगार खातिर कछु पूछने चाहत हो?', sub: 'AI Wedding Concierge' },
       { text: '👑 <strong>रॉयल ब्राइडल पैकेज:</strong> फेरों से विदाई तक 18 घंटा आंसू-प्रूफ रूप!', sub: 'बुंदेलखंड विशेष' },
       { text: '💄 <strong>विशेष छूट:</strong> ब्राइडल पैकेज के संगे 2 साइड मेकअप मुफ्त!', sub: 'सीमित अवधि ऑफर' }
     ],
     'baghelkhandi': [
-      { text: '✨ प्रणाम! कइसन मदद चाहि? ब्याह के सिंगार पैकेज जानै खातिर पूछें!', sub: 'AI Wedding Concierge' },
+      { text: '🙏 राम-राम जी! कइसन मदद चाहि? ब्याह के सिंगार पैकेज जानै खातिर पूछें!', sub: 'AI Wedding Concierge' },
       { text: '👑 <strong>शाही दुल्हन शृंगार:</strong> 18 घंटा वाटरप्रूफ और एचडी बेस!', sub: 'बघेलखंड विशेष' },
       { text: '💄 <strong>विशेष ऑफर:</strong> दुल्हन शृंगार के साथ 2 सहेली/दीदी मेकअप मुफ्त!', sub: 'सीमित ऑफर' }
     ],
     'bhojpuri': [
-      { text: '✨ प्रणाम! हम रउआ का कइसे मदद करीं? बियाह के पैकेज जानीं!', sub: 'AI Wedding Concierge' },
+      { text: '🙏 राम-राम जी! Anshita Makeover में रउआ का स्वागत बा! बियाह के पैकेज जानीं!', sub: 'AI Wedding Concierge' },
       { text: '👑 <strong>शाही दुल्हनिया शृंगार:</strong> बिदाई तक चमके वाला वाटरप्रूफ बेस!', sub: 'भोजपुरी विशेष' },
       { text: '💄 <strong>धमाका ऑफर:</strong> दुल्हन के बुकिंग पर 2 साइड मेकअप बिल्कुल मुफ़्त!', sub: 'खास ऑफर' }
     ],
     'marathi': [
-      { text: '✨ नमस्कार! मी आपली काय मदत करू शकते? लग्न मेकअप विचारू शकता!', sub: 'AI Wedding Concierge' },
+      { text: '✨ राम-राम / नमस्कार! मी आपली काय मदत करू शकते? लग्न मेकअप विचारू शकता!', sub: 'AI Wedding Concierge' },
       { text: '👑 <strong>शाही नवरी शृंगार:</strong> १८ तास टिकणारा एचडी आणि एअरब्रश!', sub: 'महाराष्ट्र विशेष' },
       { text: '💄 <strong>खास सवलत:</strong> नववधू पॅकेजसोबत २ साइड मेकअप मोफत!', sub: 'मर्यादित ऑफर' }
     ],
@@ -7498,7 +7725,7 @@ function triggerNextConciergePrompt() {
       { text: '🚗 <strong>Pan-India Destination:</strong> Anshita travels nationwide for your big day.', sub: 'Outstation Service' }
     ],
     'hindi': [
-      { text: '✨ नमस्ते! क्या मैं आपके विवाह शृंगार में सहायता कर सकती हूँ?', sub: 'AI Wedding Concierge' },
+      { text: '🙏 राम राम जी! Anshita Makeover में आपका स्वागत है! ✨ विवाह शृंगार के बारे में पूछें!', sub: 'AI Wedding Concierge' },
       { text: '👑 <strong>18 घंटे वाटरप्रूफ बेस:</strong> फेरों से लेकर विदाई तक ताजगी बनी रहे।', sub: 'सिग्नेचर एचडी' },
       { text: '💄 <strong>विशेष छूट:</strong> ब्राइडल पैकेज के साथ 2 साइड मेकअप बिल्कुल मुफ़्त!', sub: 'वीआईपी ऑफर' },
       { text: '🚗 <strong>डेस्टिनेशन वेडिंग:</strong> पूरे भारत में विवाह शृंगार सुविधा उपलब्ध है।', sub: 'आउटस्टेशन सर्विस' }
@@ -9846,17 +10073,28 @@ function toggleChat(shouldFocus = true) {
   if (!box) return;
   chatOpened = !box.classList.contains('open');
   if (chatOpened) {
+    document.body.classList.add('chat-is-open');
     box.classList.add('open');
     sessionStorage.setItem('anshita_chat_opened', 'true');
     const bubble = document.getElementById('chat-speech-bubble');
     if (bubble) bubble.classList.remove('active');
+    clearTimeout(conciergeDismissTimer);
+    clearTimeout(conciergeCycleTimer);
     const inp = document.getElementById('chat-inp');
     if (shouldFocus && inp && window.innerWidth > 768) {
       setTimeout(() => inp.focus(), 150);
     }
   } else {
+    document.body.classList.remove('chat-is-open');
     box.classList.remove('open');
     if (chatMaximized) toggleChatMaximize();
+    // Schedule helpful speech tip after closing chat
+    clearTimeout(conciergeCycleTimer);
+    conciergeCycleTimer = setTimeout(() => {
+      if (!document.body.classList.contains('chat-is-open')) {
+        triggerNextConciergePrompt();
+      }
+    }, 4500);
   }
 }
 
@@ -10054,12 +10292,12 @@ window.selectChatLanguage = function(langCode, langName) {
 
   // Update Speech Bubble greeting text
   const speechGreetings = {
-    'bundelkhandi': 'राम-राम! का मदद कर सकत हैं आपकी?',
-    'baghelkhandi': 'प्रणाम! कइसन मदद चाहि?',
-    'bhojpuri': 'प्रणाम! हम रउआ का कइसे मदद करीं?',
-    'marathi': 'नमस्कार! मी आपली काय मदत करू शकते?',
-    'hindi': 'नमस्ते! मैं आपकी कैसे सहायता कर सकती हूँ?',
-    'english': '✨ Namaste! May I help you?'
+    'bundelkhandi': '🙏 राम-राम जी! Anshita Makeover में आपका स्वागत है! ब्याह सिंगार खातिर कछु पूछने चाहत हो?',
+    'baghelkhandi': '🙏 राम-राम जी! Anshita Makeover मा आपका स्वागत बा! कइसन मदद चाहि?',
+    'bhojpuri': '🙏 राम-राम जी! Anshita Makeover में रउआ का स्वागत बा! बियाह के पैकेज जानीं!',
+    'marathi': '🙏 राम-राम / नमस्कार! Anshita Makeover मध्ये स्वागत आहे! लग्न मेकअप विचारू शकता!',
+    'hindi': '🙏 राम राम जी! Anshita Makeover में आपका स्वागत है! विवाह शृंगार के बारे में पूछें!',
+    'english': '✨ Namaste! Welcome to Anshita Makeover! May I help you find your dream bridal look?'
   };
   if (typeof window.setConciergeSpeech === 'function' && speechGreetings[langCode]) {
     window.setConciergeSpeech(speechGreetings[langCode], 'Anshita AI Concierge', 7000);
@@ -10067,12 +10305,12 @@ window.selectChatLanguage = function(langCode, langName) {
 
   // Add system feedback in chat
   const greetings = {
-    'bundelkhandi': 'राम-राम! अब हम आपसे **बुंदेलखंडी** में बात करेंगे। किए का सिंगार या ब्याह पैकेज के बारे में पूछने चाहत हो? ✦',
-    'baghelkhandi': 'प्रणाम! अब हम आपसे **बघेलखंडी** मा बात करब। कौन सिंगार या लगन पैकेज के बारे मा जाने के बा? ✦',
-    'bhojpuri': 'प्रणाम! अब हम आपसे **भोजपुरी** में बातचीत करब। बताईं, ब्राइडल सूट्स भा बियाह के कवना सिंगार के बारे में जाने के बा? ✦',
-    'hindi': 'नमस्ते! अब हम आपसे **हिंदी** में बात करेंगे। आप हमारे ब्राइडल सूट्स, एयरब्रश मेकअप या पैकेज के बारे में क्या जानना चाहते हैं? ✦',
-    'english': 'Wonderful! I will now assist you in **English**. How may I guide you through our bridal suites, vanity kits, or destination booking today? ✦',
-    'marathi': 'नमस्कार! आता आम्ही आपल्याशी **मराठीत** संवाद साधू. आपल्या लग्न सोहळ्याच्या ब्राइडल मेकअप व पॅकेजबद्दल काय माहिती हवी आहे? ✦'
+    'bundelkhandi': '🙏 राम-राम जी! Anshita Makeover में आपका स्वागत है! अब हम आपसे **बुंदेलखंडी** में बात करेंगे। किए का सिंगार या ब्याह पैकेज के बारे में पूछने चाहत हो? ✦',
+    'baghelkhandi': '🙏 राम-राम जी! Anshita Makeover मा आपका स्वागत बा! अब हम आपसे **बघेलखंडी** मा बात करब। कौन सिंगार या लगन पैकेज के बारे मा जाने के बा? ✦',
+    'bhojpuri': '🙏 राम-राम जी! Anshita Makeover में रउआ का स्वागत बा! अब हम आपसे **भोजपुरी** में बातचीत करब। बताईं, ब्राइडल सूट्स भा बियाह के कवना सिंगार के बारे में जाने के बा? ✦',
+    'hindi': '🙏 राम राम जी! Anshita Makeover में आपका स्वागत है! अब हम आपसे **हिंदी** में बात करेंगे। आप हमारे ब्राइडल सूट्स, एयरब्रश मेकअप या पैकेज के बारे में क्या जानना चाहते हैं? ✦',
+    'english': 'Wonderful! Welcome to Anshita Makeover! I will now assist you in **English**. How may I guide you through our bridal suites, vanity kits, or destination booking today? ✦',
+    'marathi': '🙏 राम-राम / नमस्कार! Anshita Makeover मध्ये स्वागत आहे! आता आम्ही आपल्याशी **मराठीत** संवाद साधू. आपल्या लग्न सोहळ्याच्या ब्राइडल मेकअप व पॅकेजबद्दल काय माहिती हवी आहे? ✦'
   };
 
   const replyMsg = greetings[langCode] || `Language set to ${langName}. How may I help you?`;
@@ -10197,9 +10435,30 @@ async function sendChat(){
   inp.value='';
   appendMsg(msg,'user');
   const typing=appendTyping();
+
+  const lowerMsg = msg.toLowerCase();
+  
+  // 1. Negative / Rejection / Disinterest -> SAD / POUTING (Turbosquid / Sketchfab cute expression)
+  const isNegative = /(nahi|nahin|na\b|no\b|cancel|chodo|chhod|not interested|expensive|costly|mehnga|mehanga|mat karo|rehne do|nahi chahiye|baad me|later|nah|nope|छोड़ो|नहीं|ना|महंगा|रहने दो)/i.test(lowerMsg);
+  
+  // 2. Deal Done / Booking confirmation -> CELEBRATING / HAPPY
+  const isDealDone = /(done|book|pakka|ha\b|haa\b|haan\b|yes\b|yep|deal|confirm|advance|reserve|final|payment|ready|बुक|हाँ|पक्का|डन|फाइनल)/i.test(lowerMsg);
+  
+  // 3. Discount / Coupon inquiry -> THINKING & GENERATING DISCOUNT
+  const isAskingDiscount = /(discount|coupon|offer|sasta|kam karo|kam hoga|off\b|privilege|deal|concession|छूट|डिस्काउंट|ऑफर|कूपन)/i.test(lowerMsg);
+
   if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
-    window.charConciergeState.setMood('thinking');
+    if (isNegative) {
+      window.charConciergeState.setMood('sad', 10000);
+    } else if (isDealDone) {
+      window.charConciergeState.setMood('celebrating', 12000);
+    } else if (isAskingDiscount) {
+      window.charConciergeState.setMood('thinking_coupon', 8000);
+    } else {
+      window.charConciergeState.setMood('thinking', 4000);
+    }
   }
+
   try{
     const r=await fetch('/api/chatbot/',{
       method:'POST',
@@ -10215,15 +10474,27 @@ async function sendChat(){
     appendMsg(d.reply,'bot');
     chatSessionId=d.session_id||chatSessionId;
     
-    // Trigger Anshita 3D Character Talking Lip-Sync (cadence proportional to reply length)
+    // Trigger Anshita 3D Character Talking Lip-Sync
     if (typeof window.startCharTalking === 'function') {
       const speechDuration = Math.min(6500, Math.max(2200, (d.reply ? d.reply.length : 40) * 45));
       window.startCharTalking(speechDuration);
     }
 
     if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
-      const isBookingOrOffer = d.reply && (d.reply.includes('₹') || d.reply.includes('Suite') || d.reply.includes('Package') || d.reply.includes('Book') || d.reply.includes('WhatsApp'));
-      window.charConciergeState.setMood(isBookingOrOffer ? 'recommending' : 'excited', 5000);
+      const rep = d.reply || '';
+      const isCouponOrDeal = rep.includes('GLAMOUR30') || rep.includes('SECRET10') || rep.includes('ANSHITA10') || rep.includes('GLAM50') || /(\d+%\s*OFF|डिस्काउंट|कूपन|सहेली|मुफ्त|FREE|विशेष उपहार)/i.test(rep);
+      const isBookingConfirmed = /(\bbooked\b|\breserved\b|\bcongratulations\b|बधाई|मुबारक|बुक हो गया|धन्यवाद)/i.test(rep);
+
+      if (isBookingConfirmed || isDealDone) {
+        window.charConciergeState.setMood('celebrating', 12000);
+      } else if (isCouponOrDeal) {
+        window.charConciergeState.setMood('offering_deal', 10000);
+      } else if (isNegative) {
+        window.charConciergeState.setMood('sad', 9000);
+      } else {
+        const isBookingOrOffer = rep.includes('₹') || rep.includes('Suite') || rep.includes('Package') || rep.includes('Book') || rep.includes('WhatsApp');
+        window.charConciergeState.setMood(isBookingOrOffer ? 'recommending' : 'happy', 5000);
+      }
     }
   }catch(e){
     typing.remove();
@@ -10232,7 +10503,7 @@ async function sendChat(){
       window.startCharTalking(2000);
     }
     if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
-      window.charConciergeState.setMood('happy');
+      window.charConciergeState.setMood('sad', 6000);
     }
   }
 }
