@@ -1,488 +1,641 @@
 {% extends "core/base.html" %}
 {% load static %}
 
-{% block title %}Atelier Chronicles — 3D Interactive Makeup Gameplay | Anshita Makeover{% endblock %}
+{% block title %}Atelier Chronicles — Duolingo-Style 3D Bridal Masterclass | Anshita Makeover{% endblock %}
 
 {% block extra_css %}
 <style>
-/* ═══ ATELIER CHRONICLES: 3D GAMEPLAY VIEWPORT & LUXURY HUD ═══ */
+/* ═══ DUOLINGO-STYLE BRIDAL MASTERCLASS & 3D MASCOT ARENA ═══ */
 :root {
-  --game-gold: #d4af37;
-  --game-gold-l: #f5edd6;
-  --game-maroon: #260c1d;
-  --game-bg: #070207;
+  --duo-gold: #d4af37;
+  --duo-gold-light: #fbf5e6;
+  --duo-maroon: #22091c;
+  --duo-bg: #0a040b;
+  --duo-green: #10b981;
+  --duo-green-bg: #064e3b;
+  --duo-red: #ef4444;
+  --duo-red-bg: #7f1d1d;
+  --duo-border: rgba(212, 175, 55, 0.25);
 }
 
 body.gameplay-active {
-  overflow: hidden !important;
-  background: var(--game-bg) !important;
+  overflow-x: hidden !important;
+  background: var(--duo-bg) !important;
 }
 
-/* Hide standard website header / navigation / banner on gameplay mode */
 body.gameplay-active header,
 body.gameplay-active #cbanner,
 body.gameplay-active .am-hero__letters,
 body.gameplay-active #chat-speech-bubble,
-body.gameplay-active #preloader {
+body.gameplay-active #preloader,
+body.gameplay-active footer {
   display: none !important;
 }
 
-.gameplay-wrapper {
-  position: fixed !important;
-  inset: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  overflow: hidden !important;
-  background: radial-gradient(circle at 50% 35%, #220b1b 0%, #0c040b 60%, #050105 100%) !important;
+.duo-game-container {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at 50% 20%, #1e0919 0%, #0d040c 55%, #050105 100%);
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
   user-select: none;
   z-index: 999;
+  overflow: hidden;
 }
 
-/* 3D WebGL Canvas Layer */
-#gameplay-canvas-container {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  z-index: 1 !important;
-  cursor: crosshair;
-}
-#gameplay-canvas-container canvas {
-  width: 100% !important;
-  height: 100% !important;
-  display: block !important;
-}
-
-/* Top Navigation & Status Bar */
-.game-top-bar {
-  position: absolute !important;
-  top: 18px !important;
-  left: 0;
-  right: 0;
-  padding: 12px 3vw;
+/* ═══ TOP GAMIFICATION HUD ═══ */
+.duo-top-hud {
+  height: 72px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  z-index: 100;
-  pointer-events: none;
-}
-.game-top-bar > * {
-  pointer-events: auto;
-}
-
-.game-back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(20, 8, 16, 0.85);
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  padding: 8px 18px;
-  border-radius: 999px;
-  color: var(--game-gold-l);
-  font-family: 'Space Mono', monospace;
-  font-size: 0.76rem;
-  text-decoration: none;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: all 0.3s ease;
-}
-.game-back-link:hover {
-  background: var(--game-gold);
-  color: #000;
-  box-shadow: 0 0 18px rgba(212, 175, 55, 0.4);
-}
-
-.game-title-badge {
-  text-align: center;
-  background: rgba(14, 5, 12, 0.85);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  padding: 8px 24px;
-  border-radius: 999px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-.game-title-badge h1 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.25rem;
-  font-weight: 500;
-  letter-spacing: 2px;
-  color: var(--game-gold-l);
-  margin: 0;
-  text-transform: uppercase;
-}
-.game-title-badge span {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
-  color: var(--game-gold);
-  letter-spacing: 1px;
-}
-
-.game-stats-pill {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: rgba(20, 8, 16, 0.85);
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  padding: 8px 18px;
-  border-radius: 999px;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.78rem;
-  color: var(--game-gold-l);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-.game-streak {
-  color: #f97316;
-  font-weight: 700;
-}
-.game-xp {
-  color: #eab308;
-  font-weight: 700;
-}
-.game-sound-btn {
-  background: none;
-  border: none;
-  color: var(--game-gold-l);
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-/* Chapter Progression Navigation */
-.game-chapters-nav {
-  position: absolute;
-  top: 86px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-  z-index: 100;
-  background: rgba(10, 4, 10, 0.85);
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  padding: 6px 12px;
-  border-radius: 999px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-.chapter-nav-btn {
-  background: transparent;
-  border: 1px solid transparent;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.72rem;
-  color: rgba(245, 237, 214, 0.65);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-}
-.chapter-nav-btn:hover {
-  color: #fff;
-  border-color: rgba(212, 175, 55, 0.3);
-}
-.chapter-nav-btn.active {
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(139, 94, 26, 0.4));
-  border-color: var(--game-gold);
-  color: #fff;
-  font-weight: 600;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
-}
-.chapter-nav-btn.completed::after {
-  content: ' ✓';
-  color: #4ade80;
-}
-
-/* Floating Narrative Story Card */
-.game-story-card {
-  position: absolute;
-  top: 130px;
-  right: 3vw;
-  width: min(340px, 90vw);
-  background: linear-gradient(160deg, rgba(32, 14, 26, 0.94) 0%, rgba(12, 5, 12, 0.98) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 20px;
-  padding: 20px 18px;
-  z-index: 100;
+  padding: 0 4vw;
+  border-bottom: 1px solid var(--duo-border);
+  background: rgba(14, 5, 13, 0.85);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(212, 175, 55, 0.15);
-  transition: transform 0.3s ease;
-}
-.story-chapter-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
-  letter-spacing: 2px;
-  color: var(--game-gold);
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.story-title {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.35rem;
-  font-weight: 600;
-  color: #fff;
-  margin: 0 0 8px;
-  line-height: 1.25;
-}
-.story-desc {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.8rem;
-  line-height: 1.5;
-  color: rgba(245, 237, 214, 0.85);
-  margin-bottom: 14px;
-}
-.story-objective-box {
-  background: rgba(212, 175, 55, 0.08);
-  border-left: 3px solid var(--game-gold);
-  padding: 9px 12px;
-  border-radius: 4px;
-  margin-bottom: 14px;
-}
-.story-objective-box span {
-  display: block;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.6rem;
-  color: var(--game-gold);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-.story-objective-box p {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.76rem;
-  color: #fff;
-  margin: 0;
+  z-index: 50;
+  gap: 16px;
 }
 
-/* Progress & Stars */
-.game-progress-row {
-  display: flex;
+.duo-back-btn {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: 8px;
+  color: rgba(245, 237, 214, 0.75);
+  text-decoration: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.25s ease;
 }
-.progress-bar-wrap {
+.duo-back-btn:hover {
+  color: #fff;
+  border-color: var(--duo-gold);
+  background: rgba(212, 175, 55, 0.15);
+  transform: translateX(-2px);
+}
+
+.duo-progress-col {
   flex: 1;
-  height: 8px;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.duo-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: rgba(245, 237, 214, 0.7);
+  font-family: 'Space Mono', monospace;
+}
+.duo-progress-bar-wrap {
+  width: 100%;
+  height: 12px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 999px;
   overflow: hidden;
   border: 1px solid rgba(212, 175, 55, 0.2);
+  position: relative;
 }
-.progress-bar-fill {
+.duo-progress-fill {
   height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #d4af37, #f59e0b);
+  width: 25%;
+  background: linear-gradient(90deg, #d4af37, #f59e0b, #10b981);
   border-radius: 999px;
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.progress-score {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.74rem;
-  font-weight: 700;
-  color: var(--game-gold-l);
-  min-width: 40px;
-  text-align: right;
-}
-.game-stars {
-  color: #d4af37;
-  font-size: 0.9rem;
-  letter-spacing: 2px;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
 }
 
-.story-action-btn {
-  width: 100%;
-  background: linear-gradient(135deg, #d4af37 0%, #aa8022 100%);
-  border: none;
-  padding: 10px;
-  border-radius: 999px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #050205;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  letter-spacing: 0.5px;
-}
-.story-action-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
-  background: #fff;
-}
-
-/* Interactive Tool Belt (Bottom Dock) */
-.game-tool-dock {
-  position: absolute;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
+.duo-stats-row {
   display: flex;
   align-items: center;
-  gap: 14px;
-  background: rgba(18, 7, 16, 0.94);
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  border-radius: 24px;
-  padding: 10px 20px;
-  z-index: 100;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 30px rgba(212, 175, 55, 0.2);
-  max-width: 94vw;
-  flex-wrap: wrap;
-  justify-content: center;
+  gap: 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+}
+.duo-hearts-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #ef4444;
+  font-size: 1rem;
+}
+.duo-streak-pill {
+  color: #f97316;
+  font-weight: 700;
+}
+.duo-xp-pill {
+  color: #eab308;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.duo-sound-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: rgba(245, 237, 214, 0.8);
+  transition: transform 0.2s;
+}
+.duo-sound-btn:hover {
+  transform: scale(1.15);
 }
 
-.tool-item {
+/* ═══ MAIN ARENA: DUAL COLUMN ═══ */
+.duo-arena {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  height: calc(100vh - 72px - 90px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── LEFT: 3D MASCOT ASHA (HOST) ── */
+.duo-host-panel {
+  position: relative;
+  border-right: 1px solid var(--duo-border);
+  background: linear-gradient(180deg, rgba(25, 9, 22, 0.5) 0%, rgba(10, 4, 10, 0.8) 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(212, 175, 55, 0.18);
-  padding: 7px 12px;
-  border-radius: 14px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  color: var(--game-gold-l);
-}
-.tool-item:hover {
-  background: rgba(212, 175, 55, 0.15);
-  border-color: rgba(212, 175, 55, 0.5);
-  transform: translateY(-3px);
-}
-.tool-item.active {
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(139, 94, 26, 0.45));
-  border-color: var(--game-gold);
-  box-shadow: 0 0 16px rgba(212, 175, 55, 0.35);
-  transform: translateY(-3px);
-}
-.tool-icon {
-  font-size: 1.3rem;
-}
-.tool-label {
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
+  justify-content: flex-end;
+  padding-bottom: 24px;
+  overflow: hidden;
 }
 
-/* Pigment Color Swatches */
-.pigment-dock {
+#duoMascotCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1;
+  cursor: pointer;
+}
+
+/* Speech Bubble above 3D Mascot */
+.duo-speech-bubble {
+  position: relative;
+  z-index: 10;
+  width: 86%;
+  background: rgba(22, 9, 20, 0.95);
+  border: 1.5px solid var(--duo-gold);
+  border-radius: 20px;
+  padding: 16px 18px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.2);
+  margin-bottom: auto;
+  margin-top: 24px;
+  animation: floatBounce 4s ease-in-out infinite;
+}
+.duo-speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 10px 0;
+  border-style: solid;
+  border-color: var(--duo-gold) transparent transparent;
+  display: block;
+  width: 0;
+}
+.duo-speech-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding-left: 10px;
-  border-left: 1px solid rgba(212, 175, 55, 0.2);
+  justify-content: space-between;
+  margin-bottom: 6px;
 }
-.pigment-dot {
+.duo-speech-title {
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  color: var(--duo-gold);
+  text-transform: uppercase;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+}
+.duo-speech-mood {
+  font-size: 0.75rem;
+}
+.duo-speech-hi {
+  font-size: 0.96rem;
+  line-height: 1.45;
+  color: #fff;
+  font-weight: 500;
+}
+.duo-speech-en {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: rgba(245, 237, 214, 0.7);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+@keyframes floatBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ── RIGHT: MASTERCLASS CHALLENGE STAGE ── */
+.duo-challenge-stage {
+  padding: 32px 4vw;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.duo-chapter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid var(--duo-gold);
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 1.5px;
+  color: var(--duo-gold-light);
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.duo-challenge-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2.1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.duo-challenge-scenario {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(245, 237, 214, 0.85);
+  max-width: 760px;
+}
+
+/* Real Bridal Client Card */
+.duo-client-card {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  background: rgba(18, 7, 16, 0.75);
+  border: 1px solid var(--duo-border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+.duo-client-photo-wrap {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+  background: #000;
+}
+.duo-client-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.duo-client-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(10, 4, 10, 0.85);
+  border: 1px solid var(--duo-gold);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-family: 'Space Mono', monospace;
+  color: var(--duo-gold-light);
+}
+
+.duo-client-info {
+  padding: 22px 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.duo-client-name {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.6rem;
+  color: #fff;
+  margin: 0 0 6px;
+}
+.duo-client-meta {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--duo-gold);
+  margin-bottom: 12px;
+}
+.duo-client-desc {
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: rgba(245, 237, 214, 0.8);
+  margin-bottom: 14px;
+}
+
+/* Interactive Interactive Stage (Step 1: Quiz Options) */
+.duo-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 8px;
+}
+.duo-option-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(212, 175, 55, 0.2);
+  border-radius: 16px;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.duo-option-card:hover {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.5);
+  transform: translateY(-2px);
+}
+.duo-option-card.selected {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(139, 94, 26, 0.35));
+  border-color: var(--duo-gold);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  transform: translateY(-3px);
+}
+.duo-option-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid var(--duo-gold);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--duo-gold-light);
+  flex-shrink: 0;
+}
+.duo-option-text strong {
+  display: block;
+  font-size: 0.92rem;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.duo-option-text span {
+  font-size: 0.78rem;
+  color: rgba(245, 237, 214, 0.7);
+  line-height: 1.4;
+  display: block;
+}
+
+/* Interactive Practical Canvas Layer (Step 2: Chandan Art / Tool Application) */
+.duo-practical-zone {
+  display: none;
+  background: rgba(14, 5, 12, 0.9);
+  border: 1.5px solid var(--duo-gold);
+  border-radius: 20px;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+.duo-practical-zone.active {
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.duo-practical-canvas-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  height: 380px;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+.duo-practical-canvas-wrap img.bg-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+#chandanInteractiveCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  cursor: crosshair;
+}
+
+.chandan-guide-dot {
+  position: absolute;
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px dashed #f59e0b;
+  transform: translate(-50%, -50%);
+  z-index: 5;
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  background: rgba(245, 158, 11, 0.2);
+  transition: all 0.2s ease;
+  animation: guidePulse 1.8s infinite;
 }
-.pigment-dot:hover {
-  transform: scale(1.2);
+@keyframes guidePulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; border-color: #fff; }
 }
-.pigment-dot.active {
-  transform: scale(1.25);
-  border-color: #fff;
-  box-shadow: 0 0 10px currentColor;
+.chandan-guide-dot.painted {
+  background: #ffffff !important;
+  border: 2px solid #dc2626 !important;
+  animation: none;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
 }
 
-/* Tool Actions */
-.tool-actions {
+/* ═══ BOTTOM DUOLINGO ACTION TRAY & FEEDBACK DRAWER ═══ */
+.duo-bottom-tray {
+  height: 90px;
+  border-top: 1px solid var(--duo-border);
+  background: rgba(14, 5, 13, 0.95);
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding-left: 10px;
-  border-left: 1px solid rgba(212, 175, 55, 0.2);
-}
-.game-clear-btn {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #fca5a5;
-  padding: 5px 12px;
-  border-radius: 999px;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.game-clear-btn:hover {
-  background: #ef4444;
-  color: #fff;
+  justify-content: space-between;
+  padding: 0 4vw;
+  z-index: 60;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
-/* Victory / Certificate Modal */
-.victory-modal-overlay {
-  position: fixed !important;
-  inset: 0 !important;
-  background: rgba(5, 1, 5, 0.88) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  z-index: 10000 !important;
-  display: none !important;
+.duo-tray-hint {
+  font-size: 0.85rem;
+  color: rgba(245, 237, 214, 0.65);
+}
+
+.duo-main-btn {
+  background: linear-gradient(135deg, #d4af37 0%, #b88b22 100%);
+  border: none;
+  color: #070207;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 14px 44px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.duo-main-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(212, 175, 55, 0.5);
+  background: #fff;
+}
+.duo-main-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Instant Feedback Drawer (Duolingo Slide-Up) */
+.duo-feedback-drawer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 140px;
+  padding: 24px 4vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+}
+.duo-feedback-drawer.show {
+  transform: translateY(0);
+}
+.duo-feedback-drawer.correct {
+  background: linear-gradient(135deg, #064e3b 0%, #042f24 100%);
+  border-top: 3px solid #10b981;
+}
+.duo-feedback-drawer.incorrect {
+  background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);
+  border-top: 3px solid #ef4444;
+}
+
+.duo-feedback-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.duo-feedback-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+.duo-feedback-drawer.correct .duo-feedback-icon {
+  color: #10b981;
+}
+.duo-feedback-drawer.incorrect .duo-feedback-icon {
+  color: #ef4444;
+}
+.duo-feedback-msg strong {
+  display: block;
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+}
+.duo-feedback-msg p {
+  margin: 0;
+  font-size: 0.88rem;
+  opacity: 0.9;
+  line-height: 1.4;
+  max-width: 600px;
+}
+
+/* ═══ VICTORY & SCHOLARSHIP CERTIFICATE MODAL ═══ */
+.duo-victory-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 1, 5, 0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  z-index: 1000;
+  display: none;
   align-items: center;
   justify-content: center;
   padding: 20px;
 }
-.victory-modal-overlay.active {
-  display: flex !important;
+.duo-victory-overlay.active {
+  display: flex;
 }
-.victory-card {
-  width: min(560px, 94vw);
-  background: linear-gradient(155deg, #1f0b1a 0%, #0d040c 100%);
-  border: 2px solid var(--game-gold);
-  border-radius: 28px;
-  padding: 34px 28px;
+.duo-victory-card {
+  width: min(580px, 94vw);
+  background: linear-gradient(160deg, #220b1e 0%, #0c040c 100%);
+  border: 2px solid var(--duo-gold);
+  border-radius: 30px;
+  padding: 38px 32px;
   text-align: center;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(212, 175, 55, 0.35);
-  position: relative;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 50px rgba(212, 175, 55, 0.35);
   animation: zoomPop 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes zoomPop {
   0% { transform: scale(0.85); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
-.victory-card h2 {
+.duo-victory-card h2 {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 2rem;
+  font-size: 2.2rem;
   color: #fff;
-  margin: 10px 0 6px;
+  margin: 12px 0 6px;
 }
-.victory-stars-big {
-  color: #d4af37;
-  font-size: 1.8rem;
-  letter-spacing: 5px;
-  margin-bottom: 12px;
-}
-.certificate-preview-box {
+.duo-cert-box {
   background: rgba(212, 175, 55, 0.08);
   border: 1px dashed rgba(212, 175, 55, 0.5);
   border-radius: 16px;
-  padding: 16px;
-  margin: 18px 0;
-  font-family: 'Outfit', sans-serif;
-  color: var(--game-gold-l);
+  padding: 18px;
+  margin: 20px 0;
 }
-.cert-code {
+.duo-cert-code {
   font-family: 'Space Mono', monospace;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: #fff;
-  background: rgba(212, 175, 55, 0.2);
-  padding: 6px 14px;
+  background: rgba(212, 175, 55, 0.25);
+  padding: 8px 18px;
   border-radius: 8px;
   display: inline-block;
-  margin: 8px 0;
+  margin: 10px 0 6px;
   letter-spacing: 2px;
 }
-.whatsapp-claim-btn {
+.duo-wa-claim-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -492,178 +645,198 @@ body.gameplay-active #preloader {
   text-decoration: none;
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 0.92rem;
-  padding: 13px 26px;
+  font-size: 0.96rem;
+  padding: 14px 28px;
   border-radius: 999px;
   box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
   transition: all 0.3s ease;
   width: 100%;
 }
-.whatsapp-claim-btn:hover {
+.duo-wa-claim-btn:hover {
   background: #1eb857;
   transform: translateY(-2px);
   box-shadow: 0 12px 30px rgba(37, 211, 102, 0.5);
 }
 
-@media (max-width: 768px) {
-  .game-story-card {
-    top: auto;
-    bottom: 110px;
-    right: 50%;
-    transform: translateX(50%);
-    width: 92vw;
-    padding: 14px;
+@media (max-width: 900px) {
+  .duo-arena {
+    grid-template-columns: 1fr;
+    grid-template-rows: 220px 1fr;
+    height: calc(100vh - 72px - 90px);
   }
-  .game-chapters-nav {
-    top: 68px;
-    width: 94vw;
-    overflow-x: auto;
+  .duo-host-panel {
+    border-right: none;
+    border-bottom: 1px solid var(--duo-border);
+    padding-bottom: 8px;
   }
-  .game-tool-dock {
-    bottom: 12px;
-    gap: 8px;
-    padding: 8px 12px;
+  .duo-speech-bubble {
+    width: 92%;
+    margin-top: 10px;
+    padding: 10px 14px;
   }
-  .tool-item {
-    padding: 5px 9px;
-  }
+  .duo-speech-hi { font-size: 0.85rem; }
+  .duo-speech-en { font-size: 0.7rem; }
+  .duo-challenge-stage { padding: 18px 4vw; }
+  .duo-client-card { grid-template-columns: 1fr; }
+  .duo-client-photo-wrap { height: 180px; }
+  .duo-challenge-title { font-size: 1.6rem; }
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Three.js + OrbitControls + Confetti -->
+<!-- Three.js + Confetti CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-<div class="gameplay-wrapper" id="gameplayWrapper">
-  <!-- 3D Canvas Mount Point -->
-  <div id="gameplay-canvas-container"></div>
-
-  <!-- Top Status Bar -->
-  <div class="game-top-bar">
-    <a href="{% url 'home' %}" class="game-back-link">
+<div class="duo-game-container" id="duoGame">
+  
+  <!-- ═══ TOP GAMIFICATION HUD ═══ -->
+  <div class="duo-top-hud">
+    <a href="{% url 'home' %}" class="duo-back-btn">
       <span>←</span>
       <span>ATELIER HOME</span>
     </a>
 
-    <div class="game-title-badge">
-      <h1>Atelier Chronicles</h1>
-      <span>THE ART OF BRIDAL GRACE</span>
-    </div>
-
-    <div class="game-stats-pill">
-      <span class="game-streak" id="streakDisplay">🔥 1 DAY</span>
-      <span>•</span>
-      <span class="game-xp" id="xpDisplay">✨ 100 XP</span>
-      <button type="button" class="game-sound-btn" id="soundToggleBtn" title="Toggle Sound">🔊</button>
-    </div>
-  </div>
-
-  <!-- Chapter Tabs -->
-  <div class="game-chapters-nav" id="chaptersNav">
-    <button type="button" class="chapter-nav-btn active" data-chapter="1" onclick="switchChapter(1)">01 Morning Prep</button>
-    <button type="button" class="chapter-nav-btn" data-chapter="2" onclick="switchChapter(2)">02 Chandan Art</button>
-    <button type="button" class="chapter-nav-btn" data-chapter="3" onclick="switchChapter(3)">03 Sangeet Glam</button>
-    <button type="button" class="chapter-nav-btn" data-chapter="4" onclick="switchChapter(4)">04 Cry-Proof Seal</button>
-  </div>
-
-  <!-- Story & Objective Card -->
-  <div class="game-story-card" id="storyCard">
-    <div class="story-chapter-eyebrow">
-      <span id="chapterNumDisplay">CHAPTER 01</span>
-      <span>•</span>
-      <span>EPISODIC MASTERCLASS</span>
-    </div>
-    <h3 class="story-title" id="chapterTitleDisplay">The Mandap Morning</h3>
-    <p class="story-desc" id="chapterDescDisplay">
-      The auspicious wedding morning has arrived in Jabalpur. Before royal cosmetics can touch the skin, ancient Ayurvedic metallurgy must hydrate and cool the complexion.
-    </p>
-
-    <div class="story-objective-box">
-      <span>CURRENT OBJECTIVE</span>
-      <p id="chapterObjectiveDisplay">Drag the Herbal Ubtan & Ice Roller over the cheeks and forehead to achieve 100% skin hydration.</p>
-    </div>
-
-    <div class="game-progress-row">
-      <div class="progress-bar-wrap">
-        <div class="progress-bar-fill" id="objectiveProgressBar"></div>
+    <div class="duo-progress-col">
+      <div class="duo-progress-labels">
+        <span id="duoChapterLabel">CHAPTER 01 OF 04</span>
+        <span id="duoProgressPercent">25%</span>
       </div>
-      <span class="progress-score" id="objectiveScoreText">0%</span>
-      <div class="game-stars" id="objectiveStars">★★★</div>
+      <div class="duo-progress-bar-wrap">
+        <div class="duo-progress-fill" id="duoProgressFill"></div>
+      </div>
     </div>
 
-    <button type="button" class="story-action-btn" id="chapterActionBtn" onclick="onChapterActionClick()">
-      NEXT STAGE →
+    <div class="duo-stats-row">
+      <div class="duo-hearts-pill" id="duoHeartsDisplay" title="Lives Remaining">
+        <span>❤️</span><span>❤️</span><span>❤️</span>
+      </div>
+      <div class="duo-streak-pill" id="duoStreakDisplay">🔥 1 DAY</div>
+      <div class="duo-xp-pill" id="duoXpDisplay">✨ 100 XP</div>
+      <button type="button" class="duo-sound-btn" id="duoSoundToggle" title="Toggle Sound">🔊</button>
+    </div>
+  </div>
+
+  <!-- ═══ MAIN ARENA ═══ -->
+  <div class="duo-arena">
+    
+    <!-- LEFT: 3D Cute Bridal Bunny Mascot "Asha" (Host) -->
+    <div class="duo-host-panel">
+      
+      <!-- Speech Bubble above Mascot -->
+      <div class="duo-speech-bubble" id="duoSpeechBubble">
+        <div class="duo-speech-header">
+          <span class="duo-speech-title">ASHA · BEAUTY COACH</span>
+          <span class="duo-speech-mood" id="duoMoodIcon">🐰✨</span>
+        </div>
+        <div class="duo-speech-hi" id="duoSpeechHi">नमस्ते! मैं आशा हूँ। चलिए आज का पहला ब्राइडल मास्टरक्लास सीक्रेट सीखते हैं!</div>
+        <div class="duo-speech-en" id="duoSpeechEn">"Namaste! I'm Asha. Let's master our first bridal secret together!"</div>
+      </div>
+
+      <!-- 3D WebGL Canvas for Animated Asha -->
+      <canvas id="duoMascotCanvas"></canvas>
+    </div>
+
+    <!-- RIGHT: Real Bride Storyline & Interactive Challenge -->
+    <div class="duo-challenge-stage" id="duoChallengeStage">
+      
+      <div class="duo-chapter-badge" id="duoBadgeText">🏆 CHAPTER 01 · AYURVEDIC SKIN ARCHITECTURE</div>
+      
+      <h1 class="duo-challenge-title" id="duoTitleText">The Mandap Morning: Lymphatic Cool-Down</h1>
+      
+      <p class="duo-challenge-scenario" id="duoScenarioText">
+        Bride Riya is getting ready in Jabalpur under scorching 40°C mandap heat. Before applying any high-definition formulation, the skin barrier must be cooled to prevent foundation melt.
+      </p>
+
+      <!-- Client Spotlight Card with Real Authentic Photo -->
+      <div class="duo-client-card" id="duoClientCard">
+        <div class="duo-client-photo-wrap">
+          <img src="{% static 'core/images/curated/anshita_artistry_brush_action.jpg' %}" alt="Bridal Skin Prep Artistry" id="duoClientImg">
+          <span class="duo-client-badge" id="duoClientLocation">JABALPUR STUDIO</span>
+        </div>
+        <div class="duo-client-info">
+          <h3 class="duo-client-name" id="duoClientName">Riya's Vivah Preparation</h3>
+          <div class="duo-client-meta" id="duoClientMeta">SKIN BARRIER PREP · 18-HOUR FOUNDATION LOCK</div>
+          <p class="duo-client-desc" id="duoClientDesc">
+            Targeting open pores, heat flushing, and barrier resilience before royal silk lehenga drape.
+          </p>
+          <div style="font-family:'Space Mono',monospace; font-size:0.75rem; color:var(--duo-gold);">
+            ✦ QUESTION: Which formulation must be applied first to lock moisture without flashback?
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 1: Duolingo Interactive Option Cards -->
+      <div class="duo-options-grid" id="duoOptionsGrid">
+        <!-- Generated Dynamically -->
+      </div>
+
+      <!-- Step 2: Interactive Practical Zone (Chandan Dots / Mist / Blender) -->
+      <div class="duo-practical-zone" id="duoPracticalZone">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div>
+            <strong style="color:var(--duo-gold); font-size:0.92rem; text-transform:uppercase; letter-spacing:1px; font-family:'Space Mono',monospace;" id="duoPracticalTitle">PRACTICAL ARTISTRY STEP</strong>
+            <p style="margin:2px 0 0; font-size:0.84rem; color:rgba(245,237,214,0.8);" id="duoPracticalHint">Tap all 7 sacred golden guide rings above Kuhu's brow arch in exact symmetry!</p>
+          </div>
+          <span style="font-family:'Space Mono',monospace; color:var(--duo-gold); font-size:0.85rem;" id="duoPracticalCounter">0 / 7 PLACED</span>
+        </div>
+
+        <div class="duo-practical-canvas-wrap" id="duoPracticalWrap">
+          <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Kuhu Khare Bengali Bride Artistry" class="bg-photo" id="duoPracticalBgImg">
+          <div id="chandanGuideContainer"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ BOTTOM DUOLINGO ACTION TRAY ═══ -->
+  <div class="duo-bottom-tray">
+    <div class="duo-tray-hint" id="duoTrayHint">Select the most effective technique to proceed</div>
+    <button type="button" class="duo-main-btn" id="duoCheckBtn" onclick="onCheckAnswer()" disabled>
+      CHECK ANSWER
     </button>
   </div>
 
-  <!-- Interactive Tool Belt Dock -->
-  <div class="game-tool-dock" id="toolDock">
-    
-    <!-- Tool 1: Ubtan Roller -->
-    <div class="tool-item active" data-tool="ubtan" onclick="selectTool('ubtan', this)" title="Herbal Ubtan Roller">
-      <span class="tool-icon">🌿</span>
-      <span class="tool-label">Ubtan Roller</span>
+  <!-- ═══ SLIDE-UP FEEDBACK DRAWER ═══ -->
+  <div class="duo-feedback-drawer" id="duoFeedbackDrawer">
+    <div class="duo-feedback-left">
+      <div class="duo-feedback-icon" id="duoFeedbackIcon">✓</div>
+      <div class="duo-feedback-msg">
+        <strong id="duoFeedbackTitle">शानदार! (Splendid!)</strong>
+        <p id="duoFeedbackExplanation">Ayurvedic Kansa wand with chilled rose infusion lowers surface heat, calming capillaries so 18-hour foundation glides seamlessly.</p>
+      </div>
     </div>
-
-    <!-- Tool 2: Chandan Pen -->
-    <div class="tool-item" data-tool="chandan" onclick="selectTool('chandan', this)" title="Banarasi Chandan Pen">
-      <span class="tool-icon">🖌️</span>
-      <span class="tool-label">Chandan Pen</span>
-    </div>
-
-    <!-- Tool 3: Blender Sponge -->
-    <div class="tool-item" data-tool="blender" onclick="selectTool('blender', this)" title="Soft-Focus Blender">
-      <span class="tool-icon">🧽</span>
-      <span class="tool-label">Blender</span>
-    </div>
-
-    <!-- Tool 4: Airbrush Wand -->
-    <div class="tool-item" data-tool="airbrush" onclick="selectTool('airbrush', this)" title="18-Hr Cry-Proof Mist">
-      <span class="tool-icon">✨</span>
-      <span class="tool-label">Airbrush Mist</span>
-    </div>
-
-    <!-- Color Swatches -->
-    <div class="pigment-dock">
-      <div class="pigment-dot active" style="background:#FFFFFF;color:#FFFFFF" onclick="selectPigment('#FFFFFF', this)" title="Sacred White Chandan"></div>
-      <div class="pigment-dot" style="background:#DC2626;color:#DC2626" onclick="selectPigment('#DC2626', this)" title="Sindoor Vermillion"></div>
-      <div class="pigment-dot" style="background:#F59E0B;color:#F59E0B" onclick="selectPigment('#F59E0B', this)" title="24K Gold Dust"></div>
-      <div class="pigment-dot" style="background:#9333EA;color:#9333EA" onclick="selectPigment('#9333EA', this)" title="Velvet Mauve"></div>
-    </div>
-
-    <!-- Actions -->
-    <div class="tool-actions">
-      <button type="button" class="game-clear-btn" onclick="resetActiveStage()" title="Reset Current Makeup">Reset</button>
-    </div>
+    <button type="button" class="duo-main-btn" id="duoContinueBtn" onclick="onContinueNext()" style="background:#fff; color:#070207;">
+      CONTINUE →
+    </button>
   </div>
 
-  <!-- Victory & Scholarship Certificate Modal -->
-  <div class="victory-modal-overlay" id="victoryModal">
-    <div class="victory-card">
-      <div style="font-size:2.8rem">👑</div>
-      <div class="victory-stars-big">★★★★★</div>
+  <!-- ═══ VICTORY MODAL & CERTIFICATE ═══ -->
+  <div class="duo-victory-overlay" id="duoVictoryModal">
+    <div class="duo-victory-card">
+      <div style="font-size:3rem">👑</div>
+      <div style="color:var(--duo-gold); font-size:1.8rem; letter-spacing:5px; margin:6px 0;">★★★★★</div>
       <h2>Royal Artistry Certified!</h2>
-      <p style="color:rgba(245,237,214,0.85);font-size:0.9rem;line-height:1.5">
-        Congratulations! You have completed all 4 Sacred Chapters of <strong>Atelier Chronicles</strong> with flawless precision, mastering Ayurvedic skin metallurgy, Kuhu Khare Banarasi Chandan art, and the 18-Hour Cry-Proof Starlight Seal.
+      <p style="color:rgba(245,237,214,0.85); font-size:0.92rem; line-height:1.6;">
+        Congratulations! You have completed all 4 Sacred Chapters of <strong>Atelier Chronicles</strong>, mastering Ayurvedic skin metallurgy, Kuhu Khare Banarasi Chandan art, 24K Sangeet cut-crease, and the 18-Hour Cry-Proof Starlight Seal!
       </p>
 
-      <div class="certificate-preview-box">
-        <span style="font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:#d4af37">EXCLUSIVE SCHOLARSHIP PRIVILEGE</span>
-        <div class="cert-code" id="scholarshipCodeDisplay">ANSHITA-CHRONICLES-2026</div>
-        <p style="font-size:0.8rem;margin:6px 0 0;color:rgba(245,237,214,0.7)">
+      <div class="duo-cert-box">
+        <span style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:var(--duo-gold);">EXCLUSIVE SCHOLARSHIP PRIVILEGE</span>
+        <div class="duo-cert-code">ANSHITA-CHRONICLES-2026</div>
+        <p style="font-size:0.82rem; margin:6px 0 0; color:rgba(245,237,214,0.75);">
           Valid for <strong>₹2,000 OFF</strong> on Anshita Makeover Professional Academy Masterclass or <strong>10% Privilege Discount</strong> on Bridal Suites.
         </p>
       </div>
 
-      <a href="https://wa.me/{{ whatsapp|default:'917879223442' }}?text=Namaste%20Anshita!%20I%20completed%20the%20Atelier%20Chronicles%203D%20Masterclass%20with%203%20Stars!%20My%20Scholarship%20Code%20is%20ANSHITA-CHRONICLES-2026.%20Please%20reserve%20my%20session!" target="_blank" rel="noopener" class="whatsapp-claim-btn" id="whatsappClaimBtn">
+      <a href="https://wa.me/{{ whatsapp|default:'917879223442' }}?text=Namaste%20Anshita!%20I%20completed%20the%20Atelier%20Chronicles%20Duolingo%20Masterclass%20with%203%20Stars!%20My%20Scholarship%20Code%20is%20ANSHITA-CHRONICLES-2026.%20Please%20reserve%20my%20session!" target="_blank" rel="noopener" class="duo-wa-claim-btn" id="duoWaClaimBtn">
         <span>💬 Claim ₹2,000 Scholarship on WhatsApp</span>
         <span>↗</span>
       </a>
 
-      <button type="button" onclick="closeVictoryModal()" style="background:none;border:none;color:rgba(245,237,214,0.5);font-size:0.75rem;margin-top:14px;cursor:pointer;text-decoration:underline">
+      <button type="button" onclick="closeVictory()" style="background:none; border:none; color:rgba(245,237,214,0.5); font-size:0.75rem; margin-top:14px; cursor:pointer; text-decoration:underline;">
         Keep Playing & Perfecting Looks
       </button>
     </div>
@@ -672,8 +845,8 @@ body.gameplay-active #preloader {
 </div>
 
 <script>
-// ═══ WEB AUDIO SYNTHESIZER FOR LUXURY SOUND EFFECTS (ZERO EXTERNAL MP3s) ═══
-class GameAudio {
+// ═══ WEB AUDIO SYNTHESIZER FOR DUOLINGO-GRADE SFX (ZERO EXTERNAL MP3s) ═══
+class DuoAudio {
   constructor() {
     this.ctx = null;
     this.enabled = true;
@@ -684,6 +857,44 @@ class GameAudio {
       if (AudioCtx) this.ctx = new AudioCtx();
     }
   }
+  playCorrect() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    // Duolingo style cheerful ascending major arpeggio (C5 -> E5 -> G5 -> C6)
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now + i * 0.08);
+      gain.gain.setValueAtTime(0.18, now + i * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.35);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now + i * 0.08);
+      osc.stop(now + i * 0.08 + 0.35);
+    });
+  }
+  playWrong() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    // Soft descending bonk
+    [320, 240].forEach((freq, i) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.12);
+      gain.gain.setValueAtTime(0.15, now + i * 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.25);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now + i * 0.12);
+      osc.stop(now + i * 0.12 + 0.25);
+    });
+  }
   playChime() {
     if (!this.enabled) return;
     this.init();
@@ -692,737 +903,659 @@ class GameAudio {
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(587.33, now); // D5
-    osc.frequency.exponentialRampToValueAtTime(880.00, now + 0.15); // A5
+    osc.frequency.setValueAtTime(880, now);
     gain.gain.setValueAtTime(0.12, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
     osc.connect(gain);
     gain.connect(this.ctx.destination);
     osc.start(now);
-    osc.stop(now + 0.4);
-  }
-  playBrush() {
-    if (!this.enabled) return;
-    this.init();
-    if (!this.ctx) return;
-    const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(220, now);
-    osc.frequency.linearRampToValueAtTime(330, now + 0.08);
-    gain.gain.setValueAtTime(0.05, now);
-    gain.gain.linearRampToValueAtTime(0.001, now + 0.12);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.12);
+    osc.stop(now + 0.25);
   }
   playVictory() {
     if (!this.enabled) return;
     this.init();
     if (!this.ctx) return;
-    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+    const notes = [440, 554.37, 659.25, 880, 1108.73];
     notes.forEach((freq, idx) => {
-      const now = this.ctx.currentTime + idx * 0.12;
+      const now = this.ctx.currentTime + idx * 0.14;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(freq, now);
-      gain.gain.setValueAtTime(0.15, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
       osc.connect(gain);
       gain.connect(this.ctx.destination);
       osc.start(now);
-      osc.stop(now + 0.5);
+      osc.stop(now + 0.6);
     });
   }
 }
-const gameAudio = new GameAudio();
+const duoAudio = new DuoAudio();
 
-// ═══ STORYLINE EPISODES DATA ═══
-const CHAPTERS = {
-  1: {
-    num: "CHAPTER 01",
-    title: "The Mandap Morning",
-    desc: "The auspicious wedding morning has arrived in Jabalpur. Before royal cosmetics can touch the skin, ancient Ayurvedic metallurgy must hydrate and cool the complexion.",
-    objective: "Drag the Herbal Ubtan & Ice Roller over the cheeks and forehead to achieve 100% skin hydration.",
-    tool: "ubtan",
-    pigment: "#FFFFFF",
-    targetScore: 100,
-    btnLabel: "NEXT: CHANDAN ART →"
+// ═══ MASTERCLASS LESSONS WITH AUTHENTIC CLIENT STORIES ═══
+const LESSONS = [
+  {
+    chapterId: 1,
+    chapterLabel: "CHAPTER 01 OF 04",
+    percent: 25,
+    badge: "🏆 CHAPTER 01 · AYURVEDIC SKIN ARCHITECTURE",
+    title: "The Mandap Morning: Lymphatic Cool-Down",
+    scenario: "Bride Riya is preparing for sacred pheras under direct 40°C mandap flames. Skin flushing and sweat can ruin the base within minutes. What is step 1 before any foundation?",
+    clientImg: "{% static 'core/images/curated/anshita_artistry_brush_action.jpg' %}",
+    clientLoc: "JABALPUR BESPOKE SUITE",
+    clientName: "Riya's Vivah Preparation",
+    clientMeta: "SKIN BARRIER PREP · ZERO FLASHBACK FORMULATION",
+    clientDesc: "Targeting open pores, hydration resilience, and lymphatic drainage before silk zardozi lehenga drape.",
+    question: "Which formulation must be applied first to lock moisture without flashback?",
+    options: [
+      { id: "A", title: "Heavy Silicone Primer", desc: "Leaves a plastic film that traps heat and melts under high-powered stage lights.", correct: false },
+      { id: "B", title: "🌿 Lymphatic Rose & Kansa Ice Wand", desc: "Cooling botanical infusion that tightens pores, soothes redness, and creates an 18-hour sweat-proof lock.", correct: true },
+      { id: "C", title: "Loose Baking Powder Immediately", desc: "Absorbs natural oils too early, resulting in dry cakey patches and flash photography flare.", correct: false }
+    ],
+    correctExplanation: "शाबाश! Ayurvedic lymphatic cooling lowers skin surface temperature by up to 3°C, allowing the subsequent velvet veil to fuse seamlessly.",
+    wrongExplanation: "Almost! In severe heat, silicone primers melt and cause slipping. Always begin with Ayurvedic lymphatic rose cooling!",
+    mascotQuoteStart: { hi: "नमस्ते! मैं आशा हूँ। चलिए आज का पहला ब्राइडल मास्टरक्लास सीक्रेट सीखते हैं!", en: "\"Namaste! I'm Asha. Let's master our first bridal secret together!\"" },
+    mascotQuoteCorrect: { hi: "शानदार जवाब! स्किन प्रेप ही ब्राइडल ग्लो की असली कुंजी है!", en: "\"Brilliant answer! Skin prep is the true secret of royal bridal glow!\"" },
+    hasPractical: false
   },
-  2: {
-    num: "CHAPTER 02",
-    title: "Banarasi Chandan Artistry",
-    desc: "Inspired by celebrated bride Kuhu Khare's competition makeover. Sacred Chandan and Kumkum must be painted above each eyebrow arch with meditative precision.",
-    objective: "Click the 7 glowing circular guides above the brow to paint traditional Banarasi Chandan sacred dots.",
-    tool: "chandan",
-    pigment: "#FFFFFF",
-    targetScore: 7,
-    btnLabel: "NEXT: SANGEET GLAM →"
+  {
+    chapterId: 2,
+    chapterLabel: "CHAPTER 02 OF 04",
+    percent: 50,
+    badge: "🏆 CHAPTER 02 · COMPETITION ARTISTRY",
+    title: "Kuhu Khare: Banarasi Chandan Dot Artistry",
+    scenario: "Kuhu Khare is stepping into the bridal competition arena! The jury awards points based on sacred symmetry, red kumkum placement, and traditional Banarasi Chandan brow dots.",
+    clientImg: "{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}",
+    clientLoc: "COMPETITION PARTICIPATION ARENA",
+    clientName: "Kuhu Khare (Bengali Bride)",
+    clientMeta: "HAND-PAINTED CHANDAN · SACRED MUKUT BALANCING",
+    clientDesc: "Sculpted specifically for bridal competition participation showcasing traditional Bengal vivah motifs.",
+    question: "What gives authentic Chandan art its crisp, sweat-proof longevity through emotional wedding ceremonies?",
+    options: [
+      { id: "A", title: "Regular Water-Color Pigment", desc: "Smudges at the first tear or humidity spike.", correct: false },
+      { id: "B", title: "✨ Sacred Sandalwood Paste & Kumkum Seal", desc: "Pure Chandan ground with rose essence and sealed with microscopic fixing veil.", correct: true },
+      { id: "C", title: "Glitter Eyeliner Pen", desc: "Distorts traditional cultural heritage rules in competition scoring.", correct: false }
+    ],
+    correctExplanation: "बहुत खूब! Sandalwood is both an auspicious blessing and an organic cooling agent. Now tap the 7 dots on Kuhu's brow to complete the symmetry!",
+    wrongExplanation: "Incorrect! Traditional competition standards strictly prohibit cosmetic water-colors. Only sacred Chandan and Kumkum are valid.",
+    mascotQuoteStart: { hi: "कुहू खरे का यह लुक अवार्ड जीत चुका है! क्या आप चंदन की सिमिट्री बना सकते हैं?", en: "\"Kuhu Khare's Bengali bride is an award winner! Can you place her Chandan dots?\"" },
+    mascotQuoteCorrect: { hi: "वाह! बिल्कुल सही! अब कुहू के माथे पर 7 पवित्र चंदन बिंदु लगाएं!", en: "\"Superb! Now place the 7 sacred Chandan dots on Kuhu's brow!\"" },
+    hasPractical: true,
+    practicalTitle: "SACRED CHANDAN SYMMETRY",
+    practicalHint: "Click each of the 7 pulsing golden rings above Kuhu's brow arch!",
+    practicalImg: "{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}",
+    practicalTarget: 7
   },
-  3: {
-    num: "CHAPTER 03",
-    title: "Imperial Sangeet Glamour",
-    desc: "The sun sets and palace chandeliers ignite for the royal Sangeet. Apply radiant 24K gold dust and mauve shimmer highlights over the cheekbones.",
-    objective: "Select 24K Gold or Velvet Mauve and use the Blender Sponge to sculpt shimmering royal radiance.",
-    tool: "blender",
-    pigment: "#F59E0B",
-    targetScore: 100,
-    btnLabel: "NEXT: CRY-PROOF SEAL →"
+  {
+    chapterId: 3,
+    chapterLabel: "CHAPTER 03 OF 04",
+    percent: 75,
+    badge: "👑 CHAPTER 03 · PALACE SANGEET GLAM",
+    title: "Miss Rajak: 24K Champagne Gold & Mauve Shimmer",
+    scenario: "The palace chandeliers ignite for the royal Sangeet celebration! The bride desires high-fashion cut-crease eyes that glow under 4K cinematic cameras without looking heavy.",
+    clientImg: "{% static 'core/images/curated/reception_ivory_bride.jpg' %}",
+    clientLoc: "PALACE SANGEET & COCKTAIL",
+    clientName: "Miss Rajak (Evening Glamour)",
+    clientMeta: "MAUVE SHIMMER CUT-CREASE · GLASS-SKIN RADIANCE",
+    clientDesc: "Paired with statement diamond choker and Hollywood sculpted blowout curls.",
+    question: "Which shade duo creates the signature glass-skin dimension for twilight Sangeet photography?",
+    options: [
+      { id: "A", title: "Flat Chalk White & Grey", desc: "Looks ghostly and chalky under flash bulbs.", correct: false },
+      { id: "B", title: "🌟 24K Champagne Gold + Velvet Mauve Duochrome", desc: "Reflects warm chandelier amber tones while defining the eye crease with royal depth.", correct: true },
+      { id: "C", title: "Pure Matte Neon Blue", desc: "Clashes with traditional Kundan and Polki jewelry.", correct: false }
+    ],
+    correctExplanation: "अद्भुत! Champagne gold on the lid center with velvet mauve in the outer socket gives cinematic depth on high-speed 4K reels.",
+    wrongExplanation: "Remember: Flat chalky pigments wash out under modern camera flashes. Rich duochromes reflect the palace lighting!",
+    mascotQuoteStart: { hi: "संगीत नाइट शुरू होने वाली है! चलिए आई-मेकअप का सबसे रॉयल शेड चुनते हैं!", en: "\"The Sangeet party is starting! Let's choose the most royal eye shade!\"" },
+    mascotQuoteCorrect: { hi: "लाजवाब! 24K शैंपेन गोल्ड और मॉव का कॉम्बिनेशन बिल्कुल परफेक्ट है!", en: "\"Magnificent! 24K Champagne Gold and Mauve is absolute perfection!\"" },
+    hasPractical: false
   },
-  4: {
-    num: "CHAPTER 04",
-    title: "18-Hour Cry-Proof Seal",
-    desc: "The sacred saat pheras and emotional vidai demand Anshita's proprietary micro-airbrush lock. Seal the entire bridal look against moisture, emotion, and heat.",
-    objective: "Sweep the Airbrush Wand across the face until the 18-Hour Cry-Proof Starlight Seal reaches 100%.",
-    tool: "airbrush",
-    pigment: "#FFFFFF",
-    targetScore: 100,
-    btnLabel: "COMPLETE & CLAIM SCHOLARSHIP 👑"
+  {
+    chapterId: 4,
+    chapterLabel: "CHAPTER 04 OF 04",
+    percent: 100,
+    badge: "✨ CHAPTER 04 · THE SACRED CLIMAX",
+    title: "Royal Crimson: 18-Hour Cry-Proof Vidai Seal",
+    scenario: "The sacred saat pheras are complete. The emotional Vidai moment arrives where tears are guaranteed. How does Anshita Makeover guarantee zero streak and zero transfer onto the velvet lehenga?",
+    clientImg: "{% static 'core/images/curated/royal_crimson_bride_main.jpg' %}",
+    clientLoc: "HERITAGE VIVAH MANDAP",
+    clientName: "The Royal Crimson Masterpiece",
+    clientMeta: "CRY-PROOF STRAW VEIL · 18-HOUR LONGEVITY",
+    clientDesc: "Tested against emotional tears, temple humidity, and midnight wedding ceremonies.",
+    question: "What is the final technical step to lock the entire look against tears and heat?",
+    options: [
+      { id: "A", title: "Dabbing with Paper Tissue", desc: "Lifts the base foundation and leaves visible patchy streaks.", correct: false },
+      { id: "B", title: "Heavy Layer of Hair Spray", desc: "Extremely toxic for the facial skin and causes chemical burning.", correct: false },
+      { id: "C", title: "💎 18-Hour Micro-Airbrush Starlight Mist", desc: "Micro-atomized cosmetic polymers that form a breathable, cry-proof shield over pigments.", correct: true }
+    ],
+    correctExplanation: "परफेक्ट! Micro-airbrush misting creates a non-comedogenic cross-linked micro-veil that resists emotional tears for 18 continuous hours!",
+    wrongExplanation: "Never use hair spray or rough paper towels on bridal skin! The micro-airbrush lock is the only professional standard.",
+    mascotQuoteStart: { hi: "यह सबसे महत्वपूर्ण चरण है! विदाई के आंसुओं में भी मेकअप नहीं छूटेगा!", en: "\"This is the ultimate stage! Even during emotional Vidai, makeup stays flawless!\"" },
+    mascotQuoteCorrect: { hi: "मुबारक हो! आपने 18-Hour Cry-Proof सीक्रेट मास्टर कर लिया!", en: "\"Congratulations! You've mastered the 18-Hour Cry-Proof Secret!\"" },
+    hasPractical: false
   }
-};
+];
 
-let currentChapter = 1;
-let currentScore = 0;
-let activeTool = 'ubtan';
-let activePigment = '#FFFFFF';
-let completedChapters = new Set();
+let currentLessonIdx = 0;
+let selectedOption = null;
+let hearts = 3;
+let xp = 100;
+let streak = 1;
+let practicalPlacedCount = 0;
+let isAnswerChecked = false;
 
-// ═══ THREE.JS 3D SCENE & UV RAYCAST SETUP ═══
-let scene, camera, renderer, controls, faceMesh;
-let textureCanvas, textureCtx, dynamicTexture;
-let raycaster = new THREE.Raycaster();
-let mouse = new THREE.Vector2();
-let isPointerDown = false;
-let guideMarkersGroup;
+// ═══ 3D MASCOT ASHA (THREE.JS PIXAR-GRADE ARTICULATED BUNNY) ═══
+let mascotScene, mascotCamera, mascotRenderer;
+let headGroup, leftEarPivot, rightEarPivot, leftPupil, rightPupil, noseMesh, smileMesh;
+let targetGazeX = 0, targetGazeY = 0;
+let mascotMood = 'happy'; // 'happy', 'excited', 'sad', 'curious'
+let mascotBounce = 0;
 
-function renderBaseBridalCanvas(ctx) {
-  // 1. Base Indian Honey Caramel Glow
-  const skinGrad = ctx.createRadialGradient(512, 512, 80, 512, 512, 560);
-  skinGrad.addColorStop(0, '#D49B6A');
-  skinGrad.addColorStop(0.7, '#C2834E');
-  skinGrad.addColorStop(1, '#9C5E2D');
-  ctx.fillStyle = skinGrad;
-  ctx.fillRect(0, 0, 1024, 1024);
+function initDuoMascot() {
+  const canvas = document.getElementById('duoMascotCanvas');
+  if (!canvas) return;
 
-  // 2. Soft Cheek Blush (Radiant Rose / Gulabi)
-  const blushLeft = ctx.createRadialGradient(380, 560, 20, 380, 560, 110);
-  blushLeft.addColorStop(0, 'rgba(224, 90, 111, 0.45)');
-  blushLeft.addColorStop(0.7, 'rgba(224, 90, 111, 0.18)');
-  blushLeft.addColorStop(1, 'rgba(224, 90, 111, 0)');
-  ctx.fillStyle = blushLeft;
-  ctx.beginPath();
-  ctx.arc(380, 560, 110, 0, Math.PI * 2);
-  ctx.fill();
+  const rect = canvas.getBoundingClientRect();
+  const width = rect.width || 380;
+  const height = rect.height || 450;
 
-  const blushRight = ctx.createRadialGradient(644, 560, 20, 644, 560, 110);
-  blushRight.addColorStop(0, 'rgba(224, 90, 111, 0.45)');
-  blushRight.addColorStop(0.7, 'rgba(224, 90, 111, 0.18)');
-  blushRight.addColorStop(1, 'rgba(224, 90, 111, 0)');
-  ctx.fillStyle = blushRight;
-  ctx.beginPath();
-  ctx.arc(644, 560, 110, 0, Math.PI * 2);
-  ctx.fill();
+  mascotScene = new THREE.Scene();
 
-  // 3. Arched Bridal Eyebrows (Microbladed / Feathered Stroke)
-  ctx.strokeStyle = '#1F120E';
-  ctx.lineWidth = 14;
-  ctx.lineCap = 'round';
-  // Left Brow
-  ctx.beginPath();
-  ctx.moveTo(350, 430);
-  ctx.quadraticCurveTo(410, 395, 465, 415);
-  ctx.stroke();
-  // Right Brow
-  ctx.beginPath();
-  ctx.moveTo(674, 430);
-  ctx.quadraticCurveTo(614, 395, 559, 415);
-  ctx.stroke();
+  mascotCamera = new THREE.PerspectiveCamera(36, width / height, 0.1, 50);
+  mascotCamera.position.set(0, 0.25, 3.4);
+  mascotCamera.lookAt(0, 0.1, 0);
 
-  // 4. Almond Bridal Eyes & Winged Kohl Eyeliner
-  drawEye(ctx, 415, 465, false);
-  drawEye(ctx, 609, 465, true);
+  mascotRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+  mascotRenderer.setSize(width, height);
+  mascotRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-  // 5. Sacred Velvet Bindi
-  ctx.fillStyle = '#991B1B'; // Royal crimson
-  ctx.beginPath();
-  ctx.arc(512, 385, 12, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#D4AF37'; // 24K gold center dot
-  ctx.beginPath();
-  ctx.arc(512, 385, 3.5, 0, Math.PI * 2);
-  ctx.fill();
+  // Studio Lighting
+  const ambient = new THREE.AmbientLight(0xfff0ea, 0.9);
+  mascotScene.add(ambient);
 
-  // 6. Delicate Nose Bridge Contour & Gold Nath Anchor
-  ctx.strokeStyle = 'rgba(120, 60, 25, 0.22)';
-  ctx.lineWidth = 5;
-  ctx.beginPath();
-  ctx.moveTo(502, 425);
-  ctx.lineTo(504, 515);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(522, 425);
-  ctx.lineTo(520, 515);
-  ctx.stroke();
+  const keyLight = new THREE.DirectionalLight(0xffeed6, 1.3);
+  keyLight.position.set(2, 3, 3);
+  mascotScene.add(keyLight);
 
-  // Nose tip highlight
-  ctx.fillStyle = 'rgba(255, 245, 230, 0.28)';
-  ctx.beginPath();
-  ctx.arc(512, 515, 8, 0, Math.PI * 2);
-  ctx.fill();
+  const rimLight = new THREE.DirectionalLight(0xd4af37, 1.5);
+  rimLight.position.set(-2, 2, -2);
+  mascotScene.add(rimLight);
 
-  // Tiny gold nose stud
-  ctx.fillStyle = '#D4AF37';
-  ctx.beginPath();
-  ctx.arc(488, 520, 4, 0, Math.PI * 2);
-  ctx.fill();
-
-  // 7. Ombre Berry-Maroon Bridal Lips
-  drawLips(ctx, 512, 600);
-}
-
-function drawEye(ctx, cx, cy, isRight) {
-  // Sclera (eye white)
-  ctx.save();
-  ctx.beginPath();
-  ctx.ellipse(cx, cy, 38, 18, 0, 0, Math.PI * 2);
-  ctx.fillStyle = '#FAF4EB';
-  ctx.fill();
-  ctx.clip();
-
-  // Amber Brown Iris
-  ctx.beginPath();
-  ctx.arc(cx, cy, 17, 0, Math.PI * 2);
-  ctx.fillStyle = '#3B1E08';
-  ctx.fill();
-
-  // Gold fleck
-  ctx.beginPath();
-  ctx.arc(cx, cy, 14, 0, Math.PI * 2);
-  ctx.fillStyle = '#61340D';
-  ctx.fill();
-
-  // Pupil
-  ctx.beginPath();
-  ctx.arc(cx, cy, 8, 0, Math.PI * 2);
-  ctx.fillStyle = '#0F0804';
-  ctx.fill();
-
-  // Catchlight
-  ctx.beginPath();
-  ctx.arc(cx - 4, cy - 4, 3, 0, Math.PI * 2);
-  ctx.fillStyle = '#FFFFFF';
-  ctx.fill();
-  ctx.restore();
-
-  // Eyeliner & Lashes
-  ctx.strokeStyle = '#12070A';
-  ctx.lineWidth = 6;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  if (!isRight) {
-    ctx.moveTo(cx - 44, cy + 2);
-    ctx.quadraticCurveTo(cx, cy - 24, cx + 40, cy - 4);
-    ctx.lineTo(cx - 52, cy - 6);
-  } else {
-    ctx.moveTo(cx - 40, cy - 4);
-    ctx.quadraticCurveTo(cx, cy - 24, cx + 44, cy + 2);
-    ctx.lineTo(cx + 52, cy - 6);
-  }
-  ctx.stroke();
-
-  // Lower kohl rim
-  ctx.strokeStyle = 'rgba(25, 10, 15, 0.6)';
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.ellipse(cx, cy + 1, 37, 16, 0, 0.2, Math.PI - 0.2);
-  ctx.stroke();
-}
-
-function drawLips(ctx, cx, cy) {
-  ctx.save();
-  // Upper Lip
-  ctx.fillStyle = '#991B32';
-  ctx.beginPath();
-  ctx.moveTo(cx - 46, cy);
-  ctx.quadraticCurveTo(cx - 22, cy - 18, cx, cy - 8);
-  ctx.quadraticCurveTo(cx + 22, cy - 18, cx + 46, cy);
-  ctx.quadraticCurveTo(cx, cy + 6, cx - 46, cy);
-  ctx.fill();
-
-  // Lower Lip
-  ctx.fillStyle = '#BA2343';
-  ctx.beginPath();
-  ctx.moveTo(cx - 46, cy);
-  ctx.quadraticCurveTo(cx, cy + 28, cx + 46, cy);
-  ctx.quadraticCurveTo(cx, cy + 5, cx - 46, cy);
-  ctx.fill();
-
-  // Gloss Center Highlight
-  ctx.fillStyle = 'rgba(255, 180, 195, 0.35)';
-  ctx.beginPath();
-  ctx.ellipse(cx, cy + 10, 18, 5, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
-}
-
-function init3D() {
-  const container = document.getElementById('gameplay-canvas-container');
-  if (!container) return;
-
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-
-  // Scene
-  scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x070207, 0.05);
-
-  camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-  camera.position.set(0, 0.05, 2.7);
-  camera.lookAt(0, 0.05, 0);
-
-  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setSize(width, height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
-  renderer.shadowMap.enabled = true;
-  container.appendChild(renderer.domElement);
-
-  // OrbitControls with graceful fallback
-  if (typeof THREE.OrbitControls === 'function') {
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.minDistance = 2.1;
-    controls.maxDistance = 4.2;
-    controls.maxPolarAngle = Math.PI / 1.7;
-    controls.minPolarAngle = Math.PI / 2.6;
-    controls.enablePan = false;
-    controls.target.set(0, 0.05, 0);
-  } else {
-    controls = {
-      update: function() {},
-      target: new THREE.Vector3(0, 0.05, 0)
-    };
-  }
-
-  // Studio 3-Point Lighting
-  const ambientLight = new THREE.AmbientLight(0xffeedd, 0.9);
-  scene.add(ambientLight);
-
-  const keyLight = new THREE.DirectionalLight(0xffeed6, 1.4);
-  keyLight.position.set(3, 4, 4);
-  scene.add(keyLight);
-
-  const fillLight = new THREE.DirectionalLight(0xffd5e2, 0.7);
-  fillLight.position.set(-3, 2, 3);
-  scene.add(fillLight);
-
-  const rimLight = new THREE.DirectionalLight(0xd4af37, 1.8);
-  rimLight.position.set(0, 4, -4);
-  scene.add(rimLight);
-
-  // Setup Dynamic 1024x1024 UV Texture Canvas
-  textureCanvas = document.createElement('canvas');
-  textureCanvas.width = 1024;
-  textureCanvas.height = 1024;
-  textureCtx = textureCanvas.getContext('2d');
-  
-  renderBaseBridalCanvas(textureCtx);
-
-  dynamicTexture = new THREE.CanvasTexture(textureCanvas);
-  dynamicTexture.needsUpdate = true;
-
-  // Build Stylized 3D Bridal Model
-  buildBridalHead();
-
-  // Guide Markers Group for Chandan & Precision challenges
-  guideMarkersGroup = new THREE.Group();
-  scene.add(guideMarkersGroup);
-  setupChapterGuides(currentChapter);
-
-  // Event Listeners
-  window.addEventListener('resize', onWindowResize);
-  setupRaycastPainting(renderer.domElement);
-
-  animate();
-}
-
-function buildBridalHead() {
-  const modelGroup = new THREE.Group();
-
-  // 1. Head Sphere with Front-Facing UV orientation
-  const headGeo = new THREE.SphereGeometry(0.85, 48, 48);
-  headGeo.scale(0.88, 1.05, 0.95);
-
-  const headMat = new THREE.MeshStandardMaterial({
-    map: dynamicTexture,
-    roughness: 0.42,
-    metalness: 0.04,
-  });
-  faceMesh = new THREE.Mesh(headGeo, headMat);
-  faceMesh.name = "bridalFace";
-  faceMesh.rotation.y = -Math.PI / 2; // Orients U=0.5 directly toward camera +Z
-  modelGroup.add(faceMesh);
-
-  // 2. Neck
-  const neckGeo = new THREE.CylinderGeometry(0.36, 0.44, 0.65, 32);
-  const neckMat = new THREE.MeshStandardMaterial({ color: 0xB57440, roughness: 0.5 });
-  const neck = new THREE.Mesh(neckGeo, neckMat);
-  neck.position.set(0, -0.95, -0.05);
-  modelGroup.add(neck);
-
-  // 3. Hair (Back & Royal Chignon Bun)
-  const hairMat = new THREE.MeshStandardMaterial({ color: 0x140B0D, roughness: 0.75 });
-  // Back hemisphere: covers back and sides of head only (Z <= 0.1)
-  const hairBackGeo = new THREE.SphereGeometry(0.88, 32, 32);
-  const hairBack = new THREE.Mesh(hairBackGeo, hairMat);
-  hairBack.position.set(0, 0.12, -0.36);
-  hairBack.scale.set(0.96, 1.05, 0.82);
-  modelGroup.add(hairBack);
-
-  // Crown / Top hair volume (only at the top of the skull Y >= 0.6)
-  const crownGeo = new THREE.SphereGeometry(0.55, 32, 32);
-  const crownHair = new THREE.Mesh(crownGeo, hairMat);
-  crownHair.position.set(0, 0.72, -0.15);
-  crownHair.scale.set(1.15, 0.5, 0.95);
-  modelGroup.add(crownHair);
-
-  // Royal Chignon Bun
-  const bunGeo = new THREE.SphereGeometry(0.42, 32, 32);
-  const bun = new THREE.Mesh(bunGeo, hairMat);
-  bun.position.set(0, 0.65, -0.65);
-  modelGroup.add(bun);
-
-  // Jasmine Gajra Garland
-  const gajraGeo = new THREE.TorusGeometry(0.36, 0.08, 16, 32);
-  const gajraMat = new THREE.MeshStandardMaterial({ color: 0xFFFBF0, roughness: 0.6 });
-  const gajra = new THREE.Mesh(gajraGeo, gajraMat);
-  gajra.position.set(0, 0.65, -0.58);
-  gajra.rotation.x = Math.PI / 3;
-  modelGroup.add(gajra);
-
-  // 4. Royal Gold Maang Tikka
+  // Materials
+  const skinMat = new THREE.MeshStandardMaterial({ color: 0xFDE2D0, roughness: 0.5 });
+  const blushMat = new THREE.MeshBasicMaterial({ color: 0xFB7185, transparent: true, opacity: 0.5 });
+  const hairMat = new THREE.MeshStandardMaterial({ color: 0x2A1208, roughness: 0.7 });
+  const earInnerMat = new THREE.MeshStandardMaterial({ color: 0xF7A8B8, roughness: 0.6 });
   const goldMat = new THREE.MeshStandardMaterial({ color: 0xD4AF37, metalness: 0.9, roughness: 0.2 });
-  const rubyMat = new THREE.MeshStandardMaterial({ color: 0x991B1B, metalness: 0.4, roughness: 0.1 });
-  
-  const tikkaChainGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.45, 12);
-  const tikkaChain = new THREE.Mesh(tikkaChainGeo, goldMat);
-  tikkaChain.position.set(0, 0.62, 0.52);
-  tikkaChain.rotation.x = -Math.PI / 3.4;
-  modelGroup.add(tikkaChain);
+  const chunniMat = new THREE.MeshStandardMaterial({ color: 0xB5182D, roughness: 0.45, side: THREE.DoubleSide });
 
-  const tikkaPendantGeo = new THREE.CylinderGeometry(0.065, 0.065, 0.025, 16);
-  const tikkaPendant = new THREE.Mesh(tikkaPendantGeo, goldMat);
-  tikkaPendant.position.set(0, 0.44, 0.74);
+  // Character Root
+  const mascotGroup = new THREE.Group();
+  mascotScene.add(mascotGroup);
+
+  headGroup = new THREE.Group();
+  headGroup.position.set(0, 0, 0);
+  mascotGroup.add(headGroup);
+
+  // 1. Chubby Toddler Bunny Head
+  const headGeo = new THREE.SphereGeometry(0.72, 32, 32);
+  const headMesh = new THREE.Mesh(headGeo, skinMat);
+  headMesh.scale.set(1.08, 0.96, 0.98);
+  headGroup.add(headMesh);
+
+  // 2. Rosy Cheeks
+  const cheekGeo = new THREE.SphereGeometry(0.18, 16, 16);
+  const leftCheek = new THREE.Mesh(cheekGeo, blushMat);
+  leftCheek.position.set(-0.35, -0.12, 0.52);
+  leftCheek.scale.set(1.1, 0.65, 0.32);
+  headGroup.add(leftCheek);
+
+  const rightCheek = new THREE.Mesh(cheekGeo, blushMat);
+  rightCheek.position.set(0.35, -0.12, 0.52);
+  rightCheek.scale.set(1.1, 0.65, 0.32);
+  headGroup.add(rightCheek);
+
+  // 3. Cute Button Bunny Nose (Wiggles live)
+  const noseGeo = new THREE.SphereGeometry(0.042, 16, 16);
+  noseMesh = new THREE.Mesh(noseGeo, new THREE.MeshStandardMaterial({ color: 0xF472B6, roughness: 0.4 }));
+  noseMesh.position.set(0, -0.06, 0.70);
+  noseMesh.scale.set(1.1, 0.75, 0.65);
+  headGroup.add(noseMesh);
+
+  // 4. Sweet Smile
+  const smileCurve = new THREE.QuadraticBezierCurve3(
+    new THREE.Vector3(-0.14, -0.19, 0.66),
+    new THREE.Vector3(0, -0.28, 0.69),
+    new THREE.Vector3(0.14, -0.19, 0.66)
+  );
+  const smileGeo = new THREE.TubeGeometry(smileCurve, 16, 0.02, 8, false);
+  smileMesh = new THREE.Mesh(smileGeo, new THREE.MeshBasicMaterial({ color: 0x6E101D }));
+  headGroup.add(smileMesh);
+
+  // 5. Giant Expressive Eyes
+  function createEye(x) {
+    const eyeGroup = new THREE.Group();
+    eyeGroup.position.set(x, 0.10, 0.54);
+
+    const sclera = new THREE.Mesh(
+      new THREE.SphereGeometry(0.24, 24, 24),
+      new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.2 })
+    );
+    eyeGroup.add(sclera);
+
+    const pupilPivot = new THREE.Group();
+    pupilPivot.position.set(0, 0, 0.23);
+
+    const iris = new THREE.Mesh(
+      new THREE.CircleGeometry(0.13, 24),
+      new THREE.MeshBasicMaterial({ color: 0x8C4415 })
+    );
+    pupilPivot.add(iris);
+
+    const pupil = new THREE.Mesh(
+      new THREE.CircleGeometry(0.075, 24),
+      new THREE.MeshBasicMaterial({ color: 0x080404 })
+    );
+    pupil.position.z = 0.005;
+    pupilPivot.add(pupil);
+
+    const glint = new THREE.Mesh(
+      new THREE.CircleGeometry(0.038, 16),
+      new THREE.MeshBasicMaterial({ color: 0xFFFFFF })
+    );
+    glint.position.set(0.04, 0.04, 0.008);
+    pupilPivot.add(glint);
+
+    eyeGroup.add(pupilPivot);
+    headGroup.add(eyeGroup);
+    return pupilPivot;
+  }
+
+  leftPupil = createEye(-0.26);
+  rightPupil = createEye(0.26);
+
+  // 6. Hair & Bridal Maang Tikka
+  const hairBack = new THREE.Mesh(
+    new THREE.SphereGeometry(0.76, 24, 24),
+    hairMat
+  );
+  hairBack.position.set(0, 0.08, -0.14);
+  hairBack.scale.set(1.05, 1.05, 1.05);
+  headGroup.add(hairBack);
+
+  const tikkaPendant = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.05, 0.05, 0.02, 16),
+    goldMat
+  );
+  tikkaPendant.position.set(0, 0.35, 0.70);
   tikkaPendant.rotation.x = Math.PI / 2.2;
-  modelGroup.add(tikkaPendant);
+  headGroup.add(tikkaPendant);
 
-  const rubyGemGeo = new THREE.SphereGeometry(0.03, 16, 16);
-  const rubyGem = new THREE.Mesh(rubyGemGeo, rubyMat);
-  rubyGem.position.set(0, 0.44, 0.76);
-  modelGroup.add(rubyGem);
+  // 7. Articulated Floppy Bunny Ears
+  function createBunnyEar(isLeft) {
+    const pivot = new THREE.Group();
+    pivot.position.set(isLeft ? -0.26 : 0.26, 0.68, 0.02);
 
-  // 5. Traditional Gold Jhumkas (Earrings)
-  [-0.82, 0.82].forEach((xPos) => {
-    const jhumka = new THREE.Group();
-    const stud = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 16), goldMat);
-    const bell = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.12, 16), goldMat);
-    bell.position.y = -0.09;
-    jhumka.add(stud);
-    jhumka.add(bell);
-    jhumka.position.set(xPos, -0.08, 0.05);
-    modelGroup.add(jhumka);
-  });
+    const outer = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.12, 0.05, 0.82, 16),
+      skinMat
+    );
+    outer.position.y = 0.40;
+    outer.scale.set(1.0, 1.0, 0.35);
+    pivot.add(outer);
 
-  scene.add(modelGroup);
-}
+    const inner = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.08, 0.025, 0.70, 16),
+      earInnerMat
+    );
+    inner.position.set(0, 0.40, 0.016);
+    inner.scale.set(0.9, 0.95, 0.25);
+    pivot.add(inner);
 
-// ═══ CHAPTER GUIDE MARKERS ═══
-function setupChapterGuides(chapter) {
-  while (guideMarkersGroup.children.length > 0) {
-    guideMarkersGroup.remove(guideMarkersGroup.children[0]);
+    const goldRing = new THREE.Mesh(
+      new THREE.TorusGeometry(0.045, 0.012, 8, 16),
+      goldMat
+    );
+    goldRing.position.set(isLeft ? -0.05 : 0.05, 0.76, 0.01);
+    pivot.add(goldRing);
+
+    headGroup.add(pivot);
+    return pivot;
   }
 
-  if (chapter === 2) {
-    // Kuhu Khare Banarasi Chandan: 7 sacred brow guide dots
-    const markerMat = new THREE.MeshBasicMaterial({ color: 0xF59E0B, wireframe: true });
-    const dotCoords = [
-      { x: -0.36, y: 0.22, z: 0.76 },
-      { x: -0.24, y: 0.25, z: 0.80 },
-      { x: -0.12, y: 0.27, z: 0.82 },
-      { x: 0,     y: 0.28, z: 0.83 },
-      { x: 0.12,  y: 0.27, z: 0.82 },
-      { x: 0.24,  y: 0.25, z: 0.80 },
-      { x: 0.36,  y: 0.22, z: 0.76 }
-    ];
+  leftEarPivot = createBunnyEar(true);
+  rightEarPivot = createBunnyEar(false);
 
-    dotCoords.forEach((pt, idx) => {
-      const ring = new THREE.Mesh(new THREE.RingGeometry(0.02, 0.038, 16), markerMat);
-      ring.position.set(pt.x, pt.y, pt.z + 0.01);
-      ring.lookAt(pt.x * 1.5, pt.y * 1.5, pt.z + 1);
-      ring.userData = { targetIdx: idx, hit: false };
-      guideMarkersGroup.add(ring);
-    });
-  }
-}
+  // 8. Sacred Red Chunni (Framing Dupatta)
+  const chunni = new THREE.Mesh(
+    new THREE.SphereGeometry(0.84, 24, 16, Math.PI * 0.95, Math.PI * 1.1, 0, Math.PI * 0.65),
+    chunniMat
+  );
+  chunni.position.set(0, 0.05, 0.02);
+  headGroup.add(chunni);
 
-// ═══ RAYCAST UV PAINTING ═══
-function setupRaycastPainting(domElement) {
-  domElement.addEventListener('pointerdown', (e) => {
-    isPointerDown = true;
-    applyToolAtEvent(e);
+  // Mouse tracking gaze
+  window.addEventListener('mousemove', (e) => {
+    targetGazeX = (e.clientX / window.innerWidth - 0.5) * 2;
+    targetGazeY = (e.clientY / window.innerHeight - 0.5) * 2;
   });
 
-  domElement.addEventListener('pointermove', (e) => {
-    if (isPointerDown) {
-      applyToolAtEvent(e);
+  canvas.addEventListener('click', () => {
+    setMascotMood('excited');
+    duoAudio.playChime();
+    setTimeout(() => setMascotMood('happy'), 1800);
+  });
+
+  animateMascot();
+}
+
+let lastTime = 0;
+function animateMascot(time = 0) {
+  requestAnimationFrame(animateMascot);
+  const delta = (time - lastTime) * 0.001;
+  lastTime = time;
+
+  if (headGroup) {
+    // Smooth breathing & mood bounce
+    const breathing = Math.sin(time * 0.0025) * 0.02;
+    headGroup.position.y = breathing + mascotBounce;
+
+    // Gaze kinematics
+    headGroup.rotation.y += (targetGazeX * 0.35 - headGroup.rotation.y) * 0.08;
+    headGroup.rotation.x += (-targetGazeY * 0.25 - headGroup.rotation.x) * 0.08;
+
+    // Pupils follow target
+    if (leftPupil && rightPupil) {
+      const px = targetGazeX * 0.04;
+      const py = -targetGazeY * 0.03;
+      leftPupil.position.x = px;
+      leftPupil.position.y = py;
+      rightPupil.position.x = px;
+      rightPupil.position.y = py;
     }
-  });
 
-  window.addEventListener('pointerup', () => {
-    isPointerDown = false;
-  });
-}
-
-function applyToolAtEvent(e) {
-  const rect = renderer.domElement.getBoundingClientRect();
-  mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-  mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-
-  raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObject(faceMesh);
-
-  if (intersects.length > 0 && intersects[0].uv) {
-    const uv = intersects[0].uv;
-    const x = uv.x * 1024;
-    const y = (1 - uv.y) * 1024;
-
-    paintOnCanvas(x, y);
-    checkObjectiveHit(intersects[0].point);
-  }
-}
-
-function paintOnCanvas(x, y) {
-  textureCtx.save();
-
-  if (activeTool === 'ubtan') {
-    // Herbal Ubtan Roller: translucent golden sheen
-    const grad = textureCtx.createRadialGradient(x, y, 5, x, y, 45);
-    grad.addColorStop(0, 'rgba(245, 158, 11, 0.25)');
-    grad.addColorStop(1, 'rgba(245, 158, 11, 0)');
-    textureCtx.fillStyle = grad;
-    textureCtx.beginPath();
-    textureCtx.arc(x, y, 45, 0, Math.PI * 2);
-    textureCtx.fill();
-    gameAudio.playBrush();
-  } else if (activeTool === 'chandan') {
-    // Banarasi Chandan Pen: crisp symmetrical white/red dot
-    textureCtx.fillStyle = activePigment;
-    textureCtx.beginPath();
-    textureCtx.arc(x, y, 10, 0, Math.PI * 2);
-    textureCtx.fill();
-    // Inner accent dot
-    textureCtx.fillStyle = (activePigment === '#FFFFFF') ? '#DC2626' : '#FFFFFF';
-    textureCtx.beginPath();
-    textureCtx.arc(x, y, 4, 0, Math.PI * 2);
-    textureCtx.fill();
-    gameAudio.playChime();
-  } else if (activeTool === 'blender') {
-    // Blender Sponge: soft velvet diffuse
-    const grad = textureCtx.createRadialGradient(x, y, 4, x, y, 32);
-    grad.addColorStop(0, activePigment + '55');
-    grad.addColorStop(1, activePigment + '00');
-    textureCtx.fillStyle = grad;
-    textureCtx.beginPath();
-    textureCtx.arc(x, y, 32, 0, Math.PI * 2);
-    textureCtx.fill();
-    gameAudio.playBrush();
-  } else if (activeTool === 'airbrush') {
-    // Airbrush Starlight Mist: fine golden shimmer particles
-    for (let i = 0; i < 8; i++) {
-      const rx = x + (Math.random() - 0.5) * 60;
-      const ry = y + (Math.random() - 0.5) * 60;
-      textureCtx.fillStyle = 'rgba(245, 237, 214, 0.4)';
-      textureCtx.beginPath();
-      textureCtx.arc(rx, ry, 1.6, 0, Math.PI * 2);
-      textureCtx.fill();
+    // Bunny Nose live wiggle
+    if (noseMesh) {
+      noseMesh.position.y = -0.06 + Math.sin(time * 0.015) * 0.004;
     }
-    gameAudio.playBrush();
-  }
 
-  textureCtx.restore();
-  dynamicTexture.needsUpdate = true;
-
-  incrementProgress();
-}
-
-function incrementProgress() {
-  if (currentChapter === 1 || currentChapter === 3 || currentChapter === 4) {
-    currentScore = Math.min(100, currentScore + 2);
-    updateProgressUI(currentScore, 100);
-  }
-}
-
-function checkObjectiveHit(hitPoint) {
-  if (currentChapter === 2) {
-    // Check collision with guide rings
-    guideMarkersGroup.children.forEach(ring => {
-      if (!ring.userData.hit) {
-        const dist = ring.position.distanceTo(hitPoint);
-        if (dist < 0.12) {
-          ring.userData.hit = true;
-          ring.material.color.setHex(0x4ade80); // Success green
-          ring.material.wireframe = false;
-          currentScore++;
-          updateProgressUI(currentScore, CHAPTERS[2].targetScore);
-          gameAudio.playChime();
-        }
+    // Ear Kinematics based on mood
+    if (leftEarPivot && rightEarPivot) {
+      const earTwitch = Math.sin(time * 0.004) * 0.05;
+      if (mascotMood === 'excited') {
+        // Flappy happy ears jump
+        leftEarPivot.rotation.z = 0.3 + Math.sin(time * 0.02) * 0.18;
+        rightEarPivot.rotation.z = -0.3 - Math.sin(time * 0.02) * 0.18;
+        mascotBounce = Math.abs(Math.sin(time * 0.015)) * 0.08;
+      } else if (mascotMood === 'sad') {
+        // Drooped sad bunny ears
+        leftEarPivot.rotation.z = 0.55 + earTwitch * 0.2;
+        rightEarPivot.rotation.z = -0.55 - earTwitch * 0.2;
+        mascotBounce = -0.04;
+      } else {
+        // Natural perky ears
+        leftEarPivot.rotation.z = 0.12 + earTwitch;
+        rightEarPivot.rotation.z = -0.12 - earTwitch;
+        mascotBounce = 0;
       }
-    });
-  }
-}
-
-function updateProgressUI(score, target) {
-  const percent = Math.min(100, Math.round((score / target) * 100));
-  const bar = document.getElementById('objectiveProgressBar');
-  const text = document.getElementById('objectiveScoreText');
-  const stars = document.getElementById('objectiveStars');
-
-  if (bar) bar.style.width = percent + '%';
-  if (text) text.textContent = percent + '%';
-
-  if (stars) {
-    if (percent >= 100) {
-      stars.textContent = '★★★';
-      stars.style.color = '#4ade80';
-    } else if (percent >= 66) {
-      stars.textContent = '★★☆';
-      stars.style.color = '#d4af37';
-    } else if (percent >= 33) {
-      stars.textContent = '★☆☆';
-      stars.style.color = '#d4af37';
-    } else {
-      stars.textContent = '☆☆☆';
-      stars.style.color = 'rgba(212, 175, 55, 0.4)';
     }
   }
 
-  // Update XP
-  const xp = 100 + (completedChapters.size * 150) + Math.round(score * 1.5);
-  const xpEl = document.getElementById('xpDisplay');
-  if (xpEl) xpEl.textContent = `✨ ${xp} XP`;
+  if (mascotRenderer && mascotScene && mascotCamera) {
+    mascotRenderer.render(mascotScene, mascotCamera);
+  }
 }
 
-// ═══ CHAPTER CONTROLS ═══
-function switchChapter(num) {
-  currentChapter = num;
-  currentScore = 0;
-  const chData = CHAPTERS[num];
+function setMascotMood(mood) {
+  mascotMood = mood;
+  const moodIcon = document.getElementById('duoMoodIcon');
+  if (moodIcon) {
+    if (mood === 'excited') moodIcon.textContent = '🐰🎉';
+    else if (mood === 'sad') moodIcon.textContent = '🐰💔';
+    else moodIcon.textContent = '🐰✨';
+  }
+}
 
-  // Update tabs
-  document.querySelectorAll('.chapter-nav-btn').forEach(btn => {
-    const bNum = parseInt(btn.getAttribute('data-chapter'), 10);
-    btn.classList.toggle('active', bNum === num);
+// ═══ LESSON RENDERING & FLOW LOGIC ═══
+function renderCurrentLesson() {
+  const lesson = LESSONS[currentLessonIdx];
+  isAnswerChecked = false;
+  selectedOption = null;
+  practicalPlacedCount = 0;
+
+  // Update HUD
+  document.getElementById('duoChapterLabel').textContent = lesson.chapterLabel;
+  document.getElementById('duoProgressPercent').textContent = `${lesson.percent}%`;
+  document.getElementById('duoProgressFill').style.width = `${lesson.percent}%`;
+
+  // Update Texts
+  document.getElementById('duoBadgeText').textContent = lesson.badge;
+  document.getElementById('duoTitleText').textContent = lesson.title;
+  document.getElementById('duoScenarioText').textContent = lesson.scenario;
+
+  // Update Client Card
+  document.getElementById('duoClientImg').src = lesson.clientImg;
+  document.getElementById('duoClientLocation').textContent = lesson.clientLoc;
+  document.getElementById('duoClientName').textContent = lesson.clientName;
+  document.getElementById('duoClientMeta').textContent = lesson.clientMeta;
+  document.getElementById('duoClientDesc').textContent = lesson.clientDesc;
+
+  // Update Mascot speech
+  document.getElementById('duoSpeechHi').textContent = lesson.mascotQuoteStart.hi;
+  document.getElementById('duoSpeechEn').textContent = lesson.mascotQuoteStart.en;
+  setMascotMood('happy');
+
+  // Render Options
+  const grid = document.getElementById('duoOptionsGrid');
+  grid.innerHTML = '';
+  lesson.options.forEach((opt) => {
+    const card = document.createElement('div');
+    card.className = 'duo-option-card';
+    card.onclick = () => selectLessonOption(opt.id, card);
+    card.innerHTML = `
+      <div class="duo-option-key">${opt.id}</div>
+      <div class="duo-option-text">
+        <strong>${opt.title}</strong>
+        <span>${opt.desc}</span>
+      </div>
+    `;
+    grid.appendChild(card);
   });
 
-  // Update Story Card
-  document.getElementById('chapterNumDisplay').textContent = chData.num;
-  document.getElementById('chapterTitleDisplay').textContent = chData.title;
-  document.getElementById('chapterDescDisplay').textContent = chData.desc;
-  document.getElementById('chapterObjectiveDisplay').textContent = chData.objective;
-  document.getElementById('chapterActionBtn').textContent = chData.btnLabel;
+  // Handle Practical Zone (Chandan Art)
+  const practicalZone = document.getElementById('duoPracticalZone');
+  if (lesson.hasPractical) {
+    practicalZone.classList.add('active');
+    document.getElementById('duoPracticalTitle').textContent = lesson.practicalTitle;
+    document.getElementById('duoPracticalHint').textContent = lesson.practicalHint;
+    document.getElementById('duoPracticalBgImg').src = lesson.practicalImg;
+    setupChandanGuideDots();
+  } else {
+    practicalZone.classList.remove('active');
+  }
 
-  updateProgressUI(0, chData.targetScore);
-  selectTool(chData.tool);
-  selectPigment(chData.pigment);
-  setupChapterGuides(num);
+  // Reset Bottom Tray
+  const checkBtn = document.getElementById('duoCheckBtn');
+  checkBtn.disabled = true;
+  checkBtn.textContent = 'CHECK ANSWER';
+  document.getElementById('duoTrayHint').textContent = 'Select the most effective technique to proceed';
+
+  // Hide feedback drawer
+  document.getElementById('duoFeedbackDrawer').classList.remove('show');
 }
 
-function onChapterActionClick() {
-  completedChapters.add(currentChapter);
-  const activeNavBtn = document.querySelector(`.chapter-nav-btn[data-chapter="${currentChapter}"]`);
-  if (activeNavBtn) activeNavBtn.classList.add('completed');
+function selectLessonOption(optId, cardElement) {
+  if (isAnswerChecked) return;
+  selectedOption = optId;
+  duoAudio.playChime();
 
-  if (currentChapter < 4) {
-    switchChapter(currentChapter + 1);
-    gameAudio.playChime();
+  document.querySelectorAll('.duo-option-card').forEach(c => c.classList.remove('selected'));
+  cardElement.classList.add('selected');
+
+  document.getElementById('duoCheckBtn').disabled = false;
+  document.getElementById('duoTrayHint').textContent = 'Press Check Answer to evaluate your bridal formulation';
+}
+
+function setupChandanGuideDots() {
+  const container = document.getElementById('chandanGuideContainer');
+  container.innerHTML = '';
+  practicalPlacedCount = 0;
+  updatePracticalCounter();
+
+  // 7 brow coordinates across Kuhu Khare's forehead (% coords)
+  const dotCoords = [
+    { top: 40, left: 34 },
+    { top: 37, left: 39 },
+    { top: 35, left: 44 },
+    { top: 34, left: 50 }, // Center
+    { top: 35, left: 56 },
+    { top: 37, left: 61 },
+    { top: 40, left: 66 }
+  ];
+
+  dotCoords.forEach((pt, idx) => {
+    const dot = document.createElement('div');
+    dot.className = 'chandan-guide-dot';
+    dot.style.top = `${pt.top}%`;
+    dot.style.left = `${pt.left}%`;
+    dot.title = `Place Chandan Dot ${idx + 1}`;
+    dot.onclick = () => {
+      if (!dot.classList.contains('painted')) {
+        dot.classList.add('painted');
+        practicalPlacedCount++;
+        duoAudio.playChime();
+        updatePracticalCounter();
+        setMascotMood('excited');
+        setTimeout(() => setMascotMood('happy'), 1000);
+      }
+    };
+    container.appendChild(dot);
+  });
+}
+
+function updatePracticalCounter() {
+  const el = document.getElementById('duoPracticalCounter');
+  if (el) el.textContent = `${practicalPlacedCount} / 7 PLACED`;
+}
+
+function onCheckAnswer() {
+  if (isAnswerChecked || !selectedOption) return;
+  isAnswerChecked = true;
+
+  const lesson = LESSONS[currentLessonIdx];
+  const chosenOpt = lesson.options.find(o => o.id === selectedOption);
+  const isCorrect = chosenOpt && chosenOpt.correct;
+
+  const drawer = document.getElementById('duoFeedbackDrawer');
+  const icon = document.getElementById('duoFeedbackIcon');
+  const title = document.getElementById('duoFeedbackTitle');
+  const expl = document.getElementById('duoFeedbackExplanation');
+  const contBtn = document.getElementById('duoContinueBtn');
+
+  drawer.className = 'duo-feedback-drawer show ' + (isCorrect ? 'correct' : 'incorrect');
+
+  if (isCorrect) {
+    duoAudio.playCorrect();
+    setMascotMood('excited');
+    icon.textContent = '✓';
+    title.textContent = 'शानदार! (Splendid!)';
+    expl.textContent = lesson.correctExplanation;
+    contBtn.textContent = 'CONTINUE →';
+
+    // Award XP
+    xp += 50;
+    document.getElementById('duoXpDisplay').textContent = `✨ ${xp} XP`;
+
+    // Mascot cheers
+    document.getElementById('duoSpeechHi').textContent = lesson.mascotQuoteCorrect.hi;
+    document.getElementById('duoSpeechEn').textContent = lesson.mascotQuoteCorrect.en;
+
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 60, spread: 70, origin: { y: 0.8 } });
+    }
+  } else {
+    duoAudio.playWrong();
+    setMascotMood('sad');
+    icon.textContent = '✕';
+    title.textContent = 'Almost! Try Again.';
+    expl.textContent = lesson.wrongExplanation;
+    contBtn.textContent = 'RE-ATTEMPT';
+
+    // Deduct Heart
+    hearts = Math.max(1, hearts - 1);
+    updateHeartsUI();
+
+    document.getElementById('duoSpeechHi').textContent = "कोई बात नहीं! फिर से सोचिए, हर गलती एक नया सबक है!";
+    document.getElementById('duoSpeechEn').textContent = "\"No worries! Think again, every mistake teaches a new technique!\"";
+  }
+}
+
+function updateHeartsUI() {
+  const el = document.getElementById('duoHeartsDisplay');
+  let hStr = '';
+  for (let i = 0; i < hearts; i++) hStr += '❤️';
+  for (let i = hearts; i < 3; i++) hStr += '💔';
+  el.innerHTML = hStr;
+}
+
+function onContinueNext() {
+  const drawer = document.getElementById('duoFeedbackDrawer');
+  const isCorrect = drawer.classList.contains('correct');
+
+  if (!isCorrect) {
+    // Re-attempt current lesson
+    drawer.classList.remove('show');
+    isAnswerChecked = false;
+    document.getElementById('duoCheckBtn').disabled = false;
+    return;
+  }
+
+  // Proceed to next lesson or victory
+  if (currentLessonIdx < LESSONS.length - 1) {
+    currentLessonIdx++;
+    renderCurrentLesson();
   } else {
     showVictoryModal();
   }
 }
 
-// ═══ TOOL BELT CONTROLS ═══
-function selectTool(toolName, element) {
-  activeTool = toolName;
-  document.querySelectorAll('.tool-item').forEach(item => {
-    item.classList.toggle('active', item.getAttribute('data-tool') === toolName);
-  });
-}
-
-function selectPigment(colorHex, element) {
-  activePigment = colorHex;
-  document.querySelectorAll('.pigment-dot').forEach(dot => {
-    dot.classList.toggle('active', dot.style.color === colorHex);
-  });
-}
-
-function resetActiveStage() {
-  renderBaseBridalCanvas(textureCtx);
-  dynamicTexture.needsUpdate = true;
-  currentScore = 0;
-  updateProgressUI(0, CHAPTERS[currentChapter].targetScore);
-  setupChapterGuides(currentChapter);
-}
-
-// ═══ VICTORY MODAL & CERTIFICATE ═══
 function showVictoryModal() {
-  const modal = document.getElementById('victoryModal');
+  const modal = document.getElementById('duoVictoryModal');
   if (modal) modal.classList.add('active');
-  gameAudio.playVictory();
+  duoAudio.playVictory();
+  setMascotMood('excited');
   if (typeof confetti === 'function') {
-    confetti({ particleCount: 120, spread: 90, origin: { y: 0.5 } });
+    confetti({ particleCount: 140, spread: 90, origin: { y: 0.5 } });
   }
 }
 
-function closeVictoryModal() {
-  const modal = document.getElementById('victoryModal');
+function closeVictory() {
+  const modal = document.getElementById('duoVictoryModal');
   if (modal) modal.classList.remove('active');
 }
 
-// ═══ RENDER LOOP ═══
-function animate() {
-  requestAnimationFrame(animate);
-  if (controls && typeof controls.update === 'function') {
-    controls.update();
-  }
-  if (renderer && scene && camera) {
-    renderer.render(scene, camera);
-  }
-}
-
-function onWindowResize() {
-  if (!camera || !renderer) return;
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-  renderer.setSize(w, h);
-}
-
 // Sound toggle
-document.getElementById('soundToggleBtn').addEventListener('click', function() {
-  gameAudio.enabled = !gameAudio.enabled;
-  this.textContent = gameAudio.enabled ? '🔊' : '🔇';
+document.getElementById('duoSoundToggle').addEventListener('click', function() {
+  duoAudio.enabled = !duoAudio.enabled;
+  this.textContent = duoAudio.enabled ? '🔊' : '🔇';
 });
 
-// Initialize on DOM ready
+// Window resize
+window.addEventListener('resize', () => {
+  const canvas = document.getElementById('duoMascotCanvas');
+  if (!canvas || !mascotCamera || !mascotRenderer) return;
+  const rect = canvas.getBoundingClientRect();
+  mascotCamera.aspect = rect.width / rect.height;
+  mascotCamera.updateProjectionMatrix();
+  mascotRenderer.setSize(rect.width, rect.height);
+});
+
+// Initialize on DOM Ready
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('gameplay-active');
-  init3D();
+  initDuoMascot();
+  renderCurrentLesson();
 });
 </script>
 {% endblock %}
