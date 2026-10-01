@@ -397,5 +397,9 @@ def sitemap_xml(request):
     return HttpResponse(xml, content_type="application/xml; charset=utf-8")
 
 def custom_404_view(request, exception=None):
-    return render(request, '404.html', status=404)
+    lang = getattr(request, 'GET', {}).get('lang') if hasattr(request, 'GET') else 'english'
+    if not lang and hasattr(request, 'COOKIES'):
+        lang = request.COOKIES.get('lang', 'english')
+    context = compile_home_context(lang or 'english')
+    return render(request, '404.html', context, status=404)
 

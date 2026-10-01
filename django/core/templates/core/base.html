@@ -10018,6 +10018,39 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     headroomInstance.init();
   }
+
+  // ── Lenis Smooth Momentum Scroll Engine ──
+  if (typeof Lenis !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    try {
+      window.lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        wheelMultiplier: 1.0,
+        touchMultiplier: 1.5,
+        infinite: false
+      });
+
+      // Synchronize Lenis with GSAP ScrollTrigger if present
+      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        window.lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add((time) => {
+          window.lenis.raf(time * 1000);
+        });
+        gsap.ticker.lagSmoothing(0);
+      } else {
+        function lenisRaf(time) {
+          window.lenis.raf(time);
+          requestAnimationFrame(lenisRaf);
+        }
+        requestAnimationFrame(lenisRaf);
+      }
+    } catch (err) {
+      console.warn('Lenis init notice:', err);
+    }
+  }
 });
 
 </script>

@@ -1269,65 +1269,80 @@ body[data-page-zone="dark"] .hg-explore-all-btn {
 .home-gallery-track-outer {
   width: 100vw;
   margin-left: calc(-6vw);
-  padding: 0 6vw;
+  padding: 40px 0 60px;
   overflow: hidden;
-}
-.home-gallery-track {
-  display: flex;
-  gap: 24px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 16px 4px 28px;
-  -webkit-overflow-scrolling: touch;
-  cursor: grab;
-  user-select: none;
-}
-.home-gallery-track.is-dragging {
-  cursor: grabbing;
-  scroll-behavior: auto;
-}
-.home-gallery-track::-webkit-scrollbar {
-  height: 4px;
-}
-.home-gallery-track::-webkit-scrollbar-thumb {
-  background: rgba(139, 94, 26, 0.25);
-  border-radius: 4px;
+  position: relative;
 }
 
-.hg-card {
-  flex: 0 0 320px;
+/* 3D Cylindrical Stage & Carousel Manifold */
+.cylinder-stage {
+  width: 100%;
+  height: 600px;
+  perspective: 1600px;
+  perspective-origin: 50% 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  user-select: none;
+  cursor: grab;
+  overflow: visible;
+}
+.cylinder-stage.is-dragging {
+  cursor: grabbing;
+}
+.cylinder-carousel {
+  width: 280px;
+  height: 420px;
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.cylinder-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 420px;
   border-radius: 16px;
   overflow: hidden;
-  background: #000;
-  border: 1px solid rgba(139, 94, 26, 0.2);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.18);
-  position: relative;
+  background: #090308;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65), 0 0 12px rgba(212, 175, 55, 0.15);
   text-decoration: none;
   color: #fff;
   display: flex;
   flex-direction: column;
   transform-style: preserve-3d;
-  perspective: 1000px;
-  will-change: transform, opacity;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+  will-change: transform, box-shadow, border-color;
+  backface-visibility: visible;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
 }
-body[data-page-zone="dark"] .hg-card {
-  border-color: rgba(212, 175, 55, 0.25);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+
+.cylinder-card:hover {
+  border-color: #f5d77f;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(212, 175, 55, 0.6);
 }
-.hg-card:hover {
-  transform: translateY(-10px) scale(1.02);
-  border-color: var(--gold, #d4af37);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.35);
-}
-body[data-page-zone="dark"] .hg-card:hover {
-  box-shadow: 0 24px 70px rgba(212, 175, 55, 0.25);
+
+.cylinder-hint {
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.75);
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .hg-card-thumb {
   position: relative;
   width: 100%;
-  height: 390px;
+  height: 290px;
   overflow: hidden;
   background: #000;
 }
@@ -1768,6 +1783,78 @@ body[data-page-zone="dark"] .about-metric-item span {
   color: rgba(245, 237, 214, 0.55);
 }
 
+/* ── Demilie-Inspired Craftsmanship Rituals ── */
+.demilie-rituals-container {
+  margin-top: 40px;
+  padding-top: 36px;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+.rituals-header {
+  margin-bottom: 24px;
+}
+.rituals-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #d4af37;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 6px;
+}
+.rituals-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  color: #f5eed6;
+  margin: 0;
+}
+.rituals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.ritual-card {
+  background: rgba(20, 8, 16, 0.65);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 12px;
+  padding: 18px 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+.ritual-card:hover {
+  transform: translateY(-4px);
+  border-color: #f5d77f;
+  box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2);
+}
+.ritual-step-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  color: #d4af37;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.ritual-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.88rem;
+  letter-spacing: 1px;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.ritual-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.74rem;
+  line-height: 1.55;
+  color: rgba(245, 237, 214, 0.75);
+  margin: 0;
+}
+@media (max-width: 640px) {
+  .rituals-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .about-actions-row {
   display: flex;
   align-items: center;
@@ -2030,8 +2117,8 @@ body[data-page-zone="dark"] .about-metric-item span {
       <p class="home-gallery-sub">Authentic bride transformations, sacred vivah rituals, and real Instagram reels sculpted by Anshita Sinha.</p>
     </div>
     <div class="home-gallery-controls">
-      <button type="button" class="hg-nav-arrow" onclick="scrollHomeGallery(-340)" aria-label="Previous Looks">‹</button>
-      <button type="button" class="hg-nav-arrow" onclick="scrollHomeGallery(340)" aria-label="Next Looks">›</button>
+      <button type="button" class="hg-nav-arrow" onclick="orbitCylinderPrev()" aria-label="Previous Looks">‹</button>
+      <button type="button" class="hg-nav-arrow" onclick="orbitCylinderNext()" aria-label="Next Looks">›</button>
       <a href="{% url 'gallery' %}" class="hg-explore-all-btn">
         <span>Enter 4K Cinema Studio</span>
         <span>→</span>
@@ -2040,128 +2127,134 @@ body[data-page-zone="dark"] .about-metric-item span {
   </div>
 
   <div class="home-gallery-track-outer">
-    <div class="home-gallery-track" id="homeGalleryTrack">
-      
-      <!-- Card 1: Kuhu (Bengali Bride Reel) -->
-      <a href="{% url 'gallery' %}?album=kuhu-kolkata-banarasi-chandan" class="hg-card">
-        <div class="hg-card-thumb">
-          <span class="hg-card-badge">▶ 4K Reel</span>
-          <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Kuhu — Traditional Bengali Mukut & Chandan">
-          <div class="hg-card-play-orb">▶</div>
-        </div>
-        <div class="hg-card-info">
-          <span class="hg-card-eyebrow">CULTURAL SPECIALTY · VIVAH</span>
-          <h3 class="hg-card-name">Kuhu</h3>
-          <p class="hg-card-desc">Traditional Bengali Mukut & Sacred Red Chandan Artistry with Subho Drishti rituals.</p>
-          <span class="hg-card-cta-link">Watch Cinema Reel →</span>
-        </div>
-      </a>
+    <!-- 3D Cylindrical Orbit Stage -->
+    <div class="cylinder-stage" id="cylinderStage" aria-label="3D Rotating Bridal Album Showcase">
+      <div class="cylinder-carousel" id="cylinderCarousel">
+        
+        <!-- Card 1: Kuhu (Bengali Bride Reel) -->
+        <a href="{% url 'gallery' %}?album=kuhu-kolkata-banarasi-chandan" class="cylinder-card" data-idx="0">
+          <div class="hg-card-thumb">
+            <span class="hg-card-badge">▶ 4K Reel</span>
+            <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Kuhu — Traditional Bengali Mukut & Chandan" loading="lazy">
+            <div class="hg-card-play-orb">▶</div>
+          </div>
+          <div class="hg-card-info">
+            <span class="hg-card-eyebrow">CULTURAL · VIVAH</span>
+            <h3 class="hg-card-name">Kuhu</h3>
+            <p class="hg-card-desc">Traditional Bengali Mukut & Sacred Red Chandan Artistry.</p>
+            <span class="hg-card-cta-link">Watch Cinema Reel →</span>
+          </div>
+        </a>
 
-      <!-- Card 2: Sacred Vivah Crimson Bride -->
-      <a href="{% url 'gallery' %}?album=sacred-vivah-royal-crimson" class="hg-card">
-        <div class="hg-card-thumb">
-          <span class="hg-card-badge">▶ 4K Film</span>
-          <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Royal Crimson Bride — Vivah Pheras">
-          <div class="hg-card-play-orb">▶</div>
-        </div>
-        <div class="hg-card-info">
-          <span class="hg-card-eyebrow">BRIDAL SUITES · PHERAS</span>
-          <h3 class="hg-card-name">Royal Crimson Bride</h3>
-          <p class="hg-card-desc">18-Hour Cry-Proof Formulation, Velvet Zardozi Lehenga, and Sheer Veil Framing.</p>
-          <span class="hg-card-cta-link">Watch Cinema Reel →</span>
-        </div>
-      </a>
+        <!-- Card 2: Sacred Vivah Crimson Bride -->
+        <a href="{% url 'gallery' %}?album=sacred-vivah-royal-crimson" class="cylinder-card" data-idx="1">
+          <div class="hg-card-thumb">
+            <span class="hg-card-badge">▶ 4K Film</span>
+            <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Royal Crimson Bride — Vivah Pheras" loading="lazy">
+            <div class="hg-card-play-orb">▶</div>
+          </div>
+          <div class="hg-card-info">
+            <span class="hg-card-eyebrow">BRIDAL SUITES</span>
+            <h3 class="hg-card-name">Royal Crimson</h3>
+            <p class="hg-card-desc">18-Hour Cry-Proof Formulation & Velvet Zardozi Lehenga.</p>
+            <span class="hg-card-cta-link">Watch Cinema Reel →</span>
+          </div>
+        </a>
 
-      <!-- Card 3: Palace Maroon Velvet Heritage -->
-      <a href="{% url 'gallery' %}?album=palace-maroon-velvet-heritage" class="hg-card">
-        <div class="hg-card-thumb">
-          <span class="hg-card-badge">📷 Multi-Angle</span>
-          <img src="{% static 'core/images/curated/dsc09702.jpg' %}" alt="Palace Maroon Velvet Heritage">
-          <div class="hg-card-play-orb">▶</div>
-        </div>
-        <div class="hg-card-info">
-          <span class="hg-card-eyebrow">PALACE COUTURE · DESTINATION</span>
-          <h3 class="hg-card-name">Maroon Velvet Heritage</h3>
-          <p class="hg-card-desc">Deep Wine Velvet Zardozi, Double Dupatta Precision, and Antique Polki Nath.</p>
-          <span class="hg-card-cta-link">Explore Album →</span>
-        </div>
-      </a>
+        <!-- Card 3: Palace Maroon Velvet Heritage -->
+        <a href="{% url 'gallery' %}?album=palace-maroon-velvet-heritage" class="cylinder-card" data-idx="2">
+          <div class="hg-card-thumb">
+            <span class="hg-card-badge">📷 Multi-Angle</span>
+            <img src="{% static 'core/images/curated/dsc09702.jpg' %}" alt="Palace Maroon Velvet Heritage" loading="lazy">
+            <div class="hg-card-play-orb">▶</div>
+          </div>
+          <div class="hg-card-info">
+            <span class="hg-card-eyebrow">PALACE COUTURE</span>
+            <h3 class="hg-card-name">Maroon Velvet</h3>
+            <p class="hg-card-desc">Deep Wine Velvet Zardozi & Antique Polki Nath.</p>
+            <span class="hg-card-cta-link">Explore Album →</span>
+          </div>
+        </a>
 
-      <!-- Card 4: Miss Rajak Mauve Cut-Crease -->
-      <a href="{% url 'gallery' %}?album=miss-rajak-mauve-shimmer" class="hg-card">
-        <div class="hg-card-thumb">
-          <span class="hg-card-badge">📸 Instagram</span>
-          <img src="{% static 'core/images/curated/ig_post_DM-_ZJVTCIo_slide_1.jpg' %}" alt="Miss Rajak — Reception & Cocktail Evening Glamour">
-          <div class="hg-card-play-orb">▶</div>
-        </div>
-        <div class="hg-card-info">
-          <span class="hg-card-eyebrow">RECEPTION · COCKTAIL</span>
-          <h3 class="hg-card-name">Miss Rajak</h3>
-          <p class="hg-card-desc">Mauve Shimmer Cut-Crease Artistry, Sequin Gown, and Glass-Skin Radiance.</p>
-          <span class="hg-card-cta-link">Watch Cinema Reel →</span>
-        </div>
-      </a>
+        <!-- Card 4: Miss Rajak Mauve Cut-Crease -->
+        <a href="{% url 'gallery' %}?album=miss-rajak-mauve-shimmer" class="cylinder-card" data-idx="3">
+          <div class="hg-card-thumb">
+            <span class="hg-card-badge">📸 Instagram</span>
+            <img src="{% static 'core/images/curated/ig_post_DM-_ZJVTCIo_slide_1.jpg' %}" alt="Miss Rajak — Reception Evening Glamour" loading="lazy">
+            <div class="hg-card-play-orb">▶</div>
+          </div>
+          <div class="hg-card-info">
+            <span class="hg-card-eyebrow">RECEPTION · COCKTAIL</span>
+            <h3 class="hg-card-name">Miss Rajak</h3>
+            <p class="hg-card-desc">Mauve Shimmer Cut-Crease & Glass-Skin Radiance.</p>
+            <span class="hg-card-cta-link">Watch Cinema Reel →</span>
+          </div>
+        </a>
 
-      <!-- Card 5: Imperial Fuchsia & Emerald -->
-      <a href="{% url 'gallery' %}?album=imperial-fuchsia-emerald" class="hg-card">
-        <div class="hg-card-thumb">
-          <span class="hg-card-badge">📸 Reel</span>
-          <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia & Emerald Palace Bride">
-          <div class="hg-card-play-orb">▶</div>
-        </div>
-        <div class="hg-card-info">
-          <span class="hg-card-eyebrow">PALACE COUTURE · SANGEET</span>
-          <h3 class="hg-card-name">Fuchsia & Emerald Bride</h3>
-          <p class="hg-card-desc">Vibrant Raw Silk Lehenga with Zambian Emerald Statement Choker & Winged Liner.</p>
-          <span class="hg-card-cta-link">Watch Cinema Reel →</span>
-        </div>
-      </a>
+        <!-- Card 5: Imperial Fuchsia & Emerald -->
+        <a href="{% url 'gallery' %}?album=imperial-fuchsia-emerald" class="cylinder-card" data-idx="4">
+          <div class="hg-card-thumb">
+            <span class="hg-card-badge">📸 Reel</span>
+            <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia & Emerald Palace Bride" loading="lazy">
+            <div class="hg-card-play-orb">▶</div>
+          </div>
+          <div class="hg-card-info">
+            <span class="hg-card-eyebrow">PALACE · SANGEET</span>
+            <h3 class="hg-card-name">Fuchsia & Emerald</h3>
+            <p class="hg-card-desc">Raw Silk Lehenga with Statement Emerald Choker.</p>
+            <span class="hg-card-cta-link">Watch Cinema Reel →</span>
+          </div>
+        </a>
 
-      <!-- Card 6: Christian Bridal Couture Suite -->
-      <a href="{% url 'gallery' %}?album=christian-bridal-couture" class="hg-card">
-        <div class="hg-card-thumb">
-          <span class="hg-card-badge">📷 Couture</span>
-          <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Christian Bridal Couture Suite">
-          <div class="hg-card-play-orb">▶</div>
-        </div>
-        <div class="hg-card-info">
-          <span class="hg-card-eyebrow">CHURCH WEDDING · CATHEDRAL</span>
-          <h3 class="hg-card-name">Ivory Cathedral Suite</h3>
-          <p class="hg-card-desc">Off-Shoulder Ivory Ballgown, Sheer Cathedral Veil & Solitaire Diamonds.</p>
-          <span class="hg-card-cta-link">Explore Album →</span>
-        </div>
-      </a>
+        <!-- Card 6: Christian Bridal Couture Suite -->
+        <a href="{% url 'gallery' %}?album=christian-bridal-couture" class="cylinder-card" data-idx="5">
+          <div class="hg-card-thumb">
+            <span class="hg-card-badge">📷 Couture</span>
+            <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Christian Bridal Couture Suite" loading="lazy">
+            <div class="hg-card-play-orb">▶</div>
+          </div>
+          <div class="hg-card-info">
+            <span class="hg-card-eyebrow">CATHEDRAL WEDDING</span>
+            <h3 class="hg-card-name">Ivory Cathedral</h3>
+            <p class="hg-card-desc">Off-Shoulder Ivory Ballgown & Sheer Veil.</p>
+            <span class="hg-card-cta-link">Explore Album →</span>
+          </div>
+        </a>
 
-      <!-- Card 7: Ring Ceremony Sheer Maroon Veil -->
-      <a href="{% url 'gallery' %}?album=ring-ceremony-sheer-maroon" class="hg-card">
-        <div class="hg-card-thumb">
-          <span class="hg-card-badge">📸 Instagram</span>
-          <img src="{% static 'core/images/curated/ig_post_DRP0QCODVfD.jpg' %}" alt="Ring Ceremony Sheer Maroon Veil Bride">
-          <div class="hg-card-play-orb">▶</div>
-        </div>
-        <div class="hg-card-info">
-          <span class="hg-card-eyebrow">ROKA · RING CEREMONY</span>
-          <h3 class="hg-card-name">Sheer Maroon Veil</h3>
-          <p class="hg-card-desc">Delicate Maang Tikka, Soft Warm Bronze Smokey Eyes & Velvet Lips.</p>
-          <span class="hg-card-cta-link">Explore Album →</span>
-        </div>
-      </a>
+        <!-- Card 7: Ring Ceremony Sheer Maroon Veil -->
+        <a href="{% url 'gallery' %}?album=ring-ceremony-sheer-maroon" class="cylinder-card" data-idx="6">
+          <div class="hg-card-thumb">
+            <span class="hg-card-badge">📸 Instagram</span>
+            <img src="{% static 'core/images/curated/ig_post_DRP0QCODVfD.jpg' %}" alt="Ring Ceremony Sheer Maroon Veil Bride" loading="lazy">
+            <div class="hg-card-play-orb">▶</div>
+          </div>
+          <div class="hg-card-info">
+            <span class="hg-card-eyebrow">ROKA · RING CEREMONY</span>
+            <h3 class="hg-card-name">Sheer Maroon</h3>
+            <p class="hg-card-desc">Delicate Maang Tikka & Soft Warm Bronze Smokey Eyes.</p>
+            <span class="hg-card-cta-link">Explore Album →</span>
+          </div>
+        </a>
 
-      <!-- Card 8: Haute Hair & Traditional Saree Draping -->
-      <a href="{% url 'gallery' %}?album=haute-hair-saree-draping" class="hg-card">
-        <div class="hg-card-thumb">
-          <span class="hg-card-badge">▶ Reel</span>
-          <img src="{% static 'core/images/curated/ig_reel_DSNIJ0-Aqgh.jpg' %}" alt="Haute Hair & Traditional Saree Draping">
-          <div class="hg-card-play-orb">▶</div>
-        </div>
-        <div class="hg-card-info">
-          <span class="hg-card-eyebrow">HAIR ARTISTRY · DRAPING</span>
-          <h3 class="hg-card-name">Silk Saree & Jasmine Bun</h3>
-          <p class="hg-card-desc">Traditional Silk Saree Master Pleating with Fresh Fragrant Jasmine Bun.</p>
-          <span class="hg-card-cta-link">Watch Cinema Reel →</span>
-        </div>
-      </a>
+        <!-- Card 8: Haute Hair & Traditional Saree Draping -->
+        <a href="{% url 'gallery' %}?album=haute-hair-saree-draping" class="cylinder-card" data-idx="7">
+          <div class="hg-card-thumb">
+            <span class="hg-card-badge">▶ Reel</span>
+            <img src="{% static 'core/images/curated/ig_reel_DSNIJ0-Aqgh.jpg' %}" alt="Haute Hair & Traditional Saree Draping" loading="lazy">
+            <div class="hg-card-play-orb">▶</div>
+          </div>
+          <div class="hg-card-info">
+            <span class="hg-card-eyebrow">HAIR & DRAPING</span>
+            <h3 class="hg-card-name">Silk Saree & Bun</h3>
+            <p class="hg-card-desc">Silk Saree Master Pleating with Jasmine Bun.</p>
+            <span class="hg-card-cta-link">Watch Cinema Reel →</span>
+          </div>
+        </a>
 
+      </div>
+    </div>
+    <div class="cylinder-hint">
+      <span>✦ DRAG OR SWIPE TO SPIN 3D REPERTOIRE · HOVER TO PAUSE ✦</span>
     </div>
   </div>
 </section>
@@ -2334,6 +2427,36 @@ body[data-page-zone="dark"] .about-metric-item span {
           <span>Cry-Proof Base</span>
         </div>
       </div>
+
+      <!-- Demilie-Inspired Craftsmanship Rituals -->
+      <div class="demilie-rituals-container">
+        <div class="rituals-header">
+          <span class="rituals-eyebrow">HAUTE COUTURE METHOLEGY</span>
+          <h3 class="rituals-title">The 4 Sacred Rituals of Bridal Grace</h3>
+        </div>
+        <div class="rituals-grid">
+          <div class="ritual-card">
+            <div class="ritual-step-num">01</div>
+            <div class="ritual-name">Skin Metallurgy</div>
+            <p class="ritual-desc">18-hour sweat & cry-proof base preparation with Dior & Charlotte Tilbury moisture infusion.</p>
+          </div>
+          <div class="ritual-card">
+            <div class="ritual-step-num">02</div>
+            <div class="ritual-name">Sacred Geometry</div>
+            <p class="ritual-desc">Hand-painted Banarasi Chandan motifs, Mukut anchoring, and cultural vivah eye sculpting.</p>
+          </div>
+          <div class="ritual-card">
+            <div class="ritual-step-num">03</div>
+            <div class="ritual-name">Velvet Complexion</div>
+            <p class="ritual-desc">Precision jewel-tone color balancing to seamlessly complement Polki, Kundan & velvet lehengas.</p>
+          </div>
+          <div class="ritual-card">
+            <div class="ritual-step-num">04</div>
+            <div class="ritual-name">Royal Starlight Seal</div>
+            <p class="ritual-desc">Micro-fine airbrush radiance lock ensuring camera-ready 4K luminescence under sacred mandap lighting.</p>
+          </div>
+        </div>
+      </div>
       <div class="about-actions-row">
         <a href="https://instagram.com/anshitamakeover21" target="_blank" rel="noopener" class="about-ig-btn">
           <span>@anshitamakeover21</span>
@@ -2390,110 +2513,195 @@ body[data-page-zone="dark"] .about-metric-item span {
 {% include 'components/admin_scripts.html' %}
 
 <script>
-// ═══ HOMEPAGE GALLERY HORIZONTAL SCROLL & INTERACTIVE DRAG PHYSICS ═══
-function scrollHomeGallery(px) {
-  const track = document.getElementById('homeGalleryTrack');
-  if (track) {
-    track.scrollBy({ left: px, behavior: 'smooth' });
-  }
+// ═══ 3D CYLINDRICAL ORBIT REPERTOIRE ENGINE ═══
+let cylinderCurrentAngle = 0;
+let cylinderTargetVelocity = 0;
+let cylinderVelocity = 0;
+let isCylinderDragging = false;
+let isCylinderHovered = false;
+let cylinderStartX = 0;
+let cylinderLastX = 0;
+let cylinderDragDistance = 0;
+
+function layoutCylinderCards() {
+  const carousel = document.getElementById('cylinderCarousel');
+  if (!carousel) return;
+  const cards = carousel.querySelectorAll('.cylinder-card');
+  const count = cards.length;
+  if (!count) return;
+
+  const isMobile = window.innerWidth <= 768;
+  const cardW = isMobile ? 180 : 250;
+  const cardH = isMobile ? 290 : 380;
+  carousel.style.width = cardW + 'px';
+  carousel.style.height = cardH + 'px';
+
+  const angleStep = 360 / count;
+  // Calculate exact cylindrical radius from chord width: R = (W/2) / tan(PI/N)
+  const rad = Math.round((cardW / 2) / Math.tan(Math.PI / count)) + (isMobile ? 80 : 180);
+
+  cards.forEach((card, i) => {
+    const cardAngle = i * angleStep;
+    card.dataset.baseAngle = cardAngle;
+    card.dataset.radius = rad;
+    card.style.width = cardW + 'px';
+    card.style.height = cardH + 'px';
+    card.style.transform = `rotateY(${cardAngle}deg) translateZ(${rad}px)`;
+  });
+  updateCylinderTransform();
+}
+
+function updateCylinderTransform() {
+  const carousel = document.getElementById('cylinderCarousel');
+  if (!carousel) return;
+  carousel.style.transform = `rotateX(-6deg) rotateY(${cylinderCurrentAngle.toFixed(2)}deg)`;
+
+  // Dynamic depth styling: Dim back cards and highlight forward-facing cards
+  const cards = carousel.querySelectorAll('.cylinder-card');
+  const count = cards.length;
+  if (!count) return;
+
+  cards.forEach((card) => {
+    const baseAngle = parseFloat(card.dataset.baseAngle || 0);
+    // Effective angle relative to viewer
+    const effectiveAngle = ((baseAngle + cylinderCurrentAngle) % 360 + 360) % 360;
+    const radAngle = (effectiveAngle * Math.PI) / 180;
+    const cosVal = Math.cos(radAngle); // +1 at front, -1 at back
+
+    // Depth opacity: front is 1.0, sides are 0.75, back is 0.35
+    const opacity = 0.45 + 0.55 * Math.max(0, cosVal);
+    card.style.opacity = opacity.toFixed(2);
+    // Prevent clicking back cards
+    card.style.pointerEvents = cosVal > 0.25 ? 'auto' : 'none';
+  });
+}
+
+function orbitCylinderNext() {
+  const carousel = document.getElementById('cylinderCarousel');
+  if (!carousel) return;
+  const count = carousel.querySelectorAll('.cylinder-card').length || 8;
+  cylinderVelocity -= (360 / count) * 0.25;
+}
+
+function orbitCylinderPrev() {
+  const carousel = document.getElementById('cylinderCarousel');
+  if (!carousel) return;
+  const count = carousel.querySelectorAll('.cylinder-card').length || 8;
+  cylinderVelocity += (360 / count) * 0.25;
 }
 
 // ═══ SMOOTH SCROLL TO SIGNATURE LOOKS ═══
 function scrollToSignatureLooks() {
   const target = document.getElementById('looks-section');
   if (target) {
-    target.scrollIntoView({ behavior: 'smooth' });
+    if (window.lenis) {
+      window.lenis.scrollTo(target);
+    } else {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 }
 
-// ═══ HOMEPAGE GALLERY ENHANCED PHYSICS & 3D TILT ═══
-(function initHomeGalleryInteractions() {
-  const track = document.getElementById('homeGalleryTrack');
-  if (!track) return;
+(function init3DCylinderInteractions() {
+  const stage = document.getElementById('cylinderStage');
+  const carousel = document.getElementById('cylinderCarousel');
+  if (!stage || !carousel) return;
 
-  // 1. Mouse Drag-to-Scroll Physics
-  let isDown = false;
-  let startX = 0;
-  let scrollLeft = 0;
-  let draggedDistance = 0;
+  layoutCylinderCards();
+  window.addEventListener('resize', layoutCylinderCards);
 
-  track.addEventListener('mousedown', (e) => {
-    isDown = true;
-    draggedDistance = 0;
-    track.classList.add('is-dragging');
-    startX = e.pageX - track.offsetLeft;
-    scrollLeft = track.scrollLeft;
+  // Mouse Drag Events
+  stage.addEventListener('mousedown', (e) => {
+    isCylinderDragging = true;
+    cylinderDragDistance = 0;
+    cylinderStartX = e.clientX;
+    cylinderLastX = e.clientX;
+    stage.classList.add('is-dragging');
   });
 
-  track.addEventListener('mouseleave', () => {
-    isDown = false;
-    track.classList.remove('is-dragging');
+  window.addEventListener('mousemove', (e) => {
+    if (!isCylinderDragging) return;
+    const deltaX = e.clientX - cylinderLastX;
+    cylinderLastX = e.clientX;
+    cylinderDragDistance += Math.abs(deltaX);
+    cylinderCurrentAngle += deltaX * 0.35;
+    cylinderVelocity = deltaX * 0.25;
+    updateCylinderTransform();
   });
 
-  track.addEventListener('mouseup', () => {
-    isDown = false;
-    track.classList.remove('is-dragging');
+  window.addEventListener('mouseup', () => {
+    if (!isCylinderDragging) return;
+    isCylinderDragging = false;
+    stage.classList.remove('is-dragging');
   });
 
-  track.addEventListener('mousemove', (e) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - track.offsetLeft;
-    const walk = (x - startX) * 1.6; // Scroll speed multiplier
-    track.scrollLeft = scrollLeft - walk;
-    draggedDistance = Math.abs(walk);
+  // Touch Events for Mobile / Tablet
+  stage.addEventListener('touchstart', (e) => {
+    if (!e.touches.length) return;
+    isCylinderDragging = true;
+    cylinderDragDistance = 0;
+    cylinderStartX = e.touches[0].clientX;
+    cylinderLastX = e.touches[0].clientX;
+    stage.classList.add('is-dragging');
+  }, { passive: true });
+
+  stage.addEventListener('touchmove', (e) => {
+    if (!isCylinderDragging || !e.touches.length) return;
+    const deltaX = e.touches[0].clientX - cylinderLastX;
+    cylinderLastX = e.touches[0].clientX;
+    cylinderDragDistance += Math.abs(deltaX);
+    cylinderCurrentAngle += deltaX * 0.42;
+    cylinderVelocity = deltaX * 0.3;
+    updateCylinderTransform();
+  }, { passive: true });
+
+  stage.addEventListener('touchend', () => {
+    isCylinderDragging = false;
+    stage.classList.remove('is-dragging');
   });
 
-  // Prevent link navigation if the user was actively dragging
-  track.querySelectorAll('.hg-card').forEach(card => {
+  // Hover detection to pause auto-orbit
+  stage.addEventListener('mouseenter', () => { isCylinderHovered = true; });
+  stage.addEventListener('mouseleave', () => { isCylinderHovered = false; });
+
+  // Prevent link click when user was actively dragging
+  carousel.querySelectorAll('.cylinder-card').forEach(card => {
     card.addEventListener('click', (e) => {
-      if (draggedDistance > 8) {
+      if (cylinderDragDistance > 12) {
         e.preventDefault();
       }
     });
 
-    // 2. 3D Magnetic Tilt Effect
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      const rotX = -(y / (rect.height / 2)) * 6; // max 6deg
-      const rotY = (x / (rect.width / 2)) * 6;   // max 6deg
-      card.style.transform = `perspective(1000px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) translateY(-8px) scale(1.02)`;
+    // Spotlight elevation on hover
+    card.addEventListener('mouseenter', () => {
+      const baseAngle = parseFloat(card.dataset.baseAngle || 0);
+      const rad = parseFloat(card.dataset.radius || 420);
+      card.style.transform = `rotateY(${baseAngle}deg) translateZ(${rad + 30}px) scale(1.05)`;
     });
-
     card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
+      const baseAngle = parseFloat(card.dataset.baseAngle || 0);
+      const rad = parseFloat(card.dataset.radius || 420);
+      card.style.transform = `rotateY(${baseAngle}deg) translateZ(${rad}px)`;
     });
   });
 
-  // 3. Luxury Cinema Auto-Glide Engine (Gentle cinematic drift, smoothly pauses on hover)
-  let isHoveringTrack = false;
-  let glideDirection = 1;
-
-  function stepAutoGlide() {
-    if (!isHoveringTrack && track && !isDown) {
-      const maxScroll = track.scrollWidth - track.clientWidth;
-      if (track.scrollLeft >= maxScroll - 4) {
-        glideDirection = -1;
-      } else if (track.scrollLeft <= 4) {
-        glideDirection = 1;
+  // Animation Loop: Inertia + Auto-Orbit
+  function cylinderOrbitLoop() {
+    if (!isCylinderDragging) {
+      if (!isCylinderHovered) {
+        cylinderCurrentAngle += 0.14; // smooth slow auto-orbit
       }
-      track.scrollLeft += glideDirection * 0.85;
+      cylinderCurrentAngle += cylinderVelocity;
+      cylinderVelocity *= 0.93; // friction damping
+      if (Math.abs(cylinderVelocity) < 0.001) cylinderVelocity = 0;
+      updateCylinderTransform();
     }
+    requestAnimationFrame(cylinderOrbitLoop);
   }
+  requestAnimationFrame(cylinderOrbitLoop);
+})();
 
-  setInterval(stepAutoGlide, 30);
-
-  track.addEventListener('mouseenter', () => { isHoveringTrack = true; });
-  track.addEventListener('mouseleave', () => {
-    setTimeout(() => { isHoveringTrack = false; }, 1500);
-  });
-  track.addEventListener('touchstart', () => { isHoveringTrack = true; }, { passive: true });
-  track.addEventListener('touchend', () => {
-    setTimeout(() => { isHoveringTrack = false; }, 2500);
-  });
-
+(function initGSAPScrollAnimations() {
   if (typeof gsap !== 'undefined') {
     if (typeof ScrollTrigger !== 'undefined') {
       gsap.registerPlugin(ScrollTrigger);
@@ -2575,16 +2783,15 @@ function scrollToSignatureLooks() {
         }
       });
 
-      gsap.from('.hg-card', {
-        y: 45,
+      gsap.from('#cylinderStage', {
+        y: 40,
         opacity: 0,
-        scale: 0.96,
-        stagger: 0.08,
-        duration: 0.85,
-        ease: 'power2.out',
+        scale: 0.94,
+        duration: 1.1,
+        ease: 'power3.out',
         scrollTrigger: {
-          trigger: '#homeGalleryTrack',
-          start: 'top 88%'
+          trigger: showcaseSection,
+          start: 'top 85%'
         }
       });
     }

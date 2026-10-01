@@ -24,7 +24,20 @@
 - [ ] **Phase 6: Multi-Device Verification** (TASK-004.7)
   - Playwright automated verification across 1366x768, 1440x900, and 1920x1080 viewports.
 
+### Milestone 3: 3D Cylindrical Album Orbit & Haute Motion Engine — [SPEC-006]
+- [x] **Phase 7: Lenis Smooth Inertial Scrolling & Engine Sync**
+  - Integrated Lenis smooth scroll engine into `base.html`.
+  - Synchronized scroll updates with Three.js particle canvas and GSAP ScrollTrigger ticker.
+- [x] **Phase 8: 3D Cylindrical Orbit Carousel Implementation**
+  - Replaced 2D horizontal gallery track with hardware-accelerated 3D cylindrical stage (`transform-style: preserve-3d`).
+  - Trigonometric radial card distribution: $R = \frac{W/2}{\tan(\pi/N)} + \text{offset}$, auto-orbit loop (~0.14°/frame), mouse drag, touch swipe, inertia damping, and spotlight elevation.
+- [x] **Phase 9: Seamless Card-to-Suite Transformation**
+  - 3D album cards connect to hybrid lookbook suites with drag distance threshold protection (clicks only trigger if drag < 12px).
+- [x] **Phase 10: Demilie Craftsmanship Storytelling & Automated Visual Verification**
+  - Implemented the 4 Sacred Rituals of Royal Bridal Radiance in the About section (Skin Metallurgy, Sacred Geometry, Velvet Complexion, Royal Starlight Seal).
+  - Validated with automated Playwright browser test across desktop (1440px) and mobile (375px).
+
 ---
 
 ## Future Milestones
-- **Milestone 3**: Oracle Cloud Always-Free Deployment & Cloudflare Edge Optimization.
+- **Milestone 4**: Oracle Cloud Always-Free Deployment & Cloudflare Edge Optimization.

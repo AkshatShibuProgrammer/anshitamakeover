@@ -225,7 +225,11 @@ def admin_media_manage(request):
 
         # Instant sync to LookGroup / LookMediaItem if look_group_id is selected
         if look_group_id:
-            grp = LookGroup.objects.filter(id=look_group_id).first() or LookGroup.objects.filter(slug=look_group_id).first()
+            grp = None
+            if str(look_group_id).isdigit():
+                grp = LookGroup.objects.filter(id=int(look_group_id)).first()
+            if not grp:
+                grp = LookGroup.objects.filter(slug=str(look_group_id)).first()
             if grp:
                 LookMediaItem.objects.create(
                     group=grp,
