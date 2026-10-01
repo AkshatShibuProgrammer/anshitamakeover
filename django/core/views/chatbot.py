@@ -998,8 +998,8 @@ def fallback_chatbot(msg, language='hindi'):
         )
 
     if any(w in msg_lower for w in ['location', 'address', 'kahan', 'studio', 'city']):
-        return (f"Anshita Makeover Studio is based in Jabalpur, Madhya Pradesh 📍 — serving bridal, destination weddings and couture bookings nationwide.\n"
-                f"To reserve your date, WhatsApp +91 {wa_number}.")
+        return (f"Anshita Makeover Flagship Studio is in Jabalpur, Madhya Pradesh 📍 — catering to luxury bridal, destination weddings and couture bookings across Jabalpur, Bhopal, Raipur, Lucknow, Nagpur, Pune, Delhi, Chennai, Hyderabad and All Over India.\n"
+                f"To reserve your date or request travel conveyance estimates, WhatsApp +91 {wa_number}.")
 
     if any(w in msg_lower for w in ['hello', 'hi', 'namaste', 'hey', 'good morning', 'good afternoon', 'good evening']):
         return (f"Namaste from Anshita Makeover! 🙏✨ Bridal transformations, hair, nails & certified academy training.\n"

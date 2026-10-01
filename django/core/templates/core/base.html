@@ -6633,10 +6633,10 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
 <div id="cbanner" {% if coupon %}class="active"{% endif %}>
   <div class="cb-sh"></div>
   <div class="cb-inner">
-    <div class="cb-badge" id="cb-disc">{% if coupon %}{{ coupon.discount }}% OFF{% endif %}</div>
-    <span class="cb-txt" id="cb-lbl">{% if coupon %}{{ coupon.label }}{% endif %}</span>
+    <div class="cb-badge" id="cb-disc">{% if coupon %}{{ coupon.discount }}% {{ t.banner_off|default:'OFF' }}{% endif %}</div>
+    <span class="cb-txt" id="cb-lbl">{% if coupon %}{{ t.banner_privilege_label|default:coupon.label }}{% endif %}</span>
     <div class="cb-code" id="cb-code" onclick="copyCoupon()" title="Click to apply across all packages">{% if coupon %}{{ coupon.code }}{% endif %}</div>
-    <span class="cb-tap" onclick="copyCoupon()">✦ Tap to apply</span>
+    <span class="cb-tap" onclick="copyCoupon()">{{ t.banner_tap_apply|default:'✦ Tap to apply' }}</span>
     <span class="cb-timer" id="cb-timer"></span>
   </div>
 </div>
@@ -6952,65 +6952,21 @@ window.quickAskConcierge = function(query) {
   }
 };
 
-/* ── 3D LIVING CONCIERGE RIG WITH ACTIVE RETINA GAZE CANVAS & ROYAL ENTRANCE ── */
-(function initLiving3DConcierge() {
+/* ── 24K IMPERIAL GOLD CONCIERGE MEDALLION CONTROLLER ── */
+(function initRoyalConciergeMedallion() {
   const toggleWrap = document.getElementById('chat-toggle-wrap');
   const toggle = document.getElementById('chat-toggle');
-  const stage = document.getElementById('char3dStage');
-  const canvas = document.getElementById('charGazeCanvas');
-  const mouthTalk = document.getElementById('charMouthTalk');
-  const layerWink = document.getElementById('charLayerWink');
-  const specular = document.getElementById('charSpecularShine');
   const portal = document.getElementById('charEntryPortal');
-  if (!toggle || !stage || !canvas) return;
+  if (!toggle || !toggleWrap) return;
 
-  const ctx = canvas.getContext('2d');
-
-  // Load High-Res Character Assets
-  const imgSclera = new Image();
-  const imgIris = new Image();
-  const imgFace = new Image();
-  imgSclera.src = "/static/core/images/brand/concierge_sclera.png";
-  imgIris.src = "/static/core/images/brand/concierge_iris.png";
-  imgFace.src = "/static/core/images/brand/concierge_face_cutout.png";
-
-  let assetsReady = 0;
-  function onAssetLoad() {
-    assetsReady++;
-    if (assetsReady === 3) {
-      renderLoop();
-    }
-  }
-  imgSclera.onload = onAssetLoad;
-  imgIris.onload = onAssetLoad;
-  imgFace.onload = onAssetLoad;
-
-  // Head Orientation Physics
-  let targetRotX = 0, targetRotY = 0, targetRotZ = 0;
-  let currRotX = 0, currRotY = 0, currRotZ = 0;
-  let targetTransX = 0, targetTransY = 0;
-  let currTransX = 0, currTransY = 0;
-
-  // Eye Gaze Physics (offset from natural center)
-  let targetIrisX = 0, targetIrisY = 0;
-  let currIrisX = 0, currIrisY = 0;
-
-  // Natural Life & Expression State
-  let isTalking = false;
-  let isWinking = false;
-  let blinkProgress = 0; // 0 (open) to 1 (closed)
-  let clock = 0;
-
-  // 1. Royal Entrance Controller
+  // Royal Entrance Controller
   window.triggerConciergeEntrance = function() {
     if (!toggleWrap || toggleWrap.classList.contains('char-entered')) return;
     if (portal) portal.classList.add('active');
     toggleWrap.classList.remove('char-pre-entry');
     toggleWrap.classList.add('char-entered');
 
-    // Royal Wink & Greeting on Arrival
     setTimeout(() => {
-      triggerWink(900);
       const speechBubble = document.getElementById('chat-speech-bubble');
       if (speechBubble && !sessionStorage.getItem('anshita_chat_opened')) {
         speechBubble.classList.add('active');
@@ -7019,181 +6975,41 @@ window.quickAskConcierge = function(query) {
     }, 1000);
   };
 
-  // Safe fallback if preloader finishes or is bypassed
+  // Luxury 3D Cursor Tilt Parallax for the Medallion
+  let targetTiltX = 0, targetTiltY = 0;
+  let currentTiltX = 0, currentTiltY = 0;
+
+  window.addEventListener('mousemove', (e) => {
+    const rect = toggle.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+
+    if (dist < 350) {
+      targetTiltX = ((e.clientX - centerX) / 350) * 12;
+      targetTiltY = -((e.clientY - centerY) / 350) * 12;
+    } else {
+      targetTiltX = 0;
+      targetTiltY = 0;
+    }
+  }, { passive: true });
+
+  function animateMedallion() {
+    currentTiltX += (targetTiltX - currentTiltX) * 0.1;
+    currentTiltY += (targetTiltY - currentTiltY) * 0.1;
+    const inner = toggle.querySelector('.medallion-inner');
+    if (inner) {
+      inner.style.transform = `perspective(400px) rotateY(${currentTiltX.toFixed(2)}deg) rotateX(${currentTiltY.toFixed(2)}deg)`;
+    }
+    requestAnimationFrame(animateMedallion);
+  }
+  requestAnimationFrame(animateMedallion);
+
   setTimeout(() => {
     if (typeof window.triggerConciergeEntrance === 'function') {
       window.triggerConciergeEntrance();
     }
-  }, 3200);
-
-  // 2. High-Precision Mouse & Cursor Reactive Calculations across screen
-  window.addEventListener('mousemove', e => {
-    const rect = toggle.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-
-    const dx = e.clientX - cx;
-    const dy = e.clientY - cy;
-
-    // Normalized screen delta (-1 to 1)
-    const normX = Math.max(-1, Math.min(1, dx / (window.innerWidth * 0.55)));
-    const normY = Math.max(-1, Math.min(1, dy / (window.innerHeight * 0.55)));
-
-    // 3D Head Turning & Tilt (degrees)
-    targetRotY = normX * 24;      // Look left/right
-    targetRotX = -normY * 18;     // Look up/down
-    targetRotZ = normX * -4;      // Subtle natural tilt
-    targetTransX = normX * 8;     // Slight parallax translation
-    targetTransY = normY * 6;
-
-    // Eye Gaze Offset in 700x700 coordinate space
-    // Iris shifts up to ±14px horizontally, ±9px vertically!
-    targetIrisX = normX * 14;
-    targetIrisY = normY * 9;
-
-    // Specular Studio Light highlight shift
-    if (specular) {
-      const specX = 50 + normX * 28;
-      const specY = 40 + normY * 22;
-      specular.style.background = `radial-gradient(circle at ${specX}% ${specY}%, rgba(255,255,255,0.48) 0%, rgba(212,175,55,0.2) 35%, transparent 68%)`;
-    }
-  }, { passive: true });
-
-  // 3. Natural Blinking Loop (every 5-7.5 seconds)
-  function scheduleNextBlink() {
-    const delay = 4800 + Math.random() * 2800;
-    setTimeout(() => {
-      if (!isWinking) {
-        animateBlink();
-      }
-      scheduleNextBlink();
-    }, delay);
-  }
-  scheduleNextBlink();
-
-  function animateBlink() {
-    let startTime = performance.now();
-    const duration = 180; // ms
-    function step(now) {
-      const p = (now - startTime) / duration;
-      if (p < 0.5) {
-        blinkProgress = p * 2; // 0 to 1
-      } else if (p < 1) {
-        blinkProgress = (1 - p) * 2; // 1 to 0
-      } else {
-        blinkProgress = 0;
-        return;
-      }
-      requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  // 4. Interactive Wink
-  function triggerWink(duration = 900) {
-    isWinking = true;
-    if (layerWink) layerWink.classList.add('active');
-    setTimeout(() => {
-      isWinking = false;
-      if (layerWink) layerWink.classList.remove('active');
-    }, duration);
-  }
-  window.triggerCharWink = triggerWink;
-
-  // 5. Talking / Lip-Sync
-  let talkInterval = null;
-  window.triggerCharSpeechAnimation = function(durationMs = 3200) {
-    isTalking = true;
-    clearInterval(talkInterval);
-    let frame = 0;
-    talkInterval = setInterval(() => {
-      frame++;
-      if (mouthTalk) {
-        if (frame % 2 === 1) mouthTalk.classList.add('active');
-        else mouthTalk.classList.remove('active');
-      }
-      if (frame * 180 >= durationMs) {
-        clearInterval(talkInterval);
-        isTalking = false;
-        if (mouthTalk) mouthTalk.classList.remove('active');
-      }
-    }, 180);
-  };
-
-  if (window.charConciergeState) {
-    window.charConciergeState.setMood = function(mood, durationMs = 3000) {
-      if (mood === 'recommending' || mood === 'excited') {
-        window.triggerCharSpeechAnimation(durationMs);
-      }
-    };
-  }
-
-  // Hover reaction: perk up, smile, and speak
-  toggle.addEventListener('mouseenter', () => {
-    targetTransY -= 4;
-    window.triggerCharSpeechAnimation(1400);
-  });
-
-  // Click reaction: wink and open
-  toggle.addEventListener('click', () => {
-    triggerWink(800);
-  });
-
-  // 6. Master 60FPS Render Loop
-  function renderLoop() {
-    requestAnimationFrame(renderLoop);
-    clock += 0.035;
-
-    // Smooth Spring Lerp for Head Orientation (0.12 factor)
-    currRotX += (targetRotX - currRotX) * 0.12;
-    currRotY += (targetRotY - currRotY) * 0.12;
-    currRotZ += (targetRotZ - currRotZ) * 0.12;
-    currTransX += (targetTransX - currTransX) * 0.12;
-    currTransY += (targetTransY - currTransY) * 0.12;
-
-    // Smooth Spring Lerp for Iris Gaze (0.16 factor)
-    currIrisX += (targetIrisX - currIrisX) * 0.16;
-    currIrisY += (targetIrisY - currIrisY) * 0.16;
-
-    // Idle breathing float
-    const breath = Math.sin(clock * 1.6) * 1.5;
-
-    // Apply 3D perspective transform to Stage
-    stage.style.transform = `perspective(450px) rotateX(${currRotX.toFixed(2)}deg) rotateY(${currRotY.toFixed(2)}deg) rotateZ(${currRotZ.toFixed(2)}deg) translate3d(${currTransX.toFixed(2)}px, ${(currTransY + breath).toFixed(2)}px, 4px) scale(1.06)`;
-
-    // Draw Gaze Canvas
-    if (assetsReady === 3 && !isWinking) {
-      ctx.clearRect(0, 0, 700, 700);
-
-      // 1. Sclera (Eyeball white base)
-      ctx.drawImage(imgSclera, 0, 0, 700, 700);
-
-      // 2. Dynamic Irises (scaled to 52x52)
-      const iw = 52, ih = 52;
-      // Left eye iris
-      ctx.drawImage(imgIris, 285 + currIrisX - iw/2, 290 + currIrisY - ih/2, iw, ih);
-      // Right eye iris
-      ctx.drawImage(imgIris, 425 + currIrisX - iw/2, 290 + currIrisY - ih/2, iw, ih);
-
-      // 3. Face Cutout (eyelashes, eyelids, cheeks, hair in front)
-      ctx.drawImage(imgFace, 0, 0, 700, 700);
-
-      // 4. Natural Eyelid Blink
-      if (blinkProgress > 0.02) {
-        ctx.save();
-        ctx.fillStyle = "rgba(42, 22, 20, 0.95)";
-        // Draw upper lid lowering down across eyes
-        const drop = blinkProgress * 36;
-        ctx.beginPath();
-        // Left eye blink curve
-        ctx.ellipse(285, 272 + drop * 0.5, 42, Math.max(2, drop * 0.55), 0, 0, Math.PI * 2);
-        // Right eye blink curve
-        ctx.ellipse(425, 272 + drop * 0.5, 42, Math.max(2, drop * 0.55), 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-    }
-  }
+  }, 2200);
 })();
 
 
@@ -9918,6 +9734,13 @@ async function sendChat(){
     typing.remove();
     appendMsg(d.reply,'bot');
     chatSessionId=d.session_id||chatSessionId;
+    
+    // Trigger Anshita 3D Character Talking Lip-Sync (cadence proportional to reply length)
+    if (typeof window.startCharTalking === 'function') {
+      const speechDuration = Math.min(6500, Math.max(2200, (d.reply ? d.reply.length : 40) * 45));
+      window.startCharTalking(speechDuration);
+    }
+
     if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
       const isBookingOrOffer = d.reply && (d.reply.includes('₹') || d.reply.includes('Suite') || d.reply.includes('Package') || d.reply.includes('Book') || d.reply.includes('WhatsApp'));
       window.charConciergeState.setMood(isBookingOrOffer ? 'recommending' : 'excited', 5000);
@@ -9925,6 +9748,9 @@ async function sendChat(){
   }catch(e){
     typing.remove();
     appendMsg('Kuch error aa gaya. WhatsApp karo: '+WA,'bot');
+    if (typeof window.startCharTalking === 'function') {
+      window.startCharTalking(2000);
+    }
     if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
       window.charConciergeState.setMood('happy');
     }

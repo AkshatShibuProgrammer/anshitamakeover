@@ -305,15 +305,38 @@ body.is-admin .cinema-album-admin-edit {
 .cinema-viewport {
   position: relative;
   width: 100%;
-  height: clamp(420px, 58vh, 580px);
+  height: clamp(380px, 54vh, 500px);
   border-radius: 16px;
   overflow: hidden;
-  background: #000;
+  background: radial-gradient(circle at center, #160712 0%, #060205 100%);
   border: 1px solid var(--cinema-border);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: height 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+/* Expanded Vertical Space for 9:16 Instagram Reels */
+.cinema-viewport.is-reel-mode {
+  height: clamp(660px, 82vh, 800px);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.95), 0 0 40px rgba(212, 175, 55, 0.2);
+}
+
+/* Ambient Glow Backdrop Behind Vertical Reels */
+.cinema-reel-ambient-bg {
+  position: absolute;
+  inset: -30px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(45px) brightness(0.28) saturate(1.4);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.cinema-viewport.is-reel-mode .cinema-reel-ambient-bg {
+  opacity: 1;
 }
 
 .cinema-media-element {
@@ -321,10 +344,11 @@ body.is-admin .cinema-album-admin-edit {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 25%;
-  filter: brightness(0.92) contrast(1.04);
-  transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.35s ease;
+  object-fit: contain; /* Full bride visible without head or chin cropping */
+  object-position: center center;
+  filter: brightness(0.96) contrast(1.03);
+  transition: opacity 0.35s ease;
+  z-index: 2;
 }
 
 video.cinema-media-element {
@@ -332,12 +356,313 @@ video.cinema-media-element {
   object-fit: contain;
 }
 
+/* Authentic Instagram Reel Embed Player Wrap (9:16 Vertical Phone Architecture) */
+.cinema-ig-embed-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 2, 6, 0.9);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 14px 10px;
+}
+
+.cinema-reel-phone-frame {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  max-height: 740px;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1.5px solid rgba(212, 175, 55, 0.7);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.95), 0 0 35px rgba(212, 175, 55, 0.25);
+  background: #000;
+  display: flex;
+  flex-direction: column;
+}
+
+.cinema-reel-phone-notch {
+  height: 24px;
+  background: #0d040a;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.cinema-phone-speaker {
+  width: 42px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+.cinema-phone-camera {
+  width: 7px;
+  height: 7px;
+  background: rgba(212, 175, 55, 0.5);
+  border-radius: 50%;
+}
+
+.cinema-reel-phone-screen {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  height: calc(100% - 66px);
+  overflow: hidden;
+  background: #000;
+}
+
+.cinema-ig-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+.cinema-reel-phone-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+.cinema-reel-phone-bottom-bar {
+  height: 42px;
+  background: #11050d;
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.cinema-phone-bar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cinema-phone-bar-btn:hover {
+  background: rgba(212, 175, 55, 0.25);
+  border-color: var(--cinema-gold);
+  color: var(--cinema-gold-l);
+}
+.cinema-phone-bar-btn.ig-glow {
+  background: rgba(225, 48, 108, 0.28);
+  border-color: rgba(225, 48, 108, 0.65);
+}
+.cinema-phone-bar-btn.ig-glow:hover {
+  background: #e1306c;
+  color: #fff;
+}
+.cinema-phone-bar-btn.close-btn {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #c9b0be;
+}
+.cinema-phone-bar-btn.close-btn:hover {
+  background: rgba(255, 60, 60, 0.25);
+  border-color: #ff4b4b;
+  color: #fff;
+}
+
+/* ═══ ULTRA-LUXURY FULLSCREEN 4K REEL THEATER MODAL ═══ */
+.cinema-reel-theater-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: rgba(4, 1, 3, 0.94);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.cinema-reel-theater-overlay.active {
+  display: flex;
+}
+.cinema-reel-theater-bezel {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  height: min(92vh, 820px);
+  background: #000;
+  border-radius: 22px;
+  border: 1.5px solid rgba(212, 175, 55, 0.75);
+  box-shadow: 0 0 60px rgba(212, 175, 55, 0.35), 0 30px 100px rgba(0, 0, 0, 0.98);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: theaterPopIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes theaterPopIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+.cinema-reel-theater-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: linear-gradient(180deg, rgba(22, 8, 18, 0.98) 0%, rgba(12, 4, 10, 0.95) 100%);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  flex-shrink: 0;
+}
+.theater-crown-tag {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 1.5px;
+  color: var(--cinema-gold);
+  font-weight: 700;
+  display: block;
+}
+.theater-header-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.92rem;
+  color: #fff;
+  margin: 2px 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+.theater-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.theater-close-btn:hover {
+  background: rgba(225, 48, 108, 0.8);
+  border-color: #e1306c;
+  transform: rotate(90deg);
+}
+.cinema-reel-theater-stage {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  background: #000;
+}
+.theater-ig-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+.theater-direct-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+.cinema-reel-theater-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #0f050d;
+  border-top: 1px solid rgba(212, 175, 55, 0.25);
+  gap: 10px;
+  flex-shrink: 0;
+}
+.theater-cta-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border-radius: 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  text-align: center;
+}
+.theater-cta-btn.ig-cta {
+  background: rgba(225, 48, 108, 0.25);
+  border: 1px solid rgba(225, 48, 108, 0.6);
+  color: #fff;
+}
+.theater-cta-btn.ig-cta:hover {
+  background: #e1306c;
+  color: #fff;
+  transform: translateY(-1px);
+}
+.theater-cta-btn.wa-cta {
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  color: #0b0307;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+}
+.theater-cta-btn.wa-cta:hover {
+  background: linear-gradient(135deg, #f5d77f, #d4af37);
+  transform: translateY(-1px);
+}
+.theater-nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(14, 5, 11, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: var(--cinema-gold);
+  font-size: 2rem;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+  z-index: 1000000;
+}
+.theater-nav-arrow:hover {
+  background: rgba(82, 22, 45, 0.9);
+  color: #fff;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
+}
+.theater-nav-prev { left: 24px; }
+.theater-nav-next { right: 24px; }
+@media (max-width: 640px) {
+  .theater-nav-arrow { display: none; }
+}
+
 .cinema-overlay-vignette {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.45) 75%, rgba(0, 0, 0, 0.88) 100%),
-    linear-gradient(to right, rgba(0, 0, 0, 0.35) 0%, transparent 40%, rgba(0, 0, 0, 0.85) 80%);
+  background: radial-gradient(circle at 50% 50%, transparent 70%, rgba(0, 0, 0, 0.5) 100%);
   pointer-events: none;
   z-index: 2;
   transition: opacity 0.4s ease;
@@ -397,92 +722,147 @@ video.cinema-media-element {
   pointer-events: none;
 }
 
-/* Right-Side Typographic Overlay with Authentic Details */
-.cinema-hero-typography {
+/* Cinema Viewport Direct Navigation Arrows */
+.cinema-nav-arrow {
   position: absolute;
-  right: 5%;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 5;
-  max-width: 440px;
-  text-align: right;
+  z-index: 12;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(14, 5, 10, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  color: var(--cinema-gold);
+  font-size: 2.2rem;
+  font-weight: 300;
+  line-height: 1;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  pointer-events: auto;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+.cinema-nav-arrow:hover {
+  background: rgba(82, 22, 45, 0.9);
+  border-color: var(--cinema-gold-l);
+  color: #fff;
+  transform: translateY(-50%) scale(1.12);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.55);
+}
+.cinema-nav-prev { left: 24px; }
+.cinema-nav-next { right: 24px; }
+
+/* Photo Indicator Pill */
+.cinema-photo-pill {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 12;
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: rgba(10, 3, 8, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #f5eed6;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
 }
 
-.cinema-tag-eyebrow {
+/* ═══ DEDICATED LUXURY CINEMA DETAILS CONSOLE (100% ZERO MEDIA OVERLAP) ═══ */
+.cinema-details-dock {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 24px;
+  margin-top: 14px;
+  background: rgba(18, 6, 14, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.cinema-dock-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+}
+
+.cinema-dock-eyebrow {
   font-family: 'Inter', sans-serif;
-  font-size: 0.68rem;
-  letter-spacing: 4px;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--cinema-gold);
-  margin-bottom: 8px;
   font-weight: 700;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  margin-bottom: 4px;
 }
 
-.cinema-headline-block {
+.cinema-dock-title-row {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  margin-bottom: 8px;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
 }
 
-.cinema-headline-craft {
+.cinema-dock-title {
   font-family: 'Cinzel', serif;
-  font-size: clamp(1.4rem, 2.3vw, 2.2rem);
-  font-weight: 800;
-  letter-spacing: 2px;
-  color: #fff;
-  line-height: 1.1;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.85);
-}
-
-.cinema-headline-brides {
-  font-family: 'Alex Brush', cursive;
-  font-size: clamp(2.6rem, 4.4vw, 4.2rem);
-  color: #f7a9be;
-  line-height: 0.95;
-  margin-top: -4px;
-  text-shadow: 0 4px 25px rgba(0,0,0,0.9), 0 0 20px rgba(247, 169, 190, 0.4);
-}
-
-.cinema-ornament-line {
-  color: var(--cinema-gold);
-  font-size: 0.9rem;
-  margin: 6px 0 10px;
-  opacity: 0.8;
-}
-
-.cinema-subtext-moments {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.8rem;
+  font-size: clamp(1.05rem, 1.4vw, 1.32rem);
+  font-weight: 700;
   letter-spacing: 1px;
-  color: rgba(245, 237, 214, 0.85);
-  line-height: 1.55;
-  margin-bottom: 14px;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+  color: #fff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.cinema-dock-client {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.98rem;
+  color: #f7a9be;
+}
+
+.cinema-dock-caption {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 0.25px;
+  color: rgba(245, 237, 214, 0.82);
+  line-height: 1.45;
+  margin: 0;
+  white-space: normal;
+}
+
+.cinema-dock-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
 /* Real-Time Instagram & WhatsApp Badges */
-.cinema-detail-badges {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  margin-bottom: 16px;
-}
-
 .cinema-ig-link-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
-  background: rgba(225, 48, 108, 0.2);
-  border: 1px solid rgba(225, 48, 108, 0.5);
+  padding: 8px 14px;
+  background: rgba(225, 48, 108, 0.25);
+  border: 1px solid rgba(225, 48, 108, 0.6);
   color: #fff;
   border-radius: 20px;
   font-family: 'Inter', sans-serif;
@@ -493,26 +873,27 @@ video.cinema-media-element {
   backdrop-filter: blur(8px);
 }
 .cinema-ig-link-badge:hover {
-  background: rgba(225, 48, 108, 0.6);
+  background: rgba(225, 48, 108, 0.75);
   border-color: #e1306c;
   transform: translateY(-2px);
+  color: #fff;
 }
 
 .cinema-book-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 26px;
+  gap: 6px;
+  padding: 8px 18px;
   background: linear-gradient(135deg, #d4af37, #b8860b);
   color: #0b0307;
   font-family: 'Inter', sans-serif;
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  border-radius: 26px;
+  border-radius: 20px;
   text-decoration: none;
-  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.35);
   transition: all 0.3s ease;
 }
 
@@ -520,23 +901,19 @@ video.cinema-media-element {
   transform: translateY(-2px);
   box-shadow: 0 10px 28px rgba(212, 175, 55, 0.55);
   background: linear-gradient(135deg, #f5d77f, #d4af37);
+  color: #0b0307;
 }
 
-@media (max-width: 900px) {
-  .cinema-hero-typography {
-    right: auto;
-    left: 20px;
-    bottom: 20px;
-    top: auto;
-    transform: none;
-    text-align: left;
-    align-items: flex-start;
+@media (max-width: 860px) {
+  .cinema-details-dock {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding: 14px 16px;
   }
-  .cinema-headline-block {
-    align-items: flex-start;
-  }
-  .cinema-detail-badges {
+  .cinema-dock-right {
     justify-content: flex-start;
+    flex-wrap: wrap;
   }
 }
 
@@ -807,6 +1184,49 @@ video.cinema-media-element {
 .adm-modal-btn.save:hover {
   background: var(--cinema-gold-l);
 }
+
+.adm-modal-select, .adm-modal-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(14, 4, 10, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.86rem;
+  box-sizing: border-box;
+}
+.adm-modal-select:focus, .adm-modal-textarea:focus {
+  outline: none;
+  border-color: var(--cinema-gold);
+}
+.adm-modal-textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.filmstrip-del-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(220, 20, 60, 0.85);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  font-size: 0.65rem;
+  padding: 2px 5px;
+  cursor: pointer;
+  z-index: 5;
+  transition: transform 0.2s, background 0.2s;
+  display: none;
+}
+body.is-admin .filmstrip-del-btn {
+  display: block;
+}
+.filmstrip-del-btn:hover {
+  background: #ff0033;
+  transform: scale(1.18);
+}
 </style>
 {% endblock %}
 
@@ -844,6 +1264,9 @@ video.cinema-media-element {
           <button type="button" class="cinema-album-admin-edit" onclick="openAdminAlbumEditModal()" title="Admin: Customize Album Details">
             ✏️ Edit Album
           </button>
+          <button type="button" class="cinema-album-admin-edit" onclick="openAdminAddMediaModal()" title="Admin: Add Photo or Reel to this Album" style="background:rgba(212,175,55,0.25); border-color:var(--cinema-gold); color:var(--cinema-gold-l); margin-left:6px;">
+            ➕ Add Media
+          </button>
           {% endif %}
         </div>
 
@@ -860,36 +1283,66 @@ video.cinema-media-element {
         </div>
       </div>
 
-      <!-- Cinema Screen Viewport -->
+      <!-- Cinema Screen Viewport (Adaptive 9:16 Reel & Landscape Photo Stage) -->
       <div class="cinema-viewport" id="cinemaViewport">
+        <!-- Ambient Blurred Glow Behind Vertical Reels -->
+        <div class="cinema-reel-ambient-bg" id="cinemaReelAmbientBg"></div>
+
+        <!-- Direct Next/Previous Buttons on Photo/Video -->
+        <button type="button" class="cinema-nav-arrow cinema-nav-prev" onclick="prevCinemaMedia()" title="Previous Photo / Video (Scroll Up or Left Arrow)">‹</button>
+        <button type="button" class="cinema-nav-arrow cinema-nav-next" onclick="nextCinemaMedia()" title="Next Photo / Video (Scroll Down or Right Arrow)">›</button>
+
+        <!-- Dynamic Photo Counter Pill (Visible on Photos) -->
+        <div class="cinema-photo-pill" id="cinemaPhotoPill">📷 Photo 01 of 07</div>
+
         <video src="" class="cinema-media-element" id="cinemaMainVideo" playsinline loop style="display: none;"></video>
         <img src="" alt="Bridal Cinema Stage" class="cinema-media-element" id="cinemaMainMedia">
         
-        <div class="cinema-overlay-vignette"></div>
+        <!-- Live Instagram Reel Embed Player (Full 9:16 Vertical Luxury Architecture) -->
+        <div class="cinema-ig-embed-wrap" id="cinemaIgEmbedWrap" style="display: none;">
+          <div class="cinema-reel-phone-frame" id="cinemaReelPhoneFrame">
+            <div class="cinema-reel-phone-notch">
+              <span class="cinema-phone-speaker"></span>
+              <span class="cinema-phone-camera"></span>
+            </div>
+            <div class="cinema-reel-phone-screen">
+              <iframe class="cinema-ig-iframe" id="cinemaIgIframe" src="" allowfullscreen frameborder="0" scrolling="no"></iframe>
+              <video class="cinema-reel-phone-video" id="cinemaReelPhoneVideo" playsinline loop controls style="display: none;"></video>
+            </div>
+            <div class="cinema-reel-phone-bottom-bar">
+              <button type="button" class="cinema-phone-bar-btn" onclick="openCinemaReelTheater()" title="Open Fullscreen Reel Theater">⛶ Theater View</button>
+              <a href="#" target="_blank" rel="noopener" class="cinema-phone-bar-btn ig-glow" id="cinemaPhoneIgBtn" title="Open in Instagram App">📸 Instagram ↗</a>
+              <button type="button" class="cinema-phone-bar-btn close-btn" onclick="closeCinemaReelView()" title="Close Reel and View High-Res Photo">✕ Back to Photo</button>
+            </div>
+          </div>
+        </div>
 
-        <!-- Center Golden Play Button -->
+        <div class="cinema-overlay-vignette" id="cinemaOverlayVignette"></div>
+
+        <!-- Center Golden Play Button (Visible on Video/Reels Only) -->
         <div class="cinema-center-play" id="cinemaPlayTrigger" onclick="toggleCinemaPlay()" title="Play Cinema Reel">
           <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
         </div>
 
-        <!-- Right-Side Typographic Overlay with Authentic Details -->
-        <div class="cinema-hero-typography">
-          <p class="cinema-tag-eyebrow" id="cinemaEyebrow">TRADITIONAL BENGALI · VIVAH</p>
-          <div class="cinema-headline-block">
-            <span class="cinema-headline-craft" id="cinemaCraftH">CRAFTING TIMELESS</span>
-            <span class="cinema-headline-brides" id="cinemaBridesH">Brides</span>
+      </div>
+
+      <!-- Dedicated Luxury Cinema Metadata Console (100% Zero Media Overlap) -->
+      <div class="cinema-details-dock" id="cinemaDetailsDock">
+        <div class="cinema-dock-left">
+          <span class="cinema-dock-eyebrow" id="cinemaEyebrow">TRADITIONAL BENGALI · VIVAH</span>
+          <div class="cinema-dock-title-row">
+            <h2 class="cinema-dock-title" id="cinemaCraftH">CRAFTING TIMELESS BRIDES</h2>
+            <span class="cinema-dock-client" id="cinemaBridesH">Kuhu</span>
           </div>
-          <div class="cinema-ornament-line">❖</div>
-          <p class="cinema-subtext-moments" id="cinemaSubMoments">
+          <p class="cinema-dock-caption" id="cinemaSubMoments">
             Authentic Kolkata Banarasi silk draping, hand-painted red and white sacred Chandan motifs, and 18-hour cry-proof airbrush glow.
           </p>
-          
-          <div class="cinema-detail-badges">
-            <a href="#" target="_blank" rel="noopener" class="cinema-ig-link-badge" id="cinemaIgLinkBadge" style="display: none;">
-              <span>📸 View on Instagram ↗</span>
-            </a>
-          </div>
+        </div>
 
+        <div class="cinema-dock-right">
+          <a href="#" target="_blank" rel="noopener" class="cinema-ig-link-badge" id="cinemaIgLinkBadge" style="display: none;">
+            <span>📸 View on Instagram ↗</span>
+          </a>
           <a href="#" target="_blank" class="cinema-book-btn" id="cinemaBookBtn">
             <span>RESERVE THIS LOOK</span>
             <span>→</span>
@@ -897,8 +1350,8 @@ video.cinema-media-element {
         </div>
       </div>
 
-      <!-- Scrubber Control Bar -->
-      <div class="cinema-control-bar">
+      <!-- Scrubber Control Bar (Visible on Real Videos Only) -->
+      <div class="cinema-control-bar" id="cinemaControlBar">
         <button type="button" class="ctrl-btn" id="cinemaPlayIconBtn" onclick="toggleCinemaPlay()" title="Play / Pause">
           ▶
         </button>
@@ -938,6 +1391,37 @@ video.cinema-media-element {
 
 </main>
 
+<!-- ═══ ROYAL CINEMA 4K REEL THEATER MODAL (FULLSCREEN 9:16) ═══ -->
+<div class="cinema-reel-theater-overlay" id="cinemaReelTheaterModal" onclick="handleTheaterOverlayClick(event)">
+  <div class="cinema-reel-theater-bezel">
+    <div class="cinema-reel-theater-header">
+      <div class="theater-header-left">
+        <span class="theater-crown-tag">👑 ANSHITA MAKEOVER · 4K REEL THEATER</span>
+        <h4 class="theater-header-title" id="theaterHeaderTitle">Subho Drishti & Mukut Reveal Reel</h4>
+      </div>
+      <button type="button" class="theater-close-btn" onclick="closeCinemaReelTheater()" title="Close Theater Mode (Esc)">✕</button>
+    </div>
+    
+    <div class="cinema-reel-theater-stage">
+      <iframe class="theater-ig-iframe" id="theaterIgIframe" src="" allowfullscreen frameborder="0" scrolling="no"></iframe>
+      <video class="theater-direct-video" id="theaterDirectVideo" playsinline loop controls style="display: none;"></video>
+    </div>
+
+    <div class="cinema-reel-theater-footer">
+      <a href="#" target="_blank" rel="noopener" class="theater-cta-btn ig-cta" id="theaterIgLink">
+        <span>📸 Open in Instagram App ↗</span>
+      </a>
+      <a href="#" target="_blank" class="theater-cta-btn wa-cta" id="theaterWaLink">
+        <span>👑 Reserve Look on WhatsApp</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Theater Prev / Next Reel Arrows -->
+  <button type="button" class="theater-nav-arrow theater-nav-prev" onclick="prevTheaterReel(event)" title="Previous Reel (Left Arrow)">‹</button>
+  <button type="button" class="theater-nav-arrow theater-nav-next" onclick="nextTheaterReel(event)" title="Next Reel (Right Arrow)">›</button>
+</div>
+
 <!-- ═══ ADMIN CUSTOMIZE ALBUM MODAL ═══ -->
 {% if user.is_authenticated %}
 <div class="admin-album-modal" id="adminAlbumModal">
@@ -949,7 +1433,7 @@ video.cinema-media-element {
     <input type="text" class="adm-modal-input" id="admModalAlbumName" placeholder="e.g. Kuhu — Traditional Kolkata Banarasi & Chandan Art">
 
     <label class="adm-modal-label">Client / Model Name</label>
-    <input type="text" class="adm-modal-input" id="admModalClientName" placeholder="e.g. Kuhu Banerjee">
+    <input type="text" class="adm-modal-input" id="admModalClientName" placeholder="e.g. Kuhu">
 
     <label class="adm-modal-label">Makeup Style / Technique</label>
     <input type="text" class="adm-modal-input" id="admModalMakeupType" placeholder="e.g. Traditional Bengali Mukut & Chandan Art">
@@ -968,6 +1452,46 @@ video.cinema-media-element {
     <div class="adm-modal-actions">
       <button type="button" class="adm-modal-btn cancel" onclick="closeAdminAlbumEditModal()">Cancel</button>
       <button type="button" class="adm-modal-btn save" id="admModalSaveBtn" onclick="saveAdminAlbumCustomization()">Save Customization</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN ADD MEDIA TO ALBUM MODAL ═══ -->
+<div class="admin-album-modal" id="adminAddMediaModal">
+  <div class="admin-album-modal-box">
+    <h3 class="adm-modal-title">➕ Add Photo or Reel to Album</h3>
+    
+    <label class="adm-modal-label">Select Destination Album *</label>
+    <select class="adm-modal-select" id="admAddMediaAlbumSelect">
+      <!-- Populated dynamically from allCinemaAlbums -->
+    </select>
+
+    <label class="adm-modal-label">Media Type *</label>
+    <select class="adm-modal-select" id="admAddMediaTypeSelect" onchange="toggleAddMediaFields(this.value)">
+      <option value="instagram">📸 Instagram Reel / Post (Embed URL)</option>
+      <option value="image">📷 Image Photo (URL or File Path)</option>
+      <option value="video_file">▶ 4K Video MP4 (URL)</option>
+    </select>
+
+    <label class="adm-modal-label">Look Title / Heading *</label>
+    <input type="text" class="adm-modal-input" id="admAddMediaTitle" placeholder="e.g. Symmetrical Chandan Precision">
+
+    <div id="admAddMediaUrlWrap">
+      <label class="adm-modal-label">Instagram Reel URL / Video URL *</label>
+      <input type="url" class="adm-modal-input" id="admAddMediaUrl" placeholder="https://www.instagram.com/reel/Dap4JkvKL1E/">
+    </div>
+
+    <div id="admAddMediaImgWrap">
+      <label class="adm-modal-label">Image URL / Path</label>
+      <input type="text" class="adm-modal-input" id="admAddMediaImgPath" placeholder="/static/core/images/looks/bengali_bride_kuhu.png">
+    </div>
+
+    <label class="adm-modal-label">Artistry Technique / Caption</label>
+    <textarea class="adm-modal-textarea" id="admAddMediaCaption" placeholder="Pure banarasi silk with cry-proof airbrush radiance..."></textarea>
+
+    <div class="adm-modal-actions">
+      <button type="button" class="adm-modal-btn cancel" onclick="closeAdminAddMediaModal()">Cancel</button>
+      <button type="button" class="adm-modal-btn save" id="admAddMediaSaveBtn" onclick="saveAdminNewMediaItem()">Add to Album</button>
     </div>
   </div>
 </div>
@@ -1080,6 +1604,9 @@ function renderHorizontalMediaFilmstrip(album) {
       <img src="${item.src}" alt="${item.title || album.name}">
       <span class="filmstrip-type-badge">${typeBadge}</span>
       <span class="filmstrip-title-badge">${item.title || `Look 0${itemIdx + 1}`}</span>
+      {% if user.is_authenticated %}
+      <button type="button" class="filmstrip-del-btn" onclick="deleteFilmstripItem(${activeAlbumIndex}, ${itemIdx}, event)" title="Admin: Delete this item from album">🗑️</button>
+      {% endif %}
     `;
     container.appendChild(card);
   });
@@ -1110,8 +1637,11 @@ function loadCinemaMedia(itemIdx) {
 
   const mainMedia = document.getElementById('cinemaMainMedia');
   const mainVideo = document.getElementById('cinemaMainVideo');
+  const igWrap = document.getElementById('cinemaIgEmbedWrap');
+  const igIframe = document.getElementById('cinemaIgIframe');
   const playTrigger = document.getElementById('cinemaPlayTrigger');
-  const iconBtn = document.getElementById('cinemaPlayIconBtn');
+  const controlBar = document.getElementById('cinemaControlBar');
+  const photoPill = document.getElementById('cinemaPhotoPill');
   const craftH = document.getElementById('cinemaCraftH');
   const bridesH = document.getElementById('cinemaBridesH');
   const eyebrow = document.getElementById('cinemaEyebrow');
@@ -1121,42 +1651,101 @@ function loadCinemaMedia(itemIdx) {
   const bookBtn = document.getElementById('cinemaBookBtn');
   const igBadge = document.getElementById('cinemaIgLinkBadge');
 
-  // Smooth media transition
-  if (typeof gsap !== 'undefined' && mainMedia) {
-    gsap.fromTo(mainMedia, { opacity: 0.5, scale: 0.99 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' });
-  }
-
-  // Pause previous video
+  // Pause any playing video
   if (mainVideo) {
     mainVideo.pause();
     mainVideo.currentTime = 0;
   }
   isPlaying = false;
-  if (playTrigger) playTrigger.classList.remove('playing');
-  if (iconBtn) iconBtn.textContent = '▶';
   if (playInterval) clearInterval(playInterval);
 
-  // Handle Video vs Image
-  const hasRealVideo = (item.media_type === 'video_file' || (item.video_url && item.video_url.length > 0));
-  if (hasRealVideo) {
-    if (mainVideo) {
-      mainVideo.src = item.video_url;
-      mainVideo.style.display = 'block';
+  // Smooth media transition
+  if (typeof gsap !== 'undefined' && mainMedia) {
+    gsap.fromTo(mainMedia, { opacity: 0.4, scale: 0.98 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'power2.out' });
+  }
+
+  const viewport = document.getElementById('cinemaViewport');
+  const ambientBg = document.getElementById('cinemaReelAmbientBg');
+
+  // Pure distinction: Direct Video File vs Instagram Reel vs High-Res Photo
+  const isDirectVideo = Boolean(item.is_direct_video && item.video_url && item.video_url.endsWith('.mp4'));
+  const isInstagramReel = Boolean(item.is_instagram_reel || item.media_type === 'instagram' || (item.external_url && item.external_url.includes('instagram.com')));
+  const isPhoto = !isDirectVideo && !isInstagramReel;
+
+  if (isDirectVideo) {
+    // 1. Direct MP4 Video File — High-Definition 60fps Cinema
+    if (viewport) viewport.classList.add('is-reel-mode');
+    if (ambientBg) {
+      ambientBg.style.backgroundImage = `url('${item.src}')`;
+      ambientBg.style.opacity = '1';
     }
+    if (igWrap) { igWrap.style.display = 'none'; if (igIframe) igIframe.src = ''; }
     if (mainMedia) mainMedia.style.display = 'none';
-    if (playTrigger) playTrigger.style.display = 'flex';
-  } else {
-    if (mainVideo) mainVideo.style.display = 'none';
+    if (mainVideo) {
+      mainVideo.style.display = 'block';
+      mainVideo.src = item.video_url;
+    }
+    if (playTrigger) {
+      playTrigger.style.display = 'flex';
+      playTrigger.onclick = toggleCinemaPlay;
+      playTrigger.title = 'Play Cinema Video';
+    }
+    if (controlBar) controlBar.style.display = 'flex';
+    if (photoPill) {
+      photoPill.style.display = 'block';
+      photoPill.innerHTML = `▶ 4K Film · ${itemIdx + 1} of ${album.items.length}`;
+    }
+
+  } else if (isInstagramReel) {
+    // 2. Authentic Instagram Reel — Adaptive 9:16 Stage with Full Vertical Height
+    if (viewport) viewport.classList.add('is-reel-mode');
+    if (ambientBg) {
+      ambientBg.style.backgroundImage = `url('${item.src}')`;
+      ambientBg.style.opacity = '1';
+    }
+    if (mainVideo) { mainVideo.style.display = 'none'; mainVideo.pause(); }
+    if (controlBar) controlBar.style.display = 'none';
+
+    const shortcode = item.ig_shortcode || (item.external_url ? (item.external_url.match(/\/(reel|p)\/([A-Za-z0-9_-]+)/) || [])[2] : '');
+
+    // Show crisp high-res bridal poster first
     if (mainMedia) {
       mainMedia.style.display = 'block';
-      mainMedia.style.opacity = '0.35';
-      setTimeout(() => {
-        mainMedia.src = item.src;
-        mainMedia.style.opacity = '1';
-      }, 120);
+      mainMedia.src = item.src;
     }
-    // For images, keep play orb for cinematic Ken-Burns zoom simulation
-    if (playTrigger) playTrigger.style.display = 'flex';
+    if (igWrap) {
+      igWrap.style.display = 'none';
+      if (igIframe) igIframe.src = '';
+    }
+
+    if (playTrigger) {
+      playTrigger.style.display = 'flex';
+      playTrigger.title = 'Play Official Instagram Reel (9:16 Vertical)';
+      playTrigger.onclick = () => {
+        openCinemaReelInStage(item);
+      };
+    }
+    if (photoPill) {
+      photoPill.style.display = 'block';
+      photoPill.innerHTML = `📸 4K Reel · ${itemIdx + 1} of ${album.items.length}`;
+    }
+
+  } else {
+    // 3. Clean High-Res Photo — Strictly NO video play button and NO video scrubber
+    if (viewport) viewport.classList.remove('is-reel-mode');
+    if (ambientBg) ambientBg.style.opacity = '0';
+    if (igWrap) { igWrap.style.display = 'none'; if (igIframe) igIframe.src = ''; }
+    if (mainVideo) { mainVideo.style.display = 'none'; mainVideo.pause(); }
+    if (mainMedia) {
+      mainMedia.style.display = 'block';
+      mainMedia.src = item.src;
+    }
+    if (playTrigger) playTrigger.style.display = 'none';
+    if (controlBar) controlBar.style.display = 'none';
+    if (photoPill) {
+      photoPill.style.display = 'block';
+      photoPill.innerHTML = `📷 Photo 0${itemIdx + 1} of 0${album.items.length}`;
+    }
   }
 
   // Update Authentic Typography & Details
@@ -1172,11 +1761,6 @@ function loadCinemaMedia(itemIdx) {
   if (subM) {
     subM.textContent = item.caption || album.description || 'Sculpting regal perfection with 18-hour cry-proof radiance for your sacred celebration.';
   }
-
-  const durationSec = item.duration_seconds || 35;
-  const durStr = String(durationSec).padStart(2, '0');
-  if (timeDisplay) timeDisplay.textContent = `00:00 / 00:${durStr}`;
-  if (fill) fill.style.width = '0%';
 
   // Real Instagram Link
   if (igBadge) {
@@ -1194,13 +1778,32 @@ function loadCinemaMedia(itemIdx) {
     bookBtn.href = `https://wa.me/{{ whatsapp|default:'917879223442' }}?text=${inquiryText}`;
   }
 
-  // Update active state on horizontal filmstrip cards
+  // Update active state on horizontal filmstrip cards & scroll into view
   document.querySelectorAll('.filmstrip-card').forEach((card, i) => {
-    card.classList.toggle('active', i === itemIdx);
+    const isActive = (i === itemIdx);
+    card.classList.toggle('active', isActive);
+    if (isActive) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
   });
 }
 
-// 5. Scroll Horizontal Line
+// 5. Next & Previous Navigation Controller (Clicks, Keyboard, Wheel)
+function nextCinemaMedia() {
+  const album = allCinemaAlbums[activeAlbumIndex];
+  if (!album || !album.items || album.items.length === 0) return;
+  const nextIdx = (activeItemIndex + 1) % album.items.length;
+  loadCinemaMedia(nextIdx);
+}
+
+function prevCinemaMedia() {
+  const album = allCinemaAlbums[activeAlbumIndex];
+  if (!album || !album.items || album.items.length === 0) return;
+  const prevIdx = (activeItemIndex - 1 + album.items.length) % album.items.length;
+  loadCinemaMedia(prevIdx);
+}
+
+// 6. Scroll Horizontal Line
 function scrollFilmstrip(px) {
   const container = document.getElementById('filmstripScroll');
   if (container) {
@@ -1208,14 +1811,215 @@ function scrollFilmstrip(px) {
   }
 }
 
+// 7. Interactive Wheel & Keyboard Scroll Listener
+(function initCinemaViewportControls() {
+  const vp = document.getElementById('cinemaViewport');
+  if (vp) {
+    let wheelThrottle = false;
+    vp.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      if (wheelThrottle) return;
+      wheelThrottle = true;
+      setTimeout(() => { wheelThrottle = false; }, 320);
+
+      // Scroll Down -> Next photo; Scroll Up -> Previous photo
+      if (e.deltaY > 12 || e.deltaX > 12) {
+        nextCinemaMedia();
+      } else if (e.deltaY < -12 || e.deltaX < -12) {
+        prevCinemaMedia();
+      }
+    }, { passive: false });
+  }
+
+  window.addEventListener('keydown', (e) => {
+    // Only handle if gallery viewport is in view or gallery page is open
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      nextCinemaMedia();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      prevCinemaMedia();
+    }
+  });
+})();
+
+// ═══ REEL IN-STAGE & 4K THEATER CONTROLLERS ═══
+function openCinemaReelInStage(item) {
+  if (!item) {
+    const album = allCinemaAlbums[activeAlbumIndex];
+    if (album && album.items) item = album.items[activeItemIndex];
+  }
+  if (!item) return;
+
+  const shortcode = item.ig_shortcode || (item.external_url ? (item.external_url.match(/\/(reel|p)\/([A-Za-z0-9_-]+)/) || [])[2] : '');
+  const igWrap = document.getElementById('cinemaIgEmbedWrap');
+  const igIframe = document.getElementById('cinemaIgIframe');
+  const phoneVideo = document.getElementById('cinemaReelPhoneVideo');
+  const playTrigger = document.getElementById('cinemaPlayTrigger');
+  const phoneIgBtn = document.getElementById('cinemaPhoneIgBtn');
+  const viewport = document.getElementById('cinemaViewport');
+
+  if (viewport) viewport.classList.add('is-reel-mode');
+  const mainVideo = document.getElementById('cinemaMainVideo');
+  if (mainVideo) { mainVideo.style.display = 'none'; mainVideo.pause(); }
+  const mainMedia = document.getElementById('cinemaMainMedia');
+  if (mainMedia) mainMedia.style.display = 'none';
+
+  if (item.is_direct_video && item.video_url) {
+    if (igWrap && phoneVideo) {
+      igWrap.style.display = 'flex';
+      if (igIframe) igIframe.style.display = 'none';
+      phoneVideo.style.display = 'block';
+      phoneVideo.src = item.video_url;
+      phoneVideo.play().catch(e => console.log('Autoplay caught:', e));
+    }
+  } else if (shortcode && igWrap && igIframe) {
+    igWrap.style.display = 'flex';
+    if (phoneVideo) { phoneVideo.style.display = 'none'; phoneVideo.pause(); }
+    igIframe.style.display = 'block';
+    igIframe.src = `https://www.instagram.com/reel/${shortcode}/embed/`;
+  } else if (item.external_url) {
+    window.open(item.external_url, '_blank');
+    return;
+  }
+
+  if (playTrigger) playTrigger.style.display = 'none';
+
+  if (phoneIgBtn) {
+    phoneIgBtn.href = item.external_url || `https://www.instagram.com/reel/${shortcode}/`;
+    phoneIgBtn.style.display = 'inline-flex';
+  }
+}
+
+function closeCinemaReelView() {
+  const igWrap = document.getElementById('cinemaIgEmbedWrap');
+  const igIframe = document.getElementById('cinemaIgIframe');
+  const phoneVideo = document.getElementById('cinemaReelPhoneVideo');
+  const playTrigger = document.getElementById('cinemaPlayTrigger');
+  const mainMedia = document.getElementById('cinemaMainMedia');
+
+  if (igWrap) igWrap.style.display = 'none';
+  if (igIframe) igIframe.src = '';
+  if (phoneVideo) { phoneVideo.pause(); phoneVideo.src = ''; }
+  if (mainMedia) mainMedia.style.display = 'block';
+  if (playTrigger) playTrigger.style.display = 'flex';
+}
+
+function openCinemaReelTheater() {
+  const album = allCinemaAlbums[activeAlbumIndex];
+  if (!album || !album.items || activeItemIndex < 0) return;
+  const item = album.items[activeItemIndex];
+
+  const modal = document.getElementById('cinemaReelTheaterModal');
+  const titleEl = document.getElementById('theaterHeaderTitle');
+  const iframe = document.getElementById('theaterIgIframe');
+  const video = document.getElementById('theaterDirectVideo');
+  const igLink = document.getElementById('theaterIgLink');
+  const waLink = document.getElementById('theaterWaLink');
+
+  if (!modal) return;
+
+  if (titleEl) titleEl.textContent = `${item.title || album.name} · ${album.client_name || 'Bridal Suite'}`;
+
+  const shortcode = item.ig_shortcode || (item.external_url ? (item.external_url.match(/\/(reel|p)\/([A-Za-z0-9_-]+)/) || [])[2] : '');
+
+  if (item.is_direct_video && item.video_url) {
+    if (iframe) iframe.style.display = 'none';
+    if (video) {
+      video.style.display = 'block';
+      video.src = item.video_url;
+      video.play().catch(e => console.log('Video play caught:', e));
+    }
+  } else if (shortcode) {
+    if (video) { video.style.display = 'none'; video.pause(); }
+    if (iframe) {
+      iframe.style.display = 'block';
+      iframe.src = `https://www.instagram.com/reel/${shortcode}/embed/`;
+    }
+  } else if (item.external_url) {
+    window.open(item.external_url, '_blank');
+    return;
+  }
+
+  if (igLink) {
+    igLink.href = item.external_url || `https://www.instagram.com/reel/${shortcode}/`;
+  }
+  if (waLink) {
+    waLink.href = `https://wa.me/917879223442?text=${encodeURIComponent('Namaste Anshita! I saw this 4K reel in your Theater: ' + (item.title || album.name) + ' and would love to check availability.')}`;
+  }
+
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCinemaReelTheater() {
+  const modal = document.getElementById('cinemaReelTheaterModal');
+  const iframe = document.getElementById('theaterIgIframe');
+  const video = document.getElementById('theaterDirectVideo');
+
+  if (modal) modal.classList.remove('active');
+  if (iframe) iframe.src = '';
+  if (video) { video.pause(); video.src = ''; }
+  document.body.style.overflow = '';
+}
+
+function handleTheaterOverlayClick(event) {
+  if (event.target === document.getElementById('cinemaReelTheaterModal')) {
+    closeCinemaReelTheater();
+  }
+}
+
+function prevTheaterReel(event) {
+  if (event) event.stopPropagation();
+  const album = allCinemaAlbums[activeAlbumIndex];
+  if (!album) return;
+  for (let step = 1; step < album.items.length; step++) {
+    const idx = (activeItemIndex - step + album.items.length) % album.items.length;
+    if (album.items[idx].is_video) {
+      loadCinemaMedia(idx);
+      openCinemaReelTheater();
+      return;
+    }
+  }
+  prevCinemaMedia();
+}
+
+function nextTheaterReel(event) {
+  if (event) event.stopPropagation();
+  const album = allCinemaAlbums[activeAlbumIndex];
+  if (!album) return;
+  for (let step = 1; step < album.items.length; step++) {
+    const idx = (activeItemIndex + step) % album.items.length;
+    if (album.items[idx].is_video) {
+      loadCinemaMedia(idx);
+      openCinemaReelTheater();
+      return;
+    }
+  }
+  nextCinemaMedia();
+}
+
+// Global Escape Key Listener for Theater
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeCinemaReelTheater();
+  }
+});
+
 // 6. Play / Pause Controller
 function toggleCinemaPlay() {
+  const album = allCinemaAlbums[activeAlbumIndex];
+  if (!album || !album.items) return;
+  const item = album.items[activeItemIndex];
+
+  // If item is an Instagram Reel, play in 9:16 phone stage or theater
+  if (item.is_instagram_reel) {
+    openCinemaReelInStage(item);
+    return;
+  }
+
   const btn = document.getElementById('cinemaPlayTrigger');
   const iconBtn = document.getElementById('cinemaPlayIconBtn');
   const media = document.getElementById('cinemaMainMedia');
   const video = document.getElementById('cinemaMainVideo');
-  const album = allCinemaAlbums[activeAlbumIndex];
-  const item = album.items[activeItemIndex];
 
   isPlaying = !isPlaying;
 
@@ -1393,6 +2197,148 @@ async function saveAdminAlbumCustomization() {
   } finally {
     btn.disabled = false;
     btn.textContent = 'Save Customization';
+  }
+}
+
+// ═══ ADMIN ADD MEDIA CONTROLLER ═══
+function openAdminAddMediaModal(albumIdx = activeAlbumIndex) {
+  const modal = document.getElementById('adminAddMediaModal');
+  const sel = document.getElementById('admAddMediaAlbumSelect');
+  if (!modal || !sel) return;
+
+  sel.innerHTML = '';
+  allCinemaAlbums.forEach((alb, i) => {
+    const opt = document.createElement('option');
+    opt.value = alb.id;
+    opt.textContent = `${alb.name} (${alb.items.length} items)`;
+    if (i === albumIdx) opt.selected = true;
+    sel.appendChild(opt);
+  });
+
+  const titleInp = document.getElementById('admAddMediaTitle');
+  const urlInp = document.getElementById('admAddMediaUrl');
+  const imgInp = document.getElementById('admAddMediaImgPath');
+  const capInp = document.getElementById('admAddMediaCaption');
+  if (titleInp) titleInp.value = '';
+  if (urlInp) urlInp.value = '';
+  if (imgInp) imgInp.value = '';
+  if (capInp) capInp.value = '';
+
+  toggleAddMediaFields(document.getElementById('admAddMediaTypeSelect')?.value || 'instagram');
+  modal.classList.add('active');
+}
+
+function closeAdminAddMediaModal() {
+  const modal = document.getElementById('adminAddMediaModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function toggleAddMediaFields(val) {
+  const urlWrap = document.getElementById('admAddMediaUrlWrap');
+  const imgWrap = document.getElementById('admAddMediaImgWrap');
+  if (!urlWrap || !imgWrap) return;
+  if (val === 'instagram' || val === 'video_file') {
+    urlWrap.style.display = 'block';
+    imgWrap.style.display = 'block';
+  } else {
+    urlWrap.style.display = 'none';
+    imgWrap.style.display = 'block';
+  }
+}
+
+async function saveAdminNewMediaItem() {
+  const albumId = document.getElementById('admAddMediaAlbumSelect').value;
+  const mediaType = document.getElementById('admAddMediaTypeSelect').value;
+  const title = document.getElementById('admAddMediaTitle').value.trim();
+  const extUrl = document.getElementById('admAddMediaUrl').value.trim();
+  const imgPath = document.getElementById('admAddMediaImgPath').value.trim();
+  const caption = document.getElementById('admAddMediaCaption').value.trim();
+
+  if (!title) {
+    alert('Please enter a Look Title.');
+    return;
+  }
+  if (mediaType === 'instagram' && !extUrl) {
+    alert('Please enter an Instagram Reel or Post URL.');
+    return;
+  }
+
+  const btn = document.getElementById('admAddMediaSaveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Adding...';
+
+  const fd = new FormData();
+  fd.append('csrfmiddlewaretoken', getCsrf());
+  fd.append('group_id', albumId);
+  fd.append('media_type', mediaType);
+  fd.append('title', title);
+  fd.append('external_url', extUrl);
+  fd.append('thumbnail_url', imgPath);
+  fd.append('caption', caption);
+
+  try {
+    const res = await fetch('/api/admin/lookgroup/media/', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.ok) {
+      const alb = allCinemaAlbums.find(a => a.id == albumId);
+      if (alb) {
+        const newItem = {
+          id: data.id || Date.now(),
+          media_type: mediaType,
+          src: imgPath || (mediaType === 'instagram' ? '/static/core/images/brand/anshita_logo_gold.png' : ''),
+          title: title,
+          caption: caption,
+          external_url: extUrl,
+          is_instagram_reel: mediaType === 'instagram' && extUrl.includes('/reel/'),
+          video_url: mediaType === 'video_file' ? extUrl : ''
+        };
+        alb.items.push(newItem);
+      }
+      closeAdminAddMediaModal();
+      selectCinemaAlbum(allCinemaAlbums.findIndex(a => a.id == albumId));
+      alert(`✨ Successfully added "${title}" to the album!`);
+    } else {
+      alert(data.error || 'Failed to add media to album.');
+    }
+  } catch(e) {
+    alert('An error occurred while adding media.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Add to Album';
+  }
+}
+
+// ═══ DELETE ITEM FROM FILMSTRIP ═══
+async function deleteFilmstripItem(albumIdx, itemIdx, e) {
+  if (e) e.stopPropagation();
+  const alb = allCinemaAlbums[albumIdx];
+  if (!alb || !alb.items[itemIdx]) return;
+  const item = alb.items[itemIdx];
+
+  if (!confirm(`Are you sure you want to remove "${item.title || 'this look'}" from "${alb.name}"?`)) {
+    return;
+  }
+
+  const fd = new FormData();
+  fd.append('csrfmiddlewaretoken', getCsrf());
+  fd.append('action', 'delete');
+  fd.append('id', item.id);
+
+  try {
+    const res = await fetch('/api/admin/lookgroup/media/', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.ok) {
+      alb.items.splice(itemIdx, 1);
+      renderHorizontalMediaFilmstrip(alb);
+      loadCinemaMedia(Math.min(activeItemIndex, alb.items.length - 1));
+      alert('Look removed from album.');
+    } else {
+      alert(data.error || 'Could not delete item.');
+    }
+  } catch(err) {
+    alb.items.splice(itemIdx, 1);
+    renderHorizontalMediaFilmstrip(alb);
+    loadCinemaMedia(Math.min(activeItemIndex, alb.items.length - 1));
   }
 }
 

@@ -49,6 +49,33 @@ def admin_media_manage(request):
                 if action == 'delete':
                     media_id = body_data.get('id')
                     MediaItem.objects.filter(id=media_id).delete()
+                    LookMediaItem.objects.filter(id=media_id).delete()
+                    return JsonResponse({'ok': True})
+                if action == 'delete_look_item':
+                    item_id = body_data.get('id')
+                    LookMediaItem.objects.filter(id=item_id).delete()
+                    return JsonResponse({'ok': True})
+                if action == 'update_showcase':
+                    media_id = body_data.get('id')
+                    new_section = body_data.get('section')
+                    new_group_id = body_data.get('look_group_id')
+                    item = MediaItem.objects.filter(id=media_id).first()
+                    if item:
+                        if new_section:
+                            item.section = new_section
+                        item.save()
+                    if new_group_id:
+                        grp = LookGroup.objects.filter(id=new_group_id).first() or LookGroup.objects.filter(slug=new_group_id).first()
+                        if grp and item:
+                            LookMediaItem.objects.create(
+                                group=grp,
+                                media_type=item.media_type,
+                                image_file=item.image_file,
+                                external_url=item.external_url,
+                                title=item.title,
+                                caption=item.caption,
+                                is_published=True
+                            )
                     return JsonResponse({'ok': True})
                 if action == 'toggle_active':
                     media_id = body_data.get('id')
@@ -63,6 +90,7 @@ def admin_media_manage(request):
         if action == 'delete':
             media_id = request.POST.get('id')
             MediaItem.objects.filter(id=media_id).delete()
+            LookMediaItem.objects.filter(id=media_id).delete()
             return JsonResponse({'ok': True})
 
         title = request.POST.get('title', '').strip()
@@ -194,6 +222,21 @@ def admin_media_manage(request):
             media_item.video_file = vf
 
         media_item.save()
+
+        # Instant sync to LookGroup / LookMediaItem if look_group_id is selected
+        if look_group_id:
+            grp = LookGroup.objects.filter(id=look_group_id).first() or LookGroup.objects.filter(slug=look_group_id).first()
+            if grp:
+                LookMediaItem.objects.create(
+                    group=grp,
+                    media_type=media_item.media_type,
+                    image_file=media_item.image_file,
+                    video_file=media_item.video_file,
+                    external_url=media_item.external_url,
+                    title=media_item.title,
+                    caption=media_item.caption,
+                    is_published=True
+                )
 
         return JsonResponse({
             'ok': True,
@@ -409,7 +452,7 @@ def admin_lookmedia_manage(request):
         ext_url = request.POST.get('external_url', '').strip()
         title = request.POST.get('title', '').strip()
         caption = request.POST.get('caption', '').strip()
-        thumb_url = request.POST.get('thumbnail_url', '').strip()
+        thumb_url = request.POST.get('thumbnail_url', '').strip() or request.POST.get('image_url', '').strip()
         show_platform_link = request.POST.get('show_platform_link') not in ['0', 'false', 'off']
         embed_code = ''
 

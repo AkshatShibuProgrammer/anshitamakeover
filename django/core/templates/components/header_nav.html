@@ -2,26 +2,27 @@
 <!-- ANSHITA MAKEOVER — EVAGHER-STYLE TOP NAV (Option C Redesign) -->
 <nav id="mnav" class="am-nav headroom headroom--pinned headroom--top">
 
-  <!-- Left: Menu trigger -->
-  <button class="am-nav__menu" id="nav-menu-trigger"
-          onclick="window.toggleSideDrawer && window.toggleSideDrawer();"
-          aria-label="Open Navigation Menu">
-    <span class="am-nav__menu-line"></span>
-    <span class="am-nav__menu-line"></span>
-    <span class="am-nav__menu-line"></span>
-    <span class="am-nav__menu-label">MENU</span>
-  </button>
+  <!-- Left: Brand Logo + Menu trigger -->
+  <div class="am-nav__left-cluster" style="display:flex;align-items:center;gap:18px">
+    <a href="/" class="am-nav__brand" style="position:static;transform:none" title="Anshita Makeover">
+      <img src="{% static 'core/images/brand/anshita_haute_emblem.png' %}"
+           alt="Anshita Makeover"
+           class="am-nav__emblem">
+      <div class="am-nav__brand-text">
+        <span class="am-nav__brand-name">ANSHITA</span>
+        <span class="am-nav__brand-sub">MAKEOVER</span>
+      </div>
+    </a>
 
-  <!-- Center: Brand -->
-  <a href="/" class="am-nav__brand">
-    <img src="{% static 'core/images/brand/anshita_haute_emblem.png' %}"
-         alt="Anshita Makeover"
-         class="am-nav__emblem">
-    <div class="am-nav__brand-text">
-      <span class="am-nav__brand-name">ANSHITA</span>
-      <span class="am-nav__brand-sub">MAKEOVER</span>
-    </div>
-  </a>
+    <button class="am-nav__menu" id="nav-menu-trigger"
+            onclick="window.toggleSideDrawer && window.toggleSideDrawer();"
+            aria-label="Open Navigation Menu">
+      <span class="am-nav__menu-line"></span>
+      <span class="am-nav__menu-line"></span>
+      <span class="am-nav__menu-line"></span>
+      <span class="am-nav__menu-label">{{ t.nav_menu_label|default:'MENU' }}</span>
+    </button>
+  </div>
 
   <!-- Right: 6 clean links + language + WA -->
   <div class="am-nav__right">
@@ -30,16 +31,14 @@
       <li><a href="{% url 'services' %}"     class="am-nav__link {% if request.resolver_match.url_name == 'services' %}am-nav__link--active{% endif %}">{{ t.nav_services|default:'Services' }}</a></li>
       <li><a href="{% url 'packages' %}"     class="am-nav__link {% if request.resolver_match.url_name == 'packages' %}am-nav__link--active{% endif %}">{{ t.nav_packages|default:'Packages' }}</a></li>
       <li><a href="/#about"                  class="am-nav__link">{{ t.nav_about|default:'About' }}</a></li>
-      <li><a href="/travel-estimator/"       class="am-nav__link {% if request.resolver_match.url_name == 'travel_estimator' %}am-nav__link--active{% endif %}">{{ t.nav_travel_estimator|default:'Travel' }}</a></li>
+      <li><a href="/travel-estimator/"       class="am-nav__link {% if request.resolver_match.url_name == 'travel_estimator' %}am-nav__link--active{% endif %}">{{ t.nav_travel_menu|default:t.nav_outstation|default:'Travel' }}</a></li>
     </ul>
 
-    <!-- Language -->
-    <div class="am-nav__lang" title="Language / भाषा">
-      <span class="am-nav__lang-globe">🌐</span>
-      <button class="lang-btn {% if lang == 'english' or not lang %}active{% endif %}" onclick="setLang('english')">EN</button>
-      <button class="lang-btn {% if lang == 'hindi' or lang == 'hinglish' %}active{% endif %}" onclick="setLang('hindi')">हिन्दी</button>
-      <button class="lang-btn {% if lang == 'marathi' %}active{% endif %}" onclick="setLang('marathi')">मराठी</button>
-      <button class="lang-btn {% if lang == 'bundelkhandi' %}active{% endif %}" onclick="setLang('bundelkhandi')">बुं.</button>
+    <!-- Luxury Gold Pill Language Switcher -->
+    <div class="luxury-lang-pill" id="luxuryLangPill" title="Select Language / भाषा चुनें">
+      <button type="button" class="lang-pill-btn {% if lang == 'english' or not lang %}active{% endif %}" onclick="setLang('english')">EN</button>
+      <button type="button" class="lang-pill-btn {% if lang == 'hindi' or lang == 'hinglish' %}active{% endif %}" onclick="setLang('hindi')">हिन्दी</button>
+      <button type="button" class="lang-pill-btn {% if lang == 'marathi' %}active{% endif %}" onclick="setLang('marathi')">मराठी</button>
     </div>
 
     <!-- WhatsApp concierge -->
@@ -204,13 +203,40 @@
 }
 .am-nav__link--active::after { transform: scaleX(1); }
 
-/* ── Language ── */
-.am-nav__lang {
+/* ── Elevated Luxury Language Segmented Pill ── */
+.luxury-lang-pill {
   display: flex;
   align-items: center;
-  gap: 4px;
+  background: rgba(14, 5, 11, 0.75);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 20px;
+  padding: 2px 3px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
 }
-.am-nav__lang-globe { font-size: 0.85rem; }
+.lang-pill-btn {
+  background: transparent;
+  border: none;
+  color: rgba(245, 237, 214, 0.65);
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.lang-pill-btn:hover {
+  color: #fff;
+}
+.lang-pill-btn.active {
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  color: #0b0307;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+}
 
 /* ── WhatsApp CTA ── */
 .am-nav__wa {

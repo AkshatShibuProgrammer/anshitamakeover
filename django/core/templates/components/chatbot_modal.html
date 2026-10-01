@@ -4,8 +4,8 @@
   <div class="chat-box" id="chat-box">
     <div class="chat-hdr" id="chat-hdr" title="Drag to move">
       <div class="chat-hdr-info">
-        <div class="chat-avatar-wrap">
-          <img src="{% static 'core/images/brand/ai_concierge_smile.png' %}" alt="Anshita AI Concierge">
+        <div class="chat-avatar-wrap royal-monogram-wrap">
+          <div class="chat-royal-monogram" style="font-size:1.35rem; display:flex; align-items:center; justify-content:center; width:100%; height:100%; background:radial-gradient(circle, #D4AF37 0%, #8B5E1A 100%); border-radius:50%; box-shadow:0 0 12px rgba(212,175,55,0.4);">👑</div>
           <span class="chat-status-dot"></span>
         </div>
         <div>
@@ -79,29 +79,39 @@
     <!-- Luxury Speech & Quick Actions Bubble -->
     <div class="chat-speech-bubble" id="chat-speech-bubble">
       <div class="csb-header" onclick="toggleChat()">
-        <span class="csb-tag">✨ ROYAL AI CONCIERGE</span>
-        <span class="csb-text" id="csb-text">Namaste! May I help you find your dream bridal look?</span>
+        <span class="csb-tag">{{ t.concierge_speech_head|default:'✨ ROYAL AI CONCIERGE' }}</span>
+        <span class="csb-text" id="csb-text">{{ t.concierge_speech_greet|default:'Namaste! May I help you find your dream bridal look?' }}</span>
       </div>
       <div class="csb-quick-chips">
-        <button type="button" class="csb-chip" onclick="quickAskConcierge('Tell me about your Signature Bridal Suites')">👑 Bridal Looks</button>
-        <button type="button" class="csb-chip" onclick="quickAskConcierge('How much does outstation travel cost?')">✈️ Travel Rates</button>
-        <button type="button" class="csb-chip" onclick="toggleChat()">💬 Chat</button>
+        <button type="button" class="csb-chip" onclick="quickAskConcierge('Tell me about your Signature Bridal Suites')">{{ t.concierge_chip_bridal_txt|default:'👑 Bridal Looks' }}</button>
+        <button type="button" class="csb-chip" onclick="quickAskConcierge('How much does outstation travel cost?')">{{ t.concierge_chip_travel_txt|default:'✈️ Travel Rates' }}</button>
+        <button type="button" class="csb-chip" onclick="toggleChat()">{{ t.concierge_chip_chat_txt|default:'💬 Chat' }}</button>
       </div>
       <div class="csb-tail"></div>
     </div>
 
     <button class="chat-toggle" id="chat-toggle" onclick="toggleChat()" title="Anshita Royal AI Concierge — Click to Chat" aria-label="Open AI Concierge">
-      <!-- 3D Living Cursor-Reactive Character Stage -->
-      <div class="char-3d-stage" id="char3dStage">
-        <!-- High-Performance Retina Gaze Canvas -->
-        <canvas id="charGazeCanvas" width="700" height="700" class="char-gaze-canvas"></canvas>
-
-        <!-- Expression Overlays -->
-        <img src="{% static 'core/images/brand/concierge_mouth_talk.png' %}" class="char-overlay char-mouth-talk" id="charMouthTalk" alt="Anshita Concierge Speaking">
-        <img src="{% static 'core/images/brand/concierge_wink.png' %}" class="char-overlay char-wink" id="charLayerWink" alt="Anshita Concierge Winking">
-
-        <!-- Specular 3D Jewelry & Skin Highlighter -->
-        <div class="char-specular-shine" id="charSpecularShine"></div>
+      <!-- 24K Gold Imperial Royal Concierge Medallion -->
+      <div class="medallion-inner">
+        <svg class="medallion-crown" width="28" height="22" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 14L4 5L8.5 9.5L12 2L15.5 9.5L20 5L22 14H2Z" fill="url(#crownGoldGradToggle)" stroke="#FFE899" stroke-width="0.8" stroke-linejoin="round"/>
+          <circle cx="2" cy="4" r="1.5" fill="#FFE899"/>
+          <circle cx="8.5" cy="8.5" r="1.2" fill="#FFE899"/>
+          <circle cx="12" cy="1.5" r="1.8" fill="#FFF4D0"/>
+          <circle cx="15.5" cy="8.5" r="1.2" fill="#FFE899"/>
+          <circle cx="22" cy="4" r="1.5" fill="#FFE899"/>
+          <path d="M3 15.5H21V17H3V15.5Z" fill="url(#crownGoldGradToggle)"/>
+          <defs>
+            <linearGradient id="crownGoldGradToggle" x1="2" y1="2" x2="22" y2="17" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FFF5D6"/>
+              <stop offset="0.45" stop-color="#F3D17A"/>
+              <stop offset="0.8" stop-color="#D4AF37"/>
+              <stop offset="1" stop-color="#9A751F"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="medallion-monogram">AM</span>
+        <span class="medallion-sparkle">✦</span>
       </div>
 
       <!-- Concentric Spun-Gold Breathing Aura Rings -->

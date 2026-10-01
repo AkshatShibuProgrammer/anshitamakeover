@@ -141,23 +141,39 @@ def gallery_page(request):
         for itm in alb.media_items.filter(is_published=True).order_by('order', 'id'):
             thumb = itm.display_thumb
             video_url = itm.video_file.url if itm.video_file else ''
-            if not video_url and itm.media_type in ('video_file', 'youtube', 'instagram'):
-                alb_lower = (alb.name + ' ' + (alb.client_name or '')).lower()
-                if 'kuhu' in alb_lower or 'bengali' in alb_lower:
-                    video_url = '/static/core/images/curated/bengali_bride_reel.mp4'
-                elif 'crimson' in alb_lower or 'maroon' in alb_lower:
-                    video_url = '/static/core/images/curated/anshita_bridal_reel.mp4'
+            if not video_url and itm.embed_code and itm.embed_code.endswith('.mp4'):
+                video_url = itm.embed_code
+            if not video_url and itm.external_url and itm.external_url.endswith('.mp4'):
+                video_url = itm.external_url
+            
+            # Pure authentic Instagram integration + High-Res Direct Cinema MP4 Videos
+            is_photo = (itm.media_type == 'image')
+            is_ig = bool(itm.media_type == 'instagram' or (itm.external_url and 'instagram.com' in itm.external_url))
+            is_direct_video = bool(video_url or itm.video_file or (itm.media_type == 'video_file'))
+            is_video = is_ig or is_direct_video or (itm.media_type == 'youtube')
+            
+            ig_url = itm.external_url or ''
+            ig_shortcode = ''
+            if ig_url:
+                import re
+                m = re.search(r'/(?:reel|p)/([A-Za-z0-9_-]+)', ig_url)
+                if m:
+                    ig_shortcode = m.group(1)
 
             media_list.append({
                 'id': itm.id,
-                'media_type': itm.media_type,
+                'media_type': 'instagram' if is_ig else ('image' if is_photo else itm.media_type),
+                'is_video': is_video,
+                'is_instagram_reel': is_ig,
+                'is_direct_video': is_direct_video,
+                'ig_shortcode': ig_shortcode,
                 'title': itm.title or alb.name,
                 'caption': itm.caption or itm.title or alb.name,
                 'src': thumb,
-                'video_url': video_url,
-                'external_url': itm.external_url,
-                'embed_code': itm.embed_code,
-                'duration_seconds': itm.duration_seconds or (33 if 'kuhu' in alb.slug else (45 if 'crimson' in alb.slug else 40)),
+                'video_url': video_url if is_direct_video else '',
+                'external_url': ig_url,
+                'embed_code': ig_shortcode or itm.embed_code or '',
+                'duration_seconds': itm.duration_seconds or 30,
             })
         if not media_list and alb.display_cover:
             media_list.append({
