@@ -54,6 +54,10 @@ Files to touch:
 | 007 | WhatsApp CTA + Kinetic Typography | ✅ | ✅ | ⏳ Pending |
 | 008 | Performance + PWA + Lighthouse | ✅ | ✅ | ⏳ Pending |
 | 009 | Oracle Cloud Deployment | ✅ | ✅ | ⏳ Pending |
+| 010 | 3D Mascot Emotions & Hindi Welcome | ✅ | ✅ | ✅ Verified |
+| 011 | WorksWheel Uncropped Gallery & Scrubber | ✅ | ✅ | ✅ Verified |
+| 012 | Luxury Review Marquee & Accreditation | ✅ | ✅ | ✅ Verified |
+| 013 | 3D Interactive Makeup Gameplay Stories | ✅ | ✅ | 🎯 Next Up |
 
 ---
 

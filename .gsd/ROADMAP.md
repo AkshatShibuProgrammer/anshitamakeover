@@ -79,6 +79,31 @@
   - DNS proxied through Cloudflare, static cache rules, Rocket Loader disabled.
   - Live at `https://anshita.in` — zero hosting cost, global CDN.
 
+### Milestone 7: 3D Mascot Emotions & Hindi Cultural Welcome — [SPEC-010]
+- [x] **Phase 23: 3D Articulated Ears & Nose Micro-Motions**: Procedural Three.js rig with dynamic blink and twitching.
+- [x] **Phase 24: Real-Time Intent Emotion Triggers**: Sadness on hesitation, celebration on deal, thinking on discount inquiry.
+- [x] **Phase 25: Hindi "राम राम जी" Greeting & Multi-Layer Popup Suppression**: Dedicated greeting and bubble hiding when chat drawer opens.
+
+### Milestone 8: WorksWheel Uncropped Gallery & 48-Frame Scrubber — [SPEC-011]
+- [x] **Phase 26: WorksWheel Component Architecture**: shadcn UI structure, TypeScript, Tailwind CSS, zero image cropping (`object-contain`).
+- [x] **Phase 27: Canvas Scroll Transformation Scrubber**: 48 high-res WebP frames scrubbed via GSAP ScrollTrigger timeline at `#bridal-transformation`.
+
+### Milestone 9: Benchmark Luxury Reviews Marquee & Client Accreditation — [SPEC-012]
+- [x] **Phase 28: Authentic Client Accreditation**: Kuhu Khare (Bengali Bride Competition Makeup) + verified Instagram clients (`@anshitamakeover21`).
+- [x] **Phase 29: Continuous Infinite Marquee Ribbon Flow**: Stanzza/Juan Mora caliber track with pause-on-hover, drag-to-scroll, and category filters.
+
+### Milestone 10: 3D Interactive Makeup Gameplay Webpage ("Atelier Chronicles") — [SPEC-013] ⬅ ACTIVE PLAN
+- [ ] **Phase 30: 3D WebGL Face Canvas & Interactive Raycast Painter**: Rotatable stylized bridal head mesh with real-time tool application (ubtan roller, chandan pen, micro-blender, airbrush mist).
+- [ ] **Phase 31: Episodic Story Engine (Duolingo Style)**:
+  - Episode 1: *The Mandap Morning (Ayurvedic Skin Metallurgy & Ice Prep)*
+  - Episode 2: *Kuhu Khare Sacred Banarasi Chandan Precision (7-Point Brow Symmetry)*
+  - Episode 3: *Thakur Shivani Starlight Sangeet (Jewel Cut-Crease Blending)*
+  - Episode 4: *The 18-Hour Cry-Proof Starlight Seal (Mandap Tear-Test Simulation)*
+- [ ] **Phase 32: Gamified Progression & Scholarship Voucher Engine**:
+  - Accuracy metrics, 1–3 star scoring, streak tracking, and procedural Web Audio feedback.
+  - Generates verifiable ₹2,000 Masterclass Scholarship Voucher or 10% Bridal Privilege Code redeemable via 1-click WhatsApp message.
+  - Zero third-party ads to protect luxury couture prestige.
+
 ---
 
 ## Test Suite Status
