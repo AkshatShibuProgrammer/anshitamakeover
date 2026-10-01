@@ -77,7 +77,7 @@
             <button type="button" class="btn-p" onclick="AnshitaCart.addItem({id:'album-look-{{ album.id }}',title:'{{ album.name|escapejs }} Look',price:28000,category:'{{ album.category }}'})">
               <span>✦ Add Look to Bridal Plan</span>
             </button>
-            <a href="https://wa.me/919934240751?text=Hi%20Anshita%20Makeover%2C%20I%20am%20enquiring%20about%20the%20{{ album.name|urlencode }}%20lookbook%20creation." target="_blank" rel="noopener" class="btn-whatsapp-reserve">
+            <a href="https://wa.me/{{ whatsapp|default:'917879223442' }}?text=Hi%20Anshita%20Makeover%2C%20I%20am%20enquiring%20about%20the%20{{ album.name|urlencode }}%20lookbook%20creation." target="_blank" rel="noopener" class="btn-whatsapp-reserve">
               <span>💬 Enquire on WhatsApp</span>
             </a>
             <button type="button" class="btn-split-peek" onclick="openLookbook('{{ album.id }}')" title="Launch Fullscreen Split Exhibition Viewer">
