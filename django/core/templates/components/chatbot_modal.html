@@ -69,6 +69,14 @@
     </div>
     <div class="chat-inp-row">
       <input class="chat-inp" id="chat-inp" placeholder="Ask anything about bridal, hair, bookings..." onkeydown="chatKey(event)">
+      <button class="chat-mic-btn" id="chat-mic-btn" type="button" onclick="toggleSpeechToText()" title="Speak to Asha (Speech-to-Text)" aria-label="Speech to Text">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </button>
       <button class="chat-send" onclick="sendChat()" title="Send Message">➤</button>
     </div>
   </div>
@@ -91,27 +99,10 @@
     </div>
 
     <button class="chat-toggle" id="chat-toggle" onclick="toggleChat()" title="Anshita Royal AI Concierge — Click to Chat" aria-label="Open AI Concierge">
-      <!-- 24K Gold Imperial Royal Concierge Medallion -->
-      <div class="medallion-inner">
-        <svg class="medallion-crown" width="28" height="22" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M2 14L4 5L8.5 9.5L12 2L15.5 9.5L20 5L22 14H2Z" fill="url(#crownGoldGradToggle)" stroke="#FFE899" stroke-width="0.8" stroke-linejoin="round"/>
-          <circle cx="2" cy="4" r="1.5" fill="#FFE899"/>
-          <circle cx="8.5" cy="8.5" r="1.2" fill="#FFE899"/>
-          <circle cx="12" cy="1.5" r="1.8" fill="#FFF4D0"/>
-          <circle cx="15.5" cy="8.5" r="1.2" fill="#FFE899"/>
-          <circle cx="22" cy="4" r="1.5" fill="#FFE899"/>
-          <path d="M3 15.5H21V17H3V15.5Z" fill="url(#crownGoldGradToggle)"/>
-          <defs>
-            <linearGradient id="crownGoldGradToggle" x1="2" y1="2" x2="22" y2="17" gradientUnits="userSpaceOnUse">
-              <stop stop-color="#FFF5D6"/>
-              <stop offset="0.45" stop-color="#F3D17A"/>
-              <stop offset="0.8" stop-color="#D4AF37"/>
-              <stop offset="1" stop-color="#9A751F"/>
-            </linearGradient>
-          </defs>
-        </svg>
-        <span class="medallion-monogram">AM</span>
-        <span class="medallion-sparkle">✦</span>
+      <!-- Living 3D Pixar Mascot ("Asha") Stage & WebGL Canvas -->
+      <div class="char-3d-stage" id="ashaMascotStage">
+        <canvas class="char-gaze-canvas" id="ashaMascotCanvas" width="168" height="168" aria-label="Asha — 3D Pixar Bridal Concierge Character"></canvas>
+        <div class="char-specular-shine"></div>
       </div>
 
       <!-- Concentric Spun-Gold Breathing Aura Rings -->
