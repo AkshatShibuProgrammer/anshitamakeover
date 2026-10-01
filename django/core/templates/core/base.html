@@ -105,7 +105,9 @@ window.addEventListener('DOMContentLoaded', () => {
     window.dismissPreloader();
     return;
   }
-  setTimeout(window.dismissPreloader, 2800);
+  setTimeout(window.dismissPreloader, 1400);
+  window.addEventListener('click', window.dismissPreloader, { once: true });
+  window.addEventListener('scroll', window.dismissPreloader, { once: true, passive: true });
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') window.dismissPreloader();
   });
@@ -370,7 +372,7 @@ button{cursor:pointer;font-family:var(--font-b)}
 }
 
 /* ═══ PARTICLES & THREE.JS CANVAS ═══ */
-#three-bg{position:fixed;inset:0;z-index:1;pointer-events:none;width:100%;height:100%;opacity:0.85;transition:opacity 0.5s ease}
+#three-bg{position:fixed;inset:0;z-index:12;pointer-events:none;width:100%;height:100%;opacity:0.85;mix-blend-mode:screen;transition:opacity 0.5s ease}
 #pcv{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.35;display:none}
 
 /* ═══ SCROLL RING (EVAGHER-INSPIRED CIRCULAR INDICATOR) ═══ */
@@ -6974,30 +6976,52 @@ window.charConciergeState = {
   speechTimer: null,
   setMood: function(newMood, autoResetMs = 6000) {
     this.mood = newMood;
-    // Reflect expression in chat header avatar
-    const badge = document.querySelector('.chat-royal-monogram');
-    if (badge) {
-      const moodEmojis = {
-        'happy': '👑',
-        'sad': '🥺',
-        'pouting': '🥺',
-        'thinking': '🤔',
-        'thinking_coupon': '💡',
-        'offering_deal': '🎁',
-        'celebrating': '🎉',
-        'deal_done': '🎉',
-        'excited': '✨',
-        'recommending': '✨'
+    // Reflect expression in chat header avatar and live mood badge
+    const moodBadge = document.getElementById('ashaLiveMoodBadge');
+    if (moodBadge) {
+      const moodText = {
+        'happy': '💖 Welcoming',
+        'sad': '🥺 Pouting (Sad)',
+        'pouting': '🥺 Pouting',
+        'thinking': '🤔 Pondering...',
+        'thinking_coupon': '🏷️ Generating Discount...',
+        'offering_deal': '🎁 Recommending Package',
+        'celebrating': '🎉 Celebrating Deal!',
+        'deal_done': '🎊 Vivah Confirmed!',
+        'excited': '✨ Excited!',
+        'recommending': '👑 Curating Look',
+        'listening': '🎙️ Listening...'
       };
-      badge.textContent = moodEmojis[newMood] || '👑';
+      moodBadge.textContent = moodText[newMood] || '💖 Welcoming';
+      if (newMood === 'sad') {
+        moodBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+        moodBadge.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+        moodBadge.style.color = '#fca5a5';
+      } else if (newMood === 'celebrating' || newMood === 'deal_done') {
+        moodBadge.style.background = 'rgba(34, 197, 94, 0.2)';
+        moodBadge.style.borderColor = 'rgba(34, 197, 94, 0.5)';
+        moodBadge.style.color = '#86efac';
+      } else if (newMood === 'thinking' || newMood === 'thinking_coupon') {
+        moodBadge.style.background = 'rgba(234, 179, 8, 0.2)';
+        moodBadge.style.borderColor = 'rgba(234, 179, 8, 0.5)';
+        moodBadge.style.color = '#fde047';
+      } else {
+        moodBadge.style.background = 'rgba(212, 175, 55, 0.18)';
+        moodBadge.style.borderColor = 'rgba(212, 175, 55, 0.4)';
+        moodBadge.style.color = 'var(--gold)';
+      }
     }
 
     if (autoResetMs > 0 && newMood !== 'happy') {
       clearTimeout(this.speechTimer);
       this.speechTimer = setTimeout(() => {
         this.mood = 'happy';
-        const b = document.querySelector('.chat-royal-monogram');
-        if (b) b.textContent = '👑';
+        if (moodBadge) {
+          moodBadge.textContent = '💖 Welcoming';
+          moodBadge.style.background = 'rgba(212, 175, 55, 0.18)';
+          moodBadge.style.borderColor = 'rgba(212, 175, 55, 0.4)';
+          moodBadge.style.color = 'var(--gold)';
+        }
       }, autoResetMs);
     }
   }
@@ -7058,6 +7082,19 @@ window.quickAskConcierge = function(query) {
   });
   renderer.setSize(width, height, false);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+  const headerCanvas = document.getElementById('ashaHeaderCanvas');
+  let headerRenderer = null;
+  if (headerCanvas) {
+    headerRenderer = new THREE.WebGLRenderer({
+      canvas: headerCanvas,
+      alpha: true,
+      antialias: true,
+      powerPreference: 'high-performance'
+    });
+    headerRenderer.setSize(96, 96, false);
+    headerRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  }
 
   // 2. Three-Point Studio Lighting (Natural, Warm, Flattering for Golden Indian Skin)
   const ambientLight = new THREE.AmbientLight(0xFFEFE2, 0.85);
@@ -7262,77 +7299,30 @@ window.quickAskConcierge = function(query) {
   bangRight.rotation.z = -0.20;
   headGroup.add(bangRight);
 
-  // Cute Little Top Bun
-  const bunGeo = new THREE.SphereGeometry(0.28, 22, 22);
-  const bun = new THREE.Mesh(bunGeo, hairMaterial);
-  bun.position.set(0, 0.74, 0.02);
-  bun.scale.set(1.1, 0.78, 0.95);
-  headGroup.add(bun);
+  // 6. Cute Little Girl Hair: Soft Baby Bangs & Dual Floral Gajra Buns
+  function createBridalHairBun(isLeft) {
+    const bunGroup = new THREE.Group();
+    bunGroup.position.set(isLeft ? -0.50 : 0.50, 0.42, 0.02);
 
-  // 6b. Adorable Articulated Bunny Ears (Sketchfab Hafiene "Cute Rabbit" caliber)
-  const earInnerMat = new THREE.MeshStandardMaterial({
-    color: 0xF7A8B8, // Soft warm velvety pink inner ear
-    roughness: 0.65,
-    metalness: 0.02
-  });
+    const bunMesh = new THREE.Mesh(new THREE.SphereGeometry(0.24, 20, 20), hairMaterial);
+    bunGroup.add(bunMesh);
 
-  function createBunnyEar(isLeft) {
-    const pivot = new THREE.Group();
-    // Pivot at top crown
-    pivot.position.set(isLeft ? -0.25 : 0.25, 0.70, 0.02);
+    // Jasmine Floral Gajra Ring
+    const gajraRing = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.042, 10, 24), pearlMaterial);
+    gajraRing.rotation.y = Math.PI * 0.5;
+    bunGroup.add(gajraRing);
 
-    // Outer Velvety Ear
-    const earOuterGeo = new THREE.CylinderGeometry(0.12, 0.05, 0.88, 20);
-    const earOuter = new THREE.Mesh(earOuterGeo, skinMaterial);
-    earOuter.position.y = 0.42;
-    earOuter.scale.set(1.0, 1.0, 0.35); // flattened soft floppy ear profile
-    pivot.add(earOuter);
+    // Kundan Gold Hair Pin
+    const goldPin = new THREE.Mesh(new THREE.SphereGeometry(0.042, 10, 10), goldMaterial);
+    goldPin.position.set(isLeft ? -0.24 : 0.24, 0, 0);
+    bunGroup.add(goldPin);
 
-    // Inner Pink Velvet Inset
-    const earInnerGeo = new THREE.CylinderGeometry(0.08, 0.025, 0.76, 16);
-    const earInner = new THREE.Mesh(earInnerGeo, earInnerMat);
-    earInner.position.set(0, 0.42, 0.018);
-    earInner.scale.set(0.9, 0.95, 0.25);
-    pivot.add(earInner);
-
-    // Tiny Dainty Gold Ear-ring / Kundan Stud at tip
-    const earTipJewelGeo = new THREE.TorusGeometry(0.045, 0.012, 8, 16);
-    const earTipJewel = new THREE.Mesh(earTipJewelGeo, goldMaterial);
-    earTipJewel.position.set(isLeft ? -0.05 : 0.05, 0.80, 0.01);
-    earTipJewel.rotation.y = Math.PI * 0.5;
-    pivot.add(earTipJewel);
-
-    return pivot;
+    return bunGroup;
   }
-
-  const leftEar = createBunnyEar(true);
-  const rightEar = createBunnyEar(false);
-  headGroup.add(leftEar);
-  headGroup.add(rightEar);
-
-  // Cute Whiskers (Dainty rabbit whisker dots on cheeks)
-  function createWhiskerDots(xPos) {
-    const whiskerGroup = new THREE.Group();
-    whiskerGroup.position.set(xPos, -0.15, 0.54);
-    const dotGeo = new THREE.SphereGeometry(0.014, 8, 8);
-    const dotMat = new THREE.MeshBasicMaterial({ color: 0x5C2B14 });
-    const offsets = [
-      [-0.04, 0.02, 0],
-      [0.0, 0.0, 0.02],
-      [-0.03, -0.02, 0]
-    ];
-    offsets.forEach(([ox, oy, oz]) => {
-      const d = new THREE.Mesh(dotGeo, dotMat);
-      d.position.set(xPos > 0 ? ox : -ox, oy, oz);
-      whiskerGroup.add(d);
-    });
-    return whiskerGroup;
-  }
-  headGroup.add(createWhiskerDots(-0.35));
-  headGroup.add(createWhiskerDots(0.35));
+  headGroup.add(createBridalHairBun(true));
+  headGroup.add(createBridalHairBun(false));
 
   // Sacred Indian Bridal Red Chunni draped behind head and shoulders (framing veil)
-  // phi from ~1.0*PI to 2.0*PI covers +X through -Z to -X in Three.js coordinate system (strictly z <= 0)
   const chunniGeo = new THREE.SphereGeometry(0.83, 32, 20, Math.PI * 0.96, Math.PI * 1.08, 0, Math.PI * 0.65);
   const chunni = new THREE.Mesh(chunniGeo, chunniSheerMaterial);
   chunni.position.set(0, 0.08, -0.06);
@@ -7364,7 +7354,7 @@ window.quickAskConcierge = function(query) {
   rubyCenter.position.set(0, 0.37, 0.75);
   headGroup.add(rubyCenter);
 
-  // Tiny Cute Gold Jhumka Earrings (positioned at cute toddler earlobes)
+  // Tiny Cute Gold Jhumka Earrings
   function createJhumka(xPos) {
     const jhumka = new THREE.Group();
     jhumka.position.set(xPos, -0.16, 0.38);
@@ -7389,17 +7379,89 @@ window.quickAskConcierge = function(query) {
   headGroup.add(createJhumka(-0.46));
   headGroup.add(createJhumka(0.46));
 
-  // 8. Royal Crimson Bridal Attire & Gold Embroidery Collar
-  const capeGeo = new THREE.CylinderGeometry(0.38, 0.95, 0.52, 32, 1, true);
-  const cape = new THREE.Mesh(capeGeo, bridalRedMaterial);
-  cape.position.set(0, -0.68, 0.02);
-  headGroup.add(cape);
+  // 8. Full Upper Body, Royal Velvet Choli & 24K Makeup Brush Rig
+  const bodyGroup = new THREE.Group();
+  bodyGroup.position.set(0, -0.58, 0);
+  mascotGroup.add(bodyGroup);
 
-  const collarTrimGeo = new THREE.TorusGeometry(0.40, 0.038, 12, 32);
-  const collarTrim = new THREE.Mesh(collarTrimGeo, goldMaterial);
-  collarTrim.position.set(0, -0.42, 0.02);
-  collarTrim.rotation.x = Math.PI * 0.5;
-  headGroup.add(collarTrim);
+  // Choli Torso
+  const torsoGeo = new THREE.CylinderGeometry(0.38, 0.54, 0.60, 24);
+  const torsoMesh = new THREE.Mesh(torsoGeo, bridalRedMaterial);
+  torsoMesh.position.set(0, -0.06, 0);
+  bodyGroup.add(torsoMesh);
+
+  // Gold Waistband
+  const waistGold = new THREE.Mesh(new THREE.TorusGeometry(0.52, 0.026, 12, 32), goldMaterial);
+  waistGold.rotation.x = Math.PI * 0.5;
+  waistGold.position.y = -0.34;
+  bodyGroup.add(waistGold);
+
+  // Neck
+  const neckGeo = new THREE.CylinderGeometry(0.18, 0.22, 0.26, 20);
+  const neckMesh = new THREE.Mesh(neckGeo, skinMaterial);
+  neckMesh.position.set(0, 0.32, 0);
+  bodyGroup.add(neckMesh);
+
+  // Kundan Choker Necklace
+  const necklace = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.032, 10, 24), goldMaterial);
+  necklace.rotation.x = Math.PI * 0.5;
+  necklace.position.set(0, 0.28, 0.02);
+  bodyGroup.add(necklace);
+
+  // Dupatta Drape over shoulders
+  const capeGeo = new THREE.CylinderGeometry(0.56, 0.86, 0.66, 28, 1, true, Math.PI * 0.75, Math.PI * 1.5);
+  const cape = new THREE.Mesh(capeGeo, bridalRedMaterial);
+  cape.position.set(0, -0.06, 0);
+  bodyGroup.add(cape);
+
+  // Left Arm
+  const leftArmGroup = new THREE.Group();
+  leftArmGroup.position.set(-0.46, 0.16, 0);
+  const leftArmMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.07, 0.40, 14), skinMaterial);
+  leftArmMesh.position.set(-0.06, -0.16, 0.06);
+  leftArmMesh.rotation.z = 0.32;
+  leftArmGroup.add(leftArmMesh);
+  const leftBangle = new THREE.Mesh(new THREE.TorusGeometry(0.088, 0.018, 8, 16), goldMaterial);
+  leftBangle.position.set(-0.12, -0.28, 0.10);
+  leftBangle.rotation.x = Math.PI * 0.5;
+  leftArmGroup.add(leftBangle);
+  const leftHand = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 10), skinMaterial);
+  leftHand.position.set(-0.15, -0.34, 0.14);
+  leftArmGroup.add(leftHand);
+  bodyGroup.add(leftArmGroup);
+
+  // Right Arm Holding 24K Bridal Makeup Brush
+  const rightArmGroup = new THREE.Group();
+  rightArmGroup.position.set(0.46, 0.16, 0);
+  const rightArmMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.07, 0.40, 14), skinMaterial);
+  rightArmMesh.position.set(0.06, -0.14, 0.08);
+  rightArmMesh.rotation.z = -0.38;
+  rightArmMesh.rotation.x = 0.35;
+  rightArmGroup.add(rightArmMesh);
+  const rightBangle = new THREE.Mesh(new THREE.TorusGeometry(0.088, 0.018, 8, 16), goldMaterial);
+  rightBangle.position.set(0.12, -0.24, 0.18);
+  rightBangle.rotation.x = Math.PI * 0.5;
+  rightArmGroup.add(rightBangle);
+  const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 10), skinMaterial);
+  rightHand.position.set(0.15, -0.28, 0.22);
+  rightArmGroup.add(rightHand);
+
+  // 24K Bridal Makeup Brush
+  const brushGroup = new THREE.Group();
+  brushGroup.position.set(0.18, -0.22, 0.28);
+  brushGroup.rotation.z = 0.55;
+  brushGroup.rotation.x = -0.35;
+
+  const handleMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.02, 0.42, 10), new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.3 }));
+  brushGroup.add(handleMesh);
+  const ferruleMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.02, 0.10, 12), goldMaterial);
+  ferruleMesh.position.y = 0.22;
+  brushGroup.add(ferruleMesh);
+  const bristleMesh = new THREE.Mesh(new THREE.ConeGeometry(0.034, 0.14, 12), new THREE.MeshStandardMaterial({ color: 0xD4AF37, roughness: 0.65 }));
+  bristleMesh.position.y = 0.32;
+  brushGroup.add(bristleMesh);
+  rightArmGroup.add(brushGroup);
+  bodyGroup.add(rightArmGroup);
 
   // 9. Interactive Kinematics & Living Motion Engine
   let targetGazeX = 0, targetGazeY = 0;
@@ -7449,119 +7511,89 @@ window.quickAskConcierge = function(query) {
     currentGazeX += (targetGazeX - currentGazeX) * 0.085;
     currentGazeY += (targetGazeY - currentGazeY) * 0.085;
 
-    // Mood-Driven Emotional Kinematics (Rabbit / Cute Robot Caliber)
+    // Mood-Driven Emotional Kinematics (Haute Pixar Little Girl Caliber)
     const mood = (window.charConciergeState && window.charConciergeState.mood) || 'happy';
     let moodGazeOffX = 0, moodGazeOffY = 0;
     let moodHeadTiltZ = 0, moodHeadPitchX = 0, moodHeadYawY = 0;
     let moodEyelidBase = -Math.PI * 0.55;
     let moodBounce = 0;
 
-    // Organic Bunny Ear Dynamics & Spontaneous Twitches
-    let earL_Z = 0.16, earR_Z = -0.16;
-    let earL_X = -0.05, earR_X = -0.05;
-    let earL_Y = 0, earR_Y = 0;
-
-    // Spontaneous rabbit ear twitch cycle every 3.8s
-    const twitchCycle = (timestamp * 0.001) % 3.8;
-    let twitchKick = 0;
-    if (twitchCycle > 3.4) {
-      twitchKick = Math.sin((twitchCycle - 3.4) * 45) * 0.16;
-    }
-
-    // Bunny Nose live micro-wiggle
-    if (nose) {
-      nose.position.y = -0.06 + Math.sin(timestamp * 0.012) * 0.005;
-    }
-
     if (mood === 'sad' || mood === 'pouting') {
-      // Melancholy / Disinterest / Rejection: Drooped head, drooped floppy ears, sorrowful wobble
       moodGazeOffY = 0.50;
-      moodHeadPitchX = 0.24;
+      moodHeadPitchX = 0.22;
       moodHeadTiltZ = Math.sin(timestamp * 0.003) * 0.04;
-      moodEyelidBase = -Math.PI * 0.30; // half-drooped sad puppy-dog eyelids
-      moodBounce = Math.sin(timestamp * 0.0016) * 0.015 - 0.025; // sad slump
+      moodEyelidBase = -Math.PI * 0.32;
+      moodBounce = Math.sin(timestamp * 0.0016) * 0.015 - 0.025;
 
-      // Ears droop and flop downwards all the way against the cheeks!
-      earL_Z = -0.80 + Math.sin(timestamp * 0.003) * 0.04;
-      earR_Z = 0.80 - Math.sin(timestamp * 0.003) * 0.04;
-      earL_X = 0.38;
-      earR_X = 0.38;
-
+      if (rightArmGroup && brushGroup) {
+        rightArmGroup.rotation.z = -0.15;
+        brushGroup.rotation.x = -0.10;
+      }
       if (smile) {
         smile.scale.set(0.85, -1.0, 1.0);
-        smile.position.set(0, -0.42, 0.04); // flipped into downturned sad pout
+        smile.position.set(0, -0.40, 0.04);
       }
     } else if (mood === 'thinking' || mood === 'thinking_coupon') {
-      // Pondering / Generating Discount: Head cocked curious, one ear cocks, eyes look up-right
+      // Pondering / Generating Discount: Head cocked, brush tapping chin, eyes looking up-right
       moodGazeOffX = 0.60;
       moodGazeOffY = -0.50;
-      moodHeadYawY = 0.26;
-      moodHeadPitchX = -0.16;
-      moodHeadTiltZ = -0.22;
+      moodHeadYawY = 0.24;
+      moodHeadPitchX = -0.14;
+      moodHeadTiltZ = -0.20;
       moodEyelidBase = -Math.PI * 0.48;
       moodBounce = Math.sin(timestamp * 0.0035) * 0.025;
 
-      // Curious ear cock: left ear leans sideways, right ear twitches
-      earL_Z = 0.52;
-      earL_X = -0.14;
-      earR_Z = -0.08 + (twitchKick * 1.6);
-      earR_X = 0.10;
-
+      if (rightArmGroup && brushGroup) {
+        rightArmGroup.rotation.z = -0.20;
+        brushGroup.rotation.x = -0.15;
+        brushGroup.position.set(0.12, -0.08, 0.38);
+      }
       if (smile) {
-        smile.scale.set(0.60, 0.65, 0.7);
-        smile.position.set(0.03, -0.04, 0.02); // cute thoughtful purse
+        smile.scale.set(0.65, 0.70, 0.7);
+        smile.position.set(0.02, -0.03, 0.02);
       }
     } else if (mood === 'offering_deal' || mood === 'recommending') {
-      // Offering a Deal: Head leans forward, ears perk alertly, wide cartoon eyes, perky bounce
+      // Offering a Deal: Head leans forward, wide eyes, welcoming brush wave
       moodHeadPitchX = -0.16;
       moodHeadYawY = Math.sin(timestamp * 0.004) * 0.08;
-      moodEyelidBase = -Math.PI * 0.72; // wide cartoon eyes
-      moodBounce = Math.abs(Math.sin(timestamp * 0.0065)) * 0.055; // cheerful bounce
+      moodEyelidBase = -Math.PI * 0.72;
+      moodBounce = Math.abs(Math.sin(timestamp * 0.0065)) * 0.055;
 
-      // Ears perked forward eagerly towards user
-      earL_Z = 0.22;
-      earR_Z = -0.22;
-      earL_X = -0.28 + Math.sin(timestamp * 0.006) * 0.08;
-      earR_X = -0.28 + Math.sin(timestamp * 0.006) * 0.08;
-
+      if (rightArmGroup && brushGroup) {
+        rightArmGroup.rotation.z = -0.45 + Math.sin(timestamp * 0.006) * 0.12;
+        brushGroup.rotation.x = -0.45 + Math.sin(timestamp * 0.006) * 0.15;
+      }
       if (smile) {
         smile.scale.set(1.25, 1.35, 1.0);
         smile.position.set(0, 0.02, 0);
       }
     } else if (mood === 'celebrating' || mood === 'deal_done' || mood === 'excited') {
-      // Deal Done / Celebrating: Double joyful celebration bounce, beaming smile, wiggling ears!
+      // Celebrating: Energetic celebratory bounce, high brush flourish!
       moodHeadPitchX = Math.sin(timestamp * 0.009) * 0.12;
       moodHeadYawY = Math.sin(timestamp * 0.007) * 0.15;
       moodHeadTiltZ = Math.cos(timestamp * 0.008) * 0.10;
       moodEyelidBase = -Math.PI * 0.65;
-      moodBounce = Math.abs(Math.sin(timestamp * 0.009)) * 0.09; // energetic celebratory bounce
+      moodBounce = Math.abs(Math.sin(timestamp * 0.009)) * 0.09;
 
-      // Ears flap and wiggle joyfully with high energy
-      earL_Z = 0.14 + Math.sin(timestamp * 0.018) * 0.24;
-      earR_Z = -0.14 - Math.sin(timestamp * 0.018) * 0.24;
-      earL_X = -0.12;
-      earR_X = -0.12;
-
+      if (rightArmGroup && brushGroup) {
+        rightArmGroup.rotation.z = Math.sin(timestamp * 0.014) * 0.28;
+        brushGroup.rotation.x = -0.40 + Math.sin(timestamp * 0.016) * 0.36;
+      }
       if (smile) {
         smile.scale.set(1.35, 1.5, 1.0);
         smile.position.set(0, 0.03, 0);
       }
     } else {
       // Default Sweet Happy / Idle
-      earL_Z = 0.18 + Math.sin(timestamp * 0.0022) * 0.04 + (twitchKick * 0.6);
-      earR_Z = -0.18 - Math.sin(timestamp * 0.0028) * 0.04 + twitchKick;
-      earL_X = -0.05;
-      earR_X = -0.05;
-
+      if (rightArmGroup && brushGroup) {
+        rightArmGroup.rotation.z = Math.sin(timestamp * 0.003) * 0.06;
+        brushGroup.rotation.x = -0.38 + Math.sin(timestamp * 0.004) * 0.08;
+        brushGroup.position.set(0.18, -0.22, 0.28);
+      }
       if (smile) {
         smile.scale.set(1.0, 1.0, 1.0);
         smile.position.set(0, 0, 0);
       }
-    }
-
-    if (leftEar && rightEar) {
-      leftEar.rotation.set(earL_X, earL_Y, earL_Z);
-      rightEar.rotation.set(earR_X, earR_Y, earR_Z);
     }
 
     // Head 3D Yaw, Pitch & Playful Tilt
@@ -7609,6 +7641,9 @@ window.quickAskConcierge = function(query) {
     }
 
     renderer.render(scene, camera);
+    if (headerRenderer && headerCanvas && headerCanvas.offsetParent !== null) {
+      headerRenderer.render(scene, camera);
+    }
     animationFrameId = requestAnimationFrame(renderAsha);
   }
 
@@ -8037,8 +8072,9 @@ window.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // Auto trigger curtain parting once stroke animation finishes
-  setTimeout(dismissPreloader, 2800);
+  setTimeout(dismissPreloader, 1400);
+  window.addEventListener('click', dismissPreloader, { once: true });
+  window.addEventListener('scroll', dismissPreloader, { once: true, passive: true });
 
   // Keyboard accessibility: Escape key bypasses immediately
   window.addEventListener('keydown', (e) => {

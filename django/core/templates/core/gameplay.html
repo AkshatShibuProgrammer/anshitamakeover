@@ -18,17 +18,28 @@
   --duo-border: rgba(212, 175, 55, 0.25);
 }
 
-body.gameplay-active {
+body {
   overflow-x: hidden !important;
   background: var(--duo-bg) !important;
 }
 
-body.gameplay-active header,
-body.gameplay-active #cbanner,
-body.gameplay-active .am-hero__letters,
-body.gameplay-active #chat-speech-bubble,
-body.gameplay-active #preloader,
-body.gameplay-active footer {
+header,
+#cbanner,
+.am-hero__letters,
+#chat-speech-bubble,
+#chat-toggle-wrap,
+#chat-toggle-btn,
+#chatbot,
+#preloader,
+footer,
+.wa-float,
+#whatsapp-btn,
+#whatsapp-fab,
+#floatingCartPill,
+.floating-cart-pill,
+.cart-btn-indicator,
+#cart-indicator,
+.floating-contact {
   display: none !important;
 }
 
@@ -188,23 +199,23 @@ body.gameplay-active footer {
 .duo-speech-bubble {
   position: relative;
   z-index: 10;
-  width: 86%;
+  width: 90%;
   background: rgba(22, 9, 20, 0.95);
   border: 1.5px solid var(--duo-gold);
-  border-radius: 20px;
-  padding: 16px 18px;
+  border-radius: 16px;
+  padding: 10px 14px;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.2);
   margin-bottom: auto;
-  margin-top: 24px;
+  margin-top: 10px;
   animation: floatBounce 4s ease-in-out infinite;
 }
 .duo-speech-bubble::after {
   content: '';
   position: absolute;
-  bottom: -10px;
+  bottom: -8px;
   left: 50%;
   transform: translateX(-50%);
-  border-width: 10px 10px 0;
+  border-width: 8px 8px 0;
   border-style: solid;
   border-color: var(--duo-gold) transparent transparent;
   display: block;
@@ -492,29 +503,31 @@ body.gameplay-active footer {
 }
 
 .duo-main-btn {
-  background: linear-gradient(135deg, #d4af37 0%, #b88b22 100%);
+  background: linear-gradient(135deg, #d4af37 0%, #f59e0b 100%);
   border: none;
   color: #070207;
   font-family: 'Outfit', sans-serif;
   font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  font-weight: 800;
+  letter-spacing: 1px;
   padding: 14px 44px;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.45);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.duo-main-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(212, 175, 55, 0.5);
-  background: #fff;
+.duo-main-btn:not(:disabled):hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(212, 175, 55, 0.7);
+  background: linear-gradient(135deg, #ffd700 0%, #f59e0b 100%);
 }
 .duo-main-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  background: #33261a;
+  color: rgba(245, 237, 214, 0.4);
 }
 
 /* Instant Feedback Drawer (Duolingo Slide-Up) */
@@ -681,6 +694,8 @@ body.gameplay-active footer {
   .duo-client-photo-wrap { height: 180px; }
   .duo-challenge-title { font-size: 1.6rem; }
 }
+/* Suppress redundant global floating elements on dedicated 3D gameplay arena */
+#chat-toggle-wrap, #three-bg, #preloader, .chat-speech-bubble { display: none !important; }
 </style>
 {% endblock %}
 
@@ -1045,12 +1060,14 @@ let streak = 1;
 let practicalPlacedCount = 0;
 let isAnswerChecked = false;
 
-// ═══ 3D MASCOT ASHA (THREE.JS PIXAR-GRADE ARTICULATED BUNNY) ═══
+// ═══ 3D PIXAR LITTLE GIRL BRIDE MASCOT ASHA (HAUTE THREE.JS RIG) ═══
 let mascotScene, mascotCamera, mascotRenderer;
-let headGroup, leftEarPivot, rightEarPivot, leftPupil, rightPupil, noseMesh, smileMesh;
+let mascotGroup, headGroup, bodyGroup, rightArmGroup, leftArmGroup, brushGroup;
+let leftPupil, rightPupil, leftEyelid, rightEyelid, smileMesh;
 let targetGazeX = 0, targetGazeY = 0;
-let mascotMood = 'happy'; // 'happy', 'excited', 'sad', 'curious'
+let mascotMood = 'happy';
 let mascotBounce = 0;
+let isBlinking = false, blinkProgress = 0, nextBlinkTime = performance.now() + 3000;
 
 function initDuoMascot() {
   const canvas = document.getElementById('duoMascotCanvas');
@@ -1058,182 +1075,395 @@ function initDuoMascot() {
 
   const rect = canvas.getBoundingClientRect();
   const width = rect.width || 380;
-  const height = rect.height || 450;
+  const height = rect.height || 600;
 
   mascotScene = new THREE.Scene();
 
-  mascotCamera = new THREE.PerspectiveCamera(36, width / height, 0.1, 50);
-  mascotCamera.position.set(0, 0.25, 3.4);
-  mascotCamera.lookAt(0, 0.1, 0);
+  // Perspective camera framed perfectly to capture Asha's upper body, brush, and head
+  mascotCamera = new THREE.PerspectiveCamera(38, width / height, 0.1, 50);
+  mascotCamera.position.set(0, -0.32, 5.8);
+  mascotCamera.lookAt(0, -0.36, 0);
 
   mascotRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
   mascotRenderer.setSize(width, height);
   mascotRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   // Studio Lighting
-  const ambient = new THREE.AmbientLight(0xfff0ea, 0.9);
+  const ambient = new THREE.AmbientLight(0xFFEFE6, 0.95);
   mascotScene.add(ambient);
 
-  const keyLight = new THREE.DirectionalLight(0xffeed6, 1.3);
-  keyLight.position.set(2, 3, 3);
+  const keyLight = new THREE.DirectionalLight(0xFFE2C4, 1.25);
+  keyLight.position.set(2.2, 3.2, 3.0);
   mascotScene.add(keyLight);
 
-  const rimLight = new THREE.DirectionalLight(0xd4af37, 1.5);
-  rimLight.position.set(-2, 2, -2);
+  const fillLight = new THREE.DirectionalLight(0xF2CEBA, 0.55);
+  fillLight.position.set(-2.0, 0.5, 2.0);
+  mascotScene.add(fillLight);
+
+  const rimLight = new THREE.DirectionalLight(0xE5B842, 1.3);
+  rimLight.position.set(0, 2.5, -2.2);
   mascotScene.add(rimLight);
 
-  // Materials
-  const skinMat = new THREE.MeshStandardMaterial({ color: 0xFDE2D0, roughness: 0.5 });
-  const blushMat = new THREE.MeshBasicMaterial({ color: 0xFB7185, transparent: true, opacity: 0.5 });
-  const hairMat = new THREE.MeshStandardMaterial({ color: 0x2A1208, roughness: 0.7 });
-  const earInnerMat = new THREE.MeshStandardMaterial({ color: 0xF7A8B8, roughness: 0.6 });
-  const goldMat = new THREE.MeshStandardMaterial({ color: 0xD4AF37, metalness: 0.9, roughness: 0.2 });
-  const chunniMat = new THREE.MeshStandardMaterial({ color: 0xB5182D, roughness: 0.45, side: THREE.DoubleSide });
+  // Materials — Authentic Warm Indian Honey Skin & Royal Vivah Velvet
+  const skinMat = new THREE.MeshStandardMaterial({ color: 0xBA7742, roughness: 0.60, metalness: 0.02 });
+  const blushMat = new THREE.MeshStandardMaterial({ color: 0xCF5A50, roughness: 0.70, transparent: true, opacity: 0.36 });
+  const hairMat = new THREE.MeshStandardMaterial({ color: 0x160F0B, roughness: 0.44 });
+  const goldMat = new THREE.MeshStandardMaterial({ color: 0xE2BA45, roughness: 0.22, metalness: 0.88 });
+  const pearlMat = new THREE.MeshStandardMaterial({ color: 0xFFFBF2, roughness: 0.15, metalness: 0.12 });
+  const rubyMat = new THREE.MeshStandardMaterial({ color: 0xBD182A, roughness: 0.25, metalness: 0.35 });
+  const bridalRedMat = new THREE.MeshStandardMaterial({ color: 0x82121E, roughness: 0.65 });
+  const chunniMat = new THREE.MeshStandardMaterial({ color: 0x9E1526, roughness: 0.48, side: THREE.DoubleSide });
 
-  // Character Root
-  const mascotGroup = new THREE.Group();
+  // Root
+  mascotGroup = new THREE.Group();
   mascotScene.add(mascotGroup);
 
+  // 1. Luxury Circular Atelier Pedestal
+  const pedestalGroup = new THREE.Group();
+  pedestalGroup.position.set(0, -1.70, 0);
+  const pedTopGeo = new THREE.CylinderGeometry(1.2, 1.35, 0.25, 36);
+  const pedTop = new THREE.Mesh(pedTopGeo, new THREE.MeshStandardMaterial({ color: 0x180716, roughness: 0.45 }));
+  pedestalGroup.add(pedTop);
+
+  const pedGoldRim = new THREE.Mesh(
+    new THREE.TorusGeometry(1.28, 0.038, 12, 40),
+    goldMat
+  );
+  pedGoldRim.rotation.x = Math.PI * 0.5;
+  pedGoldRim.position.y = 0.12;
+  pedestalGroup.add(pedGoldRim);
+  mascotGroup.add(pedestalGroup);
+
+  // 2. Full Upper Body Group
+  bodyGroup = new THREE.Group();
+  bodyGroup.position.set(0, -0.80, 0);
+  mascotGroup.add(bodyGroup);
+
+  // Royal Crimson Velvet Choli / Torso
+  const torsoGeo = new THREE.CylinderGeometry(0.38, 0.52, 0.65, 24);
+  const torsoMesh = new THREE.Mesh(torsoGeo, bridalRedMat);
+  torsoMesh.position.set(0, -0.05, 0);
+  bodyGroup.add(torsoMesh);
+
+  // Velvet Shoulder Caps with Zari Trims
+  const leftShoulder = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), bridalRedMat);
+  leftShoulder.position.set(-0.46, 0.18, 0);
+  bodyGroup.add(leftShoulder);
+  const leftShoulderZari = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.018, 8, 20), goldMat);
+  leftShoulderZari.position.set(-0.46, 0.16, 0);
+  leftShoulderZari.rotation.x = Math.PI * 0.5;
+  bodyGroup.add(leftShoulderZari);
+
+  const rightShoulder = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), bridalRedMat);
+  rightShoulder.position.set(0.46, 0.18, 0);
+  bodyGroup.add(rightShoulder);
+  const rightShoulderZari = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.018, 8, 20), goldMat);
+  rightShoulderZari.position.set(0.46, 0.16, 0);
+  rightShoulderZari.rotation.x = Math.PI * 0.5;
+  bodyGroup.add(rightShoulderZari);
+
+  // Diagonal Golden Dupatta / Pallu Pleats across chest
+  const palluGeo = new THREE.CylinderGeometry(0.08, 0.12, 0.72, 16);
+  const palluMesh = new THREE.Mesh(palluGeo, goldMat);
+  palluMesh.position.set(-0.06, 0.04, 0.24);
+  palluMesh.rotation.z = -0.65;
+  palluMesh.rotation.x = 0.25;
+  palluMesh.scale.set(1.4, 1.0, 0.35);
+  bodyGroup.add(palluMesh);
+
+  // Gold Waistband & Zari Embroidery Trims
+  const waistGold = new THREE.Mesh(new THREE.TorusGeometry(0.50, 0.026, 12, 32), goldMat);
+  waistGold.rotation.x = Math.PI * 0.5;
+  waistGold.position.y = -0.36;
+  bodyGroup.add(waistGold);
+
+  const chestZari = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.022, 10, 32), goldMat);
+  chestZari.rotation.x = Math.PI * 0.5;
+  chestZari.position.set(0, 0.12, 0.02);
+  bodyGroup.add(chestZari);
+
+  // Neck
+  const neckGeo = new THREE.CylinderGeometry(0.18, 0.22, 0.28, 20);
+  const neckMesh = new THREE.Mesh(neckGeo, skinMat);
+  neckMesh.position.set(0, 0.38, 0);
+  bodyGroup.add(neckMesh);
+
+  // Kundan Pearl Choker Necklace
+  const necklace = new THREE.Mesh(new THREE.TorusGeometry(0.23, 0.032, 10, 24), goldMat);
+  necklace.rotation.x = Math.PI * 0.5;
+  necklace.position.set(0, 0.32, 0.02);
+  bodyGroup.add(necklace);
+
+  // Red Vivah Dupatta draped gracefully over shoulders
+  const dupattaDrapeGeo = new THREE.CylinderGeometry(0.58, 0.85, 0.72, 28, 1, true, Math.PI * 0.75, Math.PI * 1.5);
+  const dupattaDrape = new THREE.Mesh(dupattaDrapeGeo, chunniMat);
+  dupattaDrape.position.set(0, -0.05, 0);
+  bodyGroup.add(dupattaDrape);
+
+  // Left Arm (Welcoming pose)
+  leftArmGroup = new THREE.Group();
+  leftArmGroup.position.set(-0.48, 0.20, 0);
+  const leftArmGeo = new THREE.CylinderGeometry(0.09, 0.075, 0.44, 16);
+  const leftArmMesh = new THREE.Mesh(leftArmGeo, skinMat);
+  leftArmMesh.position.set(-0.08, -0.18, 0.06);
+  leftArmMesh.rotation.z = 0.35;
+  leftArmMesh.rotation.x = 0.25;
+  leftArmGroup.add(leftArmMesh);
+
+  // Left Gold Bangles (Chuda)
+  const leftBangles = new THREE.Mesh(new THREE.TorusGeometry(0.092, 0.02, 8, 16), goldMat);
+  leftBangles.position.set(-0.14, -0.32, 0.12);
+  leftBangles.rotation.x = Math.PI * 0.5;
+  leftArmGroup.add(leftBangles);
+
+  // Left Hand
+  const leftHand = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), skinMat);
+  leftHand.position.set(-0.18, -0.38, 0.16);
+  leftArmGroup.add(leftHand);
+  bodyGroup.add(leftArmGroup);
+
+  // Right Arm (Holding 24K Bridal Makeup Brush)
+  rightArmGroup = new THREE.Group();
+  rightArmGroup.position.set(0.48, 0.20, 0);
+  const rightArmGeo = new THREE.CylinderGeometry(0.09, 0.075, 0.44, 16);
+  const rightArmMesh = new THREE.Mesh(rightArmGeo, skinMat);
+  rightArmMesh.position.set(0.08, -0.16, 0.10);
+  rightArmMesh.rotation.z = -0.40;
+  rightArmMesh.rotation.x = 0.45;
+  rightArmGroup.add(rightArmMesh);
+
+  // Right Gold Bangles
+  const rightBangles = new THREE.Mesh(new THREE.TorusGeometry(0.092, 0.02, 8, 16), goldMat);
+  rightBangles.position.set(0.15, -0.28, 0.22);
+  rightBangles.rotation.x = Math.PI * 0.5;
+  rightArmGroup.add(rightBangles);
+
+  // Right Hand
+  const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), skinMat);
+  rightHand.position.set(0.18, -0.32, 0.26);
+  rightArmGroup.add(rightHand);
+
+  // 24K Golden Bridal Makeup Brush!
+  brushGroup = new THREE.Group();
+  brushGroup.position.set(0.20, -0.26, 0.32);
+  brushGroup.rotation.z = 0.55;
+  brushGroup.rotation.x = -0.40;
+
+  // Handle
+  const handleGeo = new THREE.CylinderGeometry(0.016, 0.022, 0.45, 12);
+  const handleMesh = new THREE.Mesh(handleGeo, new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.3 }));
+  brushGroup.add(handleMesh);
+
+  // 24K Gold Ferrule
+  const ferruleGeo = new THREE.CylinderGeometry(0.025, 0.022, 0.12, 14);
+  const ferruleMesh = new THREE.Mesh(ferruleGeo, goldMat);
+  ferruleMesh.position.y = 0.24;
+  brushGroup.add(ferruleMesh);
+
+  // Luxurious Soft Bristles
+  const bristleGeo = new THREE.ConeGeometry(0.038, 0.15, 14);
+  const bristleMesh = new THREE.Mesh(bristleGeo, new THREE.MeshStandardMaterial({ color: 0xD4AF37, roughness: 0.65 }));
+  bristleMesh.position.y = 0.35;
+  brushGroup.add(bristleMesh);
+
+  // Twinkling Stardust Point Light at Brush Tip
+  const brushTipLight = new THREE.PointLight(0xFFEAA7, 1.2, 1.2);
+  brushTipLight.position.y = 0.44;
+  brushGroup.add(brushTipLight);
+
+  rightArmGroup.add(brushGroup);
+  bodyGroup.add(rightArmGroup);
+
+  // 3. Head & Adorable Pixar Girl Facial Rig
   headGroup = new THREE.Group();
-  headGroup.position.set(0, 0, 0);
+  headGroup.position.set(0, 0.05, 0);
   mascotGroup.add(headGroup);
 
-  // 1. Chubby Toddler Bunny Head
-  const headGeo = new THREE.SphereGeometry(0.72, 32, 32);
+  // Chubby cute baby toddler head
+  const headGeo = new THREE.SphereGeometry(0.68, 36, 36);
   const headMesh = new THREE.Mesh(headGeo, skinMat);
-  headMesh.scale.set(1.08, 0.96, 0.98);
+  headMesh.scale.set(1.08, 0.94, 0.96);
   headGroup.add(headMesh);
 
-  // 2. Rosy Cheeks
-  const cheekGeo = new THREE.SphereGeometry(0.18, 16, 16);
+  // Rosy Blushing Cheeks
+  const cheekGeo = new THREE.SphereGeometry(0.18, 18, 18);
   const leftCheek = new THREE.Mesh(cheekGeo, blushMat);
-  leftCheek.position.set(-0.35, -0.12, 0.52);
+  leftCheek.position.set(-0.34, -0.14, 0.50);
   leftCheek.scale.set(1.1, 0.65, 0.32);
   headGroup.add(leftCheek);
 
   const rightCheek = new THREE.Mesh(cheekGeo, blushMat);
-  rightCheek.position.set(0.35, -0.12, 0.52);
+  rightCheek.position.set(0.34, -0.14, 0.50);
   rightCheek.scale.set(1.1, 0.65, 0.32);
   headGroup.add(rightCheek);
 
-  // 3. Cute Button Bunny Nose (Wiggles live)
-  const noseGeo = new THREE.SphereGeometry(0.042, 16, 16);
-  noseMesh = new THREE.Mesh(noseGeo, new THREE.MeshStandardMaterial({ color: 0xF472B6, roughness: 0.4 }));
-  noseMesh.position.set(0, -0.06, 0.70);
-  noseMesh.scale.set(1.1, 0.75, 0.65);
+  // Dainty Button Nose
+  const noseGeo = new THREE.SphereGeometry(0.038, 16, 16);
+  const noseMesh = new THREE.Mesh(noseGeo, skinMat);
+  noseMesh.position.set(0, -0.05, 0.66);
+  noseMesh.scale.set(1.0, 0.72, 0.65);
   headGroup.add(noseMesh);
 
-  // 4. Sweet Smile
+  // Sweet Toddler Smile
   const smileCurve = new THREE.QuadraticBezierCurve3(
-    new THREE.Vector3(-0.14, -0.19, 0.66),
-    new THREE.Vector3(0, -0.28, 0.69),
-    new THREE.Vector3(0.14, -0.19, 0.66)
+    new THREE.Vector3(-0.15, -0.18, 0.62),
+    new THREE.Vector3(0, -0.27, 0.65),
+    new THREE.Vector3(0.15, -0.18, 0.62)
   );
-  const smileGeo = new THREE.TubeGeometry(smileCurve, 16, 0.02, 8, false);
+  const smileGeo = new THREE.TubeGeometry(smileCurve, 18, 0.02, 8, false);
   smileMesh = new THREE.Mesh(smileGeo, new THREE.MeshBasicMaterial({ color: 0x6E101D }));
   headGroup.add(smileMesh);
 
-  // 5. Giant Expressive Eyes
-  function createEye(x) {
-    const eyeGroup = new THREE.Group();
-    eyeGroup.position.set(x, 0.10, 0.54);
+  // Giant Pixar Eyes with Amber Depth & Specular Catchlights
+  function createEyeAssembly(xPos) {
+    const eyeAssembly = new THREE.Group();
+    eyeAssembly.position.set(xPos, 0.08, 0.50);
 
+    // Sclera
     const sclera = new THREE.Mesh(
-      new THREE.SphereGeometry(0.24, 24, 24),
-      new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.2 })
+      new THREE.SphereGeometry(0.23, 28, 28),
+      new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.15, metalness: 0.02 })
     );
-    eyeGroup.add(sclera);
+    eyeAssembly.add(sclera);
 
     const pupilPivot = new THREE.Group();
-    pupilPivot.position.set(0, 0, 0.23);
+    pupilPivot.position.set(0, 0, 0.22);
 
-    const iris = new THREE.Mesh(
-      new THREE.CircleGeometry(0.13, 24),
-      new THREE.MeshBasicMaterial({ color: 0x8C4415 })
-    );
+    // Limbal ring
+    const limbal = new THREE.Mesh(new THREE.CircleGeometry(0.145, 28), new THREE.MeshBasicMaterial({ color: 0x1A0903 }));
+    pupilPivot.add(limbal);
+
+    // Warm Amber Honey Iris
+    const iris = new THREE.Mesh(new THREE.CircleGeometry(0.13, 28), new THREE.MeshBasicMaterial({ color: 0x8C4415 }));
+    iris.position.z = 0.003;
     pupilPivot.add(iris);
 
-    const pupil = new THREE.Mesh(
-      new THREE.CircleGeometry(0.075, 24),
-      new THREE.MeshBasicMaterial({ color: 0x080404 })
-    );
-    pupil.position.z = 0.005;
+    // Golden Sunlight Fleck
+    const innerIris = new THREE.Mesh(new THREE.CircleGeometry(0.095, 20), new THREE.MeshBasicMaterial({ color: 0xD48430 }));
+    innerIris.position.z = 0.006;
+    pupilPivot.add(innerIris);
+
+    // Pupil
+    const pupil = new THREE.Mesh(new THREE.CircleGeometry(0.07, 20), new THREE.MeshBasicMaterial({ color: 0x060606 }));
+    pupil.position.z = 0.009;
     pupilPivot.add(pupil);
 
-    const glint = new THREE.Mesh(
-      new THREE.CircleGeometry(0.038, 16),
-      new THREE.MeshBasicMaterial({ color: 0xFFFFFF })
-    );
-    glint.position.set(0.04, 0.04, 0.008);
-    pupilPivot.add(glint);
+    // Pixar Specular Catchlights
+    const glint1 = new THREE.Mesh(new THREE.CircleGeometry(0.036, 14), new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+    glint1.position.set(0.038, 0.042, 0.012);
+    pupilPivot.add(glint1);
 
-    eyeGroup.add(pupilPivot);
-    headGroup.add(eyeGroup);
-    return pupilPivot;
+    const glint2 = new THREE.Mesh(new THREE.CircleGeometry(0.016, 10), new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+    glint2.position.set(-0.032, -0.034, 0.012);
+    pupilPivot.add(glint2);
+
+    eyeAssembly.add(pupilPivot);
+
+    // Blinking Eyelid
+    const eyelidGeo = new THREE.SphereGeometry(0.235, 28, 14, 0, Math.PI * 2, 0, Math.PI * 0.5);
+    const eyelid = new THREE.Mesh(eyelidGeo, skinMat);
+    eyelid.rotation.x = -Math.PI * 0.55;
+    eyelid.position.set(0, 0.01, 0.01);
+    eyeAssembly.add(eyelid);
+
+    return { assembly: eyeAssembly, pupilPivot: pupilPivot, eyelid: eyelid };
   }
 
-  leftPupil = createEye(-0.26);
-  rightPupil = createEye(0.26);
+  const leftEye = createEyeAssembly(-0.24);
+  const rightEye = createEyeAssembly(0.24);
+  leftPupil = leftEye.pupilPivot;
+  rightPupil = rightEye.pupilPivot;
+  leftEyelid = leftEye.eyelid;
+  rightEyelid = rightEye.eyelid;
+  headGroup.add(leftEye.assembly);
+  headGroup.add(rightEye.assembly);
 
-  // 6. Hair & Bridal Maang Tikka
-  const hairBack = new THREE.Mesh(
-    new THREE.SphereGeometry(0.76, 24, 24),
-    hairMat
-  );
-  hairBack.position.set(0, 0.08, -0.14);
-  hairBack.scale.set(1.05, 1.05, 1.05);
+  // Soft Front Baby Bangs
+  const bangLeft = new THREE.Mesh(new THREE.SphereGeometry(0.25, 18, 18), hairMat);
+  bangLeft.position.set(-0.22, 0.50, 0.48);
+  bangLeft.scale.set(1.15, 0.42, 0.55);
+  bangLeft.rotation.z = 0.20;
+  headGroup.add(bangLeft);
+
+  const bangRight = new THREE.Mesh(new THREE.SphereGeometry(0.25, 18, 18), hairMat);
+  bangRight.position.set(0.22, 0.50, 0.48);
+  bangRight.scale.set(1.15, 0.42, 0.55);
+  bangRight.rotation.z = -0.20;
+  headGroup.add(bangRight);
+
+  // Hair Back
+  const hairBack = new THREE.Mesh(new THREE.SphereGeometry(0.72, 28, 24), hairMat);
+  hairBack.position.set(0, 0.06, -0.10);
+  hairBack.scale.set(1.04, 1.04, 1.04);
   headGroup.add(hairBack);
 
-  const tikkaPendant = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.05, 0.05, 0.02, 16),
-    goldMat
-  );
-  tikkaPendant.position.set(0, 0.35, 0.70);
-  tikkaPendant.rotation.x = Math.PI / 2.2;
+  // Two Cute Side Puffs / Bridal Buns with Jasmine Flower Garland (Gajra)
+  function createBridalHairBun(isLeft) {
+    const bunGroup = new THREE.Group();
+    bunGroup.position.set(isLeft ? -0.52 : 0.52, 0.42, 0.02);
+
+    const bunMesh = new THREE.Mesh(new THREE.SphereGeometry(0.26, 20, 20), hairMat);
+    bunGroup.add(bunMesh);
+
+    // Jasmine Floral Gajra Ring
+    const gajraRing = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.045, 10, 24), pearlMat);
+    gajraRing.rotation.y = Math.PI * 0.5;
+    bunGroup.add(gajraRing);
+
+    // Gold Pin
+    const goldPin = new THREE.Mesh(new THREE.SphereGeometry(0.045, 10, 10), goldMat);
+    goldPin.position.set(isLeft ? -0.26 : 0.26, 0, 0);
+    bunGroup.add(goldPin);
+
+    return bunGroup;
+  }
+  headGroup.add(createBridalHairBun(true));
+  headGroup.add(createBridalHairBun(false));
+
+  // Sacred Vivah Maang Tikka
+  const tikkaChain = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.30, 8), goldMat);
+  tikkaChain.position.set(0, 0.48, 0.62);
+  tikkaChain.rotation.x = 0.20;
+  headGroup.add(tikkaChain);
+
+  const tikkaPendant = new THREE.Mesh(new THREE.SphereGeometry(0.052, 14, 14), goldMat);
+  tikkaPendant.position.set(0, 0.34, 0.66);
+  tikkaPendant.scale.set(1.1, 1.25, 0.7);
   headGroup.add(tikkaPendant);
 
-  // 7. Articulated Floppy Bunny Ears
-  function createBunnyEar(isLeft) {
-    const pivot = new THREE.Group();
-    pivot.position.set(isLeft ? -0.26 : 0.26, 0.68, 0.02);
+  const tikkaRuby = new THREE.Mesh(new THREE.SphereGeometry(0.026, 10, 10), rubyMat);
+  tikkaRuby.position.set(0, 0.34, 0.70);
+  headGroup.add(tikkaRuby);
 
-    const outer = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.12, 0.05, 0.82, 16),
-      skinMat
-    );
-    outer.position.y = 0.40;
-    outer.scale.set(1.0, 1.0, 0.35);
-    pivot.add(outer);
-
-    const inner = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.08, 0.025, 0.70, 16),
-      earInnerMat
-    );
-    inner.position.set(0, 0.40, 0.016);
-    inner.scale.set(0.9, 0.95, 0.25);
-    pivot.add(inner);
-
-    const goldRing = new THREE.Mesh(
-      new THREE.TorusGeometry(0.045, 0.012, 8, 16),
-      goldMat
-    );
-    goldRing.position.set(isLeft ? -0.05 : 0.05, 0.76, 0.01);
-    pivot.add(goldRing);
-
-    headGroup.add(pivot);
-    return pivot;
+  // Kundan Jhumka Earrings
+  function createJhumka(xPos) {
+    const jhumka = new THREE.Group();
+    jhumka.position.set(xPos, -0.16, 0.35);
+    const stud = new THREE.Mesh(new THREE.SphereGeometry(0.04, 10, 10), goldMat);
+    jhumka.add(stud);
+    const bell = new THREE.Mesh(new THREE.ConeGeometry(0.054, 0.065, 12, 1, true), goldMat);
+    bell.position.y = -0.065;
+    bell.rotation.x = Math.PI;
+    jhumka.add(bell);
+    const pearl = new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 8), pearlMat);
+    pearl.position.y = -0.105;
+    jhumka.add(pearl);
+    return jhumka;
   }
+  headGroup.add(createJhumka(-0.44));
+  headGroup.add(createJhumka(0.44));
 
-  leftEarPivot = createBunnyEar(true);
-  rightEarPivot = createBunnyEar(false);
-
-  // 8. Sacred Red Chunni (Framing Dupatta)
-  const chunni = new THREE.Mesh(
-    new THREE.SphereGeometry(0.84, 24, 16, Math.PI * 0.95, Math.PI * 1.1, 0, Math.PI * 0.65),
-    chunniMat
-  );
-  chunni.position.set(0, 0.05, 0.02);
+  // Sacred Crimson Red Chunni Framing Head
+  const chunniGeo = new THREE.SphereGeometry(0.80, 28, 18, Math.PI * 0.95, Math.PI * 1.10, 0, Math.PI * 0.65);
+  const chunni = new THREE.Mesh(chunniGeo, chunniMat);
+  chunni.position.set(0, 0.06, -0.05);
+  chunni.scale.set(1.06, 1.04, 1.08);
   headGroup.add(chunni);
+
+  const zariBorder = new THREE.Mesh(new THREE.TorusGeometry(0.80, 0.022, 10, 36, Math.PI), goldMat);
+  zariBorder.position.set(0, 0.20, 0.04);
+  zariBorder.rotation.x = Math.PI * 0.35;
+  headGroup.add(zariBorder);
 
   // Mouse tracking gaze
   window.addEventListener('mousemove', (e) => {
@@ -1244,61 +1474,68 @@ function initDuoMascot() {
   canvas.addEventListener('click', () => {
     setMascotMood('excited');
     duoAudio.playChime();
-    setTimeout(() => setMascotMood('happy'), 1800);
+    setTimeout(() => setMascotMood('happy'), 2200);
   });
 
   animateMascot();
 }
 
-let lastTime = 0;
 function animateMascot(time = 0) {
   requestAnimationFrame(animateMascot);
-  const delta = (time - lastTime) * 0.001;
-  lastTime = time;
+
+  // Natural Blinking Cycle
+  if (time > nextBlinkTime && !isBlinking) {
+    isBlinking = true;
+    blinkProgress = 0;
+  }
+  if (isBlinking) {
+    blinkProgress += 0.16;
+    const blinkAngle = Math.sin(blinkProgress * Math.PI) * Math.PI * 0.52;
+    if (leftEyelid && rightEyelid) {
+      leftEyelid.rotation.x = -Math.PI * 0.55 + blinkAngle;
+      rightEyelid.rotation.x = -Math.PI * 0.55 + blinkAngle;
+    }
+    if (blinkProgress >= 1) {
+      isBlinking = false;
+      nextBlinkTime = time + 3000 + Math.random() * 2500;
+    }
+  }
+
+  // Smooth Breathing & Idle Life
+  const breathing = Math.sin(time * 0.0025) * 0.02;
+  if (bodyGroup) {
+    bodyGroup.position.y = -0.65 + breathing * 0.6;
+    bodyGroup.rotation.y = Math.sin(time * 0.0015) * 0.03;
+  }
 
   if (headGroup) {
-    // Smooth breathing & mood bounce
-    const breathing = Math.sin(time * 0.0025) * 0.02;
-    headGroup.position.y = breathing + mascotBounce;
+    headGroup.position.y = 0.05 + breathing + mascotBounce;
+    headGroup.rotation.y += (targetGazeX * 0.32 - headGroup.rotation.y) * 0.08;
+    headGroup.rotation.x += (-targetGazeY * 0.22 - headGroup.rotation.x) * 0.08;
 
-    // Gaze kinematics
-    headGroup.rotation.y += (targetGazeX * 0.35 - headGroup.rotation.y) * 0.08;
-    headGroup.rotation.x += (-targetGazeY * 0.25 - headGroup.rotation.x) * 0.08;
-
-    // Pupils follow target
     if (leftPupil && rightPupil) {
-      const px = targetGazeX * 0.04;
-      const py = -targetGazeY * 0.03;
-      leftPupil.position.x = px;
-      leftPupil.position.y = py;
-      rightPupil.position.x = px;
-      rightPupil.position.y = py;
+      leftPupil.position.x = targetGazeX * 0.04;
+      leftPupil.position.y = -targetGazeY * 0.03;
+      rightPupil.position.x = targetGazeX * 0.04;
+      rightPupil.position.y = -targetGazeY * 0.03;
     }
+  }
 
-    // Bunny Nose live wiggle
-    if (noseMesh) {
-      noseMesh.position.y = -0.06 + Math.sin(time * 0.015) * 0.004;
-    }
-
-    // Ear Kinematics based on mood
-    if (leftEarPivot && rightEarPivot) {
-      const earTwitch = Math.sin(time * 0.004) * 0.05;
-      if (mascotMood === 'excited') {
-        // Flappy happy ears jump
-        leftEarPivot.rotation.z = 0.3 + Math.sin(time * 0.02) * 0.18;
-        rightEarPivot.rotation.z = -0.3 - Math.sin(time * 0.02) * 0.18;
-        mascotBounce = Math.abs(Math.sin(time * 0.015)) * 0.08;
-      } else if (mascotMood === 'sad') {
-        // Drooped sad bunny ears
-        leftEarPivot.rotation.z = 0.55 + earTwitch * 0.2;
-        rightEarPivot.rotation.z = -0.55 - earTwitch * 0.2;
-        mascotBounce = -0.04;
-      } else {
-        // Natural perky ears
-        leftEarPivot.rotation.z = 0.12 + earTwitch;
-        rightEarPivot.rotation.z = -0.12 - earTwitch;
-        mascotBounce = 0;
-      }
+  // Right arm and makeup brush waving dynamics
+  if (rightArmGroup && brushGroup) {
+    if (mascotMood === 'excited') {
+      rightArmGroup.rotation.z = Math.sin(time * 0.012) * 0.25;
+      brushGroup.rotation.x = -0.40 + Math.sin(time * 0.015) * 0.35;
+      mascotBounce = Math.abs(Math.sin(time * 0.012)) * 0.14;
+    } else if (mascotMood === 'sad') {
+      rightArmGroup.rotation.z = -0.15;
+      brushGroup.rotation.x = -0.10;
+      mascotBounce = -0.03;
+    } else {
+      // Gentle idle brush shimmer
+      rightArmGroup.rotation.z = Math.sin(time * 0.003) * 0.06;
+      brushGroup.rotation.x = -0.40 + Math.sin(time * 0.004) * 0.08;
+      mascotBounce = 0;
     }
   }
 
@@ -1311,9 +1548,9 @@ function setMascotMood(mood) {
   mascotMood = mood;
   const moodIcon = document.getElementById('duoMoodIcon');
   if (moodIcon) {
-    if (mood === 'excited') moodIcon.textContent = '🐰🎉';
-    else if (mood === 'sad') moodIcon.textContent = '🐰💔';
-    else moodIcon.textContent = '🐰✨';
+    if (mood === 'excited') moodIcon.textContent = '💖🎉';
+    else if (mood === 'sad') moodIcon.textContent = '🥺💔';
+    else moodIcon.textContent = '👑✨';
   }
 }
 
@@ -1352,6 +1589,7 @@ function renderCurrentLesson() {
   lesson.options.forEach((opt) => {
     const card = document.createElement('div');
     card.className = 'duo-option-card';
+    card.id = 'opt-' + opt.id;
     card.onclick = () => selectLessonOption(opt.id, card);
     card.innerHTML = `
       <div class="duo-option-key">${opt.id}</div>

@@ -1307,114 +1307,201 @@ body[data-page-zone="dark"] .hg-explore-all-btn {
   margin-left: calc(-6vw);
   padding: 40px 0 60px;
   overflow: hidden;
-  position: relative;
 }
 
-/* 3D Cylindrical Stage & Carousel Manifold */
-.cylinder-stage {
-  width: 100%;
-  height: 600px;
-  perspective: 1600px;
-  perspective-origin: 50% 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ═══ WORKS WHEEL 3D PERSPECTIVE PORTFOLIO DRUM (WORKS-WHEEL.TSX ARCHITECTURE) ═══ */
+.works-wheel-section {
   position: relative;
+  width: 100%;
+  padding: 70px 4vw 90px;
+  background: radial-gradient(circle at 50% 30%, #150611 0%, #0a0309 70%, #060205 100%);
+  overflow: hidden;
   user-select: none;
-  cursor: grab;
-  overflow: visible;
+  -webkit-user-select: none;
 }
-.cylinder-stage.is-dragging {
+.works-wheel-stage-container {
+  position: relative;
+  width: 100%;
+  max-width: 1300px;
+  margin: 24px auto 0;
+  height: 580px;
+  perspective: 1200px;
+  overflow: hidden;
+}
+.works-wheel-stage {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+  touch-action: pan-x;
+  outline: none;
+}
+.works-wheel-stage:active {
   cursor: grabbing;
 }
-.cylinder-carousel {
-  width: 280px;
-  height: 420px;
-  position: relative;
+.works-wheel-pivot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   transform-style: preserve-3d;
   will-change: transform;
 }
-
-.cylinder-card {
+.works-wheel-card {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 280px;
-  height: 420px;
-  border-radius: 16px;
-  overflow: hidden;
-  background: #090308;
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65), 0 0 12px rgba(212, 175, 55, 0.15);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform, opacity;
+  transition: opacity 0.25s ease;
+  border-radius: 20px;
   text-decoration: none;
-  color: #fff;
+  color: inherit;
+}
+.works-wheel-card-inner {
+  position: relative;
   display: flex;
-  flex-direction: column;
-  transform-style: preserve-3d;
-  will-change: transform, box-shadow, border-color;
-  backface-visibility: visible;
-  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(22, 10, 20, 0.94);
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.85), 0 0 25px rgba(212, 175, 55, 0.15);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-
-.cylinder-card:hover {
-  border-color: #f5d77f;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(212, 175, 55, 0.6);
+.works-wheel-card:hover .works-wheel-card-inner {
+  border-color: var(--gold);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.95), 0 0 35px rgba(212, 175, 55, 0.4);
 }
-
-.cylinder-hint {
+/* NO CROPPING: Full portrait aspect ratio preserved with object-fit: contain */
+.works-wheel-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  pointer-events: none;
+  background: radial-gradient(circle at center, rgba(30,12,25,0.7) 0%, rgba(10,3,9,0.98) 100%);
+}
+.works-wheel-card-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(14, 5, 12, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  border-radius: 20px;
+  padding: 4px 11px;
+  font-size: 0.68rem;
+  font-family: 'Space Mono', monospace;
+  color: var(--gold);
+  letter-spacing: 1px;
+  z-index: 5;
+}
+.works-wheel-card-affordance {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #d4af37 0%, #b88b22 100%);
+  color: #070207;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 5;
+}
+.works-wheel-card:hover .works-wheel-card-affordance {
+  opacity: 1;
+  transform: translateY(0);
+}
+.works-wheel-ring-label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: 'Playfair Display', serif;
+  color: var(--gold);
+  pointer-events: none;
+  letter-spacing: -0.5px;
+  transition: opacity 0.3s ease;
+  text-shadow: 0 0 35px rgba(212, 175, 55, 0.6);
+  z-index: 10;
+}
+.works-wheel-front-title {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  transform: translateY(-50%);
+  font-family: 'Playfair Display', serif;
+  color: #fff;
+  pointer-events: none;
+  max-width: 340px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  line-height: 1.15;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.9);
+  z-index: 15;
+}
+.works-wheel-front-title span {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.works-wheel-index {
+  position: absolute;
+  top: 8%;
+  right: 3%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: right;
+  z-index: 20;
+}
+.works-wheel-index li {
+  margin-bottom: 5px;
+}
+.works-wheel-index button {
+  background: none;
+  border: none;
+  color: rgba(245, 237, 214, 0.45);
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  padding: 3px 8px;
+  transition: all 0.25s ease;
+  outline: none;
+  text-align: right;
+}
+.works-wheel-index button:hover {
+  color: var(--gold);
+}
+.works-wheel-index button.is-active {
+  color: var(--gold);
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+  transform: translateX(-6px);
+}
+.works-wheel-hint {
   text-align: center;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Space Mono', monospace;
   font-size: 0.72rem;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: rgba(212, 175, 55, 0.75);
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.hg-card-thumb {
-  position: relative;
-  width: 100%;
-  height: 290px;
-  overflow: hidden;
-  background: #000;
-}
-.hg-card-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  background: radial-gradient(circle, #180914 0%, #060205 100%);
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.hg-card:hover .hg-card-thumb img {
-  transform: scale(1.08);
-}
-.hg-card-badge {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  background: rgba(12, 4, 9, 0.88);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(212, 175, 55, 0.45);
-  color: #f5eed6;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  font-weight: 700;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-  animation: badgeShimmer 4s ease-in-out infinite;
-}
-
-@keyframes badgeShimmer {
-  0%, 100% { border-color: rgba(212, 175, 55, 0.4); box-shadow: 0 4px 12px rgba(0,0,0,0.6); }
-  50% { border-color: rgba(245, 215, 127, 0.9); box-shadow: 0 0 16px rgba(212, 175, 55, 0.5); }
+  margin-top: 14px;
 }
 
 .hg-card-play-orb {
@@ -2656,17 +2743,17 @@ body[data-page-zone="dark"] .about-metric-item span {
   </div>
 </section>
 
-<!-- ═══ HOMEPAGE GALLERY: 4K LOOKBOOK & CINEMA REELS SHOWCASE ═══ -->
-<section class="home-gallery-showcase" id="gallery-showcase">
+<!-- ═══ HOMEPAGE GALLERY: 4K LOOKBOOK & 3D WORKS WHEEL ═══ -->
+<section class="home-gallery-showcase works-wheel-section" id="gallery-showcase" aria-label="Haute Bridal Repertoire & 3D Works Wheel">
   <div class="home-gallery-header">
     <div class="home-gallery-title-wrap">
       <span class="looks-eyebrow">CINEMATIC REPERTOIRE · 4K STUDIO</span>
-      <h2 class="home-gallery-title">Curated Lookbook & Cinema Reels</h2>
-      <p class="home-gallery-sub">Authentic bride transformations, sacred vivah rituals, and real Instagram reels sculpted by Anshita Sinha.</p>
+      <h2 class="home-gallery-title">Curated Lookbook & Works Wheel</h2>
+      <p class="home-gallery-sub">Authentic bride transformations, sacred vivah rituals, and real Instagram reels sculpted by Anshita Sinha — turn the wheel to explore.</p>
     </div>
     <div class="home-gallery-controls">
-      <button type="button" class="hg-nav-arrow" onclick="orbitCylinderPrev()" aria-label="Previous Looks">‹</button>
-      <button type="button" class="hg-nav-arrow" onclick="orbitCylinderNext()" aria-label="Next Looks">›</button>
+      <button type="button" class="hg-nav-arrow" id="wheelPrevBtn" aria-label="Previous Look">‹</button>
+      <button type="button" class="hg-nav-arrow" id="wheelNextBtn" aria-label="Next Look">›</button>
       <a href="{% url 'gallery' %}" class="hg-explore-all-btn">
         <span>Enter 4K Cinema Studio</span>
         <span>→</span>
@@ -2674,136 +2761,25 @@ body[data-page-zone="dark"] .about-metric-item span {
     </div>
   </div>
 
-  <div class="home-gallery-track-outer">
-    <!-- 3D Cylindrical Orbit Stage -->
-    <div class="cylinder-stage" id="cylinderStage" aria-label="3D Rotating Bridal Album Showcase">
-      <div class="cylinder-carousel" id="cylinderCarousel">
-        
-        <!-- Card 1: Kuhu Khare (Bengali Bride Competition Artistry) -->
-        <a href="{% url 'gallery' %}?album=kuhu-kolkata-banarasi-chandan" class="cylinder-card" data-idx="0">
-          <div class="hg-card-thumb">
-            <span class="hg-card-badge">▶ 4K Reel</span>
-            <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Kuhu Khare — Traditional Bengali Mukut & Chandan (Competition Artistry)" loading="lazy">
-            <div class="hg-card-play-orb">▶</div>
-          </div>
-          <div class="hg-card-info">
-            <span class="hg-card-eyebrow">COMPETITION ARTISTRY · BENGALI BRIDE</span>
-            <h3 class="hg-card-name">Kuhu Khare</h3>
-            <p class="hg-card-desc">Hand-Painted Chandan & Mukut placement sculpted for bridal competition participation.</p>
-            <span class="hg-card-cta-link">Watch Cinema Reel →</span>
-          </div>
-        </a>
-
-        <!-- Card 2: Sacred Vivah Crimson Bride -->
-        <a href="{% url 'gallery' %}?album=sacred-vivah-royal-crimson" class="cylinder-card" data-idx="1">
-          <div class="hg-card-thumb">
-            <span class="hg-card-badge">▶ 4K Film</span>
-            <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" alt="Royal Crimson Bride — Vivah Pheras" loading="lazy">
-            <div class="hg-card-play-orb">▶</div>
-          </div>
-          <div class="hg-card-info">
-            <span class="hg-card-eyebrow">BRIDAL SUITES</span>
-            <h3 class="hg-card-name">Royal Crimson</h3>
-            <p class="hg-card-desc">18-Hour Cry-Proof Formulation & Velvet Zardozi Lehenga.</p>
-            <span class="hg-card-cta-link">Watch Cinema Reel →</span>
-          </div>
-        </a>
-
-        <!-- Card 3: Palace Maroon Velvet Heritage -->
-        <a href="{% url 'gallery' %}?album=palace-maroon-velvet-heritage" class="cylinder-card" data-idx="2">
-          <div class="hg-card-thumb">
-            <span class="hg-card-badge">📷 Multi-Angle</span>
-            <img src="{% static 'core/images/curated/dsc09702.jpg' %}" alt="Palace Maroon Velvet Heritage" loading="lazy">
-            <div class="hg-card-play-orb">▶</div>
-          </div>
-          <div class="hg-card-info">
-            <span class="hg-card-eyebrow">PALACE COUTURE</span>
-            <h3 class="hg-card-name">Maroon Velvet</h3>
-            <p class="hg-card-desc">Deep Wine Velvet Zardozi & Antique Polki Nath.</p>
-            <span class="hg-card-cta-link">Explore Album →</span>
-          </div>
-        </a>
-
-        <!-- Card 4: Miss Rajak Mauve Cut-Crease -->
-        <a href="{% url 'gallery' %}?album=miss-rajak-mauve-shimmer" class="cylinder-card" data-idx="3">
-          <div class="hg-card-thumb">
-            <span class="hg-card-badge">📸 Instagram</span>
-            <img src="{% static 'core/images/curated/ig_post_DM-_ZJVTCIo_slide_1.jpg' %}" alt="Miss Rajak — Reception Evening Glamour" loading="lazy">
-            <div class="hg-card-play-orb">▶</div>
-          </div>
-          <div class="hg-card-info">
-            <span class="hg-card-eyebrow">RECEPTION · COCKTAIL</span>
-            <h3 class="hg-card-name">Miss Rajak</h3>
-            <p class="hg-card-desc">Mauve Shimmer Cut-Crease & Glass-Skin Radiance.</p>
-            <span class="hg-card-cta-link">Watch Cinema Reel →</span>
-          </div>
-        </a>
-
-        <!-- Card 5: Imperial Fuchsia & Emerald -->
-        <a href="{% url 'gallery' %}?album=imperial-fuchsia-emerald" class="cylinder-card" data-idx="4">
-          <div class="hg-card-thumb">
-            <span class="hg-card-badge">📸 Reel</span>
-            <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia & Emerald Palace Bride" loading="lazy">
-            <div class="hg-card-play-orb">▶</div>
-          </div>
-          <div class="hg-card-info">
-            <span class="hg-card-eyebrow">PALACE · SANGEET</span>
-            <h3 class="hg-card-name">Fuchsia & Emerald</h3>
-            <p class="hg-card-desc">Raw Silk Lehenga with Statement Emerald Choker.</p>
-            <span class="hg-card-cta-link">Watch Cinema Reel →</span>
-          </div>
-        </a>
-
-        <!-- Card 6: Christian Bridal Couture Suite -->
-        <a href="{% url 'gallery' %}?album=christian-bridal-couture" class="cylinder-card" data-idx="5">
-          <div class="hg-card-thumb">
-            <span class="hg-card-badge">📷 Couture</span>
-            <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Christian Bridal Couture Suite" loading="lazy">
-            <div class="hg-card-play-orb">▶</div>
-          </div>
-          <div class="hg-card-info">
-            <span class="hg-card-eyebrow">CATHEDRAL WEDDING</span>
-            <h3 class="hg-card-name">Ivory Cathedral</h3>
-            <p class="hg-card-desc">Off-Shoulder Ivory Ballgown & Sheer Veil.</p>
-            <span class="hg-card-cta-link">Explore Album →</span>
-          </div>
-        </a>
-
-        <!-- Card 7: Ring Ceremony Sheer Maroon Veil -->
-        <a href="{% url 'gallery' %}?album=ring-ceremony-sheer-maroon" class="cylinder-card" data-idx="6">
-          <div class="hg-card-thumb">
-            <span class="hg-card-badge">📸 Instagram</span>
-            <img src="{% static 'core/images/curated/ig_post_DRP0QCODVfD.jpg' %}" alt="Ring Ceremony Sheer Maroon Veil Bride" loading="lazy">
-            <div class="hg-card-play-orb">▶</div>
-          </div>
-          <div class="hg-card-info">
-            <span class="hg-card-eyebrow">ROKA · RING CEREMONY</span>
-            <h3 class="hg-card-name">Sheer Maroon</h3>
-            <p class="hg-card-desc">Delicate Maang Tikka & Soft Warm Bronze Smokey Eyes.</p>
-            <span class="hg-card-cta-link">Explore Album →</span>
-          </div>
-        </a>
-
-        <!-- Card 8: Haute Hair & Traditional Saree Draping -->
-        <a href="{% url 'gallery' %}?album=haute-hair-saree-draping" class="cylinder-card" data-idx="7">
-          <div class="hg-card-thumb">
-            <span class="hg-card-badge">▶ Reel</span>
-            <img src="{% static 'core/images/curated/ig_reel_DSNIJ0-Aqgh.jpg' %}" alt="Haute Hair & Traditional Saree Draping" loading="lazy">
-            <div class="hg-card-play-orb">▶</div>
-          </div>
-          <div class="hg-card-info">
-            <span class="hg-card-eyebrow">HAIR & DRAPING</span>
-            <h3 class="hg-card-name">Silk Saree & Bun</h3>
-            <p class="hg-card-desc">Silk Saree Master Pleating with Jasmine Bun.</p>
-            <span class="hg-card-cta-link">Watch Cinema Reel →</span>
-          </div>
-        </a>
-
+  <!-- WORKS WHEEL 3D STAGE (WORKS-WHEEL.TSX ARCHITECTURE) -->
+  <div class="works-wheel-stage-container" id="worksWheelContainer">
+    <div class="works-wheel-stage" id="worksWheelStage" tabindex="0" role="listbox" aria-label="Works Wheel">
+      <div class="works-wheel-pivot" id="worksWheelPivot">
+        <!-- Dynamic uncropped cards placed in 3D perspective drum -->
       </div>
     </div>
-    <div class="cylinder-hint">
-      <span>✦ DRAG OR SWIPE TO SPIN 3D REPERTOIRE · HOVER TO PAUSE ✦</span>
-    </div>
+
+    <!-- Center Ring Title / Label (trades place with active title) -->
+    <div class="works-wheel-ring-label" id="worksWheelRingLabel">Works '26</div>
+
+    <!-- Active Item Title on Left -->
+    <div class="works-wheel-front-title" id="worksWheelFrontTitle"></div>
+
+    <!-- Right Side Index List -->
+    <ol class="works-wheel-index" id="worksWheelIndex"></ol>
+  </div>
+  <div class="works-wheel-hint">
+    <span>✦ SCROLL WHEEL, DRAG, OR ARROW KEYS TO TURN 3D PORTFOLIO DRUM ✦</span>
   </div>
 </section>
 
@@ -3338,192 +3314,301 @@ body[data-page-zone="dark"] .about-metric-item span {
 {% include 'components/admin_scripts.html' %}
 
 <script>
-// ═══ 3D CYLINDRICAL ORBIT REPERTOIRE ENGINE ═══
-let cylinderCurrentAngle = 0;
-let cylinderTargetVelocity = 0;
-let cylinderVelocity = 0;
-let isCylinderDragging = false;
-let isCylinderHovered = false;
-let cylinderStartX = 0;
-let cylinderLastX = 0;
-let cylinderDragDistance = 0;
+// ═══ WORKS WHEEL 3D PERSPECTIVE PORTFOLIO DRUM ENGINE (WORKS-WHEEL.TSX) ═══
+(function initWorksWheel() {
+  const container = document.getElementById('worksWheelContainer');
+  const stage = document.getElementById('worksWheelStage');
+  const pivot = document.getElementById('worksWheelPivot');
+  const ringLabel = document.getElementById('worksWheelRingLabel');
+  const frontTitle = document.getElementById('worksWheelFrontTitle');
+  const indexEl = document.getElementById('worksWheelIndex');
+  if (!container || !stage || !pivot) return;
 
-function layoutCylinderCards() {
-  const carousel = document.getElementById('cylinderCarousel');
-  if (!carousel) return;
-  const cards = carousel.querySelectorAll('.cylinder-card');
-  const count = cards.length;
-  if (!count) return;
-
-  const isMobile = window.innerWidth <= 768;
-  const cardW = isMobile ? 180 : 250;
-  const cardH = isMobile ? 290 : 380;
-  carousel.style.width = cardW + 'px';
-  carousel.style.height = cardH + 'px';
-
-  const angleStep = 360 / count;
-  // Calculate exact cylindrical radius from chord width: R = (W/2) / tan(PI/N)
-  const rad = Math.round((cardW / 2) / Math.tan(Math.PI / count)) + (isMobile ? 80 : 180);
-
-  cards.forEach((card, i) => {
-    const cardAngle = i * angleStep;
-    card.dataset.baseAngle = cardAngle;
-    card.dataset.radius = rad;
-    card.style.width = cardW + 'px';
-    card.style.height = cardH + 'px';
-    card.style.transform = `rotateY(${cardAngle}deg) translateZ(${rad}px)`;
-  });
-  updateCylinderTransform();
-}
-
-function updateCylinderTransform() {
-  const carousel = document.getElementById('cylinderCarousel');
-  if (!carousel) return;
-  carousel.style.transform = `rotateX(-6deg) rotateY(${cylinderCurrentAngle.toFixed(2)}deg)`;
-
-  // Dynamic depth styling: Dim back cards and highlight forward-facing cards
-  const cards = carousel.querySelectorAll('.cylinder-card');
-  const count = cards.length;
-  if (!count) return;
-
-  cards.forEach((card) => {
-    const baseAngle = parseFloat(card.dataset.baseAngle || 0);
-    // Effective angle relative to viewer
-    const effectiveAngle = ((baseAngle + cylinderCurrentAngle) % 360 + 360) % 360;
-    const radAngle = (effectiveAngle * Math.PI) / 180;
-    const cosVal = Math.cos(radAngle); // +1 at front, -1 at back
-
-    // Depth opacity: front is 1.0, sides are 0.75, back is 0.35
-    const opacity = 0.45 + 0.55 * Math.max(0, cosVal);
-    card.style.opacity = opacity.toFixed(2);
-    // Prevent clicking back cards
-    card.style.pointerEvents = cosVal > 0.25 ? 'auto' : 'none';
-  });
-}
-
-function orbitCylinderNext() {
-  const carousel = document.getElementById('cylinderCarousel');
-  if (!carousel) return;
-  const count = carousel.querySelectorAll('.cylinder-card').length || 8;
-  cylinderVelocity -= (360 / count) * 0.25;
-}
-
-function orbitCylinderPrev() {
-  const carousel = document.getElementById('cylinderCarousel');
-  if (!carousel) return;
-  const count = carousel.querySelectorAll('.cylinder-card').length || 8;
-  cylinderVelocity += (360 / count) * 0.25;
-}
-
-// ═══ SMOOTH SCROLL TO SIGNATURE LOOKS ═══
-function scrollToSignatureLooks() {
-  const target = document.getElementById('looks-section');
-  if (target) {
-    if (window.lenis) {
-      window.lenis.scrollTo(target);
-    } else {
-      target.scrollIntoView({ behavior: 'smooth' });
+  const ITEMS = [
+    {
+      title: "Kuhu Khare",
+      category: "COMPETITION ARTISTRY · BENGALI BRIDE",
+      image: "{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}",
+      href: "{% url 'gallery' %}?album=kuhu-kolkata-banarasi-chandan",
+      badge: "▶ 4K Reel"
+    },
+    {
+      title: "Royal Crimson",
+      category: "SACRED VIVAH SUITE",
+      image: "{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}",
+      href: "{% url 'gallery' %}?album=sacred-vivah-royal-crimson",
+      badge: "▶ 4K Film"
+    },
+    {
+      title: "Miss Rajak",
+      category: "RECEPTION · COCKTAIL",
+      image: "{% static 'core/images/curated/ig_post_DM-_ZJVTCIo_slide_1.jpg' %}",
+      href: "{% url 'gallery' %}?album=miss-rajak-mauve-shimmer",
+      badge: "📸 Instagram"
+    },
+    {
+      title: "Maroon Velvet",
+      category: "PALACE HERITAGE COUTURE",
+      image: "{% static 'core/images/curated/dsc09702.jpg' %}",
+      href: "{% url 'gallery' %}?album=palace-maroon-velvet-heritage",
+      badge: "📷 Multi-Angle"
+    },
+    {
+      title: "Imperial Fuchsia",
+      category: "PALACE · SANGEET",
+      image: "{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}",
+      href: "{% url 'gallery' %}?album=imperial-fuchsia-emerald",
+      badge: "📸 Reel"
+    },
+    {
+      title: "Christian Ivory",
+      category: "CATHEDRAL COUTURE",
+      image: "{% static 'core/images/curated/christian_bride_veil_ivory.jpg' %}",
+      href: "{% url 'gallery' %}?album=christian-ivory-couture",
+      badge: "👰 Cathedral"
+    },
+    {
+      title: "Sheer Maroon Veil",
+      category: "CONTEMPORARY GLAMOUR",
+      image: "{% static 'core/images/curated/maroon_veil_sheer_glam.jpg' %}",
+      href: "{% url 'gallery' %}?album=ring-ceremony-sheer-maroon",
+      badge: "✨ Shimmer"
+    },
+    {
+      title: "Chandan Symmetry",
+      category: "SACRED ALPONA DETAIL",
+      image: "{% static 'core/images/curated/kuhu_khare_chandan_mukut_portrait.jpg' %}",
+      href: "{% url 'gallery' %}?album=kuhu-kolkata-banarasi-chandan",
+      badge: "🔍 Macro 4K"
     }
+  ];
+
+  const count = ITEMS.length;
+  const last = Math.max(count - 1, 0);
+
+  // Exact math parameters from works-wheel.tsx
+  const CARD_H = 0.44;
+  const CARD_MAX_W = 0.36;
+  const CARD_RATIO = 1.35;
+  const STEP = 40;
+  const DRUM = 2.22;
+  const LENS = 2.7;
+  const RING_R = 1.14;
+  const BOW = 1.82;
+  const TITLE = 0.124;
+  const INDEX = 0.04;
+  const CULL = 1.6;
+
+  const WHEEL_UNITS = 900;
+  const DRAG_UNITS = 420;
+  const SETTLE = 140;
+  const EASE = 0.12;
+
+  const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const rad = (deg) => (deg * Math.PI) / 180;
+  const bowAt = (drumDeg, bow) => -bow * (1 - Math.cos(rad(drumDeg)));
+
+  function place(ringDeg, drumDeg, ringR, drumR, bow, m) {
+    return (
+      `translateX(${m * bowAt(drumDeg, bow)}px)` +
+      ` rotateZ(${(1 - m) * ringDeg}deg) translateY(${-(1 - m) * ringR}px)` +
+      ` rotateX(${m * drumDeg}deg) translateZ(${m * drumR}px)`
+    );
   }
-}
 
-(function init3DCylinderInteractions() {
-  const stage = document.getElementById('cylinderStage');
-  const carousel = document.getElementById('cylinderCarousel');
-  if (!stage || !carousel) return;
+  // Populate cards and index in DOM
+  pivot.innerHTML = '';
+  if (indexEl) indexEl.innerHTML = '';
+  const cardElements = [];
 
-  layoutCylinderCards();
-  window.addEventListener('resize', layoutCylinderCards);
+  ITEMS.forEach((item, i) => {
+    const card = document.createElement('a');
+    card.className = 'works-wheel-card';
+    card.id = `works-wheel-${i}`;
+    card.href = item.href;
+    card.setAttribute('role', 'option');
+    card.innerHTML = `
+      <div class="works-wheel-card-inner">
+        <span class="works-wheel-card-badge">${item.badge}</span>
+        <img src="${item.image}" alt="${item.title}" draggable="false" loading="lazy">
+        <span class="works-wheel-card-affordance">View Look →</span>
+      </div>
+    `;
+    pivot.appendChild(card);
+    cardElements.push(card);
 
-  // Mouse Drag Events
-  stage.addEventListener('mousedown', (e) => {
-    isCylinderDragging = true;
-    cylinderDragDistance = 0;
-    cylinderStartX = e.clientX;
-    cylinderLastX = e.clientX;
-    stage.classList.add('is-dragging');
+    if (indexEl) {
+      const li = document.createElement('li');
+      li.innerHTML = `<button type="button" data-idx="${i}">${item.title}</button>`;
+      indexEl.appendChild(li);
+    }
   });
 
-  window.addEventListener('mousemove', (e) => {
-    if (!isCylinderDragging) return;
-    const deltaX = e.clientX - cylinderLastX;
-    cylinderLastX = e.clientX;
-    cylinderDragDistance += Math.abs(deltaX);
-    cylinderCurrentAngle += deltaX * 0.35;
-    cylinderVelocity = deltaX * 0.25;
-    updateCylinderTransform();
-  });
+  const turn = { current: 0 };
+  const target = { current: 0 };
+  let activeIndex = 0;
+  let stageW = stage.clientWidth || 1200;
+  let stageH = stage.clientHeight || 560;
 
-  window.addEventListener('mouseup', () => {
-    if (!isCylinderDragging) return;
-    isCylinderDragging = false;
-    stage.classList.remove('is-dragging');
-  });
+  function computeMetrics() {
+    stageW = stage.clientWidth || 1200;
+    stageH = stage.clientHeight || 560;
+    const cardW = Math.min(stageH * CARD_H * CARD_RATIO, stageW * CARD_MAX_W);
+    const cardH = cardW / CARD_RATIO;
+    const drumR = cardH * DRUM;
+    const ringR = cardH * RING_R;
+    const ringScale = count ? clamp((((2 * Math.PI * ringR) / count) * 0.82) / (cardW || 1), 0.16, 1) : 1;
+    return {
+      cardW,
+      cardH,
+      ringR,
+      ringScale,
+      drumR,
+      bow: cardH * BOW,
+      depth: cardH * LENS,
+      title: Math.max(24, cardH * TITLE),
+      index: Math.max(13, cardH * INDEX)
+    };
+  }
 
-  // Touch Events for Mobile / Tablet
-  stage.addEventListener('touchstart', (e) => {
-    if (!e.touches.length) return;
-    isCylinderDragging = true;
-    cylinderDragDistance = 0;
-    cylinderStartX = e.touches[0].clientX;
-    cylinderLastX = e.touches[0].clientX;
-    stage.classList.add('is-dragging');
-  }, { passive: true });
+  let metrics = computeMetrics();
 
-  stage.addEventListener('touchmove', (e) => {
-    if (!isCylinderDragging || !e.touches.length) return;
-    const deltaX = e.touches[0].clientX - cylinderLastX;
-    cylinderLastX = e.touches[0].clientX;
-    cylinderDragDistance += Math.abs(deltaX);
-    cylinderCurrentAngle += deltaX * 0.42;
-    cylinderVelocity = deltaX * 0.3;
-    updateCylinderTransform();
-  }, { passive: true });
+  function applyMetrics() {
+    metrics = computeMetrics();
+    stage.style.perspective = `${metrics.depth}px`;
+    if (ringLabel) ringLabel.style.fontSize = `${metrics.title * 1.5}px`;
+    if (frontTitle) frontTitle.style.fontSize = `${metrics.title * 1.1}px`;
+    if (indexEl) {
+      indexEl.querySelectorAll('button').forEach(btn => {
+        btn.style.fontSize = `${metrics.index}px`;
+      });
+    }
+    cardElements.forEach(card => {
+      card.style.width = `${metrics.cardW}px`;
+      card.style.height = `${metrics.cardH}px`;
+      card.style.marginLeft = `${-metrics.cardW / 2}px`;
+      card.style.marginTop = `${-metrics.cardH / 2}px`;
+    });
+  }
 
-  stage.addEventListener('touchend', () => {
-    isCylinderDragging = false;
-    stage.classList.remove('is-dragging');
-  });
+  applyMetrics();
+  window.addEventListener('resize', applyMetrics);
 
-  // Hover detection to pause auto-orbit
-  stage.addEventListener('mouseenter', () => { isCylinderHovered = true; });
-  stage.addEventListener('mouseleave', () => { isCylinderHovered = false; });
+  function to(next) {
+    target.current = clamp(next, 0, last + 1);
+  }
+  window.turnWorksWheelTo = to;
 
-  // Prevent link click when user was actively dragging
-  carousel.querySelectorAll('.cylinder-card').forEach(card => {
-    card.addEventListener('click', (e) => {
-      if (cylinderDragDistance > 12) {
-        e.preventDefault();
+  // Arrow button navigation
+  const prevBtn = document.getElementById('wheelPrevBtn');
+  const nextBtn = document.getElementById('wheelNextBtn');
+  if (prevBtn) prevBtn.addEventListener('click', () => to(Math.max(0, target.current - 1)));
+  if (nextBtn) nextBtn.addEventListener('click', () => to(Math.min(last + 1, target.current + 1)));
+
+  // Index button click
+  if (indexEl) {
+    indexEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (btn && btn.dataset.idx !== undefined) {
+        to(parseInt(btn.dataset.idx, 10) + 1);
       }
     });
+  }
 
-    // Spotlight elevation on hover
-    card.addEventListener('mouseenter', () => {
-      const baseAngle = parseFloat(card.dataset.baseAngle || 0);
-      const rad = parseFloat(card.dataset.radius || 420);
-      card.style.transform = `rotateY(${baseAngle}deg) translateZ(${rad + 30}px) scale(1.05)`;
-    });
-    card.addEventListener('mouseleave', () => {
-      const baseAngle = parseFloat(card.dataset.baseAngle || 0);
-      const rad = parseFloat(card.dataset.radius || 420);
-      card.style.transform = `rotateY(${baseAngle}deg) translateZ(${rad}px)`;
-    });
+  // Wheel interaction
+  let settlingTimer = 0;
+  stage.addEventListener('wheel', (e) => {
+    const next = target.current + e.deltaY / WHEEL_UNITS;
+    if (next > 0 && next < last + 1) e.preventDefault();
+    to(next);
+    clearTimeout(settlingTimer);
+    settlingTimer = setTimeout(() => to(Math.round(target.current)), SETTLE);
+  }, { passive: false });
+
+  // Pointer drag interaction
+  let dragStartY = null;
+  stage.addEventListener('pointerdown', (e) => {
+    dragStartY = e.clientY;
+    stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener('pointermove', (e) => {
+    if (dragStartY === null) return;
+    to(target.current + (dragStartY - e.clientY) / DRAG_UNITS);
+    dragStartY = e.clientY;
+  });
+  function onPointerEnd() {
+    dragStartY = null;
+    if (target.current > 1) to(Math.round(target.current));
+  }
+  stage.addEventListener('pointerup', onPointerEnd);
+  stage.addEventListener('pointercancel', onPointerEnd);
+
+  // Key navigation
+  stage.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      to(Math.round(target.current) + 1);
+      e.preventDefault();
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      to(Math.round(target.current) - 1);
+      e.preventDefault();
+    }
   });
 
-  // Animation Loop: Inertia + Auto-Orbit
-  function cylinderOrbitLoop() {
-    if (!isCylinderDragging) {
-      if (!isCylinderHovered) {
-        cylinderCurrentAngle += 0.14; // smooth slow auto-orbit
+  // Animation Loop: exact one pass per frame from works-wheel.tsx
+  function draw() {
+    requestAnimationFrame(draw);
+    const gap = target.current - turn.current;
+    if (Math.abs(gap) < 0.0005) turn.current = target.current;
+    else turn.current += gap * EASE;
+
+    const t = turn.current;
+    const m = clamp(t, 0, 1);
+    const pos = Math.max(0, t - 1);
+
+    pivot.style.transform = `translateZ(${-m * metrics.drumR}px)`;
+
+    for (let i = 0; i < count; i++) {
+      const d = i - pos;
+      const drumDeg = d * STEP;
+      const card = cardElements[i];
+      if (card) {
+        card.style.transform = place(
+          d * (360 / count),
+          drumDeg,
+          metrics.ringR,
+          metrics.drumR,
+          metrics.bow,
+          m
+        );
+        card.style.opacity = m > 0.5 && Math.abs(d) > CULL ? '0' : '1';
+        card.style.zIndex = String(Math.round(100 - Math.abs(d) * 2));
       }
-      cylinderCurrentAngle += cylinderVelocity;
-      cylinderVelocity *= 0.93; // friction damping
-      if (Math.abs(cylinderVelocity) < 0.001) cylinderVelocity = 0;
-      updateCylinderTransform();
+      const inner = card.firstElementChild;
+      if (inner) {
+        inner.style.transform = `scale(${lerp(metrics.ringScale, 1, m)})`;
+      }
     }
-    requestAnimationFrame(cylinderOrbitLoop);
+
+    if (ringLabel) ringLabel.style.opacity = String(1 - m);
+    if (frontTitle) frontTitle.style.opacity = String(m);
+
+    const near = clamp(Math.round(pos), 0, last);
+    if (near !== activeIndex) {
+      activeIndex = near;
+      const curr = ITEMS[activeIndex];
+      if (frontTitle && curr) {
+        frontTitle.innerHTML = `<span>${curr.category}</span>${curr.title}`;
+      }
+      if (indexEl) {
+        indexEl.querySelectorAll('button').forEach((b, idx) => {
+          b.classList.toggle('is-active', idx === activeIndex);
+        });
+      }
+    }
   }
-  requestAnimationFrame(cylinderOrbitLoop);
+
+  draw();
 })();
 
 // ═══ STANZZA & DEMILIE CALIBER LUXURY MOTION ARCHITECTURE ═══
@@ -3707,18 +3792,20 @@ window.triggerHeroEntrance = function() {
       }
     });
 
-    gsap.from('#cylinderStage', {
-      y: 50,
-      opacity: 0,
-      scale: 0.92,
-      duration: 1.2,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: showcaseSection,
-        start: 'top 82%',
-        toggleActions: 'play none none none'
+    gsap.fromTo('#worksWheelContainer',
+      { y: 30, opacity: 0.85 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.0,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: showcaseSection,
+          start: 'top 90%',
+          toggleActions: 'play none none none'
+        }
       }
-    });
+    );
   }
 
   // 4. Section 4: Artistry Disciplines (Services Teaser)
