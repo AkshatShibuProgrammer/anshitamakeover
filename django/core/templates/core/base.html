@@ -81,6 +81,11 @@ window.dismissPreloader = function() {
     pl.style.pointerEvents = 'none';
     pl.classList.add('curtains-open');
     setTimeout(() => {
+      if (typeof window.triggerHeroEntrance === 'function') {
+        window.triggerHeroEntrance();
+      }
+    }, 150);
+    setTimeout(() => {
       try { sessionStorage.setItem('anshita_preloader_seen', 'true'); } catch(e) {}
       document.documentElement.classList.add('preloader-skipped');
       try { pl.remove(); } catch(e) { pl.style.display = 'none'; }
@@ -88,6 +93,9 @@ window.dismissPreloader = function() {
   } else {
     try { sessionStorage.setItem('anshita_preloader_seen', 'true'); } catch(e) {}
     document.documentElement.classList.add('preloader-skipped');
+    if (typeof window.triggerHeroEntrance === 'function') {
+      window.triggerHeroEntrance();
+    }
   }
 };
 
@@ -335,9 +343,11 @@ button{cursor:pointer;font-family:var(--font-b)}
 /* ═══ CURSOR ═══ */
 #cur-dot,#cur-ring{position:fixed;top:-100px;left:-100px;pointer-events:none;z-index:999999;border-radius:50%;transform:translate(-50%,-50%);will-change:left,top,transform}
 #cur-dot{width:8px;height:8px;background:var(--gold);box-shadow:0 0 10px rgba(212,175,55,0.95);transition:opacity 0.2s}
-#cur-ring{width:34px;height:34px;border:1.5px solid var(--gold);opacity:.85;box-shadow:0 0 12px rgba(212,175,55,0.4);transition:transform .15s cubic-bezier(0.16,1,0.3,1),border-color .2s,background .2s,opacity .2s}
+#cur-ring{width:38px;height:38px;border:1.5px solid var(--gold);opacity:.85;box-shadow:0 0 15px rgba(212,175,55,0.45);transition:transform .22s cubic-bezier(0.16,1,0.3,1),border-color .2s,background .25s,opacity .2s;pointer-events:none}
+#cur-ring.is-hovering{transform:translate(-50%,-50%) scale(2.3) !important;border-color:#E2BA45 !important;background:rgba(226,186,69,0.18) !important;box-shadow:0 0 25px rgba(226,186,69,0.6) !important}
 [data-theme="light"] #cur-dot{background:#8B6F1A !important;box-shadow:0 0 8px rgba(139,111,26,0.6) !important}
 [data-theme="light"] #cur-ring{border-color:#8B6F1A !important;box-shadow:0 0 10px rgba(139,111,26,0.3) !important}
+[data-theme="light"] #cur-ring.is-hovering{border-color:#8B6F1A !important;background:rgba(139,111,26,0.15) !important}
 @media(max-width:768px){#cur-dot,#cur-ring{display:none !important}}
 
 /* ═══ LUXURY EDITORIAL ATMOSPHERE & GLITTER LAYERS (EVAGHER-INSPIRED) ═══ */
@@ -6930,22 +6940,20 @@ document.addEventListener('mousemove', e => {
   requestAnimationFrame(animCursor);
 })();
 
-// Dynamic hover delegation: supports existing and dynamically loaded elements
+// Dynamic luxury hover delegation: expansive support across all interactive and luxury showcase cards
+const CURSOR_INTERACTIVE_SELECTOR = 'a, button, [role="button"], input, select, textarea, .svc-card, .pkg-card, .art-card, .gal-item, .cpn-opt, .evt-card, .editorial-card, .lookbook-card, .catalog-card, .chat-speech-bubble, .chat-toggle, .btn-p, .btn-o, .filter-chip, .fcp-checkout-btn, .fcp-open-drawer, .am-hero__primary-btn, .about-ig-btn, .am-hero__scroll-down, .look-cta-btn, .metric-card, .gallery-filter-btn, .am-svc-card, .service-accordion-item, .testimonial-card, .hc-pill, .reel-card, .ritual-card, .cylinder-item, .testi-dot, .services-callout-btn, .services-view-all';
+
 document.addEventListener('mouseover', e => {
-  const target = e.target.closest('a, button, .svc-card, .pkg-card, .art-card, .gal-item, .cpn-opt, .evt-card, .editorial-card, .lookbook-card, .catalog-card, .chat-speech-bubble, .chat-toggle, .btn-p, .btn-o, .filter-chip, .fcp-checkout-btn, .fcp-open-drawer');
+  const target = e.target.closest(CURSOR_INTERACTIVE_SELECTOR);
   if (target && cring) {
-    cring.style.transform = 'translate(-50%, -50%) scale(1.85)';
-    cring.style.borderColor = 'var(--rose)';
-    cring.style.backgroundColor = 'rgba(232, 164, 184, 0.12)';
+    cring.classList.add('is-hovering');
   }
 });
 
 document.addEventListener('mouseout', e => {
-  const target = e.target.closest('a, button, .svc-card, .pkg-card, .art-card, .gal-item, .cpn-opt, .evt-card, .editorial-card, .lookbook-card, .catalog-card, .chat-speech-bubble, .chat-toggle, .btn-p, .btn-o, .filter-chip, .fcp-checkout-btn, .fcp-open-drawer');
+  const target = e.target.closest(CURSOR_INTERACTIVE_SELECTOR);
   if (target && cring) {
-    cring.style.transform = 'translate(-50%, -50%) scale(1)';
-    cring.style.borderColor = 'var(--gold)';
-    cring.style.backgroundColor = 'transparent';
+    cring.classList.remove('is-hovering');
   }
 });
 
@@ -7861,40 +7869,48 @@ window.addEventListener('DOMContentLoaded', () => {
     checkScrollReveals();
   }
 
-  // Initialize Lenis Smooth Scroll Engine
+  // Initialize Lenis Smooth Scroll Engine (Haute-Couture Momentum Gliding)
   if (!isReducedMotion && typeof Lenis !== 'undefined') {
     try {
       const lenis = new Lenis({
-        duration: 1.25, // Haute-couture momentum glide
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Silky exponential deceleration
+        duration: 1.45, // Silky luxury momentum glide
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential deceleration
         orientation: 'vertical',
         gestureOrientation: 'vertical',
         smoothWheel: true,
-        wheelMultiplier: 0.92, // Weighted luxury resistance
-        touchMultiplier: 1.2,
+        wheelMultiplier: 1.05, // Rich tactile responsiveness
+        touchMultiplier: 1.3,
         infinite: false,
       });
       window.lenis = lenis;
 
-      // Integrate with GSAP ScrollTrigger
-      if (typeof ScrollTrigger !== 'undefined' && typeof gsap !== 'undefined') {
-        gsap.registerPlugin(ScrollTrigger);
-        lenis.on('scroll', ScrollTrigger.update);
-        gsap.ticker.add((time) => {
-          lenis.raf(time * 1000);
-        });
-        gsap.ticker.lagSmoothing(0);
-      } else {
-        function raf(time) {
-          lenis.raf(time);
-          requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
+      // High-performance compositor RAF loop
+      function lenisRaf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(lenisRaf);
       }
+      requestAnimationFrame(lenisRaf);
 
+      // Connect Lenis to GSAP ScrollTrigger and scroll velocity feedback
       lenis.on('scroll', ({ scroll, velocity }) => {
         handleScrollMotion(scroll, velocity);
+        if (typeof ScrollTrigger !== 'undefined') {
+          ScrollTrigger.update();
+        }
+
+        // Kinetic Marquee velocity acceleration (LxL Creative caliber)
+        const tracks = document.querySelectorAll('.marquee-track');
+        if (tracks.length && Math.abs(velocity) > 0.05) {
+          const speedFactor = Math.min(Math.abs(velocity) * 0.12, 2.5);
+          tracks.forEach(track => {
+            track.style.animationDuration = Math.max(16 / (1 + speedFactor), 3.5) + 's';
+          });
+        }
       });
+
+      if (typeof gsap !== 'undefined') {
+        gsap.ticker.lagSmoothing(0);
+      }
     } catch (e) {
       console.warn('Lenis momentum notice:', e);
       window.addEventListener('scroll', () => handleScrollMotion(window.scrollY, 0), { passive: true });
@@ -10483,38 +10499,7 @@ window.addEventListener('DOMContentLoaded', () => {
     headroomInstance.init();
   }
 
-  // ── Lenis Smooth Momentum Scroll Engine ──
-  if (typeof Lenis !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    try {
-      window.lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        orientation: 'vertical',
-        gestureOrientation: 'vertical',
-        smoothWheel: true,
-        wheelMultiplier: 1.0,
-        touchMultiplier: 1.5,
-        infinite: false
-      });
-
-      // Synchronize Lenis with GSAP ScrollTrigger if present
-      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-        window.lenis.on('scroll', ScrollTrigger.update);
-        gsap.ticker.add((time) => {
-          window.lenis.raf(time * 1000);
-        });
-        gsap.ticker.lagSmoothing(0);
-      } else {
-        function lenisRaf(time) {
-          window.lenis.raf(time);
-          requestAnimationFrame(lenisRaf);
-        }
-        requestAnimationFrame(lenisRaf);
-      }
-    } catch (err) {
-      console.warn('Lenis init notice:', err);
-    }
-  }
+  // Lenis engine initialized in Evagher luxury scroll handler above.
 });
 
 </script>

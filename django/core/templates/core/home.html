@@ -920,6 +920,32 @@ body {
   line-height: 1.15;
   filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 25px rgba(212, 175, 55, 0.35));
 }
+.am-hero__h1 {
+  font-family: 'Cinzel', 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 3.8vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.12;
+  margin: 4px 0 14px;
+  color: #FFFDF8;
+}
+.am-hero__h1-line {
+  display: block;
+  overflow: hidden;
+}
+.am-hero__word {
+  display: inline-block;
+  transform: translateY(115%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.am-hero__word--gold {
+  background: linear-gradient(135deg, #FFF0C2 0%, #E2BA45 50%, #B6862C 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #E2BA45;
+}
 .am-hero__location {
   font-family: 'Inter', sans-serif;
   font-size: clamp(0.66rem, 0.9vw, 0.74rem);
@@ -2030,6 +2056,9 @@ body[data-page-zone="dark"] .about-metric-item span {
   <!-- Right: Deep Obsidian Editorial Text -->
   <div class="am-hero__split-right">
     <span class="am-hero__cursive">{{ t.hero_couturier|default:'Bridal Couturier' }}</span>
+    <h1 class="am-hero__h1">
+      <span class="am-hero__h1-line"><span class="am-hero__word">Haute</span> <span class="am-hero__word">Bridal</span> <span class="am-hero__word am-hero__word--gold">Artistry</span></span>
+    </h1>
     <div class="am-hero__location">
       <span class="loc-gold">Jabalpur</span><span class="loc-dot">·</span>Bhopal<span class="loc-dot">·</span>Raipur<span class="loc-dot">·</span>Lucknow<span class="loc-dot">·</span>Nagpur<span class="loc-dot">·</span>Pune<span class="loc-dot">·</span>Delhi<span class="loc-dot">·</span>Chennai<span class="loc-dot">·</span>Hyderabad<span class="loc-dot">·</span><span class="loc-gold">{% if lang == 'hindi' or lang == 'marathi' %}संपूर्ण भारत{% else %}All Over India{% endif %}</span>
     </div>
@@ -2761,40 +2790,120 @@ function scrollToSignatureLooks() {
   requestAnimationFrame(cylinderOrbitLoop);
 })();
 
-(function initGSAPScrollAnimations() {
-  if (typeof gsap !== 'undefined') {
-    if (typeof ScrollTrigger !== 'undefined') {
-      gsap.registerPlugin(ScrollTrigger);
-    }
+// ═══ STANZZA & DEMILIE CALIBER LUXURY MOTION ARCHITECTURE ═══
+window._heroEntranceTriggered = false;
 
-    // 1. Section 1 (Hero Entrance) & Section 2 (Signature Looks Evagher Scroll Up/Down Dynamics)
-    gsap.from('.am-hero__letters', {
-      scale: 0.92,
+window.triggerHeroEntrance = function() {
+  if (window._heroEntranceTriggered) return;
+  window._heroEntranceTriggered = true;
+
+  if (typeof gsap === 'undefined') return;
+
+  const tl = gsap.timeline();
+  tl.fromTo('.am-hero__letters',
+    { scale: 0.88, opacity: 0 },
+    { scale: 1, opacity: 1, duration: 1.4, ease: 'power3.out' }
+  )
+  .fromTo('.am-hero__split-left',
+    { opacity: 0, scale: 0.94 },
+    { opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' },
+    '-=1.0'
+  )
+  .fromTo('.am-hero__cursive',
+    { opacity: 0, y: 25 },
+    { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+    '-=0.8'
+  )
+  .fromTo('.am-hero__word',
+    { y: '115%', opacity: 0 },
+    { y: '0%', opacity: 1, duration: 0.95, stagger: 0.09, ease: 'power4.out' },
+    '-=0.5'
+  )
+  .fromTo('.am-hero__location',
+    { opacity: 0, y: 20 },
+    { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' },
+    '-=0.5'
+  )
+  .fromTo('.am-hero__tagline',
+    { opacity: 0, y: 20 },
+    { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' },
+    '-=0.5'
+  )
+  .fromTo('.am-hero__cta-row > *',
+    { opacity: 0, y: 25 },
+    { opacity: 1, y: 0, stagger: 0.12, duration: 0.7, ease: 'power3.out' },
+    '-=0.5'
+  )
+  .fromTo('.am-hero__scroll-down',
+    { opacity: 0, y: -15 },
+    { opacity: 1, y: 0, duration: 0.6, ease: 'back.out(2)' },
+    '-=0.3'
+  );
+};
+
+(function initGSAPScrollAnimations() {
+  if (typeof gsap === 'undefined') return;
+
+  if (typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+  }
+
+  // Preloader bypass or immediate entrance check
+  if (sessionStorage.getItem('anshita_preloader_seen') === 'true' || document.documentElement.classList.contains('preloader-skipped')) {
+    setTimeout(() => {
+      window.triggerHeroEntrance();
+    }, 120);
+  } else {
+    // Fail-safe auto-trigger after 2.9s
+    setTimeout(() => {
+      window.triggerHeroEntrance();
+    }, 2900);
+  }
+
+  // 1. Dual Marquee Band Entrance
+  const marqueeBand = document.querySelector('.marquee-band');
+  if (marqueeBand) {
+    gsap.from(marqueeBand, {
       opacity: 0,
-      duration: 1.6,
-      ease: 'power3.out',
-      delay: 0.2
-    });
-    gsap.from('.am-hero__split-right > *', {
       y: 35,
+      duration: 1.0,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: marqueeBand,
+        start: 'top 95%',
+        toggleActions: 'play none none none'
+      }
+    });
+  }
+
+  // 2. Section 2: Signature Looks (Stanzza/Demilie dynamic scroll entrance)
+  const looksSection = document.querySelector('.looks-section');
+  if (looksSection) {
+    gsap.from('.looks-header > *', {
+      y: 40,
       opacity: 0,
       stagger: 0.12,
-      duration: 1.1,
+      duration: 1.0,
       ease: 'power3.out',
-      delay: 0.4
+      scrollTrigger: {
+        trigger: looksSection,
+        start: 'top 85%',
+        toggleActions: 'play none none none'
+      }
     });
 
     const lookRows = document.querySelectorAll('.look-card-row');
-    const fanRotations = [-2.8, 0.8, 2.8];
+    const fanRotations = [-2.5, 0.8, 2.5];
     lookRows.forEach((row, i) => {
       const isFlipped = row.classList.contains('look-card-row--flip');
       const photo = row.querySelector('.look-photo-box');
       const content = row.querySelector('.look-content-box');
+      const img = row.querySelector('.look-photo-box img');
       const angle = fanRotations[i] || 0;
 
       if (photo) {
         gsap.fromTo(photo,
-          { x: isFlipped ? 80 : -80, opacity: 0, scale: 0.92, rotateZ: 0 },
+          { x: isFlipped ? 80 : -80, opacity: 0, scale: 0.94, rotateZ: 0 },
           {
             x: 0,
             opacity: 1,
@@ -2805,7 +2914,24 @@ function scrollToSignatureLooks() {
             scrollTrigger: {
               trigger: row,
               start: 'top 82%',
-              toggleActions: 'play reverse play reverse'
+              toggleActions: 'play none none none'
+            }
+          }
+        );
+      }
+      if (img) {
+        // Continuous scrub parallax inside the image container
+        gsap.fromTo(img,
+          { yPercent: -8, scale: 1.08 },
+          {
+            yPercent: 8,
+            scale: 1.0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: row,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1.2
             }
           }
         );
@@ -2821,40 +2947,163 @@ function scrollToSignatureLooks() {
             scrollTrigger: {
               trigger: row,
               start: 'top 80%',
-              toggleActions: 'play reverse play reverse'
+              toggleActions: 'play none none none'
             }
           }
         );
       }
     });
+  }
 
-    // Curated Lookbook & Cinema Reels Showcase Wave Entrance
-    const showcaseSection = document.getElementById('gallery-showcase');
-    if (showcaseSection) {
-      gsap.from('.home-gallery-header > *', {
-        y: 30,
-        opacity: 0,
-        stagger: 0.1,
-        duration: 0.9,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: showcaseSection,
-          start: 'top 85%'
-        }
-      });
+  // 3. Curated Lookbook & Cinema Reels Showcase Wave Entrance
+  const showcaseSection = document.getElementById('gallery-showcase');
+  if (showcaseSection) {
+    gsap.from('.home-gallery-header > *', {
+      y: 40,
+      opacity: 0,
+      stagger: 0.12,
+      duration: 1.0,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: showcaseSection,
+        start: 'top 85%',
+        toggleActions: 'play none none none'
+      }
+    });
 
-      gsap.from('#cylinderStage', {
-        y: 40,
-        opacity: 0,
-        scale: 0.94,
-        duration: 1.1,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: showcaseSection,
-          start: 'top 85%'
-        }
-      });
-    }
+    gsap.from('#cylinderStage', {
+      y: 50,
+      opacity: 0,
+      scale: 0.92,
+      duration: 1.2,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: showcaseSection,
+        start: 'top 82%',
+        toggleActions: 'play none none none'
+      }
+    });
+  }
+
+  // 4. Section 4: Artistry Disciplines (Services Teaser)
+  const servicesSec = document.getElementById('services-section');
+  if (servicesSec) {
+    gsap.from('.services-teaser-header > *', {
+      y: 35,
+      opacity: 0,
+      stagger: 0.1,
+      duration: 0.9,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: servicesSec,
+        start: 'top 85%',
+        toggleActions: 'play none none none'
+      }
+    });
+
+    gsap.from('.service-accordion-item', {
+      y: 45,
+      opacity: 0,
+      stagger: 0.08,
+      duration: 0.9,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.services-accordion-list',
+        start: 'top 85%',
+        toggleActions: 'play none none none'
+      }
+    });
+
+    gsap.from('.services-bundle-callout', {
+      y: 40,
+      opacity: 0,
+      scale: 0.97,
+      duration: 1.0,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.services-bundle-callout',
+        start: 'top 90%',
+        toggleActions: 'play none none none'
+      }
+    });
+  }
+
+  // 5. Metrics Band (1200+ Brides, 15 Cities, 12+ Years)
+  const metricsBand = document.getElementById('metrics-band');
+  if (metricsBand) {
+    gsap.from('.metric-card', {
+      y: 55,
+      opacity: 0,
+      scale: 0.95,
+      stagger: 0.12,
+      duration: 1.1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: metricsBand,
+        start: 'top 88%',
+        toggleActions: 'play none none none'
+      }
+    });
+  }
+
+  // 6. Section 5: Client Testimonials
+  const testimonialsSec = document.getElementById('testimonials');
+  if (testimonialsSec) {
+    gsap.from('.testimonials-wrap > *', {
+      y: 40,
+      opacity: 0,
+      stagger: 0.12,
+      duration: 1.0,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: testimonialsSec,
+        start: 'top 85%',
+        toggleActions: 'play none none none'
+      }
+    });
+  }
+
+  // 7. Section 6: About Atelier & Sacred Rituals
+  const aboutSec = document.getElementById('about');
+  if (aboutSec) {
+    gsap.from('.about-portrait-card', {
+      x: -70,
+      opacity: 0,
+      scale: 0.94,
+      duration: 1.2,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: aboutSec,
+        start: 'top 80%',
+        toggleActions: 'play none none none'
+      }
+    });
+
+    gsap.from('.about-text-column > *', {
+      x: 50,
+      opacity: 0,
+      stagger: 0.1,
+      duration: 1.0,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: aboutSec,
+        start: 'top 80%',
+        toggleActions: 'play none none none'
+      }
+    });
+
+    gsap.from('.ritual-card', {
+      y: 45,
+      opacity: 0,
+      stagger: 0.1,
+      duration: 0.9,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.demilie-rituals-container',
+        start: 'top 85%',
+        toggleActions: 'play none none none'
+      }
+    });
   }
 })();
 
