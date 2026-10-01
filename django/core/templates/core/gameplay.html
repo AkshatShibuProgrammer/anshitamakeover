@@ -3,12 +3,7 @@
 
 {% block title %}Atelier Chronicles — 3D Interactive Makeup Gameplay | Anshita Makeover{% endblock %}
 
-{% block extra_head %}
-<!-- Three.js + OrbitControls -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
+{% block extra_css %}
 <style>
 /* ═══ ATELIER CHRONICLES: 3D GAMEPLAY VIEWPORT & LUXURY HUD ═══ */
 :root {
@@ -19,38 +14,56 @@
 }
 
 body.gameplay-active {
-  overflow: hidden;
-  background: var(--game-bg);
+  overflow: hidden !important;
+  background: var(--game-bg) !important;
+}
+
+/* Hide standard website header / navigation / banner on gameplay mode */
+body.gameplay-active header,
+body.gameplay-active #cbanner,
+body.gameplay-active .am-hero__letters,
+body.gameplay-active #chat-speech-bubble,
+body.gameplay-active #preloader {
+  display: none !important;
 }
 
 .gameplay-wrapper {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background: radial-gradient(circle at 50% 35%, #220b1b 0%, #0c040b 60%, #050105 100%);
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+  background: radial-gradient(circle at 50% 35%, #220b1b 0%, #0c040b 60%, #050105 100%) !important;
   user-select: none;
+  z-index: 999;
 }
 
 /* 3D WebGL Canvas Layer */
 #gameplay-canvas-container {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1 !important;
   cursor: crosshair;
+}
+#gameplay-canvas-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
 }
 
 /* Top Navigation & Status Bar */
 .game-top-bar {
-  position: absolute;
-  top: 80px;
+  position: absolute !important;
+  top: 18px !important;
   left: 0;
   right: 0;
-  padding: 16px 4vw;
+  padding: 12px 3vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 10;
+  z-index: 100;
   pointer-events: none;
 }
 .game-top-bar > * {
@@ -70,6 +83,7 @@ body.gameplay-active {
   font-size: 0.76rem;
   text-decoration: none;
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   transition: all 0.3s ease;
 }
 .game-back-link:hover {
@@ -80,11 +94,12 @@ body.gameplay-active {
 
 .game-title-badge {
   text-align: center;
-  background: rgba(14, 5, 12, 0.8);
+  background: rgba(14, 5, 12, 0.85);
   border: 1px solid rgba(212, 175, 55, 0.3);
   padding: 8px 24px;
   border-radius: 999px;
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 .game-title-badge h1 {
   font-family: 'Cormorant Garamond', Georgia, serif;
@@ -114,6 +129,7 @@ body.gameplay-active {
   font-size: 0.78rem;
   color: var(--game-gold-l);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 .game-streak {
   color: #f97316;
@@ -134,17 +150,18 @@ body.gameplay-active {
 /* Chapter Progression Navigation */
 .game-chapters-nav {
   position: absolute;
-  top: 155px;
+  top: 86px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 8px;
-  z-index: 10;
-  background: rgba(10, 4, 10, 0.8);
+  z-index: 100;
+  background: rgba(10, 4, 10, 0.85);
   border: 1px solid rgba(212, 175, 55, 0.25);
   padding: 6px 12px;
   border-radius: 999px;
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 .chapter-nav-btn {
   background: transparent;
@@ -177,15 +194,16 @@ body.gameplay-active {
 /* Floating Narrative Story Card */
 .game-story-card {
   position: absolute;
-  top: 215px;
-  right: 4vw;
-  width: min(360px, 90vw);
+  top: 130px;
+  right: 3vw;
+  width: min(340px, 90vw);
   background: linear-gradient(160deg, rgba(32, 14, 26, 0.94) 0%, rgba(12, 5, 12, 0.98) 100%);
   border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: 20px;
-  padding: 22px 20px;
-  z-index: 10;
+  padding: 20px 18px;
+  z-index: 100;
   backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(212, 175, 55, 0.15);
   transition: transform 0.3s ease;
 }
@@ -194,38 +212,38 @@ body.gameplay-active {
   align-items: center;
   gap: 6px;
   font-family: 'Space Mono', monospace;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   letter-spacing: 2px;
   color: var(--game-gold);
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 .story-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.45rem;
+  font-size: 1.35rem;
   font-weight: 600;
   color: #fff;
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   line-height: 1.25;
 }
 .story-desc {
   font-family: 'Outfit', sans-serif;
-  font-size: 0.82rem;
-  line-height: 1.55;
+  font-size: 0.8rem;
+  line-height: 1.5;
   color: rgba(245, 237, 214, 0.85);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 .story-objective-box {
   background: rgba(212, 175, 55, 0.08);
   border-left: 3px solid var(--game-gold);
-  padding: 10px 12px;
+  padding: 9px 12px;
   border-radius: 4px;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 .story-objective-box span {
   display: block;
   font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   color: var(--game-gold);
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -233,7 +251,7 @@ body.gameplay-active {
 }
 .story-objective-box p {
   font-family: 'Outfit', sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: #fff;
   margin: 0;
 }
@@ -243,8 +261,8 @@ body.gameplay-active {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 .progress-bar-wrap {
   flex: 1;
@@ -263,26 +281,26 @@ body.gameplay-active {
 }
 .progress-score {
   font-family: 'Space Mono', monospace;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: var(--game-gold-l);
-  min-width: 44px;
+  min-width: 40px;
   text-align: right;
 }
 .game-stars {
   color: #d4af37;
-  font-size: 0.95rem;
-  letter-spacing: 3px;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
 }
 
 .story-action-btn {
   width: 100%;
   background: linear-gradient(135deg, #d4af37 0%, #aa8022 100%);
   border: none;
-  padding: 11px;
+  padding: 10px;
   border-radius: 999px;
   font-family: 'Outfit', sans-serif;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: #050205;
   cursor: pointer;
@@ -303,13 +321,14 @@ body.gameplay-active {
   transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: 16px;
-  background: rgba(18, 7, 16, 0.92);
+  gap: 14px;
+  background: rgba(18, 7, 16, 0.94);
   border: 1px solid rgba(212, 175, 55, 0.35);
-  border-radius: 26px;
-  padding: 12px 22px;
-  z-index: 10;
+  border-radius: 24px;
+  padding: 10px 20px;
+  z-index: 100;
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 30px rgba(212, 175, 55, 0.2);
   max-width: 94vw;
   flex-wrap: wrap;
@@ -320,11 +339,11 @@ body.gameplay-active {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(212, 175, 55, 0.18);
-  padding: 8px 14px;
-  border-radius: 16px;
+  padding: 7px 12px;
+  border-radius: 14px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   color: var(--game-gold-l);
@@ -338,14 +357,14 @@ body.gameplay-active {
   background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(139, 94, 26, 0.45));
   border-color: var(--game-gold);
   box-shadow: 0 0 16px rgba(212, 175, 55, 0.35);
-  transform: translateY(-4px);
+  transform: translateY(-3px);
 }
 .tool-icon {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
 }
 .tool-label {
   font-family: 'Outfit', sans-serif;
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   letter-spacing: 0.5px;
   white-space: nowrap;
 }
@@ -355,12 +374,12 @@ body.gameplay-active {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding-left: 12px;
+  padding-left: 10px;
   border-left: 1px solid rgba(212, 175, 55, 0.2);
 }
 .pigment-dot {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.4);
   cursor: pointer;
@@ -375,22 +394,22 @@ body.gameplay-active {
   box-shadow: 0 0 10px currentColor;
 }
 
-/* Tool Size & Actions */
+/* Tool Actions */
 .tool-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding-left: 12px;
+  gap: 8px;
+  padding-left: 10px;
   border-left: 1px solid rgba(212, 175, 55, 0.2);
 }
 .game-clear-btn {
   background: rgba(239, 68, 68, 0.15);
   border: 1px solid rgba(239, 68, 68, 0.4);
   color: #fca5a5;
-  padding: 6px 12px;
+  padding: 5px 12px;
   border-radius: 999px;
   font-family: 'Space Mono', monospace;
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -401,25 +420,26 @@ body.gameplay-active {
 
 /* Victory / Certificate Modal */
 .victory-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(5, 1, 5, 0.88);
-  backdrop-filter: blur(16px);
-  z-index: 1000;
-  display: none;
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(5, 1, 5, 0.88) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  z-index: 10000 !important;
+  display: none !important;
   align-items: center;
   justify-content: center;
   padding: 20px;
 }
 .victory-modal-overlay.active {
-  display: flex;
+  display: flex !important;
 }
 .victory-card {
-  width: min(580px, 94vw);
+  width: min(560px, 94vw);
   background: linear-gradient(155deg, #1f0b1a 0%, #0d040c 100%);
   border: 2px solid var(--game-gold);
   border-radius: 28px;
-  padding: 38px 32px;
+  padding: 34px 28px;
   text-align: center;
   box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(212, 175, 55, 0.35);
   position: relative;
@@ -431,36 +451,36 @@ body.gameplay-active {
 }
 .victory-card h2 {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 2.2rem;
+  font-size: 2rem;
   color: #fff;
-  margin: 12px 0 8px;
+  margin: 10px 0 6px;
 }
 .victory-stars-big {
   color: #d4af37;
-  font-size: 2rem;
-  letter-spacing: 6px;
-  margin-bottom: 14px;
+  font-size: 1.8rem;
+  letter-spacing: 5px;
+  margin-bottom: 12px;
 }
 .certificate-preview-box {
   background: rgba(212, 175, 55, 0.08);
   border: 1px dashed rgba(212, 175, 55, 0.5);
   border-radius: 16px;
-  padding: 20px;
-  margin: 20px 0;
+  padding: 16px;
+  margin: 18px 0;
   font-family: 'Outfit', sans-serif;
   color: var(--game-gold-l);
 }
 .cert-code {
   font-family: 'Space Mono', monospace;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #fff;
   background: rgba(212, 175, 55, 0.2);
-  padding: 6px 16px;
+  padding: 6px 14px;
   border-radius: 8px;
   display: inline-block;
-  margin: 10px 0;
-  letter-spacing: 3px;
+  margin: 8px 0;
+  letter-spacing: 2px;
 }
 .whatsapp-claim-btn {
   display: inline-flex;
@@ -472,8 +492,8 @@ body.gameplay-active {
   text-decoration: none;
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 0.95rem;
-  padding: 14px 28px;
+  font-size: 0.92rem;
+  padding: 13px 26px;
   border-radius: 999px;
   box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
   transition: all 0.3s ease;
@@ -488,11 +508,16 @@ body.gameplay-active {
 @media (max-width: 768px) {
   .game-story-card {
     top: auto;
-    bottom: 120px;
+    bottom: 110px;
     right: 50%;
     transform: translateX(50%);
     width: 92vw;
-    padding: 16px;
+    padding: 14px;
+  }
+  .game-chapters-nav {
+    top: 68px;
+    width: 94vw;
+    overflow-x: auto;
   }
   .game-tool-dock {
     bottom: 12px;
@@ -500,15 +525,19 @@ body.gameplay-active {
     padding: 8px 12px;
   }
   .tool-item {
-    padding: 6px 10px;
+    padding: 5px 9px;
   }
 }
 </style>
 {% endblock %}
 
 {% block content %}
+<!-- Three.js + OrbitControls + Confetti -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 <div class="gameplay-wrapper" id="gameplayWrapper">
-  
   <!-- 3D Canvas Mount Point -->
   <div id="gameplay-canvas-container"></div>
 
@@ -614,17 +643,17 @@ body.gameplay-active {
   <!-- Victory & Scholarship Certificate Modal -->
   <div class="victory-modal-overlay" id="victoryModal">
     <div class="victory-card">
-      <div style="font-size:3rem">👑</div>
+      <div style="font-size:2.8rem">👑</div>
       <div class="victory-stars-big">★★★★★</div>
       <h2>Royal Artistry Certified!</h2>
-      <p style="color:rgba(245,237,214,0.85);font-size:0.92rem;line-height:1.5">
+      <p style="color:rgba(245,237,214,0.85);font-size:0.9rem;line-height:1.5">
         Congratulations! You have completed all 4 Sacred Chapters of <strong>Atelier Chronicles</strong> with flawless precision, mastering Ayurvedic skin metallurgy, Kuhu Khare Banarasi Chandan art, and the 18-Hour Cry-Proof Starlight Seal.
       </p>
 
       <div class="certificate-preview-box">
-        <span style="font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;color:#d4af37">EXCLUSIVE SCHOLARSHIP PRIVILEGE</span>
+        <span style="font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;color:#d4af37">EXCLUSIVE SCHOLARSHIP PRIVILEGE</span>
         <div class="cert-code" id="scholarshipCodeDisplay">ANSHITA-CHRONICLES-2026</div>
-        <p style="font-size:0.82rem;margin:6px 0 0;color:rgba(245,237,214,0.7)">
+        <p style="font-size:0.8rem;margin:6px 0 0;color:rgba(245,237,214,0.7)">
           Valid for <strong>₹2,000 OFF</strong> on Anshita Makeover Professional Academy Masterclass or <strong>10% Privilege Discount</strong> on Bridal Suites.
         </p>
       </div>
@@ -681,13 +710,13 @@ class GameAudio {
     const gain = this.ctx.createGain();
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(220, now);
-    osc.frequency.linearRampToValueAtTime(140, now + 0.08);
-    gain.gain.setValueAtTime(0.04, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    osc.frequency.linearRampToValueAtTime(330, now + 0.08);
+    gain.gain.setValueAtTime(0.05, now);
+    gain.gain.linearRampToValueAtTime(0.001, now + 0.12);
     osc.connect(gain);
     gain.connect(this.ctx.destination);
     osc.start(now);
-    osc.stop(now + 0.08);
+    osc.stop(now + 0.12);
   }
   playVictory() {
     if (!this.enabled) return;
@@ -695,84 +724,264 @@ class GameAudio {
     if (!this.ctx) return;
     const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
     notes.forEach((freq, idx) => {
+      const now = this.ctx.currentTime + idx * 0.12;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
-      const t = this.ctx.currentTime + (idx * 0.12);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, t);
-      gain.gain.setValueAtTime(0.15, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
       osc.connect(gain);
       gain.connect(this.ctx.destination);
-      osc.start(t);
-      osc.stop(t + 0.5);
+      osc.start(now);
+      osc.stop(now + 0.5);
     });
   }
 }
 const gameAudio = new GameAudio();
 
-// ═══ CHAPTERS DATA & STATE ═══
+// ═══ STORYLINE EPISODES DATA ═══
 const CHAPTERS = {
   1: {
+    num: "CHAPTER 01",
     title: "The Mandap Morning",
-    desc: "The auspicious dawn has arrived in Jabalpur. Before royal cosmetics can touch the skin, ancient Ayurvedic prep must balance the complexion.",
+    desc: "The auspicious wedding morning has arrived in Jabalpur. Before royal cosmetics can touch the skin, ancient Ayurvedic metallurgy must hydrate and cool the complexion.",
     objective: "Drag the Herbal Ubtan & Ice Roller over the cheeks and forehead to achieve 100% skin hydration.",
     tool: "ubtan",
-    pigment: "#F59E0B",
-    targetScore: 100
+    pigment: "#FFFFFF",
+    targetScore: 100,
+    btnLabel: "NEXT: CHANDAN ART →"
   },
   2: {
-    title: "The Sacred Vivah (Kuhu Khare Chandan)",
-    desc: "Kuhu is taking the stage in the Bridal Showcase. Authentic Banarasi mukut placement requires 7 sacred symmetric Chandan dots along each eyebrow arch.",
-    objective: "Select Chandan Pen and click the glowing guide targets above the brows with symmetry accuracy.",
+    num: "CHAPTER 02",
+    title: "Banarasi Chandan Artistry",
+    desc: "Inspired by celebrated bride Kuhu Khare's competition makeover. Sacred Chandan and Kumkum must be painted above each eyebrow arch with meditative precision.",
+    objective: "Click the 7 glowing circular guides above the brow to paint traditional Banarasi Chandan sacred dots.",
     tool: "chandan",
     pigment: "#FFFFFF",
-    targetScore: 7
+    targetScore: 7,
+    btnLabel: "NEXT: SANGEET GLAM →"
   },
   3: {
-    title: "Starlight Sangeet (Thakur Shivani)",
-    desc: "Thakur Shivani needs an energetic, dance-proof jewel cut-crease that will glow under stage lighting without creasing.",
-    objective: "Blend the velvet mauve & gold pigment onto the eyelids using the Blender Sponge.",
+    num: "CHAPTER 03",
+    title: "Imperial Sangeet Glamour",
+    desc: "The sun sets and palace chandeliers ignite for the royal Sangeet. Apply radiant 24K gold dust and mauve shimmer highlights over the cheekbones.",
+    objective: "Select 24K Gold or Velvet Mauve and use the Blender Sponge to sculpt shimmering royal radiance.",
     tool: "blender",
-    pigment: "#9333EA",
-    targetScore: 100
+    pigment: "#F59E0B",
+    targetScore: 100,
+    btnLabel: "NEXT: CRY-PROOF SEAL →"
   },
   4: {
-    title: "The 18-Hour Cry-Proof Starlight Seal",
-    desc: "Emotional tears during the final bidaai will test the makeup. Anshita's signature airbrush starlight seal must be applied evenly.",
-    objective: "Hold and sweep the Airbrush Wand over the entire face to apply the 18-hr seal and trigger the tear test!",
+    num: "CHAPTER 04",
+    title: "18-Hour Cry-Proof Seal",
+    desc: "The sacred saat pheras and emotional vidai demand Anshita's proprietary micro-airbrush lock. Seal the entire bridal look against moisture, emotion, and heat.",
+    objective: "Sweep the Airbrush Wand across the face until the 18-Hour Cry-Proof Starlight Seal reaches 100%.",
     tool: "airbrush",
-    pigment: "#F5EDD6",
-    targetScore: 100
+    pigment: "#FFFFFF",
+    targetScore: 100,
+    btnLabel: "COMPLETE & CLAIM SCHOLARSHIP 👑"
   }
 };
 
 let currentChapter = 1;
+let currentScore = 0;
 let activeTool = 'ubtan';
 let activePigment = '#FFFFFF';
-let chapterScores = { 1: 0, 2: 0, 3: 0, 4: 0 };
-let currentScore = 0;
-let xp = parseInt(localStorage.getItem('asha_game_xp') || '100', 10);
-let streak = parseInt(localStorage.getItem('asha_game_streak') || '1', 10);
+let completedChapters = new Set();
 
-// ═══ THREE.JS SCENE SETUP ═══
-let scene, camera, renderer, controls;
-let faceMesh, dynamicTexture, textureCanvas, textureCtx;
-let guideMarkersGroup;
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
+// ═══ THREE.JS 3D SCENE & UV RAYCAST SETUP ═══
+let scene, camera, renderer, controls, faceMesh;
+let textureCanvas, textureCtx, dynamicTexture;
+let raycaster = new THREE.Raycaster();
+let mouse = new THREE.Vector2();
 let isPointerDown = false;
+let guideMarkersGroup;
+
+function renderBaseBridalCanvas(ctx) {
+  // 1. Base Indian Honey Caramel Glow
+  const skinGrad = ctx.createRadialGradient(512, 512, 80, 512, 512, 560);
+  skinGrad.addColorStop(0, '#D49B6A');
+  skinGrad.addColorStop(0.7, '#C2834E');
+  skinGrad.addColorStop(1, '#9C5E2D');
+  ctx.fillStyle = skinGrad;
+  ctx.fillRect(0, 0, 1024, 1024);
+
+  // 2. Soft Cheek Blush (Radiant Rose / Gulabi)
+  const blushLeft = ctx.createRadialGradient(380, 560, 20, 380, 560, 110);
+  blushLeft.addColorStop(0, 'rgba(224, 90, 111, 0.45)');
+  blushLeft.addColorStop(0.7, 'rgba(224, 90, 111, 0.18)');
+  blushLeft.addColorStop(1, 'rgba(224, 90, 111, 0)');
+  ctx.fillStyle = blushLeft;
+  ctx.beginPath();
+  ctx.arc(380, 560, 110, 0, Math.PI * 2);
+  ctx.fill();
+
+  const blushRight = ctx.createRadialGradient(644, 560, 20, 644, 560, 110);
+  blushRight.addColorStop(0, 'rgba(224, 90, 111, 0.45)');
+  blushRight.addColorStop(0.7, 'rgba(224, 90, 111, 0.18)');
+  blushRight.addColorStop(1, 'rgba(224, 90, 111, 0)');
+  ctx.fillStyle = blushRight;
+  ctx.beginPath();
+  ctx.arc(644, 560, 110, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 3. Arched Bridal Eyebrows (Microbladed / Feathered Stroke)
+  ctx.strokeStyle = '#1F120E';
+  ctx.lineWidth = 14;
+  ctx.lineCap = 'round';
+  // Left Brow
+  ctx.beginPath();
+  ctx.moveTo(350, 430);
+  ctx.quadraticCurveTo(410, 395, 465, 415);
+  ctx.stroke();
+  // Right Brow
+  ctx.beginPath();
+  ctx.moveTo(674, 430);
+  ctx.quadraticCurveTo(614, 395, 559, 415);
+  ctx.stroke();
+
+  // 4. Almond Bridal Eyes & Winged Kohl Eyeliner
+  drawEye(ctx, 415, 465, false);
+  drawEye(ctx, 609, 465, true);
+
+  // 5. Sacred Velvet Bindi
+  ctx.fillStyle = '#991B1B'; // Royal crimson
+  ctx.beginPath();
+  ctx.arc(512, 385, 12, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#D4AF37'; // 24K gold center dot
+  ctx.beginPath();
+  ctx.arc(512, 385, 3.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 6. Delicate Nose Bridge Contour & Gold Nath Anchor
+  ctx.strokeStyle = 'rgba(120, 60, 25, 0.22)';
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(502, 425);
+  ctx.lineTo(504, 515);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(522, 425);
+  ctx.lineTo(520, 515);
+  ctx.stroke();
+
+  // Nose tip highlight
+  ctx.fillStyle = 'rgba(255, 245, 230, 0.28)';
+  ctx.beginPath();
+  ctx.arc(512, 515, 8, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Tiny gold nose stud
+  ctx.fillStyle = '#D4AF37';
+  ctx.beginPath();
+  ctx.arc(488, 520, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 7. Ombre Berry-Maroon Bridal Lips
+  drawLips(ctx, 512, 600);
+}
+
+function drawEye(ctx, cx, cy, isRight) {
+  // Sclera (eye white)
+  ctx.save();
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, 38, 18, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#FAF4EB';
+  ctx.fill();
+  ctx.clip();
+
+  // Amber Brown Iris
+  ctx.beginPath();
+  ctx.arc(cx, cy, 17, 0, Math.PI * 2);
+  ctx.fillStyle = '#3B1E08';
+  ctx.fill();
+
+  // Gold fleck
+  ctx.beginPath();
+  ctx.arc(cx, cy, 14, 0, Math.PI * 2);
+  ctx.fillStyle = '#61340D';
+  ctx.fill();
+
+  // Pupil
+  ctx.beginPath();
+  ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+  ctx.fillStyle = '#0F0804';
+  ctx.fill();
+
+  // Catchlight
+  ctx.beginPath();
+  ctx.arc(cx - 4, cy - 4, 3, 0, Math.PI * 2);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fill();
+  ctx.restore();
+
+  // Eyeliner & Lashes
+  ctx.strokeStyle = '#12070A';
+  ctx.lineWidth = 6;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  if (!isRight) {
+    ctx.moveTo(cx - 44, cy + 2);
+    ctx.quadraticCurveTo(cx, cy - 24, cx + 40, cy - 4);
+    ctx.lineTo(cx - 52, cy - 6);
+  } else {
+    ctx.moveTo(cx - 40, cy - 4);
+    ctx.quadraticCurveTo(cx, cy - 24, cx + 44, cy + 2);
+    ctx.lineTo(cx + 52, cy - 6);
+  }
+  ctx.stroke();
+
+  // Lower kohl rim
+  ctx.strokeStyle = 'rgba(25, 10, 15, 0.6)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy + 1, 37, 16, 0, 0.2, Math.PI - 0.2);
+  ctx.stroke();
+}
+
+function drawLips(ctx, cx, cy) {
+  ctx.save();
+  // Upper Lip
+  ctx.fillStyle = '#991B32';
+  ctx.beginPath();
+  ctx.moveTo(cx - 46, cy);
+  ctx.quadraticCurveTo(cx - 22, cy - 18, cx, cy - 8);
+  ctx.quadraticCurveTo(cx + 22, cy - 18, cx + 46, cy);
+  ctx.quadraticCurveTo(cx, cy + 6, cx - 46, cy);
+  ctx.fill();
+
+  // Lower Lip
+  ctx.fillStyle = '#BA2343';
+  ctx.beginPath();
+  ctx.moveTo(cx - 46, cy);
+  ctx.quadraticCurveTo(cx, cy + 28, cx + 46, cy);
+  ctx.quadraticCurveTo(cx, cy + 5, cx - 46, cy);
+  ctx.fill();
+
+  // Gloss Center Highlight
+  ctx.fillStyle = 'rgba(255, 180, 195, 0.35)';
+  ctx.beginPath();
+  ctx.ellipse(cx, cy + 10, 18, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
 
 function init3D() {
   const container = document.getElementById('gameplay-canvas-container');
+  if (!container) return;
+
   const width = window.innerWidth;
   const height = window.innerHeight;
 
+  // Scene
   scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x070207, 0.05);
 
   camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
-  camera.position.set(0, 0.2, 3.4);
+  camera.position.set(0, 0.05, 2.7);
+  camera.lookAt(0, 0.05, 0);
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setSize(width, height);
@@ -782,18 +991,26 @@ function init3D() {
   renderer.shadowMap.enabled = true;
   container.appendChild(renderer.domElement);
 
-  // OrbitControls
-  controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.05;
-  controls.minDistance = 2.2;
-  controls.maxDistance = 4.5;
-  controls.maxPolarAngle = Math.PI / 1.7;
-  controls.minPolarAngle = Math.PI / 2.6;
-  controls.enablePan = false;
+  // OrbitControls with graceful fallback
+  if (typeof THREE.OrbitControls === 'function') {
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.minDistance = 2.1;
+    controls.maxDistance = 4.2;
+    controls.maxPolarAngle = Math.PI / 1.7;
+    controls.minPolarAngle = Math.PI / 2.6;
+    controls.enablePan = false;
+    controls.target.set(0, 0.05, 0);
+  } else {
+    controls = {
+      update: function() {},
+      target: new THREE.Vector3(0, 0.05, 0)
+    };
+  }
 
-  // Studio 3-Point Lighting (Key, Fill, 24K Gold Rim)
-  const ambientLight = new THREE.AmbientLight(0xffeedd, 0.85);
+  // Studio 3-Point Lighting
+  const ambientLight = new THREE.AmbientLight(0xffeedd, 0.9);
   scene.add(ambientLight);
 
   const keyLight = new THREE.DirectionalLight(0xffeed6, 1.4);
@@ -814,31 +1031,12 @@ function init3D() {
   textureCanvas.height = 1024;
   textureCtx = textureCanvas.getContext('2d');
   
-  // Base Skin Tone: Indian Honey Caramel (#BA7742 / #C7824C)
-  textureCtx.fillStyle = '#C7824C';
-  textureCtx.fillRect(0, 0, 1024, 1024);
-
-  // Soft Cheek Blush Radial Gradient
-  const blushLeft = textureCtx.createRadialGradient(340, 560, 20, 340, 560, 120);
-  blushLeft.addColorStop(0, 'rgba(219, 78, 99, 0.35)');
-  blushLeft.addColorStop(1, 'rgba(219, 78, 99, 0)');
-  textureCtx.fillStyle = blushLeft;
-  textureCtx.beginPath();
-  textureCtx.arc(340, 560, 120, 0, Math.PI * 2);
-  textureCtx.fill();
-
-  const blushRight = textureCtx.createRadialGradient(684, 560, 20, 684, 560, 120);
-  blushRight.addColorStop(0, 'rgba(219, 78, 99, 0.35)');
-  blushRight.addColorStop(1, 'rgba(219, 78, 99, 0)');
-  textureCtx.fillStyle = blushRight;
-  textureCtx.beginPath();
-  textureCtx.arc(684, 560, 120, 0, Math.PI * 2);
-  textureCtx.fill();
+  renderBaseBridalCanvas(textureCtx);
 
   dynamicTexture = new THREE.CanvasTexture(textureCanvas);
   dynamicTexture.needsUpdate = true;
 
-  // Build Stylized 3D Bridal Model (Head, Hair Bun, Maang Tikka, Jhumkas)
+  // Build Stylized 3D Bridal Model
   buildBridalHead();
 
   // Guide Markers Group for Chandan & Precision challenges
@@ -856,70 +1054,87 @@ function init3D() {
 function buildBridalHead() {
   const modelGroup = new THREE.Group();
 
-  // 1. Head Sphere
+  // 1. Head Sphere with Front-Facing UV orientation
   const headGeo = new THREE.SphereGeometry(0.85, 48, 48);
-  // Flatten Z slightly for natural face shape
   headGeo.scale(0.88, 1.05, 0.95);
 
   const headMat = new THREE.MeshStandardMaterial({
     map: dynamicTexture,
-    roughness: 0.45,
-    metalness: 0.05,
+    roughness: 0.42,
+    metalness: 0.04,
   });
   faceMesh = new THREE.Mesh(headGeo, headMat);
   faceMesh.name = "bridalFace";
+  faceMesh.rotation.y = -Math.PI / 2; // Orients U=0.5 directly toward camera +Z
   modelGroup.add(faceMesh);
 
   // 2. Neck
-  const neckGeo = new THREE.CylinderGeometry(0.36, 0.42, 0.6, 32);
-  const neckMat = new THREE.MeshStandardMaterial({ color: 0xC7824C, roughness: 0.5 });
+  const neckGeo = new THREE.CylinderGeometry(0.36, 0.44, 0.65, 32);
+  const neckMat = new THREE.MeshStandardMaterial({ color: 0xB57440, roughness: 0.5 });
   const neck = new THREE.Mesh(neckGeo, neckMat);
-  neck.position.set(0, -0.9, -0.05);
+  neck.position.set(0, -0.95, -0.05);
   modelGroup.add(neck);
 
-  // 3. Hair (Stylized Royal Bun & Parting)
-  const hairMat = new THREE.MeshStandardMaterial({ color: 0x180E10, roughness: 0.7 });
-  const hairBackGeo = new THREE.SphereGeometry(0.92, 32, 32);
+  // 3. Hair (Back & Royal Chignon Bun)
+  const hairMat = new THREE.MeshStandardMaterial({ color: 0x140B0D, roughness: 0.75 });
+  // Back hemisphere: covers back and sides of head only (Z <= 0.1)
+  const hairBackGeo = new THREE.SphereGeometry(0.88, 32, 32);
   const hairBack = new THREE.Mesh(hairBackGeo, hairMat);
-  hairBack.position.set(0, 0.12, -0.15);
-  hairBack.scale.set(0.98, 1.08, 0.98);
+  hairBack.position.set(0, 0.12, -0.36);
+  hairBack.scale.set(0.96, 1.05, 0.82);
   modelGroup.add(hairBack);
 
-  const bunGeo = new THREE.SphereGeometry(0.45, 32, 32);
+  // Crown / Top hair volume (only at the top of the skull Y >= 0.6)
+  const crownGeo = new THREE.SphereGeometry(0.55, 32, 32);
+  const crownHair = new THREE.Mesh(crownGeo, hairMat);
+  crownHair.position.set(0, 0.72, -0.15);
+  crownHair.scale.set(1.15, 0.5, 0.95);
+  modelGroup.add(crownHair);
+
+  // Royal Chignon Bun
+  const bunGeo = new THREE.SphereGeometry(0.42, 32, 32);
   const bun = new THREE.Mesh(bunGeo, hairMat);
-  bun.position.set(0, 0.85, -0.45);
+  bun.position.set(0, 0.65, -0.65);
   modelGroup.add(bun);
 
-  // 4. Royal Gold Maang Tikka (Jeweled Forehead Centerpiece)
+  // Jasmine Gajra Garland
+  const gajraGeo = new THREE.TorusGeometry(0.36, 0.08, 16, 32);
+  const gajraMat = new THREE.MeshStandardMaterial({ color: 0xFFFBF0, roughness: 0.6 });
+  const gajra = new THREE.Mesh(gajraGeo, gajraMat);
+  gajra.position.set(0, 0.65, -0.58);
+  gajra.rotation.x = Math.PI / 3;
+  modelGroup.add(gajra);
+
+  // 4. Royal Gold Maang Tikka
   const goldMat = new THREE.MeshStandardMaterial({ color: 0xD4AF37, metalness: 0.9, roughness: 0.2 });
   const rubyMat = new THREE.MeshStandardMaterial({ color: 0x991B1B, metalness: 0.4, roughness: 0.1 });
   
-  const tikkaChainGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.65, 12);
+  const tikkaChainGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.45, 12);
   const tikkaChain = new THREE.Mesh(tikkaChainGeo, goldMat);
-  tikkaChain.position.set(0, 0.65, 0.68);
-  tikkaChain.rotation.x = -Math.PI / 4;
+  tikkaChain.position.set(0, 0.62, 0.52);
+  tikkaChain.rotation.x = -Math.PI / 3.4;
   modelGroup.add(tikkaChain);
 
-  const tikkaPendantGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.03, 16);
+  const tikkaPendantGeo = new THREE.CylinderGeometry(0.065, 0.065, 0.025, 16);
   const tikkaPendant = new THREE.Mesh(tikkaPendantGeo, goldMat);
-  tikkaPendant.position.set(0, 0.38, 0.83);
+  tikkaPendant.position.set(0, 0.44, 0.74);
   tikkaPendant.rotation.x = Math.PI / 2.2;
   modelGroup.add(tikkaPendant);
 
-  const rubyGemGeo = new THREE.SphereGeometry(0.04, 16, 16);
+  const rubyGemGeo = new THREE.SphereGeometry(0.03, 16, 16);
   const rubyGem = new THREE.Mesh(rubyGemGeo, rubyMat);
-  rubyGem.position.set(0, 0.38, 0.85);
+  rubyGem.position.set(0, 0.44, 0.76);
   modelGroup.add(rubyGem);
 
   // 5. Traditional Gold Jhumkas (Earrings)
   [-0.82, 0.82].forEach((xPos) => {
     const jhumka = new THREE.Group();
     const stud = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 16), goldMat);
-    const bell = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.12, 16), goldMat);
-    bell.position.y = -0.1;
+    const bell = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.12, 16), goldMat);
+    bell.position.y = -0.09;
     jhumka.add(stud);
     jhumka.add(bell);
-    jhumka.position.set(xPos, -0.08, 0);
+    jhumka.position.set(xPos, -0.08, 0.05);
     modelGroup.add(jhumka);
   });
 
@@ -933,25 +1148,20 @@ function setupChapterGuides(chapter) {
   }
 
   if (chapter === 2) {
-    // Kuhu Khare Chandan: 7 sacred brow guide dots
+    // Kuhu Khare Banarasi Chandan: 7 sacred brow guide dots
     const markerMat = new THREE.MeshBasicMaterial({ color: 0xF59E0B, wireframe: true });
     const dotCoords = [
-      // Left brow
-      { x: -0.42, y: 0.28, z: 0.72 },
-      { x: -0.35, y: 0.33, z: 0.74 },
-      { x: -0.26, y: 0.36, z: 0.76 },
-      { x: -0.16, y: 0.38, z: 0.78 },
-      // Center bindi anchor
-      { x: 0, y: 0.26, z: 0.83 },
-      // Right brow
-      { x: 0.16, y: 0.38, z: 0.78 },
-      { x: 0.26, y: 0.36, z: 0.76 },
-      { x: 0.35, y: 0.33, z: 0.74 },
-      { x: 0.42, y: 0.28, z: 0.72 }
+      { x: -0.36, y: 0.22, z: 0.76 },
+      { x: -0.24, y: 0.25, z: 0.80 },
+      { x: -0.12, y: 0.27, z: 0.82 },
+      { x: 0,     y: 0.28, z: 0.83 },
+      { x: 0.12,  y: 0.27, z: 0.82 },
+      { x: 0.24,  y: 0.25, z: 0.80 },
+      { x: 0.36,  y: 0.22, z: 0.76 }
     ];
 
     dotCoords.forEach((pt, idx) => {
-      const ring = new THREE.Mesh(new THREE.RingGeometry(0.025, 0.045, 16), markerMat);
+      const ring = new THREE.Mesh(new THREE.RingGeometry(0.02, 0.038, 16), markerMat);
       ring.position.set(pt.x, pt.y, pt.z + 0.01);
       ring.lookAt(pt.x * 1.5, pt.y * 1.5, pt.z + 1);
       ring.userData = { targetIdx: idx, hit: false };
@@ -1002,7 +1212,7 @@ function paintOnCanvas(x, y) {
   if (activeTool === 'ubtan') {
     // Herbal Ubtan Roller: translucent golden sheen
     const grad = textureCtx.createRadialGradient(x, y, 5, x, y, 45);
-    grad.addColorStop(0, 'rgba(245, 158, 11, 0.22)');
+    grad.addColorStop(0, 'rgba(245, 158, 11, 0.25)');
     grad.addColorStop(1, 'rgba(245, 158, 11, 0)');
     textureCtx.fillStyle = grad;
     textureCtx.beginPath();
@@ -1024,7 +1234,7 @@ function paintOnCanvas(x, y) {
   } else if (activeTool === 'blender') {
     // Blender Sponge: soft velvet diffuse
     const grad = textureCtx.createRadialGradient(x, y, 4, x, y, 32);
-    grad.addColorStop(0, activePigment + '44');
+    grad.addColorStop(0, activePigment + '55');
     grad.addColorStop(1, activePigment + '00');
     textureCtx.fillStyle = grad;
     textureCtx.beginPath();
@@ -1036,9 +1246,9 @@ function paintOnCanvas(x, y) {
     for (let i = 0; i < 8; i++) {
       const rx = x + (Math.random() - 0.5) * 60;
       const ry = y + (Math.random() - 0.5) * 60;
-      textureCtx.fillStyle = 'rgba(245, 237, 214, 0.35)';
+      textureCtx.fillStyle = 'rgba(245, 237, 214, 0.4)';
       textureCtx.beginPath();
-      textureCtx.arc(rx, ry, 1.5, 0, Math.PI * 2);
+      textureCtx.arc(rx, ry, 1.6, 0, Math.PI * 2);
       textureCtx.fill();
     }
     gameAudio.playBrush();
@@ -1047,7 +1257,6 @@ function paintOnCanvas(x, y) {
   textureCtx.restore();
   dynamicTexture.needsUpdate = true;
 
-  // Increment current chapter progress
   incrementProgress();
 }
 
@@ -1060,12 +1269,14 @@ function incrementProgress() {
 
 function checkObjectiveHit(hitPoint) {
   if (currentChapter === 2) {
-    guideMarkersGroup.children.forEach(marker => {
-      if (!marker.userData.hit) {
-        const dist = marker.position.distanceTo(hitPoint);
+    // Check collision with guide rings
+    guideMarkersGroup.children.forEach(ring => {
+      if (!ring.userData.hit) {
+        const dist = ring.position.distanceTo(hitPoint);
         if (dist < 0.12) {
-          marker.userData.hit = true;
-          marker.material.color.setHex(0x4ade80);
+          ring.userData.hit = true;
+          ring.material.color.setHex(0x4ade80); // Success green
+          ring.material.wireframe = false;
           currentScore++;
           updateProgressUI(currentScore, CHAPTERS[2].targetScore);
           gameAudio.playChime();
@@ -1077,78 +1288,71 @@ function checkObjectiveHit(hitPoint) {
 
 function updateProgressUI(score, target) {
   const percent = Math.min(100, Math.round((score / target) * 100));
-  const fill = document.getElementById('objectiveProgressBar');
+  const bar = document.getElementById('objectiveProgressBar');
   const text = document.getElementById('objectiveScoreText');
   const stars = document.getElementById('objectiveStars');
 
-  if (fill) fill.style.width = percent + '%';
+  if (bar) bar.style.width = percent + '%';
   if (text) text.textContent = percent + '%';
 
-  if (percent >= 90) stars.textContent = '★★★';
-  else if (percent >= 50) stars.textContent = '★★☆';
-  else stars.textContent = '★☆☆';
-
-  if (percent >= 100) {
-    onChapterComplete();
+  if (stars) {
+    if (percent >= 100) {
+      stars.textContent = '★★★';
+      stars.style.color = '#4ade80';
+    } else if (percent >= 66) {
+      stars.textContent = '★★☆';
+      stars.style.color = '#d4af37';
+    } else if (percent >= 33) {
+      stars.textContent = '★☆☆';
+      stars.style.color = '#d4af37';
+    } else {
+      stars.textContent = '☆☆☆';
+      stars.style.color = 'rgba(212, 175, 55, 0.4)';
+    }
   }
+
+  // Update XP
+  const xp = 100 + (completedChapters.size * 150) + Math.round(score * 1.5);
+  const xpEl = document.getElementById('xpDisplay');
+  if (xpEl) xpEl.textContent = `✨ ${xp} XP`;
 }
 
-function onChapterComplete() {
-  chapterScores[currentChapter] = 100;
-  const navBtn = document.querySelector(`.chapter-nav-btn[data-chapter="${currentChapter}"]`);
-  if (navBtn) navBtn.classList.add('completed');
-
-  gameAudio.playVictory();
-  confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 } });
-
-  // Add XP
-  xp += 150;
-  localStorage.setItem('asha_game_xp', xp);
-  document.getElementById('xpDisplay').textContent = `✨ ${xp} XP`;
-
-  const actionBtn = document.getElementById('chapterActionBtn');
-  if (currentChapter < 4) {
-    actionBtn.textContent = 'ADVANCE TO NEXT CHAPTER →';
-    actionBtn.style.background = '#4ade80';
-    actionBtn.style.color = '#000';
-  } else {
-    actionBtn.textContent = '👑 VIEW ROYAL CERTIFICATION';
-    actionBtn.style.background = '#d4af37';
-    actionBtn.style.color = '#000';
-  }
-}
-
-function onChapterActionClick() {
-  if (currentChapter < 4) {
-    switchChapter(currentChapter + 1);
-  } else {
-    showVictoryModal();
-  }
-}
-
+// ═══ CHAPTER CONTROLS ═══
 function switchChapter(num) {
   currentChapter = num;
   currentScore = 0;
   const chData = CHAPTERS[num];
 
-  // Update Navigation Pills
+  // Update tabs
   document.querySelectorAll('.chapter-nav-btn').forEach(btn => {
-    btn.classList.toggle('active', parseInt(btn.getAttribute('data-chapter'), 10) === num);
+    const bNum = parseInt(btn.getAttribute('data-chapter'), 10);
+    btn.classList.toggle('active', bNum === num);
   });
 
-  // Update Story Box
-  document.getElementById('chapterNumDisplay').textContent = `CHAPTER 0${num}`;
+  // Update Story Card
+  document.getElementById('chapterNumDisplay').textContent = chData.num;
   document.getElementById('chapterTitleDisplay').textContent = chData.title;
   document.getElementById('chapterDescDisplay').textContent = chData.desc;
   document.getElementById('chapterObjectiveDisplay').textContent = chData.objective;
-  document.getElementById('chapterActionBtn').textContent = 'NEXT STAGE →';
-  document.getElementById('chapterActionBtn').style.background = 'linear-gradient(135deg, #d4af37 0%, #aa8022 100%)';
-  document.getElementById('chapterActionBtn').style.color = '#050205';
+  document.getElementById('chapterActionBtn').textContent = chData.btnLabel;
 
   updateProgressUI(0, chData.targetScore);
   selectTool(chData.tool);
   selectPigment(chData.pigment);
   setupChapterGuides(num);
+}
+
+function onChapterActionClick() {
+  completedChapters.add(currentChapter);
+  const activeNavBtn = document.querySelector(`.chapter-nav-btn[data-chapter="${currentChapter}"]`);
+  if (activeNavBtn) activeNavBtn.classList.add('completed');
+
+  if (currentChapter < 4) {
+    switchChapter(currentChapter + 1);
+    gameAudio.playChime();
+  } else {
+    showVictoryModal();
+  }
 }
 
 // ═══ TOOL BELT CONTROLS ═══
@@ -1167,9 +1371,7 @@ function selectPigment(colorHex, element) {
 }
 
 function resetActiveStage() {
-  // Re-fill base skin
-  textureCtx.fillStyle = '#C7824C';
-  textureCtx.fillRect(0, 0, 1024, 1024);
+  renderBaseBridalCanvas(textureCtx);
   dynamicTexture.needsUpdate = true;
   currentScore = 0;
   updateProgressUI(0, CHAPTERS[currentChapter].targetScore);
@@ -1181,7 +1383,9 @@ function showVictoryModal() {
   const modal = document.getElementById('victoryModal');
   if (modal) modal.classList.add('active');
   gameAudio.playVictory();
-  confetti({ particleCount: 120, spread: 90, origin: { y: 0.5 } });
+  if (typeof confetti === 'function') {
+    confetti({ particleCount: 120, spread: 90, origin: { y: 0.5 } });
+  }
 }
 
 function closeVictoryModal() {
@@ -1192,11 +1396,16 @@ function closeVictoryModal() {
 // ═══ RENDER LOOP ═══
 function animate() {
   requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
+  if (controls && typeof controls.update === 'function') {
+    controls.update();
+  }
+  if (renderer && scene && camera) {
+    renderer.render(scene, camera);
+  }
 }
 
 function onWindowResize() {
+  if (!camera || !renderer) return;
   const w = window.innerWidth;
   const h = window.innerHeight;
   camera.aspect = w / h;
