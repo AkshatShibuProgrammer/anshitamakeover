@@ -30,6 +30,7 @@
       <li><a href="{% url 'gallery' %}"      class="am-nav__link {% if request.resolver_match.url_name == 'gallery' %}am-nav__link--active{% endif %}">{{ t.nav_gallery|default:'Gallery' }}</a></li>
       <li><a href="{% url 'services' %}"     class="am-nav__link {% if request.resolver_match.url_name == 'services' %}am-nav__link--active{% endif %}">{{ t.nav_services|default:'Services' }}</a></li>
       <li><a href="{% url 'packages' %}"     class="am-nav__link {% if request.resolver_match.url_name == 'packages' %}am-nav__link--active{% endif %}">{{ t.nav_packages|default:'Packages' }}</a></li>
+      <li><a href="{% url 'gameplay' %}"     class="am-nav__link {% if request.resolver_match.url_name == 'gameplay' %}am-nav__link--active{% endif %}" style="color:#d4af37"><span style="font-size:0.9em">🎮</span> 3D Game</a></li>
       <li><a href="/#about"                  class="am-nav__link">{{ t.nav_about|default:'About' }}</a></li>
       <li><a href="/travel-estimator/"       class="am-nav__link {% if request.resolver_match.url_name == 'travel_estimator' %}am-nav__link--active{% endif %}">{{ t.nav_travel_menu|default:t.nav_outstation|default:'Travel' }}</a></li>
     </ul>

@@ -403,3 +403,12 @@ def custom_404_view(request, exception=None):
     context = compile_home_context(lang or 'english')
     return render(request, '404.html', context, status=404)
 
+def gameplay_view(request):
+    """3D Interactive Makeup Gameplay Webpage ('Atelier Chronicles: The Art of Bridal Grace')"""
+    lang = request.GET.get('lang') or request.COOKIES.get('lang', 'english')
+    context = compile_home_context(lang)
+    context['page_title'] = "Atelier Chronicles | 3D Interactive Makeup Gameplay & Stories"
+    return render(request, 'core/gameplay.html', context)
+
+
+

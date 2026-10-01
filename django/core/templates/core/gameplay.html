@@ -1,0 +1,1219 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Atelier Chronicles — 3D Interactive Makeup Gameplay | Anshita Makeover{% endblock %}
+
+{% block extra_head %}
+<!-- Three.js + OrbitControls -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+/* ═══ ATELIER CHRONICLES: 3D GAMEPLAY VIEWPORT & LUXURY HUD ═══ */
+:root {
+  --game-gold: #d4af37;
+  --game-gold-l: #f5edd6;
+  --game-maroon: #260c1d;
+  --game-bg: #070207;
+}
+
+body.gameplay-active {
+  overflow: hidden;
+  background: var(--game-bg);
+}
+
+.gameplay-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 35%, #220b1b 0%, #0c040b 60%, #050105 100%);
+  user-select: none;
+}
+
+/* 3D WebGL Canvas Layer */
+#gameplay-canvas-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: crosshair;
+}
+
+/* Top Navigation & Status Bar */
+.game-top-bar {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  right: 0;
+  padding: 16px 4vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
+}
+.game-top-bar > * {
+  pointer-events: auto;
+}
+
+.game-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(20, 8, 16, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  padding: 8px 18px;
+  border-radius: 999px;
+  color: var(--game-gold-l);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.76rem;
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+}
+.game-back-link:hover {
+  background: var(--game-gold);
+  color: #000;
+  box-shadow: 0 0 18px rgba(212, 175, 55, 0.4);
+}
+
+.game-title-badge {
+  text-align: center;
+  background: rgba(14, 5, 12, 0.8);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 8px 24px;
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+}
+.game-title-badge h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: var(--game-gold-l);
+  margin: 0;
+  text-transform: uppercase;
+}
+.game-title-badge span {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--game-gold);
+  letter-spacing: 1px;
+}
+
+.game-stats-pill {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(20, 8, 16, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--game-gold-l);
+  backdrop-filter: blur(12px);
+}
+.game-streak {
+  color: #f97316;
+  font-weight: 700;
+}
+.game-xp {
+  color: #eab308;
+  font-weight: 700;
+}
+.game-sound-btn {
+  background: none;
+  border: none;
+  color: var(--game-gold-l);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* Chapter Progression Navigation */
+.game-chapters-nav {
+  position: absolute;
+  top: 155px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+  background: rgba(10, 4, 10, 0.8);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  padding: 6px 12px;
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+}
+.chapter-nav-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  color: rgba(245, 237, 214, 0.65);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+.chapter-nav-btn:hover {
+  color: #fff;
+  border-color: rgba(212, 175, 55, 0.3);
+}
+.chapter-nav-btn.active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(139, 94, 26, 0.4));
+  border-color: var(--game-gold);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
+}
+.chapter-nav-btn.completed::after {
+  content: ' ✓';
+  color: #4ade80;
+}
+
+/* Floating Narrative Story Card */
+.game-story-card {
+  position: absolute;
+  top: 215px;
+  right: 4vw;
+  width: min(360px, 90vw);
+  background: linear-gradient(160deg, rgba(32, 14, 26, 0.94) 0%, rgba(12, 5, 12, 0.98) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 20px;
+  padding: 22px 20px;
+  z-index: 10;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(212, 175, 55, 0.15);
+  transition: transform 0.3s ease;
+}
+.story-chapter-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--game-gold);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.story-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 10px;
+  line-height: 1.25;
+}
+.story-desc {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: rgba(245, 237, 214, 0.85);
+  margin-bottom: 16px;
+}
+.story-objective-box {
+  background: rgba(212, 175, 55, 0.08);
+  border-left: 3px solid var(--game-gold);
+  padding: 10px 12px;
+  border-radius: 4px;
+  margin-bottom: 18px;
+}
+.story-objective-box span {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--game-gold);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.story-objective-box p {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.78rem;
+  color: #fff;
+  margin: 0;
+}
+
+/* Progress & Stars */
+.game-progress-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.progress-bar-wrap {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #d4af37, #f59e0b);
+  border-radius: 999px;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.progress-score {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--game-gold-l);
+  min-width: 44px;
+  text-align: right;
+}
+.game-stars {
+  color: #d4af37;
+  font-size: 0.95rem;
+  letter-spacing: 3px;
+}
+
+.story-action-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #d4af37 0%, #aa8022 100%);
+  border: none;
+  padding: 11px;
+  border-radius: 999px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #050205;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+.story-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+  background: #fff;
+}
+
+/* Interactive Tool Belt (Bottom Dock) */
+.game-tool-dock {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(18, 7, 16, 0.92);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 26px;
+  padding: 12px 22px;
+  z-index: 10;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 30px rgba(212, 175, 55, 0.2);
+  max-width: 94vw;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tool-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  padding: 8px 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--game-gold-l);
+}
+.tool-item:hover {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: rgba(212, 175, 55, 0.5);
+  transform: translateY(-3px);
+}
+.tool-item.active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(139, 94, 26, 0.45));
+  border-color: var(--game-gold);
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.35);
+  transform: translateY(-4px);
+}
+.tool-icon {
+  font-size: 1.4rem;
+}
+.tool-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* Pigment Color Swatches */
+.pigment-dock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(212, 175, 55, 0.2);
+}
+.pigment-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.pigment-dot:hover {
+  transform: scale(1.2);
+}
+.pigment-dot.active {
+  transform: scale(1.25);
+  border-color: #fff;
+  box-shadow: 0 0 10px currentColor;
+}
+
+/* Tool Size & Actions */
+.tool-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(212, 175, 55, 0.2);
+}
+.game-clear-btn {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.game-clear-btn:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+/* Victory / Certificate Modal */
+.victory-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 1, 5, 0.88);
+  backdrop-filter: blur(16px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.victory-modal-overlay.active {
+  display: flex;
+}
+.victory-card {
+  width: min(580px, 94vw);
+  background: linear-gradient(155deg, #1f0b1a 0%, #0d040c 100%);
+  border: 2px solid var(--game-gold);
+  border-radius: 28px;
+  padding: 38px 32px;
+  text-align: center;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), 0 0 45px rgba(212, 175, 55, 0.35);
+  position: relative;
+  animation: zoomPop 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes zoomPop {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.victory-card h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2.2rem;
+  color: #fff;
+  margin: 12px 0 8px;
+}
+.victory-stars-big {
+  color: #d4af37;
+  font-size: 2rem;
+  letter-spacing: 6px;
+  margin-bottom: 14px;
+}
+.certificate-preview-box {
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px dashed rgba(212, 175, 55, 0.5);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 20px 0;
+  font-family: 'Outfit', sans-serif;
+  color: var(--game-gold-l);
+}
+.cert-code {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(212, 175, 55, 0.2);
+  padding: 6px 16px;
+  border-radius: 8px;
+  display: inline-block;
+  margin: 10px 0;
+  letter-spacing: 3px;
+}
+.whatsapp-claim-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #25D366;
+  color: #fff;
+  text-decoration: none;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 14px 28px;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+.whatsapp-claim-btn:hover {
+  background: #1eb857;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(37, 211, 102, 0.5);
+}
+
+@media (max-width: 768px) {
+  .game-story-card {
+    top: auto;
+    bottom: 120px;
+    right: 50%;
+    transform: translateX(50%);
+    width: 92vw;
+    padding: 16px;
+  }
+  .game-tool-dock {
+    bottom: 12px;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+  .tool-item {
+    padding: 6px 10px;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="gameplay-wrapper" id="gameplayWrapper">
+  
+  <!-- 3D Canvas Mount Point -->
+  <div id="gameplay-canvas-container"></div>
+
+  <!-- Top Status Bar -->
+  <div class="game-top-bar">
+    <a href="{% url 'home' %}" class="game-back-link">
+      <span>←</span>
+      <span>ATELIER HOME</span>
+    </a>
+
+    <div class="game-title-badge">
+      <h1>Atelier Chronicles</h1>
+      <span>THE ART OF BRIDAL GRACE</span>
+    </div>
+
+    <div class="game-stats-pill">
+      <span class="game-streak" id="streakDisplay">🔥 1 DAY</span>
+      <span>•</span>
+      <span class="game-xp" id="xpDisplay">✨ 100 XP</span>
+      <button type="button" class="game-sound-btn" id="soundToggleBtn" title="Toggle Sound">🔊</button>
+    </div>
+  </div>
+
+  <!-- Chapter Tabs -->
+  <div class="game-chapters-nav" id="chaptersNav">
+    <button type="button" class="chapter-nav-btn active" data-chapter="1" onclick="switchChapter(1)">01 Morning Prep</button>
+    <button type="button" class="chapter-nav-btn" data-chapter="2" onclick="switchChapter(2)">02 Chandan Art</button>
+    <button type="button" class="chapter-nav-btn" data-chapter="3" onclick="switchChapter(3)">03 Sangeet Glam</button>
+    <button type="button" class="chapter-nav-btn" data-chapter="4" onclick="switchChapter(4)">04 Cry-Proof Seal</button>
+  </div>
+
+  <!-- Story & Objective Card -->
+  <div class="game-story-card" id="storyCard">
+    <div class="story-chapter-eyebrow">
+      <span id="chapterNumDisplay">CHAPTER 01</span>
+      <span>•</span>
+      <span>EPISODIC MASTERCLASS</span>
+    </div>
+    <h3 class="story-title" id="chapterTitleDisplay">The Mandap Morning</h3>
+    <p class="story-desc" id="chapterDescDisplay">
+      The auspicious wedding morning has arrived in Jabalpur. Before royal cosmetics can touch the skin, ancient Ayurvedic metallurgy must hydrate and cool the complexion.
+    </p>
+
+    <div class="story-objective-box">
+      <span>CURRENT OBJECTIVE</span>
+      <p id="chapterObjectiveDisplay">Drag the Herbal Ubtan & Ice Roller over the cheeks and forehead to achieve 100% skin hydration.</p>
+    </div>
+
+    <div class="game-progress-row">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="objectiveProgressBar"></div>
+      </div>
+      <span class="progress-score" id="objectiveScoreText">0%</span>
+      <div class="game-stars" id="objectiveStars">★★★</div>
+    </div>
+
+    <button type="button" class="story-action-btn" id="chapterActionBtn" onclick="onChapterActionClick()">
+      NEXT STAGE →
+    </button>
+  </div>
+
+  <!-- Interactive Tool Belt Dock -->
+  <div class="game-tool-dock" id="toolDock">
+    
+    <!-- Tool 1: Ubtan Roller -->
+    <div class="tool-item active" data-tool="ubtan" onclick="selectTool('ubtan', this)" title="Herbal Ubtan Roller">
+      <span class="tool-icon">🌿</span>
+      <span class="tool-label">Ubtan Roller</span>
+    </div>
+
+    <!-- Tool 2: Chandan Pen -->
+    <div class="tool-item" data-tool="chandan" onclick="selectTool('chandan', this)" title="Banarasi Chandan Pen">
+      <span class="tool-icon">🖌️</span>
+      <span class="tool-label">Chandan Pen</span>
+    </div>
+
+    <!-- Tool 3: Blender Sponge -->
+    <div class="tool-item" data-tool="blender" onclick="selectTool('blender', this)" title="Soft-Focus Blender">
+      <span class="tool-icon">🧽</span>
+      <span class="tool-label">Blender</span>
+    </div>
+
+    <!-- Tool 4: Airbrush Wand -->
+    <div class="tool-item" data-tool="airbrush" onclick="selectTool('airbrush', this)" title="18-Hr Cry-Proof Mist">
+      <span class="tool-icon">✨</span>
+      <span class="tool-label">Airbrush Mist</span>
+    </div>
+
+    <!-- Color Swatches -->
+    <div class="pigment-dock">
+      <div class="pigment-dot active" style="background:#FFFFFF;color:#FFFFFF" onclick="selectPigment('#FFFFFF', this)" title="Sacred White Chandan"></div>
+      <div class="pigment-dot" style="background:#DC2626;color:#DC2626" onclick="selectPigment('#DC2626', this)" title="Sindoor Vermillion"></div>
+      <div class="pigment-dot" style="background:#F59E0B;color:#F59E0B" onclick="selectPigment('#F59E0B', this)" title="24K Gold Dust"></div>
+      <div class="pigment-dot" style="background:#9333EA;color:#9333EA" onclick="selectPigment('#9333EA', this)" title="Velvet Mauve"></div>
+    </div>
+
+    <!-- Actions -->
+    <div class="tool-actions">
+      <button type="button" class="game-clear-btn" onclick="resetActiveStage()" title="Reset Current Makeup">Reset</button>
+    </div>
+  </div>
+
+  <!-- Victory & Scholarship Certificate Modal -->
+  <div class="victory-modal-overlay" id="victoryModal">
+    <div class="victory-card">
+      <div style="font-size:3rem">👑</div>
+      <div class="victory-stars-big">★★★★★</div>
+      <h2>Royal Artistry Certified!</h2>
+      <p style="color:rgba(245,237,214,0.85);font-size:0.92rem;line-height:1.5">
+        Congratulations! You have completed all 4 Sacred Chapters of <strong>Atelier Chronicles</strong> with flawless precision, mastering Ayurvedic skin metallurgy, Kuhu Khare Banarasi Chandan art, and the 18-Hour Cry-Proof Starlight Seal.
+      </p>
+
+      <div class="certificate-preview-box">
+        <span style="font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;color:#d4af37">EXCLUSIVE SCHOLARSHIP PRIVILEGE</span>
+        <div class="cert-code" id="scholarshipCodeDisplay">ANSHITA-CHRONICLES-2026</div>
+        <p style="font-size:0.82rem;margin:6px 0 0;color:rgba(245,237,214,0.7)">
+          Valid for <strong>₹2,000 OFF</strong> on Anshita Makeover Professional Academy Masterclass or <strong>10% Privilege Discount</strong> on Bridal Suites.
+        </p>
+      </div>
+
+      <a href="https://wa.me/919343716616?text=Namaste%20Anshita!%20I%20completed%20the%20Atelier%20Chronicles%203D%20Masterclass%20with%203%20Stars!%20My%20Scholarship%20Code%20is%20ANSHITA-CHRONICLES-2026.%20Please%20reserve%20my%20session!" target="_blank" rel="noopener" class="whatsapp-claim-btn" id="whatsappClaimBtn">
+        <span>💬 Claim ₹2,000 Scholarship on WhatsApp</span>
+        <span>↗</span>
+      </a>
+
+      <button type="button" onclick="closeVictoryModal()" style="background:none;border:none;color:rgba(245,237,214,0.5);font-size:0.75rem;margin-top:14px;cursor:pointer;text-decoration:underline">
+        Keep Playing & Perfecting Looks
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══ WEB AUDIO SYNTHESIZER FOR LUXURY SOUND EFFECTS (ZERO EXTERNAL MP3s) ═══
+class GameAudio {
+  constructor() {
+    this.ctx = null;
+    this.enabled = true;
+  }
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) this.ctx = new AudioCtx();
+    }
+  }
+  playChime() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(587.33, now); // D5
+    osc.frequency.exponentialRampToValueAtTime(880.00, now + 0.15); // A5
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.4);
+  }
+  playBrush() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(220, now);
+    osc.frequency.linearRampToValueAtTime(140, now + 0.08);
+    gain.gain.setValueAtTime(0.04, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.08);
+  }
+  playVictory() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+    notes.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const t = this.ctx.currentTime + (idx * 0.12);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.15, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.5);
+    });
+  }
+}
+const gameAudio = new GameAudio();
+
+// ═══ CHAPTERS DATA & STATE ═══
+const CHAPTERS = {
+  1: {
+    title: "The Mandap Morning",
+    desc: "The auspicious dawn has arrived in Jabalpur. Before royal cosmetics can touch the skin, ancient Ayurvedic prep must balance the complexion.",
+    objective: "Drag the Herbal Ubtan & Ice Roller over the cheeks and forehead to achieve 100% skin hydration.",
+    tool: "ubtan",
+    pigment: "#F59E0B",
+    targetScore: 100
+  },
+  2: {
+    title: "The Sacred Vivah (Kuhu Khare Chandan)",
+    desc: "Kuhu is taking the stage in the Bridal Showcase. Authentic Banarasi mukut placement requires 7 sacred symmetric Chandan dots along each eyebrow arch.",
+    objective: "Select Chandan Pen and click the glowing guide targets above the brows with symmetry accuracy.",
+    tool: "chandan",
+    pigment: "#FFFFFF",
+    targetScore: 7
+  },
+  3: {
+    title: "Starlight Sangeet (Thakur Shivani)",
+    desc: "Thakur Shivani needs an energetic, dance-proof jewel cut-crease that will glow under stage lighting without creasing.",
+    objective: "Blend the velvet mauve & gold pigment onto the eyelids using the Blender Sponge.",
+    tool: "blender",
+    pigment: "#9333EA",
+    targetScore: 100
+  },
+  4: {
+    title: "The 18-Hour Cry-Proof Starlight Seal",
+    desc: "Emotional tears during the final bidaai will test the makeup. Anshita's signature airbrush starlight seal must be applied evenly.",
+    objective: "Hold and sweep the Airbrush Wand over the entire face to apply the 18-hr seal and trigger the tear test!",
+    tool: "airbrush",
+    pigment: "#F5EDD6",
+    targetScore: 100
+  }
+};
+
+let currentChapter = 1;
+let activeTool = 'ubtan';
+let activePigment = '#FFFFFF';
+let chapterScores = { 1: 0, 2: 0, 3: 0, 4: 0 };
+let currentScore = 0;
+let xp = parseInt(localStorage.getItem('asha_game_xp') || '100', 10);
+let streak = parseInt(localStorage.getItem('asha_game_streak') || '1', 10);
+
+// ═══ THREE.JS SCENE SETUP ═══
+let scene, camera, renderer, controls;
+let faceMesh, dynamicTexture, textureCanvas, textureCtx;
+let guideMarkersGroup;
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let isPointerDown = false;
+
+function init3D() {
+  const container = document.getElementById('gameplay-canvas-container');
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x070207, 0.05);
+
+  camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+  camera.position.set(0, 0.2, 3.4);
+
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(width, height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
+  renderer.shadowMap.enabled = true;
+  container.appendChild(renderer.domElement);
+
+  // OrbitControls
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.minDistance = 2.2;
+  controls.maxDistance = 4.5;
+  controls.maxPolarAngle = Math.PI / 1.7;
+  controls.minPolarAngle = Math.PI / 2.6;
+  controls.enablePan = false;
+
+  // Studio 3-Point Lighting (Key, Fill, 24K Gold Rim)
+  const ambientLight = new THREE.AmbientLight(0xffeedd, 0.85);
+  scene.add(ambientLight);
+
+  const keyLight = new THREE.DirectionalLight(0xffeed6, 1.4);
+  keyLight.position.set(3, 4, 4);
+  scene.add(keyLight);
+
+  const fillLight = new THREE.DirectionalLight(0xffd5e2, 0.7);
+  fillLight.position.set(-3, 2, 3);
+  scene.add(fillLight);
+
+  const rimLight = new THREE.DirectionalLight(0xd4af37, 1.8);
+  rimLight.position.set(0, 4, -4);
+  scene.add(rimLight);
+
+  // Setup Dynamic 1024x1024 UV Texture Canvas
+  textureCanvas = document.createElement('canvas');
+  textureCanvas.width = 1024;
+  textureCanvas.height = 1024;
+  textureCtx = textureCanvas.getContext('2d');
+  
+  // Base Skin Tone: Indian Honey Caramel (#BA7742 / #C7824C)
+  textureCtx.fillStyle = '#C7824C';
+  textureCtx.fillRect(0, 0, 1024, 1024);
+
+  // Soft Cheek Blush Radial Gradient
+  const blushLeft = textureCtx.createRadialGradient(340, 560, 20, 340, 560, 120);
+  blushLeft.addColorStop(0, 'rgba(219, 78, 99, 0.35)');
+  blushLeft.addColorStop(1, 'rgba(219, 78, 99, 0)');
+  textureCtx.fillStyle = blushLeft;
+  textureCtx.beginPath();
+  textureCtx.arc(340, 560, 120, 0, Math.PI * 2);
+  textureCtx.fill();
+
+  const blushRight = textureCtx.createRadialGradient(684, 560, 20, 684, 560, 120);
+  blushRight.addColorStop(0, 'rgba(219, 78, 99, 0.35)');
+  blushRight.addColorStop(1, 'rgba(219, 78, 99, 0)');
+  textureCtx.fillStyle = blushRight;
+  textureCtx.beginPath();
+  textureCtx.arc(684, 560, 120, 0, Math.PI * 2);
+  textureCtx.fill();
+
+  dynamicTexture = new THREE.CanvasTexture(textureCanvas);
+  dynamicTexture.needsUpdate = true;
+
+  // Build Stylized 3D Bridal Model (Head, Hair Bun, Maang Tikka, Jhumkas)
+  buildBridalHead();
+
+  // Guide Markers Group for Chandan & Precision challenges
+  guideMarkersGroup = new THREE.Group();
+  scene.add(guideMarkersGroup);
+  setupChapterGuides(currentChapter);
+
+  // Event Listeners
+  window.addEventListener('resize', onWindowResize);
+  setupRaycastPainting(renderer.domElement);
+
+  animate();
+}
+
+function buildBridalHead() {
+  const modelGroup = new THREE.Group();
+
+  // 1. Head Sphere
+  const headGeo = new THREE.SphereGeometry(0.85, 48, 48);
+  // Flatten Z slightly for natural face shape
+  headGeo.scale(0.88, 1.05, 0.95);
+
+  const headMat = new THREE.MeshStandardMaterial({
+    map: dynamicTexture,
+    roughness: 0.45,
+    metalness: 0.05,
+  });
+  faceMesh = new THREE.Mesh(headGeo, headMat);
+  faceMesh.name = "bridalFace";
+  modelGroup.add(faceMesh);
+
+  // 2. Neck
+  const neckGeo = new THREE.CylinderGeometry(0.36, 0.42, 0.6, 32);
+  const neckMat = new THREE.MeshStandardMaterial({ color: 0xC7824C, roughness: 0.5 });
+  const neck = new THREE.Mesh(neckGeo, neckMat);
+  neck.position.set(0, -0.9, -0.05);
+  modelGroup.add(neck);
+
+  // 3. Hair (Stylized Royal Bun & Parting)
+  const hairMat = new THREE.MeshStandardMaterial({ color: 0x180E10, roughness: 0.7 });
+  const hairBackGeo = new THREE.SphereGeometry(0.92, 32, 32);
+  const hairBack = new THREE.Mesh(hairBackGeo, hairMat);
+  hairBack.position.set(0, 0.12, -0.15);
+  hairBack.scale.set(0.98, 1.08, 0.98);
+  modelGroup.add(hairBack);
+
+  const bunGeo = new THREE.SphereGeometry(0.45, 32, 32);
+  const bun = new THREE.Mesh(bunGeo, hairMat);
+  bun.position.set(0, 0.85, -0.45);
+  modelGroup.add(bun);
+
+  // 4. Royal Gold Maang Tikka (Jeweled Forehead Centerpiece)
+  const goldMat = new THREE.MeshStandardMaterial({ color: 0xD4AF37, metalness: 0.9, roughness: 0.2 });
+  const rubyMat = new THREE.MeshStandardMaterial({ color: 0x991B1B, metalness: 0.4, roughness: 0.1 });
+  
+  const tikkaChainGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.65, 12);
+  const tikkaChain = new THREE.Mesh(tikkaChainGeo, goldMat);
+  tikkaChain.position.set(0, 0.65, 0.68);
+  tikkaChain.rotation.x = -Math.PI / 4;
+  modelGroup.add(tikkaChain);
+
+  const tikkaPendantGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.03, 16);
+  const tikkaPendant = new THREE.Mesh(tikkaPendantGeo, goldMat);
+  tikkaPendant.position.set(0, 0.38, 0.83);
+  tikkaPendant.rotation.x = Math.PI / 2.2;
+  modelGroup.add(tikkaPendant);
+
+  const rubyGemGeo = new THREE.SphereGeometry(0.04, 16, 16);
+  const rubyGem = new THREE.Mesh(rubyGemGeo, rubyMat);
+  rubyGem.position.set(0, 0.38, 0.85);
+  modelGroup.add(rubyGem);
+
+  // 5. Traditional Gold Jhumkas (Earrings)
+  [-0.82, 0.82].forEach((xPos) => {
+    const jhumka = new THREE.Group();
+    const stud = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 16), goldMat);
+    const bell = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.12, 16), goldMat);
+    bell.position.y = -0.1;
+    jhumka.add(stud);
+    jhumka.add(bell);
+    jhumka.position.set(xPos, -0.08, 0);
+    modelGroup.add(jhumka);
+  });
+
+  scene.add(modelGroup);
+}
+
+// ═══ CHAPTER GUIDE MARKERS ═══
+function setupChapterGuides(chapter) {
+  while (guideMarkersGroup.children.length > 0) {
+    guideMarkersGroup.remove(guideMarkersGroup.children[0]);
+  }
+
+  if (chapter === 2) {
+    // Kuhu Khare Chandan: 7 sacred brow guide dots
+    const markerMat = new THREE.MeshBasicMaterial({ color: 0xF59E0B, wireframe: true });
+    const dotCoords = [
+      // Left brow
+      { x: -0.42, y: 0.28, z: 0.72 },
+      { x: -0.35, y: 0.33, z: 0.74 },
+      { x: -0.26, y: 0.36, z: 0.76 },
+      { x: -0.16, y: 0.38, z: 0.78 },
+      // Center bindi anchor
+      { x: 0, y: 0.26, z: 0.83 },
+      // Right brow
+      { x: 0.16, y: 0.38, z: 0.78 },
+      { x: 0.26, y: 0.36, z: 0.76 },
+      { x: 0.35, y: 0.33, z: 0.74 },
+      { x: 0.42, y: 0.28, z: 0.72 }
+    ];
+
+    dotCoords.forEach((pt, idx) => {
+      const ring = new THREE.Mesh(new THREE.RingGeometry(0.025, 0.045, 16), markerMat);
+      ring.position.set(pt.x, pt.y, pt.z + 0.01);
+      ring.lookAt(pt.x * 1.5, pt.y * 1.5, pt.z + 1);
+      ring.userData = { targetIdx: idx, hit: false };
+      guideMarkersGroup.add(ring);
+    });
+  }
+}
+
+// ═══ RAYCAST UV PAINTING ═══
+function setupRaycastPainting(domElement) {
+  domElement.addEventListener('pointerdown', (e) => {
+    isPointerDown = true;
+    applyToolAtEvent(e);
+  });
+
+  domElement.addEventListener('pointermove', (e) => {
+    if (isPointerDown) {
+      applyToolAtEvent(e);
+    }
+  });
+
+  window.addEventListener('pointerup', () => {
+    isPointerDown = false;
+  });
+}
+
+function applyToolAtEvent(e) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObject(faceMesh);
+
+  if (intersects.length > 0 && intersects[0].uv) {
+    const uv = intersects[0].uv;
+    const x = uv.x * 1024;
+    const y = (1 - uv.y) * 1024;
+
+    paintOnCanvas(x, y);
+    checkObjectiveHit(intersects[0].point);
+  }
+}
+
+function paintOnCanvas(x, y) {
+  textureCtx.save();
+
+  if (activeTool === 'ubtan') {
+    // Herbal Ubtan Roller: translucent golden sheen
+    const grad = textureCtx.createRadialGradient(x, y, 5, x, y, 45);
+    grad.addColorStop(0, 'rgba(245, 158, 11, 0.22)');
+    grad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+    textureCtx.fillStyle = grad;
+    textureCtx.beginPath();
+    textureCtx.arc(x, y, 45, 0, Math.PI * 2);
+    textureCtx.fill();
+    gameAudio.playBrush();
+  } else if (activeTool === 'chandan') {
+    // Banarasi Chandan Pen: crisp symmetrical white/red dot
+    textureCtx.fillStyle = activePigment;
+    textureCtx.beginPath();
+    textureCtx.arc(x, y, 10, 0, Math.PI * 2);
+    textureCtx.fill();
+    // Inner accent dot
+    textureCtx.fillStyle = (activePigment === '#FFFFFF') ? '#DC2626' : '#FFFFFF';
+    textureCtx.beginPath();
+    textureCtx.arc(x, y, 4, 0, Math.PI * 2);
+    textureCtx.fill();
+    gameAudio.playChime();
+  } else if (activeTool === 'blender') {
+    // Blender Sponge: soft velvet diffuse
+    const grad = textureCtx.createRadialGradient(x, y, 4, x, y, 32);
+    grad.addColorStop(0, activePigment + '44');
+    grad.addColorStop(1, activePigment + '00');
+    textureCtx.fillStyle = grad;
+    textureCtx.beginPath();
+    textureCtx.arc(x, y, 32, 0, Math.PI * 2);
+    textureCtx.fill();
+    gameAudio.playBrush();
+  } else if (activeTool === 'airbrush') {
+    // Airbrush Starlight Mist: fine golden shimmer particles
+    for (let i = 0; i < 8; i++) {
+      const rx = x + (Math.random() - 0.5) * 60;
+      const ry = y + (Math.random() - 0.5) * 60;
+      textureCtx.fillStyle = 'rgba(245, 237, 214, 0.35)';
+      textureCtx.beginPath();
+      textureCtx.arc(rx, ry, 1.5, 0, Math.PI * 2);
+      textureCtx.fill();
+    }
+    gameAudio.playBrush();
+  }
+
+  textureCtx.restore();
+  dynamicTexture.needsUpdate = true;
+
+  // Increment current chapter progress
+  incrementProgress();
+}
+
+function incrementProgress() {
+  if (currentChapter === 1 || currentChapter === 3 || currentChapter === 4) {
+    currentScore = Math.min(100, currentScore + 2);
+    updateProgressUI(currentScore, 100);
+  }
+}
+
+function checkObjectiveHit(hitPoint) {
+  if (currentChapter === 2) {
+    guideMarkersGroup.children.forEach(marker => {
+      if (!marker.userData.hit) {
+        const dist = marker.position.distanceTo(hitPoint);
+        if (dist < 0.12) {
+          marker.userData.hit = true;
+          marker.material.color.setHex(0x4ade80);
+          currentScore++;
+          updateProgressUI(currentScore, CHAPTERS[2].targetScore);
+          gameAudio.playChime();
+        }
+      }
+    });
+  }
+}
+
+function updateProgressUI(score, target) {
+  const percent = Math.min(100, Math.round((score / target) * 100));
+  const fill = document.getElementById('objectiveProgressBar');
+  const text = document.getElementById('objectiveScoreText');
+  const stars = document.getElementById('objectiveStars');
+
+  if (fill) fill.style.width = percent + '%';
+  if (text) text.textContent = percent + '%';
+
+  if (percent >= 90) stars.textContent = '★★★';
+  else if (percent >= 50) stars.textContent = '★★☆';
+  else stars.textContent = '★☆☆';
+
+  if (percent >= 100) {
+    onChapterComplete();
+  }
+}
+
+function onChapterComplete() {
+  chapterScores[currentChapter] = 100;
+  const navBtn = document.querySelector(`.chapter-nav-btn[data-chapter="${currentChapter}"]`);
+  if (navBtn) navBtn.classList.add('completed');
+
+  gameAudio.playVictory();
+  confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 } });
+
+  // Add XP
+  xp += 150;
+  localStorage.setItem('asha_game_xp', xp);
+  document.getElementById('xpDisplay').textContent = `✨ ${xp} XP`;
+
+  const actionBtn = document.getElementById('chapterActionBtn');
+  if (currentChapter < 4) {
+    actionBtn.textContent = 'ADVANCE TO NEXT CHAPTER →';
+    actionBtn.style.background = '#4ade80';
+    actionBtn.style.color = '#000';
+  } else {
+    actionBtn.textContent = '👑 VIEW ROYAL CERTIFICATION';
+    actionBtn.style.background = '#d4af37';
+    actionBtn.style.color = '#000';
+  }
+}
+
+function onChapterActionClick() {
+  if (currentChapter < 4) {
+    switchChapter(currentChapter + 1);
+  } else {
+    showVictoryModal();
+  }
+}
+
+function switchChapter(num) {
+  currentChapter = num;
+  currentScore = 0;
+  const chData = CHAPTERS[num];
+
+  // Update Navigation Pills
+  document.querySelectorAll('.chapter-nav-btn').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.getAttribute('data-chapter'), 10) === num);
+  });
+
+  // Update Story Box
+  document.getElementById('chapterNumDisplay').textContent = `CHAPTER 0${num}`;
+  document.getElementById('chapterTitleDisplay').textContent = chData.title;
+  document.getElementById('chapterDescDisplay').textContent = chData.desc;
+  document.getElementById('chapterObjectiveDisplay').textContent = chData.objective;
+  document.getElementById('chapterActionBtn').textContent = 'NEXT STAGE →';
+  document.getElementById('chapterActionBtn').style.background = 'linear-gradient(135deg, #d4af37 0%, #aa8022 100%)';
+  document.getElementById('chapterActionBtn').style.color = '#050205';
+
+  updateProgressUI(0, chData.targetScore);
+  selectTool(chData.tool);
+  selectPigment(chData.pigment);
+  setupChapterGuides(num);
+}
+
+// ═══ TOOL BELT CONTROLS ═══
+function selectTool(toolName, element) {
+  activeTool = toolName;
+  document.querySelectorAll('.tool-item').forEach(item => {
+    item.classList.toggle('active', item.getAttribute('data-tool') === toolName);
+  });
+}
+
+function selectPigment(colorHex, element) {
+  activePigment = colorHex;
+  document.querySelectorAll('.pigment-dot').forEach(dot => {
+    dot.classList.toggle('active', dot.style.color === colorHex);
+  });
+}
+
+function resetActiveStage() {
+  // Re-fill base skin
+  textureCtx.fillStyle = '#C7824C';
+  textureCtx.fillRect(0, 0, 1024, 1024);
+  dynamicTexture.needsUpdate = true;
+  currentScore = 0;
+  updateProgressUI(0, CHAPTERS[currentChapter].targetScore);
+  setupChapterGuides(currentChapter);
+}
+
+// ═══ VICTORY MODAL & CERTIFICATE ═══
+function showVictoryModal() {
+  const modal = document.getElementById('victoryModal');
+  if (modal) modal.classList.add('active');
+  gameAudio.playVictory();
+  confetti({ particleCount: 120, spread: 90, origin: { y: 0.5 } });
+}
+
+function closeVictoryModal() {
+  const modal = document.getElementById('victoryModal');
+  if (modal) modal.classList.remove('active');
+}
+
+// ═══ RENDER LOOP ═══
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+function onWindowResize() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+
+// Sound toggle
+document.getElementById('soundToggleBtn').addEventListener('click', function() {
+  gameAudio.enabled = !gameAudio.enabled;
+  this.textContent = gameAudio.enabled ? '🔊' : '🔇';
+});
+
+// Initialize on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('gameplay-active');
+  init3D();
+});
+</script>
+{% endblock %}
