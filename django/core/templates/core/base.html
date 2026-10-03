@@ -2891,30 +2891,48 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 }
 
 .chat-toggle-wrap.char-pre-entry {
-  opacity: 0;
-  transform: translateY(120px) scale(0.15) rotate(-24deg);
-  pointer-events: none;
-  visibility: hidden;
+  opacity: 0 !important;
+  transform: translateY(90px) scale(0.15) rotate(-20deg) !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 .chat-toggle-wrap.char-entered {
-  animation: conciergeRoyalEntrance 1.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-  pointer-events: auto;
+  visibility: visible !important;
+  animation: conciergeScrollEntrance 1.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  pointer-events: auto !important;
 }
-@keyframes conciergeRoyalEntrance {
+.chat-toggle-wrap.char-exiting {
+  pointer-events: none !important;
+  animation: conciergeScrollExit 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes conciergeScrollEntrance {
   0% {
     opacity: 0;
-    transform: translateY(120px) scale(0.15) rotate(-24deg);
+    transform: translateY(90px) scale(0.2) rotate(-20deg);
   }
-  60% {
+  50% {
     opacity: 1;
-    transform: translateY(-14px) scale(1.15) rotate(4.5deg);
+    transform: translateY(-24px) scale(1.45) rotate(6deg);
   }
-  80% {
-    transform: translateY(3px) scale(0.96) rotate(-1.5deg);
+  75% {
+    opacity: 1;
+    transform: translateY(3px) scale(0.96) rotate(-2deg);
   }
   100% {
     opacity: 1;
     transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+@keyframes conciergeScrollExit {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(90px) scale(0.15) rotate(-15deg);
+    visibility: hidden;
   }
 }
 
@@ -7164,20 +7182,51 @@ window.quickAskConcierge = function(query) {
   const canvas = document.getElementById('ashaMascotCanvas');
   if (!toggle || !toggleWrap || !canvas || typeof THREE === 'undefined') return;
 
-  // Royal Entrance Controller
+    // Concierge Scroll Entrance & Exit Controller
   window.triggerConciergeEntrance = function() {
-    if (!toggleWrap || toggleWrap.classList.contains('char-entered')) return;
-    if (portal) portal.classList.add('active');
-    toggleWrap.classList.remove('char-pre-entry');
-    toggleWrap.classList.add('char-entered');
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (!wrap || wrap.classList.contains('char-entered')) return;
+    const portalEl = document.getElementById('charEntryPortal');
+    if (portalEl) {
+      portalEl.classList.remove('active');
+      void portalEl.offsetWidth;
+      portalEl.classList.add('active');
+    }
+    wrap.classList.remove('char-pre-entry', 'char-exiting');
+    wrap.classList.add('char-entered');
+
+    // Pop speech bubble greeting
+    setTimeout(() => {
+      const bubble = document.getElementById('chat-speech-bubble');
+      const chatBox = document.getElementById('chat-box');
+      if (bubble && (!chatBox || !chatBox.classList.contains('open')) && !document.body.classList.contains('chat-is-open')) {
+        bubble.classList.add('active');
+        setTimeout(() => {
+          if (bubble && typeof isHoveringBubble !== 'undefined' && !isHoveringBubble) {
+            bubble.classList.remove('active');
+          }
+        }, 7000);
+      }
+    }, 800);
+  };
+
+  window.triggerConciergeExit = function() {
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (!wrap || !wrap.classList.contains('char-entered')) return;
+    const chatBox = document.getElementById('chat-box');
+    if (chatBox && chatBox.classList.contains('open')) return;
+
+    wrap.classList.remove('char-entered');
+    wrap.classList.add('char-exiting');
+    const bubble = document.getElementById('chat-speech-bubble');
+    if (bubble) bubble.classList.remove('active');
 
     setTimeout(() => {
-      const speechBubble = document.getElementById('chat-speech-bubble');
-      if (speechBubble && !sessionStorage.getItem('anshita_chat_opened')) {
-        speechBubble.classList.add('active');
-        setTimeout(() => speechBubble.classList.remove('active'), 7500);
+      if (wrap.classList.contains('char-exiting')) {
+        wrap.classList.remove('char-exiting');
+        wrap.classList.add('char-pre-entry');
       }
-    }, 1000);
+    }, 500);
   };
 
   // 1. Three.js Scene, Camera, and WebGL Renderer
@@ -7762,12 +7811,10 @@ window.quickAskConcierge = function(query) {
 
   animationFrameId = requestAnimationFrame(renderAsha);
 
-  // Trigger Royal Entrance
-  setTimeout(() => {
-    if (typeof window.triggerConciergeEntrance === 'function') {
-      window.triggerConciergeEntrance();
-    }
-  }, 2200);
+  // Scroll-driven entrance: controlled by window scroll event
+  if (typeof window.checkConciergeScrollPosition === 'function') {
+    window.checkConciergeScrollPosition();
+  }
 })();
 
 // Initialize Mochi Mascot Concierge Engine
@@ -7869,6 +7916,51 @@ document.addEventListener('DOMContentLoaded', () => {
     window.toggleActiveConciergeCharacter(savedChar);
   }
 });
+
+// ═══ SCROLL-DRIVEN CONCIERGE EMERGENCE & CHATBOT SHRINK ANIMATION ═══
+(function initConciergeScrollTrigger() {
+  let hasScrolledDown = false;
+  let scrollTicking = false;
+  const SCROLL_THRESHOLD_ENTER = 180; // Pixels down from top before mascot emerges
+  const SCROLL_THRESHOLD_EXIT = 80;   // Pixels near top where mascot retreats/hides
+
+  window.checkConciergeScrollPosition = function() {
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (!wrap) return;
+
+    if (scrollY > SCROLL_THRESHOLD_ENTER) {
+      if (!wrap.classList.contains('char-entered')) {
+        hasScrolledDown = true;
+        if (typeof window.triggerConciergeEntrance === 'function') {
+          window.triggerConciergeEntrance();
+        }
+      }
+    } else if (scrollY < SCROLL_THRESHOLD_EXIT) {
+      if (wrap.classList.contains('char-entered')) {
+        hasScrolledDown = false;
+        if (typeof window.triggerConciergeExit === 'function') {
+          window.triggerConciergeExit();
+        }
+      }
+    }
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!scrollTicking) {
+      window.requestAnimationFrame(() => {
+        window.checkConciergeScrollPosition();
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
+  }, { passive: true });
+
+  // Initial check once DOM loads (if already scrolled down on refresh)
+  window.addEventListener('load', () => {
+    setTimeout(window.checkConciergeScrollPosition, 300);
+  });
+})();
 
 
 
@@ -8229,9 +8321,8 @@ function dismissPreloader() {
     document.documentElement.classList.add('preloader-skipped');
     if (typeof initReveal === 'function') initReveal();
     if (typeof countUp === 'function') countUp();
-    setTimeout(() => {
-      if (typeof window.triggerConciergeEntrance === 'function') window.triggerConciergeEntrance();
-    }, 400);
+    // Entrance is triggered on scroll down
+    if (typeof window.checkConciergeScrollPosition === 'function') window.checkConciergeScrollPosition();
     return;
   }
   
@@ -8239,11 +8330,8 @@ function dismissPreloader() {
   pl.style.pointerEvents = 'none';
   // Trigger Stage 2 dual curtain split (left slides left, right slides right)
   pl.classList.add('curtains-open');
-  setTimeout(() => {
-    if (typeof window.triggerConciergeEntrance === 'function') {
-      window.triggerConciergeEntrance();
-    }
-  }, 350);
+  // Entrance is triggered on scroll down
+  if (typeof window.checkConciergeScrollPosition === 'function') window.checkConciergeScrollPosition();
   
   // Stage 3 WebGL burst trigger if available
   try {
@@ -8270,11 +8358,8 @@ window.dismissPreloader = dismissPreloader;
     document.documentElement.classList.add('preloader-skipped');
     const pl = document.getElementById('preloader');
     if (pl) pl.style.display = 'none';
-    setTimeout(() => {
-      if (typeof window.triggerConciergeEntrance === 'function') {
-        window.triggerConciergeEntrance();
-      }
-    }, 600);
+    // Entrance is triggered on scroll down
+    if (typeof window.checkConciergeScrollPosition === 'function') window.checkConciergeScrollPosition();
   }
 })();
 
