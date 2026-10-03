@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VRM 3D Cute Girl Test</title>
+  <style>
+    body {
+      margin: 0;
+      background: #11080e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #stage {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 30%, #3a1528 0%, #1a0814 70%, #0c0209 100%);
+      border: 3px solid #d4af37;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 25px rgba(212,175,55,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@0.6.11/lib/three-vrm.min.js"></script>
+</head>
+<body>
+  <div id="stage">
+    <canvas id="c"></canvas>
+  </div>
+
+  <script>
+    window.vrmLoaded = false;
+    window.loadError = null;
+
+    const canvas = document.getElementById('c');
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setSize(320, 320);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputEncoding = THREE.sRGBEncoding;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 20);
+    // Camera framed on bust / cute face
+    camera.position.set(0, 1.35, 0.95);
+
+    const light = new THREE.DirectionalLight(0xffffff, 1.4);
+    light.position.set(1.0, 1.5, 1.0).normalize();
+    scene.add(light);
+
+    const ambLight = new THREE.AmbientLight(0xfff0ea, 0.9);
+    scene.add(ambLight);
+
+    const rimLight = new THREE.DirectionalLight(0xd4af37, 1.5);
+    rimLight.position.set(-1.0, 1.0, -1.0).normalize();
+    scene.add(rimLight);
+
+    const loader = new THREE.GLTFLoader();
+    console.log('Loading VRM...');
+
+    loader.load(
+      'http://127.0.0.1:8000/static/core/models/concierge.vrm',
+      (gltf) => {
+        console.log('GLTF loaded, creating VRM...');
+        THREE_VRM.VRM.from(gltf).then((vrm) => {
+          scene.add(vrm.scene);
+          window.currentVrm = vrm;
+          console.log('VRM created successfully!', vrm);
+
+          // Position camera precisely on face
+          const head = vrm.humanoid.getBoneNode(THREE_VRM.VRMSchema.HumanoidBoneName.Head);
+          if (head) {
+            const headPos = new THREE.Vector3();
+            head.getWorldPosition(headPos);
+            camera.position.set(headPos.x, headPos.y + 0.02, headPos.z + 0.65);
+            camera.lookAt(headPos.x, headPos.y, headPos.z);
+          }
+
+          // Set happy / cute smile
+          if (vrm.blendShapeProxy) {
+            vrm.blendShapeProxy.setValue(THREE_VRM.VRMSchema.BlendShapePresetName.Joy, 0.35);
+          }
+
+          renderer.render(scene, camera);
+          window.vrmLoaded = true;
+        }).catch((err) => {
+          console.error('VRM from error:', err);
+          window.loadError = err.message || String(err);
+        });
+      },
+      (progress) => {
+        console.log('Loading: ' + (progress.loaded / (progress.total || 20000000) * 100).toFixed(1) + '%');
+      },
+      (error) => {
+        console.error('GLTF load error:', error);
+        window.loadError = error.message || String(error);
+      }
+    );
+
+    // Render loop
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = clock.getDelta();
+      if (window.currentVrm) {
+        window.currentVrm.update(delta);
+      }
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>

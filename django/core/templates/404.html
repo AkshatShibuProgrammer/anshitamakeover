@@ -1,0 +1,37 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Page Not Found (404) — Anshita Makeover{% endblock %}
+{% block meta_description %}The haute couture page or bridal lookbook you requested could not be located at Anshita Makeover.{% endblock %}
+
+{% block content %}
+<main style="min-height:75vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 20px 80px;position:relative;z-index:2">
+  <div style="max-width:680px;background:rgba(18,14,16,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(212,175,55,0.3);border-radius:24px;padding:50px 36px;box-shadow:0 30px 80px rgba(0,0,0,0.8), 0 0 40px rgba(212,175,55,0.15)">
+    <div style="font-family:var(--font-h);font-size:clamp(4rem,10vw,6.5rem);font-weight:700;color:var(--gold);line-height:1;letter-spacing:4px;text-shadow:0 0 25px rgba(212,175,55,0.5)">
+      404
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:16px 0 24px">
+      <div style="height:1px;width:50px;background:linear-gradient(90deg,transparent,rgba(212,175,55,0.6))"></div>
+      <span style="font-family:var(--font-h);font-size:0.85rem;letter-spacing:3px;color:var(--gold-l);text-transform:uppercase">HAUTE ARTISTRY ARCHIVE</span>
+      <div style="height:1px;width:50px;background:linear-gradient(90deg,rgba(212,175,55,0.6),transparent"></div>
+    </div>
+    <h1 style="font-family:var(--font-h);font-size:clamp(1.6rem,4vw,2.4rem);color:#fff;margin-bottom:14px;font-weight:600">
+      A Sacred Lookbook Beyond Reach
+    </h1>
+    <p style="font-size:0.92rem;color:rgba(245,237,214,0.7);line-height:1.7;margin-bottom:32px">
+      The beauty suite or portfolio link you are seeking has either transitioned to our private archives or never existed. Allow us to guide you back to our curated collections.
+    </p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a href="{% url 'home' %}" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:30px;background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#000;font-weight:700;font-size:0.82rem;letter-spacing:1px;text-decoration:none;transition:all 0.3s;box-shadow:0 10px 25px rgba(212,175,55,0.3)">
+        ✦ Return to Sanctuary
+      </a>
+      <a href="{% url 'gallery' %}" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:30px;background:rgba(255,255,255,0.05);border:1px solid rgba(212,175,55,0.4);color:var(--gold);font-weight:600;font-size:0.82rem;letter-spacing:1px;text-decoration:none;transition:all 0.3s">
+        Explore Lookbook
+      </a>
+      <a href="{% url 'services' %}" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:30px;background:rgba(255,255,255,0.05);border:1px solid rgba(212,175,55,0.4);color:var(--gold);font-weight:600;font-size:0.82rem;letter-spacing:1px;text-decoration:none;transition:all 0.3s">
+        View Services
+      </a>
+    </div>
+  </div>
+</main>
+{% endblock %}

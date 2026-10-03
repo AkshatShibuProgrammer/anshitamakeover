@@ -62,7 +62,7 @@ def compile_home_context(lang):
                 s.discount_percent = 0
 
     event_packages = EventPackage.objects.filter(is_active=True).order_by('id')
-    reviews = CustomerReview.objects.filter(is_active=True).order_by('-order', '-created_at')[:8]
+    reviews = CustomerReview.objects.filter(is_active=True).order_by('order', '-created_at')[:8]
     media_reels = MediaItem.objects.filter(is_active=True, is_featured=True).order_by('-created_at')[:6]
     look_groups = LookGroup.objects.filter(is_active=True).prefetch_related('media_items').order_by('order', 'id')
 
@@ -74,13 +74,23 @@ def compile_home_context(lang):
             thumb = itm.display_thumb
             if thumb and not thumb.startswith('http') and not thumb.startswith('/'):
                 thumb = '/' + thumb
+            video_url = itm.video_file.url if itm.video_file else ''
+            if not video_url and itm.media_type in ('video_file', 'youtube', 'instagram'):
+                lg_lower = (lg.name + ' ' + (lg.client_name or '')).lower()
+                if 'kuhu' in lg_lower or 'bengali' in lg_lower:
+                    video_url = '/static/core/images/curated/bengali_bride_reel.mp4'
+                elif 'rajak' in lg_lower or 'maroon' in lg_lower or 'crimson' in lg_lower:
+                    video_url = '/static/core/images/curated/anshita_bridal_reel.mp4'
             items.append({
                 'src': thumb,
+                'video_url': video_url,
+                'title': itm.title or lg.name,
                 'caption': itm.caption or itm.title or lg.name,
                 'category': lg.get_category_display(),
                 'media_type': itm.media_type,
                 'external_url': itm.external_url,
                 'embed_code': itm.embed_code,
+                'show_platform_link': itm.show_platform_link and lg.show_external_link_button,
             })
         if not items and lg.display_cover:
             cov = lg.display_cover
@@ -88,20 +98,35 @@ def compile_home_context(lang):
                 cov = '/' + cov
             items.append({
                 'src': cov,
+                'video_url': '',
+                'title': lg.name,
                 'caption': lg.makeup_type or lg.name,
                 'category': lg.get_category_display(),
                 'media_type': 'image',
                 'external_url': '',
                 'embed_code': '',
+                'show_platform_link': False,
             })
         group_data = {
             'id': lg.id,
             'title': lg.name,
-            'category': lg.get_category_display(),
+            'client_name': lg.client_name,
+            'makeup_type': lg.makeup_type,
+            'category': lg.category,
+            'category_display': lg.get_category_display(),
+            'description': lg.description,
+            'cover': lg.display_cover,
+            'is_featured': lg.is_featured,
+            'show_external_link_button': lg.show_external_link_button,
+            'photo_count': lg.photo_count,
+            'video_count': lg.video_count,
+            'count_summary': lg.count_summary,
             'items': items,
         }
-        # Key by numeric ID as string and integer
+        # Key by numeric ID and slug/string
         look_groups_dict[str(lg.id)] = group_data
+        if lg.slug:
+            look_groups_dict[lg.slug] = group_data
 
     look_groups_json = json.dumps(look_groups_dict)
 

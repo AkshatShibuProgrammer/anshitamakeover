@@ -4,11 +4,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="description" content="Anshita Makeover — India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio">
 <title>{% block title %}Anshita Makeover — India's Premier Bridal Studio{% endblock %}</title>
+<meta name="description" content="{% block meta_description %}Anshita Makeover — India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio{% endblock %}">
+<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+<link rel="icon" type="image/jpeg" href="{% static 'core/images/logo.jpeg' %}">
+<link rel="apple-touch-icon" href="{% static 'core/images/icons/icon-192.png' %}">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#060606">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Anshita">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Anshita Makeover">
+<meta property="og:title" content="{% block og_title %}Anshita Makeover — India's Premier Bridal Studio{% endblock %}">
+<meta property="og:description" content="Anshita Makeover — India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio">
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/og-cover.jpg' %}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Anshita Makeover — India's Premier Bridal Studio">
+<meta name="twitter:description" content="India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio">
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/og-cover.jpg' %}">
+
+<!-- Structured Data: LocalBusiness & BridalSalon -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["BeautySalon", "LocalBusiness"],
+  "name": "Anshita Makeover",
+  "image": "{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/logo.jpeg' %}",
+  "description": "Luxury bespoke bridal makeup, HD airbrush artistry, couture hairstyling, and draping studio.",
+  "url": "https://anshitamakeover.com/",
+  "telephone": "+91-7879223442",
+  "priceRange": "₹₹₹",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.98",
+    "bestRating": "5",
+    "ratingCount": "120"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "IN"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "India"
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "opens": "07:00",
+      "closes": "22:00"
+    }
+  ]
+}
+</script>
+<link rel="preload" as="image" href="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" fetchpriority="high">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="{% static 'core/js/ScrollTrigger.min.js' %}"></script>
+<script src="{% static 'core/js/lenis.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.12.0/headroom.min.js"></script>
+<script src="{% static 'core/js/characters/CuteBunnyCharacter.js' %}"></script>
+<script src="{% static 'core/js/characters/MochiCharacter.js' %}"></script>
+<script src="{% static 'core/js/characters/PipCharacter.js' %}"></script>
+<script src="{% static 'core/js/lumiere-characters.js' %}"></script>
+
 <link rel="stylesheet" href="{% static 'core/css/animations.css' %}">
 <script>
 (function() {
@@ -28,6 +101,11 @@ window.dismissPreloader = function() {
     pl.style.pointerEvents = 'none';
     pl.classList.add('curtains-open');
     setTimeout(() => {
+      if (typeof window.triggerHeroEntrance === 'function') {
+        window.triggerHeroEntrance();
+      }
+    }, 150);
+    setTimeout(() => {
       try { sessionStorage.setItem('anshita_preloader_seen', 'true'); } catch(e) {}
       document.documentElement.classList.add('preloader-skipped');
       try { pl.remove(); } catch(e) { pl.style.display = 'none'; }
@@ -35,8 +113,25 @@ window.dismissPreloader = function() {
   } else {
     try { sessionStorage.setItem('anshita_preloader_seen', 'true'); } catch(e) {}
     document.documentElement.classList.add('preloader-skipped');
+    if (typeof window.triggerHeroEntrance === 'function') {
+      window.triggerHeroEntrance();
+    }
   }
 };
+
+// Immediate fail-safe: dismiss automatically after 2.8s, or immediately on Esc
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('anshita_preloader_seen') === 'true') {
+    window.dismissPreloader();
+    return;
+  }
+  setTimeout(window.dismissPreloader, 1400);
+  window.addEventListener('click', window.dismissPreloader, { once: true });
+  window.addEventListener('scroll', window.dismissPreloader, { once: true, passive: true });
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') window.dismissPreloader();
+  });
+});
 
 window.toggleSideDrawer = function(){
   const d = document.getElementById('side-drawer');
@@ -89,10 +184,98 @@ window.toggleTheme = function() {
 
 window.addEventListener('DOMContentLoaded', () => {
   window.syncThemeUI();
+  // Only enable the custom cursor where it is genuinely useful and motion is allowed.
+  if (window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.body.classList.add('has-custom-cursor');
+  }
 });
 </script>
 
 <style>
+/* Curated homepage catalogue cards */
+.home-featured-services,.home-featured-gallery{padding:clamp(64px,8vw,120px) 0;background:var(--dark)}
+.home-featured-gallery{background:var(--dark2)}
+.home-service-cards,.home-gallery-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:32px 0}
+.home-service-card,.home-gallery-card{display:flex;flex-direction:column;text-align:left;text-decoration:none;color:var(--cream);background:rgba(255,255,255,.035);border:1px solid rgba(212,175,55,.2);padding:0 0 20px;transition:transform .25s ease,border-color .25s ease;overflow:hidden}
+.home-gallery-card{cursor:pointer}
+.home-service-card:hover,.home-gallery-card:hover,.home-service-card:focus-visible,.home-gallery-card:focus-visible{transform:translateY(-5px);border-color:var(--gold);outline:none}
+.home-service-card img,.home-gallery-card img{width:100%;height:290px;object-fit:cover;object-position:center 25%;background:var(--dark3)}
+.home-service-card span,.home-gallery-card span,.home-service-card h3,.home-gallery-card h3,.home-service-card strong,.home-service-card em,.home-gallery-card em{margin-left:18px;margin-right:18px}
+.home-service-card span,.home-gallery-card span{margin-top:17px;color:var(--gold);font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase}
+.home-service-card h3,.home-gallery-card h3{font-family:var(--serif);font-size:1.25rem;margin-top:8px;margin-bottom:10px}
+.home-service-card strong{font-size:.85rem;color:var(--gold-l)}
+.home-service-card em,.home-gallery-card em{margin-top:auto;padding-top:18px;font-size:.75rem;color:rgba(245,237,214,.65);font-style:normal}
+.home-catalogue-link{display:inline-block;margin-top:10px}
+@media(max-width:700px){.home-service-cards,.home-gallery-cards{grid-template-columns:1fr}.home-service-card img,.home-gallery-card img{height:360px}}
+@media(prefers-reduced-motion:reduce){.home-service-card,.home-gallery-card{transition:none}.home-service-card:hover,.home-gallery-card:hover{transform:none}}
+
+/* ═══ GLOBAL LUXURY BUTTON ARCHITECTURE (EVAGHER-INSPIRED) ═══ */
+.btn-p, .btn-o {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border-radius: 9999px;
+  font-family: var(--font-b, 'Outfit', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.btn-p {
+  background: linear-gradient(135deg, #F0D060 0%, #D4AF37 50%, #A07820 100%);
+  color: #080808 !important;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+.btn-p::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.65s ease;
+  pointer-events: none;
+}
+.btn-p:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.55), 0 0 20px rgba(212, 175, 55, 0.3);
+}
+.btn-p:hover::before {
+  left: 150%;
+}
+.btn-p:active {
+  transform: translateY(1px) scale(0.99);
+}
+.btn-o {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--cream, #F5EDD6) !important;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+.btn-o:hover {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: var(--gold, #D4AF37);
+  color: #FFFFFF !important;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.25);
+}
+.btn-o:active {
+  transform: translateY(1px) scale(0.99);
+}
+@media(prefers-reduced-motion:reduce){.btn-p,.btn-o{transition:none!important;transform:none!important}}
 /* ═══════════════════════════════════════════════════
    CSS VARIABLES
 ═══════════════════════════════════════════════════ */
@@ -108,7 +291,7 @@ window.addEventListener('DOMContentLoaded', () => {
   --card-bg:rgba(18,18,18,0.85);
   --card-border:rgba(212,175,55,0.18);
   --font-h:'Playfair Display',Georgia,serif;
-  --font-b:'Segoe UI',Arial,sans-serif;
+  --font-b:'Outfit','Segoe UI',Arial,sans-serif;
   --nav-h:70px;
   --radius:14px;
   --trans:0.35s cubic-bezier(.17,.67,.4,1);
@@ -132,8 +315,41 @@ window.addEventListener('DOMContentLoaded', () => {
 }
 
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;font-size:16px;overflow-x:hidden;max-width:100vw;width:100%}
-body{background:var(--bg-main);color:var(--text-main);font-family:var(--font-b);overflow-x:hidden;max-width:100vw;width:100%;position:relative;cursor:none;padding-top:var(--nav-h);transition:background-color .35s ease, color .35s ease}
+html{font-size:16px;overflow-x:hidden;max-width:100vw;width:100%}
+body{background:var(--bg-main);color:var(--text-main);font-family:var(--font-b);overflow-x:hidden;max-width:100vw;width:100%;position:relative;padding-top:var(--nav-h);transition:background-color .35s ease, color .35s ease}
+
+/* ═══ LENIS SMOOTH MOMENTUM SCROLL (EVAGHER CALIBER) ═══ */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Keep the custom pointer as an enhancement, never as the only pointer affordance. */
+@media (pointer:fine) and (prefers-reduced-motion:no-preference){
+  body.has-custom-cursor,
+  body.has-custom-cursor a,
+  body.has-custom-cursor button,
+  body.has-custom-cursor .btn-p,
+  body.has-custom-cursor .btn-o,
+  body.has-custom-cursor input,
+  body.has-custom-cursor select {
+    cursor: none !important;
+  }
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.vector-path,.preloader-curtain,.preloader-stage{animation:none!important;transition:none!important}.hero-slide,.pkg-card,.rev-card,.gal-item,.evt-card,.svc-card,.about-card-wrap,.calc-card,.reel-card{transition:none!important;transform:none!important}#three-bg,#pcv{display:none!important}}
+
+
 [data-theme="light"] nav#mnav{background:rgba(250,247,242,0.92)!important;border-bottom:1px solid rgba(154,123,28,0.25)!important;box-shadow:0 8px 24px rgba(0,0,0,0.06)!important}
 [data-theme="light"] .nlinks a, [data-theme="light"] .nav-drop-btn{color:#2a241e!important}
 [data-theme="light"] .nlinks a:hover, [data-theme="light"] .nav-drop-btn:hover{color:#000!important}
@@ -147,14 +363,37 @@ a{text-decoration:none;color:inherit}
 button{cursor:pointer;font-family:var(--font-b)}
 
 /* ═══ CURSOR ═══ */
-#cur-dot,#cur-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%)}
-#cur-dot{width:8px;height:8px;background:var(--gold)}
-#cur-ring{width:34px;height:34px;border:1.5px solid var(--gold);opacity:.7;transition:transform .15s,border-color .2s}
-@media(max-width:768px){#cur-dot,#cur-ring{display:none}}
+#cur-dot,#cur-ring{position:fixed;top:-100px;left:-100px;pointer-events:none;z-index:999999;border-radius:50%;transform:translate(-50%,-50%);will-change:left,top,transform}
+#cur-dot{width:8px;height:8px;background:var(--gold);box-shadow:0 0 10px rgba(212,175,55,0.95);transition:opacity 0.2s}
+#cur-ring{width:38px;height:38px;border:1.5px solid var(--gold);opacity:.85;box-shadow:0 0 15px rgba(212,175,55,0.45);transition:transform .22s cubic-bezier(0.16,1,0.3,1),border-color .2s,background .25s,opacity .2s;pointer-events:none}
+#cur-ring.is-hovering{transform:translate(-50%,-50%) scale(2.3) !important;border-color:#E2BA45 !important;background:rgba(226,186,69,0.18) !important;box-shadow:0 0 25px rgba(226,186,69,0.6) !important}
+[data-theme="light"] #cur-dot{background:#8B6F1A !important;box-shadow:0 0 8px rgba(139,111,26,0.6) !important}
+[data-theme="light"] #cur-ring{border-color:#8B6F1A !important;box-shadow:0 0 10px rgba(139,111,26,0.3) !important}
+[data-theme="light"] #cur-ring.is-hovering{border-color:#8B6F1A !important;background:rgba(139,111,26,0.15) !important}
+@media(max-width:768px){#cur-dot,#cur-ring{display:none !important}}
+
+/* ═══ LUXURY EDITORIAL ATMOSPHERE & GLITTER LAYERS (EVAGHER-INSPIRED) ═══ */
+.page-atmosphere {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 18% 15%, rgba(212, 175, 55, 0.08), transparent 32%),
+    radial-gradient(circle at 84% 32%, rgba(158, 91, 100, 0.08), transparent 36%),
+    radial-gradient(circle at 52% 95%, rgba(235, 203, 142, 0.05), transparent 40%),
+    #161313;
+}
+[data-theme="light"] .page-atmosphere {
+  background:
+    radial-gradient(circle at 18% 15%, rgba(212, 175, 55, 0.06), transparent 30%),
+    radial-gradient(circle at 84% 32%, rgba(194, 96, 122, 0.05), transparent 34%),
+    #FAF7F2;
+}
 
 /* ═══ PARTICLES & THREE.JS CANVAS ═══ */
-#three-bg{position:fixed;inset:0;z-index:0;pointer-events:none;width:100%;height:100%}
-#pcv{position:fixed;inset:0;z-index:0;pointer-events:none}
+#three-bg{position:fixed;inset:0;z-index:12;pointer-events:none;width:100%;height:100%;opacity:0.85;mix-blend-mode:screen;transition:opacity 0.5s ease}
+#pcv{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.35;display:none}
 
 /* ═══ SCROLL RING (EVAGHER-INSPIRED CIRCULAR INDICATOR) ═══ */
 #scr{position:fixed;bottom:24px;right:24px;z-index:800;width:46px;height:46px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .3s cubic-bezier(.2,.8,.3,1),box-shadow .3s}
@@ -166,12 +405,11 @@ button{cursor:pointer;font-family:var(--font-b)}
 #scr:hover .scr-arrow{transform:translateY(-2px)}
 @media(max-width:768px){#scr{bottom:80px;right:14px;width:40px;height:40px}}
 
-/* ═══ SCROLL SKEW (EVAGHER-INSPIRED HAUTE COUTURE DYNAMICS) ═══ */
-:root { --scroll-skew: 0deg; }
-.pkg-card, .rev-card, .gal-item, .evt-card, .svc-card, .about-card-wrap, .calc-card, .reel-card {
-  transform: skewY(var(--scroll-skew, 0deg));
-  transition: transform 0.12s cubic-bezier(.25,1,.5,1), box-shadow .3s, border-color .3s;
+/* ═══ SMOOTH EDITORIAL MOTION (CLEAN, ZERO SKEW / TILT DISTORTION) ═══ */
+.pkg-card, .rev-card, .gal-item, .evt-card, .svc-card, .about-card-wrap, .calc-card, .reel-card, .editorial-card, .lookbook-card, .catalog-card {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
   will-change: transform;
+  backface-visibility: hidden;
 }
 
 /* ═══ EVAGHER-STYLE EDITORIAL RUNNING WATERMARKS ═══ */
@@ -187,14 +425,13 @@ button{cursor:pointer;font-family:var(--font-b)}
   font-weight: 900;
   letter-spacing: 14px;
   text-transform: uppercase;
-  color: rgba(212, 175, 55, 0.032);
+  color: rgba(212, 175, 55, 0.035);
   white-space: nowrap;
   pointer-events: none;
   user-select: none;
   z-index: 0;
   line-height: 0.85;
-  transform: translateY(-50%) skewY(var(--scroll-skew, 0deg));
-  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  transform: translateY(-50%);
 }
 
 /* ═══ PRELOADER (ARCHITECTURAL DUAL-CURTAIN & HAUTE COUTURE VECTOR CREST) ═══ */
@@ -1056,237 +1293,575 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 }
 
 /* ═══ PICASA IMAGE VIEWER & INTERACTIVE EDITORIAL PEEK MODAL GALLERY ═══ */
+/* ═══ LUXURY EDITORIAL LOOKBOOK ALBUM VIEWER (REFERENCE SPECIFICATION) ═══ */
 .peek-gallery-modal{
   position:fixed;
   inset:0;
   z-index:9500;
   display:none;
-  align-items:center;
-  justify-content:center;
-  background:rgba(4, 3, 4, 0.96);
-  backdrop-filter:blur(32px) saturate(190%);
-  -webkit-backdrop-filter:blur(32px) saturate(190%);
+  background:rgba(8, 6, 8, 0.97);
+  backdrop-filter:blur(36px) saturate(180%);
+  -webkit-backdrop-filter:blur(36px) saturate(180%);
   overflow:hidden;
   user-select:none;
 }
 .peek-gallery-modal.open{
   display:flex;
+  flex-direction:column;
 }
 
-/* Big Prominent Cross Close Button (Picasa style) */
+/* Floating Close Button */
 .peek-gallery-close{
   position:absolute;
-  top:20px;
-  right:24px;
-  z-index:9520;
-  background:rgba(18, 14, 16, 0.9);
-  border:2px solid var(--gold, #D4AF37);
+  top:24px;
+  right:28px;
+  z-index:9540;
+  background:rgba(24, 18, 20, 0.85);
+  border:1px solid rgba(212,175,55,0.6);
   color:var(--gold-l, #F5E296);
-  width:52px;
-  height:52px;
+  width:44px;
+  height:44px;
   border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:1.75rem;
-  font-weight:700;
+  font-size:1.35rem;
+  font-weight:600;
   cursor:pointer;
   transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
-  box-shadow:0 8px 30px rgba(0,0,0,0.8), 0 0 20px rgba(212,175,55,0.4);
+  box-shadow:0 8px 24px rgba(0,0,0,0.8);
 }
 .peek-gallery-close:hover{
   background:var(--gold);
   color:#000;
-  transform:scale(1.12) rotate(90deg);
-  box-shadow:0 0 35px rgba(212,175,55,0.8);
+  transform:scale(1.1) rotate(90deg);
+  box-shadow:0 0 25px rgba(212,175,55,0.7);
 }
 
-.peek-stage-track{
-  display:flex;
-  align-items:center;
-  justify-content:center;
+/* 3-Column Exhibition Container */
+.lookbook-exhibition-wrap{
+  display:grid;
+  grid-template-columns:300px 1fr 360px;
   width:100vw;
   height:100vh;
   position:relative;
-  gap:1.5vw;
-  padding-bottom:60px;
-  padding-top:20px;
-  will-change:transform;
-  transition:transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow:hidden;
 }
 
-/* Picasa Viewer Expansive Stage: Covers screen gracefully */
-.peek-slide-frame{
-  position:relative;
-  flex-shrink:0;
-  width:min(94vw, 1180px);
-  height:min(78vh, 740px);
-  border-radius:20px;
+/* LEFT COLUMN: Bridal Albums Drawer */
+.lb-sidebar{
+  background:linear-gradient(180deg, #130a0d 0%, #0d0709 100%);
+  border-right:1px solid rgba(212,175,55,0.18);
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  padding:32px 20px;
+  z-index:10;
   overflow:hidden;
-  border:1.5px solid rgba(212,175,55,0.4);
-  box-shadow:0 30px 100px rgba(0,0,0,0.95), 0 0 40px rgba(212,175,55,0.15);
-  transition:transform 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.45s ease, filter 0.45s ease;
-  background:#050405;
+}
+.lb-sidebar-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:28px;
+  padding-bottom:16px;
+  border-bottom:1px solid rgba(212,175,55,0.12);
+}
+.lb-sidebar-header span{
+  font-size:1.1rem;
+  color:var(--gold);
+}
+.lb-sidebar-header h3{
+  font-family:var(--font-b);
+  font-size:0.8rem;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:var(--gold);
+  font-weight:700;
+  margin:0;
+}
+.lb-album-list{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  overflow-y:auto;
+  flex:1;
+  padding-right:6px;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(212,175,55,0.4) transparent;
+}
+.lb-album-card{
+  display:grid;
+  grid-template-columns:32px 76px 1fr;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  background:transparent;
+  border:1px solid transparent;
+  border-radius:12px;
+  cursor:pointer;
+  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+  text-align:left;
+  width:100%;
+}
+.lb-album-card:hover{
+  background:rgba(212,175,55,0.06);
+  border-color:rgba(212,175,55,0.25);
+  transform:translateX(4px);
+}
+.lb-album-card.active{
+  background:linear-gradient(90deg, rgba(212,175,55,0.14) 0%, rgba(212,175,55,0.02) 100%);
+  border:1px solid rgba(212,175,55,0.5);
+  box-shadow:0 4px 20px rgba(0,0,0,0.5), inset 0 0 12px rgba(212,175,55,0.08);
+}
+.lb-album-num{
+  font-family:var(--font-h);
+  font-size:0.85rem;
+  color:rgba(245,237,214,0.45);
+}
+.lb-album-card.active .lb-album-num{
+  color:var(--gold);
+  font-weight:700;
+}
+.lb-album-thumb{
+  width:76px;
+  height:86px;
+  border-radius:8px;
+  object-fit:cover;
+  border:1px solid rgba(212,175,55,0.2);
+}
+.lb-album-info h4{
+  font-family:var(--font-h);
+  font-size:0.82rem;
+  color:var(--cream);
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin-bottom:5px;
+  line-height:1.2;
+}
+.lb-album-card.active .lb-album-info h4{
+  color:var(--gold-l);
+}
+.lb-album-info span{
+  font-size:0.62rem;
+  color:rgba(245,237,214,0.5);
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.lb-sidebar-footer{
+  margin-top:auto;
+  padding-top:16px;
+  border-top:1px solid rgba(212,175,55,0.12);
+}
+.lb-view-all-btn{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+  background:none;
+  border:none;
+  color:var(--gold);
+  font-size:0.75rem;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+  cursor:pointer;
+  padding:8px 0;
+  font-weight:600;
+  transition:color 0.2s ease;
+}
+.lb-view-all-btn:hover{
+  color:#fff;
+}
+
+/* CENTER COLUMN: Hero Visual Canvas & Bottom Filmstrip */
+.lb-stage-center{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100%;
+  padding:24px 36px 32px;
+  overflow:hidden;
+}
+.lb-hero-frame{
+  position:relative;
+  width:100%;
+  max-width:860px;
+  flex:1;
+  max-height:calc(100vh - 180px);
+  border-radius:18px;
+  overflow:hidden;
+  border:1.5px solid rgba(212,175,55,0.3);
+  box-shadow:0 30px 90px rgba(0,0,0,0.9);
+  background:#050406;
   display:flex;
   align-items:center;
   justify-content:center;
-  cursor:ew-resize;
+  transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
 }
-.peek-slide-frame img{
+.lb-hero-img{
+  max-width:100%;
+  max-height:100%;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  background:#050406;
+  transition:opacity 0.3s ease;
+  margin:auto;
+}
+.lb-hero-video{
+  max-width:100%;
+  max-height:100%;
   width:100%;
   height:100%;
   object-fit:contain;
-  background:#030203;
+  background:#050406;
+  border-radius:12px;
 }
-
-/* Peek Side Preview Framing */
-.peek-slide-prev, .peek-slide-next{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%) scale(0.82);
-  width:min(80vw, 820px);
-  height:min(66vh, 560px);
-  border-radius:18px;
-  overflow:hidden;
-  opacity:0.25;
-  filter:blur(2px) grayscale(40%);
-  pointer-events:none;
-  transition:all 0.45s cubic-bezier(0.16,1,0.3,1);
-  border:1px solid rgba(212,175,55,0.15);
-  background:#090608;
-}
-.peek-slide-prev{
-  left:calc(-80vw + 5vw);
-}
-.peek-slide-next{
-  right:calc(-80vw + 5vw);
-}
-.peek-slide-prev img, .peek-slide-next img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  background:#060406;
-}
-
-/* Nav arrows */
-.peek-arrow{
+.lb-hero-nav-arrow{
   position:absolute;
   top:50%;
   transform:translateY(-50%);
-  z-index:9505;
-  background:rgba(18,14,16,0.8);
-  border:1px solid rgba(212,175,55,0.35);
-  color:var(--gold);
-  width:50px;
-  height:50px;
+  width:46px;
+  height:46px;
   border-radius:50%;
+  background:rgba(18,14,16,0.75);
+  border:1px solid rgba(212,175,55,0.45);
+  color:var(--gold-l);
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:1.2rem;
+  font-size:1.15rem;
   cursor:pointer;
-  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
-  box-shadow:0 8px 30px rgba(0,0,0,0.6);
+  z-index:20;
+  transition:all 0.25s ease;
 }
-.peek-arrow:hover{
+.lb-hero-nav-arrow:hover{
   background:var(--gold);
-  color:var(--black);
+  color:#000;
   transform:translateY(-50%) scale(1.1);
-  box-shadow:0 0 25px rgba(212,175,55,0.6);
 }
-.peek-arrow-prev{left:24px}
-.peek-arrow-next{right:24px}
+.lb-hero-prev{left:18px}
+.lb-hero-next{right:18px}
 
-/* Footer Info Strip */
-.peek-footer-bar{
-  position:absolute;
-  bottom:16px;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:9508;
+/* Center Bottom Angle Filmstrip */
+.lb-filmstrip-bar{
   display:flex;
   align-items:center;
-  gap:16px;
-  background:rgba(16,12,14,0.92);
-  backdrop-filter:blur(22px);
-  -webkit-backdrop-filter:blur(22px);
-  border:1px solid rgba(212,175,55,0.3);
-  padding:8px 20px;
-  border-radius:30px;
-  box-shadow:0 12px 40px rgba(0,0,0,0.85);
-  max-width:92vw;
+  gap:12px;
+  margin-top:20px;
+  max-width:860px;
+  width:100%;
+  justify-content:center;
+  position:relative;
 }
-.peek-info-caption{
-  font-family:var(--font-h);
-  font-size:0.84rem;
-  color:var(--white);
-  max-width:min(420px, 35vw);
-  white-space:nowrap;
+.lb-filmstrip-track{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  overflow-x:auto;
+  padding:6px;
+  scrollbar-width:none;
+}
+.lb-filmstrip-track::-webkit-scrollbar{display:none}
+.lb-filmstrip-card{
+  width:72px;
+  height:72px;
+  border-radius:10px;
   overflow:hidden;
-  text-overflow:ellipsis;
+  border:1.5px solid rgba(212,175,55,0.2);
+  cursor:pointer;
+  flex-shrink:0;
+  opacity:0.6;
+  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+  background:#090608;
 }
-.peek-info-counter{
-  font-family:monospace;
-  font-size:0.75rem;
-  letter-spacing:2px;
+.lb-filmstrip-card:hover{
+  opacity:0.9;
+  border-color:var(--gold);
+  transform:translateY(-2px);
+}
+.lb-filmstrip-card.active{
+  opacity:1;
+  border:2px solid var(--gold-l);
+  box-shadow:0 0 16px rgba(212,175,55,0.5);
+  transform:scale(1.06);
+}
+.lb-filmstrip-card img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* RIGHT COLUMN: Editorial Description & Dedicated Video Card */
+.lb-detail-panel{
+  background:linear-gradient(180deg, #0f0a0d 0%, #080507 100%);
+  border-left:1px solid rgba(212,175,55,0.18);
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  padding:36px 28px;
+  z-index:10;
+  overflow-y:auto;
+}
+.lb-meta-tag{
+  font-size:0.66rem;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
   color:var(--gold);
   font-weight:700;
-  border-left:1px solid rgba(212,175,55,0.25);
-  padding-left:12px;
-  white-space:nowrap;
+  margin-bottom:10px;
+  display:block;
 }
-.peek-nav-hints{
-  font-size:0.62rem;
+.lb-album-title{
+  font-family:var(--font-h);
+  font-size:2.2rem;
+  line-height:1.15;
+  color:var(--gold-l);
+  margin-bottom:16px;
   letter-spacing:1px;
+}
+.lb-album-desc{
+  font-size:0.86rem;
+  color:rgba(245,237,214,0.72);
+  line-height:1.65;
+  margin-bottom:24px;
+}
+.lb-metrics-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:12px;
+  margin-bottom:28px;
+  padding-bottom:20px;
+  border-bottom:1px solid rgba(212,175,55,0.12);
+}
+.lb-metric-box{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:4px;
+}
+.lb-metric-val{
+  font-family:var(--font-h);
+  font-size:1.1rem;
+  font-weight:700;
+  color:var(--cream);
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.lb-metric-label{
+  font-size:0.6rem;
+  letter-spacing:1.5px;
   text-transform:uppercase;
   color:rgba(245,237,214,0.5);
-  border-left:1px solid rgba(212,175,55,0.25);
-  padding-left:12px;
 }
-.peek-ig-link{
+
+/* Dedicated Video Container with Autoplay / Pause Controls */
+.lb-video-container{
+  background:rgba(18,14,17,0.9);
+  border:1px solid rgba(212,175,55,0.3);
+  border-radius:14px;
+  overflow:hidden;
+  position:relative;
+  margin-bottom:24px;
+  box-shadow:0 12px 36px rgba(0,0,0,0.6);
+}
+.lb-video-media-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background:#000;
+  overflow:hidden;
+}
+.lb-video-elem{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.lb-video-play-btn{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:rgba(0,0,0,0.65);
+  backdrop-filter:blur(8px);
+  border:1.5px solid var(--gold);
+  color:var(--gold-l);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.25rem;
+  cursor:pointer;
+  transition:all 0.25s ease;
+  z-index:5;
+}
+.lb-video-play-btn:hover{
+  background:var(--gold);
+  color:#000;
+  transform:translate(-50%, -50%) scale(1.12);
+}
+.lb-video-controls{
+  padding:12px 14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:rgba(12,8,10,0.95);
+}
+.lb-video-time{
+  font-family:monospace;
+  font-size:0.68rem;
+  color:rgba(245,237,214,0.65);
+}
+.lb-video-progress{
+  flex:1;
+  height:4px;
+  background:rgba(255,255,255,0.15);
+  border-radius:2px;
+  position:relative;
+  cursor:pointer;
+}
+.lb-video-progress-fill{
+  position:absolute;
+  left:0;
+  top:0;
+  height:100%;
+  background:var(--gold);
+  width:35%;
+  border-radius:2px;
+}
+
+/* Bottom Action Buttons */
+.lb-actions-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:auto;
+}
+.lb-enquire-btn{
+  flex:1;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:12px 20px;
+  border-radius:9999px;
+  background:linear-gradient(135deg, #F0D060 0%, #D4AF37 50%, #A07820 100%);
+  color:#080808 !important;
+  font-weight:700;
+  font-size:0.78rem;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  text-decoration:none;
+  box-shadow:0 4px 18px rgba(212,175,55,0.4);
+  transition:all 0.3s ease;
+}
+.lb-enquire-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 28px rgba(212,175,55,0.6);
+}
+.lb-icon-btn{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(212,175,55,0.3);
+  color:var(--cream);
+  padding:11px 16px;
+  border-radius:9999px;
+  font-size:0.75rem;
+  cursor:pointer;
   display:inline-flex;
   align-items:center;
   gap:6px;
-  background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);
-  color:#fff;
-  font-size:0.68rem;
-  font-weight:700;
-  padding:6px 12px;
-  border-radius:20px;
   text-decoration:none;
-  letter-spacing:0.5px;
-  transition:all 0.3s ease;
-  white-space:nowrap;
+  transition:all 0.25s ease;
 }
-.peek-ig-link:hover{
-  transform:scale(1.05);
-  box-shadow:0 4px 15px rgba(253,29,29,0.4);
+.lb-icon-btn:hover{
+  background:rgba(212,175,55,0.14);
+  color:#fff;
+  border-color:var(--gold);
 }
 
-@media(max-width:768px){
-  .peek-arrow{display:none}
-  .peek-stage-track{padding-bottom:65px}
-  .peek-slide-frame{
-    width:92vw;
-    height:64vh;
+/* ════ MOBILE RESPONSIVE COUTURE LOOKBOOK (REFERENCE SPECIFICATION) ════ */
+@media(max-width:960px){
+  .lookbook-exhibition-wrap{
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    width:100vw;
   }
-  .peek-slide-prev{left:calc(-90vw + 4vw)}
-  .peek-slide-next{right:calc(-90vw + 4vw)}
-  .peek-footer-bar{
-    padding:8px 14px;
-    width:92vw;
+  .lb-sidebar{display:none}
+  .lb-detail-panel{display:none}
+  .lb-stage-center{
+    padding:0;
+    width:100vw;
+    height:100vh;
+    justify-content:center;
+  }
+  .lb-hero-frame{
+    width:100vw;
+    height:100vh;
+    max-width:100vw;
+    max-height:100vh;
+    border-radius:0;
+    border:none;
+  }
+  .lb-hero-img{
+    object-fit:contain;
+  }
+  .lb-mobile-header{
+    position:absolute;
+    top:20px;
+    left:20px;
+    right:20px;
+    display:flex;
     justify-content:space-between;
-    gap:10px;
-    bottom:12px;
+    align-items:center;
+    z-index:9530;
+    pointer-events:none;
   }
-  .peek-info-caption{
-    max-width:45vw;
+  .lb-mobile-header *{pointer-events:auto}
+  .lb-mobile-counter-wrap{
+    text-align:left;
   }
-  .peek-nav-hints{display:none}
+  .lb-mobile-title{
+    font-size:0.68rem;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:700;
+  }
+  .lb-mobile-counter{
+    font-size:0.88rem;
+    font-family:var(--font-h);
+    color:var(--cream);
+    margin-top:2px;
+  }
+  .lb-filmstrip-bar{
+    position:absolute;
+    bottom:24px;
+    left:0;
+    right:0;
+    margin:0;
+    max-width:100vw;
+    padding:0 14px;
+    z-index:9525;
+  }
+  .lb-filmstrip-track{
+    width:100%;
+    justify-content:center;
+  }
+  .lb-filmstrip-card{
+    width:60px;
+    height:60px;
+    border-radius:8px;
+  }
 }
 
 /* ═══ SERVICES: EDITORIAL SPLIT-ROW ARCHITECTURE ═══ */
-#services{background:var(--dark);padding:80px 0}
+#services{background:linear-gradient(180deg, rgba(18, 14, 17, 0.78) 0%, rgba(13, 10, 12, 0.88) 100%);padding:80px 0;position:relative}
 .svc-split-list{display:flex;flex-direction:column;gap:36px;margin-top:48px}
 .svc-split-card{
   display:grid;
@@ -1297,20 +1872,13 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   overflow:hidden;
   box-shadow:0 18px 50px rgba(0,0,0,0.55);
   position:relative;
-  /* Clean, static, no motion sickness */
-  transform:none !important;
-  transition:border-color 0.25s ease;
+  transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.35s ease;
+  will-change:transform;
 }
 .svc-split-card:hover{
-  border-color:rgba(212,175,55,0.5);
-  transform:none !important;
-  box-shadow:0 18px 50px rgba(0,0,0,0.55);
-}
-#services .rev, #services .svc-split-card {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
-  animation: none !important;
+  border-color:rgba(212,175,55,0.55);
+  transform:translateY(-6px);
+  box-shadow:0 24px 60px rgba(0,0,0,0.65), 0 0 25px rgba(212,175,55,0.15);
 }
 .svc-split-left{
   position:relative;
@@ -1323,6 +1891,7 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   width:100%;
   height:100%;
   object-fit:cover;
+  object-position:center 20%;
   display:block;
   transition:transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -1431,11 +2000,57 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   font-weight:700;
   margin-bottom:10px;
 }
+.svc-toggle-inc{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(212,175,55,0.06);
+  border:1px solid rgba(212,175,55,0.3);
+  color:var(--gold-l, #F0D060);
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:0.72rem;
+  font-weight:600;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-bottom:12px;
+}
+.svc-toggle-inc:hover{
+  background:rgba(212,175,55,0.16);
+  border-color:var(--gold);
+  color:#fff;
+  transform:translateY(-1px);
+}
+.svc-toggle-inc .svc-toggle-icon{
+  transition:transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display:inline-block;
+  font-size:0.75rem;
+}
+.svc-toggle-inc.open .svc-toggle-icon{
+  transform:rotate(180deg);
+}
+.svc-details-collapsible{
+  max-height:0;
+  overflow:hidden;
+  opacity:0;
+  transition:max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, margin-bottom 0.35s ease;
+  margin-bottom:0;
+}
+.svc-details-collapsible.open{
+  max-height:600px;
+  opacity:1;
+  margin-bottom:20px;
+}
 .svc-split-inclusions{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:8px 20px;
-  margin-bottom:24px;
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(212,175,55,0.12);
+  border-radius:12px;
+  padding:14px 16px;
 }
 .svc-split-inc-item{
   display:flex;
@@ -1493,7 +2108,7 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 .art-spec{background:rgba(232,164,184,.08);border:1px solid rgba(232,164,184,.15);color:var(--rose);font-size:.6rem;padding:2px 8px;border-radius:10px}
 
 /* ═══ SEQUENTIAL COUTURE PACKAGES & DOCKED ACTIONS ═══ */
-#packages{background:var(--dark);position:relative}
+#packages{background:linear-gradient(180deg, rgba(16, 12, 15, 0.8) 0%, rgba(12, 9, 11, 0.9) 100%);position:relative}
 .pkg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin-top:48px}
 
 /* Sequential One-by-One Layout for Bridal Suites */
@@ -1993,26 +2608,26 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 }
 
 /* ═══ GALLERY ═══ */
-#gallery{background:var(--black)}
+#gallery{background:linear-gradient(180deg, rgba(14, 10, 13, 0.8) 0%, rgba(10, 7, 9, 0.9) 100%);position:relative}
 .gal-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
 .gf-btn{background:transparent;border:1px solid rgba(212,175,55,.2);color:rgba(245,237,214,.5);padding:6px 16px;border-radius:20px;font-size:.72rem;letter-spacing:1px;cursor:pointer;transition:all .2s}
 .gf-btn.active,.gf-btn:hover{background:rgba(212,175,55,.1);border-color:var(--gold);color:var(--gold)}
 .gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:0}
-.gal-item{border-radius:14px;overflow:hidden;position:relative;cursor:zoom-in;background:var(--dark2);aspect-ratio:3/4;border:1px solid rgba(212,175,55,.15);transition:all .3s}
-.gal-item:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.6)}
-.gal-item img{width:100%;height:100%;object-fit:cover;object-position:center 15%;transition:transform .5s ease}
-.gal-item:hover img{transform:scale(1.05)}
+.gal-item{border-radius:14px;overflow:hidden;position:relative;cursor:zoom-in;background:var(--dark2);aspect-ratio:4/5;border:1px solid rgba(212,175,55,.18);transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease;will-change:transform}
+.gal-item:hover{border-color:var(--gold);transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,.65), 0 0 20px rgba(212,175,55,0.2)}
+.gal-item img{width:100%;height:100%;object-fit:cover;object-position:center 20%;transition:transform .5s cubic-bezier(0.16, 1, 0.3, 1)}
+.gal-item:hover img{transform:scale(1.04)}
 .gal-ph{width:100%;height:100%;min-height:220px;background:linear-gradient(135deg,var(--dark2),var(--dark3));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:all .4s}
-.gal-item:hover .gal-ph{transform:scale(1.05);filter:brightness(.6)}
+.gal-item:hover .gal-ph{transform:scale(1.04);filter:brightness(.6)}
 .gal-ph-i{font-size:1.8rem;opacity:.2}
 .gal-ph-l{font-size:.65rem;letter-spacing:1.5px;color:var(--gold);opacity:.35}
 .gal-ov{position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,175,55,.15),rgba(123,28,46,.2));opacity:0;transition:opacity .4s;display:flex;align-items:center;justify-content:center;font-size:1.3rem}
 .gal-item:hover .gal-ov{opacity:1}
-.gal-item img{width:100%;height:100%;object-fit:cover}
+
 @media(max-width:600px){.gal-grid{grid-template-columns:repeat(2,1fr)}.gal-item:nth-child(1){grid-column:span 2}.gal-item:nth-child(7){grid-column:span 1}}
 
 /* ═══ EVENT MANAGEMENT ═══ */
-#events{background:var(--dark)}
+#events{background:linear-gradient(180deg, rgba(15, 11, 14, 0.8) 0%, rgba(12, 9, 11, 0.9) 100%)}
 .evt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:48px}
 .evt-card{background:var(--dark2);border:1px solid rgba(212,175,55,.12);border-radius:var(--radius);overflow:hidden;transition:all .4s;position:relative}
 .evt-card:hover{transform:translateY(-8px);border-color:rgba(212,175,55,.35);box-shadow:0 24px 60px rgba(0,0,0,.4)}
@@ -2030,8 +2645,10 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 .evt-custom-note{text-align:center;margin-top:28px;padding:20px;background:rgba(212,175,55,.04);border:1px dashed rgba(212,175,55,.2);border-radius:var(--radius)}
 .evt-custom-note p{font-size:.82rem;color:rgba(245,237,214,.6);margin-bottom:12px}
 
-/* ═══ ABOUT ═══ */
-#about{background:var(--black)}
+/* ═══ ABOUT & MEDIA SECTIONS ═══ */
+#about{background:linear-gradient(180deg, rgba(14, 10, 13, 0.8) 0%, rgba(10, 7, 9, 0.9) 100%)}
+#reels{background:linear-gradient(180deg, rgba(12, 9, 11, 0.8) 0%, rgba(10, 7, 9, 0.9) 100%)}
+#occasions{background:linear-gradient(180deg, rgba(16, 12, 15, 0.75) 0%, rgba(13, 9, 12, 0.85) 100%)}
 .about-g{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
 .about-ph-wrap{position:relative}
 .about-ph{aspect-ratio:3/4;border-radius:24px;overflow:hidden;border:2px solid rgba(212,175,55,.45);box-shadow:0 0 50px rgba(212,175,55,.2),0 24px 60px rgba(0,0,0,.7);position:relative;background:var(--dark2)}
@@ -2203,7 +2820,7 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   bottom: 24px;
   left: 24px;
   right: auto;
-  z-index: 920;
+  z-index: 9800;
 }
 #chatbot input, #chatbot textarea, .chat-inp {
   user-select: text !important;
@@ -2211,53 +2828,339 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   touch-action: auto !important;
   pointer-events: auto !important;
 }
-.chat-toggle {
-  width: 52px;
-  height: 52px;
+.chat-toggle-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* ═══ 3D LIVING CONCIERGE CHARACTER STAGE & CANVAS ═══ */
+.char-3d-stage {
+  position: absolute;
+  inset: 2px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #181216 0%, #0d0a0c 100%);
-  border: 1.5px solid rgba(212, 175, 55, 0.7);
-  color: var(--gold);
-  font-size: 1.35rem;
+  overflow: hidden;
+  background: radial-gradient(circle at 45% 35%, #2a0b1c 0%, #15050e 65%, #080206 100%);
+  perspective: 550px;
+  transform-style: preserve-3d;
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.char-gaze-canvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: block;
+  pointer-events: none;
+  object-fit: contain;
+}
+.char-specular-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.05) 45%, transparent 65%);
+  mix-blend-mode: overlay;
+}
+
+/* ═══ ROYAL ENTRANCE ANIMATION & GOLDEN PORTAL ═══ */
+.char-entry-portal {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.2);
+  width: 110px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255,215,0,0.85) 0%, rgba(212,175,55,0.45) 45%, transparent 75%);
+  filter: blur(6px);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 1;
+}
+.char-entry-portal.active {
+  animation: portalBloom 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes portalBloom {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.2); }
+  35% { opacity: 1; transform: translateX(-50%) scale(1.4); }
+  100% { opacity: 0; transform: translateX(-50%) scale(2.1); }
+}
+
+.chat-toggle-wrap.char-pre-entry {
+  opacity: 0 !important;
+  transform: translateY(90px) scale(0.15) rotate(-20deg) !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+.chat-toggle-wrap.char-entered {
+  visibility: visible !important;
+  animation: conciergeScrollEntrance 1.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  pointer-events: auto !important;
+}
+.chat-toggle-wrap.char-exiting {
+  pointer-events: none !important;
+  animation: conciergeScrollExit 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes conciergeScrollEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(90px) scale(0.2) rotate(-20deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-24px) scale(1.45) rotate(6deg);
+  }
+  75% {
+    opacity: 1;
+    transform: translateY(3px) scale(0.96) rotate(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+@keyframes conciergeScrollExit {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(90px) scale(0.15) rotate(-15deg);
+    visibility: hidden;
+  }
+}
+
+/* ═══ LUXURY SPEECH BUBBLE WITH QUICK ACTIONS ═══ */
+.chat-speech-bubble {
+  position: absolute;
+  left: 92px;
+  bottom: 4px;
+  background: rgba(16, 10, 14, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(212, 175, 55, 0.65);
+  border-radius: 18px;
+  padding: 12px 18px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.85), 0 0 25px rgba(212,175,55,0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px) scale(0.92);
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s;
+  z-index: 10;
+  max-width: 320px;
+}
+.chat-speech-bubble.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  animation: bubbleFloat 4s ease-in-out infinite alternate;
+}
+/* STRICT SUPPRESSION: Zero speech bubble popups when chatting or when chat window is open */
+#chat-box.open ~ #chat-toggle-wrap #chat-speech-bubble,
+#chat-box.open + #chat-toggle-wrap #chat-speech-bubble,
+.chat-container:has(#chat-box.open) #chat-speech-bubble,
+body.chat-is-open #chat-speech-bubble {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(12px) scale(0.92) !important;
+}
+.chat-speech-bubble:hover {
+  border-color: var(--gold);
+}
+.csb-header {
   cursor: pointer;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.7), 0 0 20px rgba(212,175,55,0.3);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.csb-tag {
+  font-size: 0.62rem;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 700;
+}
+.csb-text {
+  font-family: var(--font-b, 'Outfit', sans-serif);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #FFF6E5;
+  line-height: 1.35;
+}
+.csb-quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+.csb-chip {
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 100px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #F8E8C8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.csb-chip:hover {
+  background: rgba(212, 175, 55, 0.28);
+  border-color: var(--gold);
+  color: #FFF;
+  transform: translateY(-1px);
+}
+.csb-tail {
+  position: absolute;
+  left: -8px;
+  bottom: 22px;
+  width: 14px;
+  height: 14px;
+  background: rgba(16, 10, 14, 0.96);
+  border-left: 1.5px solid rgba(212, 175, 55, 0.65);
+  border-bottom: 1.5px solid rgba(212, 175, 55, 0.65);
+  transform: rotate(45deg);
+}
+@keyframes bubbleFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-5px); }
+}
+
+/* ═══ ROYAL CREST & MEDALLION CONCIERGE WIDGET ═══ */
+.chat-toggle {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #301322 0%, #180914 65%, #0b0309 100%);
+  border: 2px solid rgba(212, 175, 55, 0.9);
+  color: var(--gold);
+  cursor: pointer;
+  box-shadow: 0 12px 38px rgba(0,0,0,0.85), 0 0 28px rgba(212,175,55,0.4), inset 0 0 16px rgba(212,175,55,0.22);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   touch-action: none;
-}
-.chat-toggle:active {
-  cursor: grabbing;
+  padding: 0;
+  z-index: 5;
+  overflow: visible;
 }
 .chat-toggle:hover {
-  transform: translateY(-2px) scale(1.08);
-  border-color: var(--gold-l);
-  color: #FFF;
-  box-shadow: 0 12px 36px rgba(212,175,55,0.55);
+  transform: translateY(-4px) scale(1.08);
+  border-color: #FFF2C6;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.92), 0 0 42px rgba(212,175,55,0.65), inset 0 0 24px rgba(212,175,55,0.35);
 }
-.chat-pulse-ping {
+.chat-toggle:active {
+  transform: translateY(1px) scale(0.98);
+  cursor: grabbing;
+}
+
+/* Concentric Spun-Gold Breathing Aura */
+.medallion-aura {
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
+  pointer-events: none;
+  animation: medallionPulse 3.5s ease-in-out infinite;
+}
+.medallion-ring-pulse {
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  pointer-events: none;
+  animation: medallionOuterPulse 3.5s ease-in-out infinite 0.75s;
+}
+@keyframes medallionPulse {
+  0%, 100% { transform: scale(0.95); opacity: 0.3; }
+  50% { transform: scale(1.05); opacity: 0.8; box-shadow: 0 0 18px rgba(212, 175, 55, 0.4); }
+}
+@keyframes medallionOuterPulse {
+  0%, 100% { transform: scale(0.92); opacity: 0.15; }
+  50% { transform: scale(1.08); opacity: 0.45; }
+}
+
+/* Inner Medallion Elements */
+.medallion-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  position: relative;
+  pointer-events: none;
+  user-select: none;
+}
+.medallion-crown {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.chat-toggle:hover .medallion-crown {
+  transform: translateY(-2px) scale(1.1);
+}
+.medallion-monogram {
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  background: linear-gradient(135deg, #FFF6DE 0%, #F5D77F 45%, #D4AF37 75%, #A87D1D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.9));
+  line-height: 1;
+  margin-top: 1px;
+  transition: transform 0.3s ease;
+}
+.chat-toggle:hover .medallion-monogram {
+  transform: scale(1.05);
+}
+.medallion-sparkle {
   position: absolute;
   top: -2px;
-  right: -2px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #22c55e;
-  border: 2px solid #000;
-  animation: pingPulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  right: -5px;
+  font-size: 0.65rem;
+  color: #FFF2C6;
+  opacity: 0.85;
+  filter: drop-shadow(0 0 4px #D4AF37);
+  animation: sparkleTwinkle 2.5s ease-in-out infinite alternate;
 }
-@keyframes pingPulse {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+@keyframes sparkleTwinkle {
+  0% { transform: scale(0.8) rotate(0deg); opacity: 0.4; }
+  100% { transform: scale(1.2) rotate(45deg); opacity: 1; }
+}
+
+/* Emerald Jewel Live Beacon */
+.medallion-online-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #4ade80 0%, #16a34a 65%, #065f46 100%);
+  border: 1.8px solid #140911;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.7);
+  pointer-events: none;
 }
 
 /* Chat Box Window */
 .chat-box {
   position: absolute;
-  bottom: 74px;
+  bottom: 92px;
   left: 0;
   right: auto;
   width: min(420px, calc(100vw - 32px));
@@ -2535,6 +3438,38 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 }
 .chat-inp::placeholder { color: rgba(245,237,214,.3); }
 .chat-inp:focus { border-color: var(--gold); }
+.chat-mic-btn {
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: var(--gold);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .25s ease;
+  flex-shrink: 0;
+}
+.chat-mic-btn:hover {
+  background: rgba(212, 175, 55, 0.3);
+  border-color: var(--gold);
+  transform: scale(1.08);
+  color: #FFF;
+}
+.chat-mic-btn.recording {
+  background: #DC2626 !important;
+  border-color: #EF4444 !important;
+  color: #FFF !important;
+  animation: micPulse 1.2s ease-in-out infinite;
+  box-shadow: 0 0 16px rgba(220, 38, 38, 0.6);
+}
+@keyframes micPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 8px rgba(220, 38, 38, 0.4); }
+  50% { transform: scale(1.12); box-shadow: 0 0 20px rgba(239, 68, 68, 0.8); }
+}
+
 .chat-send {
   background: linear-gradient(135deg, var(--gold-d), var(--gold));
   border: none;
@@ -3269,94 +4204,649 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
   .comp-prod-title{font-size:.85rem}
 }
 
-
-/* ═══ 3-LAYER REDESIGNED GALLERY & SHOWCASE ═══ */
-.gal-showcase-hero {
+/* ═══ EVAGHER HAUTE COUTURE SCROLL-MORPH SHOWCASE (AWWWARDS / PPT MORPH CALIBER) ═══ */
+.ev-morph-container {
   position: relative;
   width: 100%;
-  height: 380px;
-  border-radius: 20px;
-  overflow: hidden;
-  margin-top: 36px;
-  margin-bottom: 32px;
-  border: 1px solid rgba(212,175,55,0.3);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+  height: 380vh;
+  background: transparent;
+  margin: 30px 0 50px;
 }
-.gal-slide {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+.ev-morph-viewport {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
-  align-items: flex-end;
-  pointer-events: none;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  background: radial-gradient(circle at 60% 40%, rgba(32, 14, 25, 0.95) 0%, rgba(13, 6, 11, 0.98) 65%, #060205 100%);
+  border-radius: 28px;
+  border: 1px solid rgba(212,175,55,0.25);
+  box-shadow: 0 25px 70px rgba(0,0,0,0.9), inset 0 0 40px rgba(0,0,0,0.7);
+  padding: 18px 3.5vw 22px;
+  z-index: 5;
 }
-.gal-slide.active {
-  opacity: 1;
-  pointer-events: auto;
+.ev-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 48px;
+  z-index: 10;
+  border-bottom: 1px solid rgba(212,175,55,0.18);
+  padding-bottom: 10px;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
 }
-.gal-slide-img {
+.ev-top-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ev-brand-pill {
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 700;
+  background: rgba(212,175,55,0.12);
+  border: 1px solid rgba(212,175,55,0.4);
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+.ev-sep {
+  color: var(--gold);
+  opacity: 0.4;
+}
+.ev-look-counter {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  font-family: var(--font-h, 'Playfair Display', serif);
+  letter-spacing: 1px;
+}
+.ev-look-counter span {
+  color: var(--gold-l);
+  font-size: 1.15rem;
+}
+.ev-top-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.ev-track-bar {
+  width: 130px;
+  height: 3px;
+  background: rgba(212,175,55,0.2);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+.ev-track-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 16.66%;
+  background: linear-gradient(90deg, var(--gold-d), var(--gold-l));
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ev-scroll-hint {
+  font-size: 0.65rem;
+  letter-spacing: 1.5px;
+  color: rgba(245,237,214,0.6);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.ev-grid-stage {
+  display: grid;
+  grid-template-columns: 1.05fr 1.15fr;
+  gap: 4vw;
+  align-items: center;
+  height: calc(100vh - 95px);
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+}
+.ev-visual-col {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ev-portrait-frame {
+  width: 100%;
+  height: 74vh;
+  max-height: 700px;
+  border-radius: 26px;
+  border: 1.5px solid rgba(212,175,55,0.45);
+  box-shadow: 0 25px 65px rgba(0,0,0,0.85), inset 0 0 30px rgba(0,0,0,0.6);
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  cursor: pointer;
+}
+
+/* ═══ PPT MORPH PHOTO PLATES (BIDIRECTIONAL SCROLL TRANSITIONS) ═══ */
+.ev-plate {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-}
-.gal-slide-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(8,8,8,0.1) 0%, rgba(8,8,8,0.85) 90%);
+  opacity: 0;
+  transform: scale(1.08) translateY(32px);
+  filter: blur(8px);
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.55s ease;
+  pointer-events: none;
   z-index: 1;
 }
-.gal-slide-caption {
-  position: relative;
-  z-index: 2;
-  padding: 32px 36px;
-  max-width: 650px;
+.ev-plate.active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  filter: blur(0px);
+  pointer-events: auto;
+  z-index: 3;
 }
-.gal-slide-badge {
-  display: inline-block;
-  background: rgba(212,175,55,0.2);
+.ev-plate.exited {
+  opacity: 0;
+  transform: scale(0.93) translateY(-26px);
+  filter: blur(8px);
+  pointer-events: none;
+  z-index: 1;
+}
+.ev-plate img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+.ev-plate-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10,5,8,0.08) 0%, rgba(10,5,8,0.45) 80%, rgba(10,5,8,0.88) 100%);
+  pointer-events: none;
+}
+.ev-img-peek-tag {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(18, 10, 16, 0.90);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.2px solid rgba(212,175,55,0.5);
+  border-radius: 16px;
+  padding: 10px 18px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 5;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+}
+.ev-img-peek-tag:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold);
+  box-shadow: 0 14px 35px rgba(0,0,0,0.8), 0 0 15px rgba(212,175,55,0.3);
+}
+.ev-mob-arrows {
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  gap: 6px;
+  z-index: 6;
+}
+.ev-mob-arr-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(18, 10, 16, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.ev-mob-arr-btn:active {
+  transform: scale(0.92);
+  background: rgba(212,175,55,0.25);
+}
+
+/* ═══ PPT MORPH DETAILS CONSOLE (SYNCHRONIZED STACKED SLIDES) ═══ */
+.ev-details-col {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ev-details-card {
+  width: 100%;
+  padding: 32px 38px 24px;
+  background: rgba(18, 10, 16, 0.85);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1.2px solid rgba(212,175,55,0.35);
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.75);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 520px;
+}
+.ev-details-stage {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 410px;
+}
+.ev-detail-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  opacity: 0;
+  transform: translateY(28px) scale(1.02);
+  filter: blur(6px);
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.5s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.ev-detail-slide.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0px);
+  pointer-events: auto;
+  z-index: 3;
+}
+.ev-detail-slide.exited {
+  opacity: 0;
+  transform: translateY(-24px) scale(0.97);
+  filter: blur(6px);
+  pointer-events: none;
+  z-index: 1;
+}
+.ev-badge-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.ev-disc-badge {
+  background: rgba(212,175,55,0.18);
   border: 1px solid var(--gold);
   color: var(--gold-l);
-  font-size: 0.68rem;
-  letter-spacing: 2px;
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 4px 12px;
-  border-radius: 14px;
-  margin-bottom: 8px;
+  padding: 5px 14px;
+  border-radius: 20px;
   font-weight: 700;
 }
-.gal-slide-caption h3 {
-  font-family: var(--font-h);
-  font-size: 1.8rem;
+.ev-price-tag {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.ev-title {
+  font-family: var(--font-h, 'Playfair Display', serif);
+  font-size: 2.1rem;
+  color: #FFF6E5;
+  line-height: 1.22;
+  margin-bottom: 12px;
+}
+.ev-desc {
+  font-size: 0.90rem;
+  color: rgba(245,237,214,0.85);
+  line-height: 1.55;
+  margin-bottom: 18px;
+  min-height: 44px;
+}
+.ev-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.ev-spec-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(212,175,55,0.2);
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+.ev-spec-lbl {
+  display: block;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(245,237,214,0.55);
+  margin-bottom: 2px;
+}
+.ev-spec-val {
+  font-size: 0.82rem;
   color: #fff;
-  margin-bottom: 6px;
-  line-height: 1.2;
+  font-weight: 600;
 }
-.gal-slide-caption p {
+.ev-actions-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.ev-actions-row .btn-gold {
+  background: linear-gradient(135deg, var(--gold-d), var(--gold));
+  color: #000;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: 28px;
+  border: none;
+  cursor: pointer;
   font-size: 0.85rem;
-  color: rgba(245,237,214,0.8);
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 18px rgba(212,175,55,0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.gal-hero-dots {
-  position: absolute;
-  bottom: 24px;
-  right: 28px;
-  z-index: 3;
+.ev-actions-row .btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(212,175,55,0.5);
+}
+.ev-actions-row .btn-outline {
+  background: transparent;
+  color: var(--gold);
+  border: 1.5px solid rgba(212,175,55,0.6);
+  font-weight: 600;
+  padding: 11px 22px;
+  border-radius: 28px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+.ev-actions-row .btn-outline:hover {
+  background: rgba(212,175,55,0.12);
+  border-color: var(--gold);
+}
+.ev-pips-row {
   display: flex;
   gap: 8px;
+  border-top: 1px solid rgba(212,175,55,0.18);
+  padding-top: 14px;
+  margin-top: 8px;
+  position: relative;
+  z-index: 10;
 }
-.gal-hero-dot {
-  width: 24px;
-  height: 3px;
-  background: rgba(255,255,255,0.3);
-  border-radius: 2px;
+.ev-pip {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(212,175,55,0.3);
+  color: rgba(245,237,214,0.6);
+  padding: 6px 14px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
 }
-.gal-hero-dot.active {
+.ev-pip.active {
   background: var(--gold);
-  width: 38px;
+  color: #000;
+  border-color: var(--gold);
+  transform: scale(1.05);
+}
+
+/* ═══ MOBILE RESPONSIVE ADAPTATIONS (AWWWARDS SOTD TOUCH EXPERIENCE) ═══ */
+@media (max-width: 900px) {
+  .ev-morph-container {
+    height: 300vh;
+    margin: 15px 0 35px;
+  }
+  .ev-morph-viewport {
+    padding: 10px 12px 14px;
+    border-radius: 18px;
+    height: 100vh;
+    height: 100dvh;
+    justify-content: flex-start;
+    gap: 6px;
+  }
+  .ev-topbar {
+    height: 32px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(212,175,55,0.15);
+  }
+  .ev-brand-pill {
+    font-size: 0.60rem;
+    padding: 2px 6px;
+    letter-spacing: 1px;
+  }
+  .ev-look-counter {
+    font-size: 0.74rem;
+  }
+  .ev-look-counter span {
+    font-size: 0.95rem;
+  }
+  .ev-track-bar {
+    width: 65px;
+  }
+  .ev-scroll-hint {
+    display: none;
+  }
+  .ev-grid-stage {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    height: calc(100dvh - 42px - 75px);
+    max-height: calc(100dvh - 115px);
+    padding-bottom: 60px;
+  }
+  .ev-visual-col {
+    height: 28vh;
+    max-height: 215px;
+    width: 100%;
+    flex-shrink: 0;
+  }
+  .ev-portrait-frame {
+    height: 100%;
+    border-radius: 14px;
+  }
+  .ev-img-peek-tag {
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    padding: 6px 10px;
+    font-size: 0.68rem;
+  }
+  .ev-mob-arrows {
+    display: flex;
+    top: 8px;
+    right: 8px;
+    gap: 6px;
+  }
+  .ev-mob-arr-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.72rem;
+  }
+  .ev-details-col {
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .ev-details-card {
+    padding: 10px 12px;
+    border-radius: 14px;
+    min-height: unset;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .ev-details-stage {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    width: 100%;
+  }
+  .ev-detail-slide {
+    inset: 0;
+    justify-content: space-between;
+  }
+  .ev-badge-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 3px;
+    flex-wrap: wrap;
+  }
+  .ev-disc-badge {
+    font-size: 0.58rem;
+    padding: 2px 7px;
+  }
+  .ev-price-tag {
+    font-size: 0.70rem;
+  }
+  .ev-title {
+    font-size: 1.05rem;
+    line-height: 1.2;
+    margin-bottom: 3px;
+  }
+  .ev-desc {
+    font-size: 0.72rem;
+    line-height: 1.35;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: unset;
+  }
+  .ev-specs-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+  .ev-spec-item {
+    padding: 4px 6px;
+    border-radius: 8px;
+  }
+  .ev-spec-lbl {
+    font-size: 0.52rem;
+    letter-spacing: 0.5px;
+  }
+  .ev-spec-val {
+    font-size: 0.66rem;
+  }
+  .ev-actions-row {
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .ev-actions-row .btn-gold,
+  .ev-actions-row .btn-outline {
+    padding: 6px 10px;
+    font-size: 0.68rem;
+    border-radius: 18px;
+    flex: 1;
+    justify-content: center;
+    gap: 4px;
+  }
+  .ev-pips-row {
+    padding-top: 4px;
+    margin-top: 2px;
+    gap: 3px;
+    border-top: 1px solid rgba(212,175,55,0.12);
+  }
+  .ev-pip {
+    padding: 2px 4px;
+    font-size: 0.60rem;
+    border-radius: 6px;
+    flex: 1;
+    text-align: center;
+  }
+}
+
+/* Light Theme Overrides */
+[data-theme="light"] .ev-morph-viewport {
+  background: radial-gradient(circle at 60% 40%, rgba(255, 245, 238, 0.98) 0%, rgba(248, 235, 224, 0.98) 65%, #f2ddd0 100%);
+  border-color: rgba(184, 134, 11, 0.4);
+}
+[data-theme="light"] .ev-details-card {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(184, 134, 11, 0.35);
+}
+[data-theme="light"] .ev-title {
+  color: #2a121d;
+}
+[data-theme="light"] .ev-desc {
+  color: #4a2838;
+}
+[data-theme="light"] .ev-spec-item {
+  background: rgba(0,0,0,0.03);
+}
+[data-theme="light"] .ev-spec-val {
+  color: #1a0812;
+}op: 8px;
+    gap: 4px;
+    justify-content: space-between;
+  }
+  .ev-pip {
+    padding: 4px 6px;
+    font-size: 0.65rem;
+    flex: 1;
+    text-align: center;
+  }
+}
+
+/* Light Theme Overrides */
+[data-theme="light"] .ev-morph-viewport {
+  background: radial-gradient(circle at 60% 40%, rgba(255, 245, 238, 0.98) 0%, rgba(248, 235, 224, 0.98) 65%, #f2ddd0 100%);
+  border-color: rgba(184, 134, 11, 0.4);
+}
+[data-theme="light"] .ev-details-card {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(184, 134, 11, 0.35);
+}
+[data-theme="light"] .ev-title {
+  color: #2a121d;
+}
+[data-theme="light"] .ev-desc {
+  color: #4a2838;
+}
+[data-theme="light"] .ev-spec-item {
+  background: rgba(0,0,0,0.03);
+}
+[data-theme="light"] .ev-spec-val {
+  color: #2a121d;
 }
 
 /* ═══ EXPANSIVE 3-PHOTO FEATURED TRIO SHOWCASE (EDITORIAL DISPLAY) ═══ */
@@ -3735,10 +5225,13 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
   color: #1A1410 !important;
 }
 
-[data-theme="light"] #three-bg,
+[data-theme="light"] #three-bg {
+  opacity: 0.45 !important;
+  filter: none !important;
+}
 [data-theme="light"] #pcv {
-  opacity: 0.18 !important;
-  filter: invert(1) hue-rotate(180deg);
+  opacity: 0.3 !important;
+  filter: none !important;
 }
 [data-theme="light"] #cur-dot {
   background: #8B6F1A !important;
@@ -3805,30 +5298,30 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
 
 /* Alternating Section Backgrounds */
 [data-theme="light"] #services {
-  background: #F5EFE6 !important;
+  background: rgba(245, 239, 230, 0.85) !important;
 }
 [data-theme="light"] #gallery {
-  background: #FAF7F2 !important;
+  background: rgba(250, 247, 242, 0.85) !important;
 }
 [data-theme="light"] #packages {
-  background: #F5EFE6 !important;
+  background: rgba(245, 239, 230, 0.85) !important;
 }
 [data-theme="light"] #outstation {
-  background: #FAF7F2 !important;
+  background: rgba(250, 247, 242, 0.85) !important;
 }
 [data-theme="light"] #reviews {
-  background: #F5EFE6 !important;
+  background: rgba(245, 239, 230, 0.85) !important;
 }
 [data-theme="light"] #events {
-  background: #FAF7F2 !important;
+  background: rgba(250, 247, 242, 0.85) !important;
   border-color: rgba(154, 123, 28, 0.2) !important;
 }
 [data-theme="light"] #reels {
-  background: #F5EFE6 !important;
+  background: rgba(245, 239, 230, 0.85) !important;
   border-color: rgba(154, 123, 28, 0.2) !important;
 }
 [data-theme="light"] #about {
-  background: #FAF7F2 !important;
+  background: rgba(250, 247, 242, 0.85) !important;
 }
 
 /* Hero Section */
@@ -4511,9 +6004,26 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
   z-index: 850;
 }
 [data-theme="light"] .chat-toggle {
-  background: linear-gradient(135deg, #A88620, #8B6F1A) !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 4px 20px rgba(139,111,26,0.3) !important;
+  background: radial-gradient(circle at 35% 35%, #F5EFE6 0%, #EDE4D3 80%, #E2D4BD 100%) !important;
+  border-color: #8B6F1A !important;
+  color: #8B6F1A !important;
+  box-shadow: 0 6px 20px rgba(139,111,26,0.25) !important;
+}
+[data-theme="light"] .chat-speech-bubble {
+  background: #FFFFFF !important;
+  border-color: rgba(154, 123, 28, 0.45) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1), 0 0 15px rgba(154,123,28,0.15) !important;
+}
+[data-theme="light"] .chat-speech-bubble .csb-text {
+  color: #1A1410 !important;
+}
+[data-theme="light"] .chat-speech-bubble .csb-sub {
+  color: #8B6F1A !important;
+}
+[data-theme="light"] .csb-tail {
+  background: #FFFFFF !important;
+  border-left-color: rgba(154, 123, 28, 0.45) !important;
+  border-bottom-color: rgba(154, 123, 28, 0.45) !important;
 }
 [data-theme="light"] .chat-box {
   background: #FFFFFF !important;
@@ -5143,10 +6653,28 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
 [data-theme="light"] .svc-split-price-box span[style*="text-decoration:line-through"] {
   color: #786C62 !important;
 }
+.occasion-discovery{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--black),var(--dark2));border-top:1px solid rgba(212,175,55,.14);border-bottom:1px solid rgba(212,175,55,.14);padding:clamp(70px,9vw,120px) 6vw;z-index:1}
+.occasion-inner{position:relative;z-index:1;max-width:1120px;margin:0 auto;text-align:center}
+.occasion-inner .sh{font-size:clamp(2rem,4vw,4.2rem);margin:10px 0 12px}
+.occasion-inner .ss{max-width:620px;margin:0 auto 30px}
+.occasion-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;text-align:left}
+.occasion-card{position:relative;min-height:150px;padding:22px 16px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(212,175,55,.035));border:1px solid rgba(212,175,55,.2);border-radius:16px;color:var(--cream);text-align:left;overflow:hidden;transition:transform .4s var(--ease-luxury),border-color .3s,box-shadow .3s;cursor:pointer}
+.occasion-card::after{content:'';position:absolute;inset:auto -25% -55% -25%;height:80%;background:radial-gradient(circle,rgba(212,175,55,.2),transparent 65%);opacity:0;transition:opacity .35s}
+.occasion-card:hover,.occasion-card:focus-visible,.occasion-card.active{transform:translateY(-8px);border-color:var(--gold);box-shadow:0 18px 42px rgba(0,0,0,.28),0 0 24px rgba(212,175,55,.14);outline:none}
+.occasion-card:hover::after,.occasion-card:focus-visible::after,.occasion-card.active::after{opacity:1}
+.occasion-card span{display:block;color:var(--gold);font-size:.68rem;letter-spacing:2px;margin-bottom:28px}
+.occasion-card strong{display:block;font-family:var(--font-h);font-size:1.08rem;font-weight:500;position:relative;z-index:1}
+.occasion-card small{display:block;color:var(--text-sub);font-size:.68rem;margin-top:7px;position:relative;z-index:1}
+.occasion-actions{display:flex;justify-content:center;gap:12px;margin-top:28px;flex-wrap:wrap}
+.occasion-status{min-height:1.2em;color:var(--gold-l);font-size:.76rem;margin-top:14px}
+@media(max-width:900px){.occasion-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.occasion-discovery{padding:64px 16px}.occasion-grid{grid-template-columns:repeat(2,1fr);gap:9px}.occasion-card{min-height:132px;padding:16px 13px}.occasion-card span{margin-bottom:20px}.occasion-card strong{font-size:.95rem}.occasion-card small{font-size:.62rem}}
+@media(prefers-reduced-motion:reduce){.occasion-card{transition:none}.occasion-card:hover,.occasion-card:focus-visible,.occasion-card.active{transform:none}}
 </style>
 {% block extra_css %}{% endblock %}
 </head>
 <body>
+<div class="page-atmosphere" aria-hidden="true"></div>
 
 <!-- SCROLL PROGRESS INDICATOR (SCROLLTIDE CINEMATIC REVELATION) -->
 <div id="scroll-progress-bar"></div>
@@ -5156,13 +6684,14 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
 <div id="cur-ring"></div>
 <!-- PARTICLES & THREE.JS CANVAS -->
 <canvas id="three-bg"></canvas>
-<canvas id="pcv" style="display:none"></canvas>
+<canvas id="pcv"></canvas>
 <!-- SCROLL RING -->
-<div id="scr" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Scroll to top">
+<div id="scr" onclick="if(window.lenis){window.lenis.scrollTo(0,{duration:1.5})}else{window.scrollTo({top:0,behavior:'smooth'})}" title="Scroll to top">
   <svg viewBox="0 0 44 44" width="44" height="44"><circle cx="22" cy="22" r="19"/><circle class="pr" cx="22" cy="22" r="19"/></svg>
   <span class="scr-arrow">↑</span>
 </div>
 
+{% if request.path == '/' %}
 <!-- PRELOADER (ARCHITECTURAL DUAL-CURTAIN & HAUTE COUTURE VECTOR CREST) -->
 <div id="preloader">
   <div class="preloader-curtain curtain-left"></div>
@@ -5174,6 +6703,7 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
     <button class="pl-skip" onclick="dismissPreloader()" title="Press Escape or Click to Enter">Enter Studio →</button>
   </div>
 </div>
+{% endif %}
 
 <!-- ADMIN OVERLAY -->
 <div class="adm-overlay" id="adm-overlay" onclick="closeAdmin()"></div>
@@ -5184,10 +6714,10 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
 <div id="cbanner" {% if coupon %}class="active"{% endif %}>
   <div class="cb-sh"></div>
   <div class="cb-inner">
-    <div class="cb-badge" id="cb-disc">{% if coupon %}{{ coupon.discount }}% OFF{% endif %}</div>
-    <span class="cb-txt" id="cb-lbl">{% if coupon %}{{ coupon.label }}{% endif %}</span>
+    <div class="cb-badge" id="cb-disc">{% if coupon %}{{ coupon.discount }}% {{ t.banner_off|default:'OFF' }}{% endif %}</div>
+    <span class="cb-txt" id="cb-lbl">{% if coupon %}{{ t.banner_privilege_label|default:coupon.label }}{% endif %}</span>
     <div class="cb-code" id="cb-code" onclick="copyCoupon()" title="Click to apply across all packages">{% if coupon %}{{ coupon.code }}{% endif %}</div>
-    <span class="cb-tap" onclick="copyCoupon()">✦ Tap to apply</span>
+    <span class="cb-tap" onclick="copyCoupon()">{{ t.banner_tap_apply|default:'✦ Tap to apply' }}</span>
     <span class="cb-timer" id="cb-timer"></span>
   </div>
 </div>
@@ -5256,54 +6786,109 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
   </div>
 </div>
 
-<!-- ═══ INTERACTIVE EDITORIAL PEEK MODAL GALLERY (EVAGHER STYLE) ═══ -->
-<div class="peek-gallery-modal" id="editorial-peek-gallery" onclick="if(event.target===this)closePeekGallery()">
+<!-- ═══ LUXURY EDITORIAL LOOKBOOK ALBUM VIEWER (EVAGHER REFERENCE SPECIFICATION) ═══ -->
+<div class="peek-gallery-modal" id="editorial-peek-gallery" data-lenis-prevent onclick="if(event.target===this)closePeekGallery()">
   <button class="peek-gallery-close" onclick="closePeekGallery()" aria-label="Close Lookbook">✕</button>
-  
-  <button class="peek-arrow peek-arrow-prev" onclick="prevPeekImage()" aria-label="Previous Image">❮</button>
-  <button class="peek-arrow peek-arrow-next" onclick="nextPeekImage()" aria-label="Next Image">❯</button>
 
-  <div class="peek-stage-track" id="peek-stage-track">
-    <!-- Left Margin Peek Image -->
-    <div class="peek-slide-prev" id="peek-slide-prev" onclick="prevPeekImage()">
-      <img id="peek-img-prev" src="" alt="Previous Look">
-    </div>
+  <div class="lookbook-exhibition-wrap" id="lookbook-exhibition-wrap">
+    <!-- LEFT PANEL: BRIDAL ALBUMS DRAWER -->
+    <aside class="lb-sidebar" id="lb-sidebar">
+      <div class="lb-sidebar-header">
+        <span>☰</span>
+        <h3>Bridal Albums</h3>
+      </div>
+      <div class="lb-album-list" id="lb-album-list">
+        <!-- Rendered dynamically by renderLookbookSidebar() -->
+      </div>
+      <div class="lb-sidebar-footer">
+        <button class="lb-view-all-btn" onclick="openLookbook('all')">
+          <span>📖 View All Albums</span>
+          <span>›</span>
+        </button>
+      </div>
+    </aside>
 
-    <!-- Main Centered Active Image -->
-    <div class="peek-slide-frame" id="peek-slide-frame">
-      <img id="peek-img-active" src="" alt="Active Couture Look">
-    </div>
+    <!-- CENTER PANEL: HERO EXHIBITION FRAME & BOTTOM ANGLE FILMSTRIP -->
+    <main class="lb-stage-center" id="lb-stage-center">
+      <!-- Mobile Floating Header Counter & Close -->
+      <div class="lb-mobile-header">
+        <div class="lb-mobile-counter-wrap">
+          <div class="lb-mobile-title" id="lb-mobile-album-tag">Bridal Album</div>
+          <div class="lb-mobile-counter" id="lb-mobile-counter">01 / 12</div>
+        </div>
+      </div>
 
-    <!-- Right Margin Peek Image -->
-    <div class="peek-slide-next" id="peek-slide-next" onclick="nextPeekImage()">
-      <img id="peek-img-next" src="" alt="Next Look">
-    </div>
-  </div>
+      <!-- Navigation Arrows -->
+      <button class="lb-hero-nav-arrow lb-hero-prev" onclick="prevPeekImage()" aria-label="Previous Look">❮</button>
+      <button class="lb-hero-nav-arrow lb-hero-next" onclick="nextPeekImage()" aria-label="Next Look">❯</button>
 
-  <!-- Related Ceremonies & Angle Variations Filmstrip -->
-  <div class="peek-related-container" id="peek-related-container" style="display:none">
-    <div class="peek-related-label">
-      <span id="peek-related-title">✦ Related Angles & Perspectives</span>
-      <span style="font-size:0.65rem;opacity:0.7">Tap to preview</span>
-    </div>
-    <div class="peek-related-strip" id="peek-related-strip"></div>
-  </div>
+      <!-- Center Hero Frame -->
+      <div class="lb-hero-frame" id="lb-hero-frame">
+        <img id="peek-img-active" src="" alt="Bridal Haute Couture" class="lb-hero-img">
+        <video id="peek-hero-video-active" class="lb-hero-video" playsinline controls loop preload="metadata" style="display:none"></video>
+        <iframe id="peek-hero-youtube-active" class="lb-hero-video" title="Bridal Film" allow="autoplay; encrypted-media" allowfullscreen style="display:none;border:none"></iframe>
+      </div>
 
-  <!-- Bottom Floating Details Strip -->
-  <div class="peek-footer-bar">
-    <div class="peek-info-caption" id="peek-info-caption">Royal Bengali Bride · Mukut & Sandalwood Art</div>
-    <div class="peek-info-counter" id="peek-info-counter">01 / 10</div>
-    <div class="peek-nav-hints">
-      <span>↕ Mouse Scroll / ↔ Drag to Navigate · ESC to Close</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-      <a id="peek-ig-view" href="https://www.instagram.com/anshitamakeover21/" target="_blank" class="peek-ig-link">
-        <span id="peek-link-label">📸 View Media</span> ↗
-      </a>
-      <a id="peek-wa-inquire" href="https://wa.me/{{ whatsapp }}" target="_blank" class="btn-wa" style="padding:6px 14px;font-size:.68rem">
-        💬 Inquire Look
-      </a>
-    </div>
+      <!-- Center Bottom Angles Filmstrip -->
+      <div class="lb-filmstrip-bar" id="lb-filmstrip-bar">
+        <div class="lb-filmstrip-track" id="peek-related-strip">
+          <!-- Populated dynamically by updatePeekStage() -->
+        </div>
+      </div>
+    </main>
+
+    <!-- RIGHT PANEL: EDITORIAL ALBUM STORY & DEDICATED VIDEO CONTAINER -->
+    <aside class="lb-detail-panel" id="lb-detail-panel">
+      <span class="lb-meta-tag">CURRENT ALBUM</span>
+      <h2 class="lb-album-title" id="lb-album-title">GOLDEN HOUR</h2>
+      <p class="lb-album-desc" id="lb-album-desc">
+        A celebration of warm light, golden tones and timeless beauty. Curated bridal looks that glow with royal elegance.
+      </p>
+
+      <div class="lb-metrics-grid">
+        <div class="lb-metric-box">
+          <span class="lb-metric-val" id="lb-metric-images">🖼️ 24</span>
+          <span class="lb-metric-label">Images</span>
+        </div>
+        <div class="lb-metric-box">
+          <span class="lb-metric-val" id="lb-metric-videos">🎬 01</span>
+          <span class="lb-metric-label">Video</span>
+        </div>
+        <div class="lb-metric-box">
+          <span class="lb-metric-val" id="lb-metric-duration">⏱️ 03:30</span>
+          <span class="lb-metric-label">Duration</span>
+        </div>
+      </div>
+
+      <!-- Dedicated Video Container (Autoplay, Pause, Progress Bar) -->
+      <div class="lb-video-container" id="lb-video-container">
+        <div class="lb-video-media-wrap">
+          <video id="peek-video-active" class="lb-video-elem" playsinline muted loop preload="metadata"></video>
+          <iframe id="peek-youtube-active" class="lb-video-elem" title="Album Film" allow="autoplay; encrypted-media" allowfullscreen style="display:none;border:none"></iframe>
+          <button class="lb-video-play-btn" id="lb-video-play-btn" onclick="toggleLookbookVideo(event)">▶</button>
+        </div>
+        <div class="lb-video-controls">
+          <span class="lb-video-time" id="lb-video-cur-time">00:00</span>
+          <div class="lb-video-progress" id="lb-video-progress" onclick="seekLookbookVideo(event)">
+            <div class="lb-video-progress-fill" id="lb-video-progress-fill"></div>
+          </div>
+          <span class="lb-video-time" id="lb-video-tot-time">02:15</span>
+        </div>
+      </div>
+
+      <!-- Actions Row -->
+      <div class="lb-actions-row">
+        <a id="peek-share-btn" href="javascript:void(0)" onclick="shareCurrentLookbook()" class="lb-icon-btn">
+          <span>🔗</span> Share
+        </a>
+        <a id="peek-fav-btn" href="javascript:void(0)" onclick="toggleLookbookFav()" class="lb-icon-btn">
+          <span id="lb-fav-icon">♡</span> Favorite
+        </a>
+        <a id="peek-wa-inquire" href="https://wa.me/{{ whatsapp }}" target="_blank" class="lb-enquire-btn">
+          Enquire ➔
+        </a>
+      </div>
+    </aside>
   </div>
 </div>
 
@@ -5363,7 +6948,7 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
   <a href="/" class="mbi active"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
   <a href="/academy/" class="mbi"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Academy</a>
   <a href="https://wa.me/{{ whatsapp }}" target="_blank" class="mbi"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>WhatsApp</a>
-  <a href="/#gallery" class="mbi"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Gallery</a>
+  <a href="{% url 'gallery' %}" class="mbi"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Gallery</a>
   {% if user.is_authenticated and user.is_staff %}
   <a href="/admin-portal/" class="mbi"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Admin</a>
   {% else %}
@@ -5379,22 +6964,1151 @@ let chatSessionId = localStorage.getItem('anshita_chat_session') || Math.random(
 try{ localStorage.setItem('anshita_chat_session', chatSessionId); }catch(e){}
 let adminLoggedIn = {% if user.is_authenticated %}true{% else %}false{% endif %};
 
-/* ── Cursor ── */
-const cdot=document.getElementById('cur-dot'),cring=document.getElementById('cur-ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cdot.style.left=mx+'px';cdot.style.top=my+'px'});
-(function anim(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;cring.style.left=rx+'px';cring.style.top=ry+'px';requestAnimationFrame(anim)})();
-document.querySelectorAll('a,button,.svc-card,.pkg-card,.art-card,.gal-item,.cpn-opt,.evt-card').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cring.style.transform='translate(-50%,-50%) scale(1.8)';cring.style.borderColor='var(--rose)'});
-  el.addEventListener('mouseleave',()=>{cring.style.transform='translate(-50%,-50%) scale(1)';cring.style.borderColor='var(--gold)'});
+/* ── Cursor (Gold Dot & Smooth Interpolated Trailing Ring) ── */
+const cdot = document.getElementById('cur-dot');
+const cring = document.getElementById('cur-ring');
+let mx = window.innerWidth / 2, my = window.innerHeight / 2, rx = mx, ry = my;
+
+// Ensure custom cursor activates on mouse movement
+document.addEventListener('mousemove', e => {
+  mx = e.clientX;
+  my = e.clientY;
+  if (!document.body.classList.contains('has-custom-cursor') && window.matchMedia('(pointer:fine)').matches) {
+    document.body.classList.add('has-custom-cursor');
+  }
+  if (cdot) {
+    cdot.style.left = mx + 'px';
+    cdot.style.top = my + 'px';
+  }
+});
+
+(function animCursor() {
+  rx += (mx - rx) * 0.14;
+  ry += (my - ry) * 0.14;
+  if (cring) {
+    cring.style.left = rx + 'px';
+    cring.style.top = ry + 'px';
+  }
+  requestAnimationFrame(animCursor);
+})();
+
+// Dynamic luxury hover delegation: expansive support across all interactive and luxury showcase cards
+const CURSOR_INTERACTIVE_SELECTOR = 'a, button, [role="button"], input, select, textarea, .svc-card, .pkg-card, .art-card, .gal-item, .cpn-opt, .evt-card, .editorial-card, .lookbook-card, .catalog-card, .chat-speech-bubble, .chat-toggle, .btn-p, .btn-o, .filter-chip, .fcp-checkout-btn, .fcp-open-drawer, .am-hero__primary-btn, .about-ig-btn, .am-hero__scroll-down, .look-cta-btn, .metric-card, .gallery-filter-btn, .am-svc-card, .service-accordion-item, .testimonial-card, .hc-pill, .reel-card, .ritual-card, .cylinder-item, .testi-dot, .services-callout-btn, .services-view-all';
+
+document.addEventListener('mouseover', e => {
+  const target = e.target.closest(CURSOR_INTERACTIVE_SELECTOR);
+  if (target && cring) {
+    cring.classList.add('is-hovering');
+  }
+});
+
+document.addEventListener('mouseout', e => {
+  const target = e.target.closest(CURSOR_INTERACTIVE_SELECTOR);
+  if (target && cring) {
+    cring.classList.remove('is-hovering');
+  }
+});
+
+/* ── AI ROYAL CONCIERGE STATE & QUICK ACTIONS ── */
+window.activeConciergeChar = localStorage.getItem('anshita_active_char') || 'asha';
+
+window.charConciergeState = {
+  mood: 'happy',
+  speechTimer: null,
+  setMood: function(newMood, autoResetMs = 6000) {
+    this.mood = newMood;
+    // Reflect expression in chat header avatar and live mood badge
+    const moodBadge = document.getElementById('ashaLiveMoodBadge');
+    if (moodBadge) {
+      const moodText = {
+        'happy': '💖 Welcoming',
+        'sad': '🥺 Pouting (Sad)',
+        'pouting': '🥺 Pouting',
+        'thinking': '🤔 Pondering...',
+        'thinking_coupon': '🏷️ Generating Discount...',
+        'offering_deal': '🎁 Recommending Package',
+        'celebrating': '🎉 Celebrating Deal!',
+        'deal_done': '🎊 Vivah Confirmed!',
+        'excited': '✨ Excited!',
+        'recommending': '👑 Curating Look',
+        'listening': '🎙️ Listening...',
+        'ram_ram': '🙏 राम राम जी!'
+      };
+      moodBadge.textContent = moodText[newMood] || '💖 Welcoming';
+      if (newMood === 'sad') {
+        moodBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+        moodBadge.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+        moodBadge.style.color = '#fca5a5';
+      } else if (newMood === 'celebrating' || newMood === 'deal_done') {
+        moodBadge.style.background = 'rgba(34, 197, 94, 0.2)';
+        moodBadge.style.borderColor = 'rgba(34, 197, 94, 0.5)';
+        moodBadge.style.color = '#86efac';
+      } else if (newMood === 'thinking' || newMood === 'thinking_coupon') {
+        moodBadge.style.background = 'rgba(234, 179, 8, 0.2)';
+        moodBadge.style.borderColor = 'rgba(234, 179, 8, 0.5)';
+        moodBadge.style.color = '#fde047';
+      } else if (newMood === 'ram_ram') {
+        moodBadge.style.background = 'rgba(245, 158, 11, 0.25)';
+        moodBadge.style.borderColor = 'rgba(245, 158, 11, 0.6)';
+        moodBadge.style.color = '#fbbf24';
+      } else {
+        moodBadge.style.background = 'rgba(212, 175, 55, 0.18)';
+        moodBadge.style.borderColor = 'rgba(212, 175, 55, 0.4)';
+        moodBadge.style.color = 'var(--gold)';
+      }
+    }
+
+    // Synchronize emotion with Cute Bunny mascot if instantiated
+    if (window.bunnyMascotInstance || window.bunnyHeaderInstance) {
+      const bunnyMoodMap = {
+        'happy': 'welcoming',
+        'welcoming': 'welcoming',
+        'excited': 'happy_deal',
+        'celebrating': 'happy_deal',
+        'deal_done': 'happy_deal',
+        'offering_deal': 'happy_deal',
+        'recommending': 'happy_deal',
+        'sad': 'sad_hesitant',
+        'pouting': 'sad_hesitant',
+        'thinking': 'thinking_coupon',
+        'thinking_coupon': 'thinking_coupon',
+        'listening': 'thinking_coupon',
+        'ram_ram': 'ram_ram'
+      };
+      const bunnyEmo = bunnyMoodMap[newMood] || 'welcoming';
+      if (window.bunnyMascotInstance && typeof window.bunnyMascotInstance.setEmotion === 'function') {
+        window.bunnyMascotInstance.setEmotion(bunnyEmo);
+      }
+      if (window.bunnyHeaderInstance && typeof window.bunnyHeaderInstance.setEmotion === 'function') {
+        window.bunnyHeaderInstance.setEmotion(bunnyEmo);
+      }
+    }
+
+    if (autoResetMs > 0 && newMood !== 'happy') {
+      clearTimeout(this.speechTimer);
+      this.speechTimer = setTimeout(() => {
+        this.mood = 'happy';
+        if (moodBadge) {
+          moodBadge.textContent = '💖 Welcoming';
+          moodBadge.style.background = 'rgba(212, 175, 55, 0.18)';
+          moodBadge.style.borderColor = 'rgba(212, 175, 55, 0.4)';
+          moodBadge.style.color = 'var(--gold)';
+        }
+        if (window.bunnyMascotInstance && typeof window.bunnyMascotInstance.setEmotion === 'function') {
+          window.bunnyMascotInstance.setEmotion('welcoming');
+        }
+        if (window.bunnyHeaderInstance && typeof window.bunnyHeaderInstance.setEmotion === 'function') {
+          window.bunnyHeaderInstance.setEmotion('welcoming');
+        }
+      }, autoResetMs);
+    }
+  }
+};
+
+window.toggleActiveConciergeCharacter = function(forceChar) {
+  const charOrder = ['asha', 'mochi', 'pip'];
+  let currentIdx = charOrder.indexOf(window.activeConciergeChar || 'asha');
+  if (currentIdx === -1) currentIdx = 0;
+  const nextChar = forceChar || charOrder[(currentIdx + 1) % charOrder.length];
+  window.activeConciergeChar = nextChar;
+  localStorage.setItem('anshita_active_char', nextChar);
+
+  const ashaStage = document.getElementById('ashaMascotStage');
+  const bunnyStage = document.getElementById('bunnyMascotStage');
+  const pipStage = document.getElementById('pipMascotStage');
+
+  const ashaHdr = document.getElementById('ashaHeaderCanvas');
+  const bunnyHdr = document.getElementById('bunnyHeaderCanvas');
+  const pipHdr = document.getElementById('pipHeaderCanvas');
+
+  const charName = document.getElementById('conciergeCharName');
+  const toggleIcon = document.getElementById('charToggleIcon');
+  const toggleBtn = document.getElementById('chat-char-toggle-btn');
+
+  // Hide all stages & headers first
+  if (ashaStage) ashaStage.style.display = 'none';
+  if (bunnyStage) bunnyStage.style.display = 'none';
+  if (pipStage) pipStage.style.display = 'none';
+
+  if (ashaHdr) ashaHdr.style.display = 'none';
+  if (bunnyHdr) bunnyHdr.style.display = 'none';
+  if (pipHdr) pipHdr.style.display = 'none';
+
+  if (nextChar === 'mochi' || nextChar === 'bunny') {
+    if (bunnyStage) bunnyStage.style.display = 'block';
+    if (bunnyHdr) bunnyHdr.style.display = 'block';
+    if (charName) charName.innerHTML = 'Mochi Mascot <span class="chat-vip-badge">Velvet Mascot</span>';
+    if (toggleIcon) toggleIcon.textContent = '🐦';
+    if (toggleBtn) toggleBtn.title = 'Switch to Pip (Celestial Finch 🐦)';
+    if (typeof initMochiConcierge === 'function') initMochiConcierge();
+    else if (typeof initBunnyConcierge === 'function') initBunnyConcierge();
+  } else if (nextChar === 'pip') {
+    if (pipStage) pipStage.style.display = 'block';
+    if (pipHdr) pipHdr.style.display = 'block';
+    if (charName) charName.innerHTML = 'Pip Concierge <span class="chat-vip-badge">Celestial Muse</span>';
+    if (toggleIcon) toggleIcon.textContent = '👧';
+    if (toggleBtn) toggleBtn.title = 'Switch to Asha (Bridal Stylist 👧)';
+    if (typeof initPipConcierge === 'function') initPipConcierge();
+  } else {
+    if (ashaStage) ashaStage.style.display = 'block';
+    if (ashaHdr) ashaHdr.style.display = 'block';
+    if (charName) charName.innerHTML = 'Asha Concierge <span class="chat-vip-badge">Atelier</span>';
+    if (toggleIcon) toggleIcon.textContent = '🐰';
+    if (toggleBtn) toggleBtn.title = 'Switch to Mochi (Velvet Mascot 🐰)';
+  }
+};
+
+window.quickAskConcierge = function(query) {
+  if (typeof toggleChat === 'function') {
+    const box = document.getElementById('chat-box');
+    if (!box || !box.classList.contains('open')) {
+      toggleChat();
+    }
+  }
+  const inp = document.getElementById('chat-inp');
+  if (inp) {
+    inp.value = query;
+    if (typeof sendChat === 'function') {
+      sendChat();
+    }
+  }
+};
+
+/* ── 3D PIXAR-STYLE CUTE KID AI CONCIERGE ("ASHA") CONTROLLER ── */
+(function initAshaPixarConcierge() {
+  const toggleWrap = document.getElementById('chat-toggle-wrap');
+  const toggle = document.getElementById('chat-toggle');
+  const portal = document.getElementById('charEntryPortal');
+  const canvas = document.getElementById('ashaMascotCanvas');
+  if (!toggle || !toggleWrap || !canvas || typeof THREE === 'undefined') return;
+
+    // Concierge Scroll Entrance & Exit Controller
+  window.triggerConciergeEntrance = function() {
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (!wrap || wrap.classList.contains('char-entered')) return;
+    const portalEl = document.getElementById('charEntryPortal');
+    if (portalEl) {
+      portalEl.classList.remove('active');
+      void portalEl.offsetWidth;
+      portalEl.classList.add('active');
+    }
+    wrap.classList.remove('char-pre-entry', 'char-exiting');
+    wrap.classList.add('char-entered');
+
+    // Pop speech bubble greeting
+    setTimeout(() => {
+      const bubble = document.getElementById('chat-speech-bubble');
+      const chatBox = document.getElementById('chat-box');
+      if (bubble && (!chatBox || !chatBox.classList.contains('open')) && !document.body.classList.contains('chat-is-open')) {
+        bubble.classList.add('active');
+        setTimeout(() => {
+          if (bubble && typeof isHoveringBubble !== 'undefined' && !isHoveringBubble) {
+            bubble.classList.remove('active');
+          }
+        }, 7000);
+      }
+    }, 800);
+  };
+
+  window.triggerConciergeExit = function() {
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (!wrap || !wrap.classList.contains('char-entered')) return;
+    const chatBox = document.getElementById('chat-box');
+    if (chatBox && chatBox.classList.contains('open')) return;
+
+    wrap.classList.remove('char-entered');
+    wrap.classList.add('char-exiting');
+    const bubble = document.getElementById('chat-speech-bubble');
+    if (bubble) bubble.classList.remove('active');
+
+    setTimeout(() => {
+      if (wrap.classList.contains('char-exiting')) {
+        wrap.classList.remove('char-exiting');
+        wrap.classList.add('char-pre-entry');
+      }
+    }, 500);
+  };
+
+  // 1. Three.js Scene, Camera, and WebGL Renderer
+  const width = canvas.width || 168;
+  const height = canvas.height || 168;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
+  camera.position.set(0, 0.08, 3.1);
+
+  const renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    alpha: true,
+    antialias: true,
+    powerPreference: 'high-performance'
+  });
+  renderer.setSize(width, height, false);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+  const headerCanvas = document.getElementById('ashaHeaderCanvas');
+  let headerRenderer = null;
+  if (headerCanvas) {
+    headerRenderer = new THREE.WebGLRenderer({
+      canvas: headerCanvas,
+      alpha: true,
+      antialias: true,
+      powerPreference: 'high-performance'
+    });
+    headerRenderer.setSize(96, 96, false);
+    headerRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  }
+
+  // 2. Three-Point Studio Lighting (Natural, Warm, Flattering for Golden Indian Skin)
+  const ambientLight = new THREE.AmbientLight(0xFFEFE2, 0.85);
+  scene.add(ambientLight);
+
+  const keyLight = new THREE.DirectionalLight(0xFFE4C4, 0.85);
+  keyLight.position.set(1.2, 1.8, 2.4);
+  scene.add(keyLight);
+
+  const fillLight = new THREE.DirectionalLight(0xFAD4C0, 0.45);
+  fillLight.position.set(-1.6, -0.3, 1.5);
+  scene.add(fillLight);
+
+  const rimLight = new THREE.DirectionalLight(0xE5B842, 0.65);
+  rimLight.position.set(0, 2.0, -1.5);
+  scene.add(rimLight);
+
+  // 3. Materials — Authentic Warm Indian Golden-Wheat Skin & Luxurious Bridal Fabrics
+  const skinMaterial = new THREE.MeshStandardMaterial({
+    color: 0xBA7742, // Rich authentic Indian golden-wheat / honey-caramel skin tone
+    roughness: 0.62,
+    metalness: 0.02
+  });
+
+  const blushMaterial = new THREE.MeshStandardMaterial({
+    color: 0xCF5A50, // Subtle soft warm terracotta rose blush
+    roughness: 0.70,
+    metalness: 0.01,
+    transparent: true,
+    opacity: 0.35
+  });
+
+  const hairMaterial = new THREE.MeshStandardMaterial({
+    color: 0x160F0B, // Natural soft black-brown hair
+    roughness: 0.48,
+    metalness: 0.06
+  });
+
+  const goldMaterial = new THREE.MeshStandardMaterial({
+    color: 0xE2BA45, // 22K/24K Kundan Gold
+    roughness: 0.25,
+    metalness: 0.85
+  });
+
+  const rubyMaterial = new THREE.MeshStandardMaterial({
+    color: 0xBD182A,
+    roughness: 0.25,
+    metalness: 0.35
+  });
+
+  const pearlMaterial = new THREE.MeshStandardMaterial({
+    color: 0xFFFDF8,
+    roughness: 0.18,
+    metalness: 0.12
+  });
+
+  const bridalRedMaterial = new THREE.MeshStandardMaterial({
+    color: 0x981423, // Sacred Vivah Crimson Red velvet
+    roughness: 0.55,
+    metalness: 0.12
+  });
+
+  const chunniSheerMaterial = new THREE.MeshStandardMaterial({
+    color: 0xB5182D,
+    roughness: 0.4,
+    metalness: 0.1,
+    transparent: true,
+    opacity: 0.92,
+    side: THREE.DoubleSide
+  });
+
+  // 4. Character Root & Cute Toddler Head Geometry
+  const mascotGroup = new THREE.Group();
+  scene.add(mascotGroup);
+
+  const headGroup = new THREE.Group();
+  headGroup.position.set(0, 0.02, 0);
+  mascotGroup.add(headGroup);
+
+  // Chubby cute baby toddler head (wider cheeks, round toddler chin)
+  const headGeo = new THREE.SphereGeometry(0.72, 36, 36);
+  const headMesh = new THREE.Mesh(headGeo, skinMaterial);
+  headMesh.scale.set(1.08, 0.94, 0.96);
+  headGroup.add(headMesh);
+
+  // Soft Natural Blushing Cheeks
+  const leftCheekGeo = new THREE.SphereGeometry(0.20, 20, 20);
+  const leftCheek = new THREE.Mesh(leftCheekGeo, blushMaterial);
+  leftCheek.position.set(-0.35, -0.15, 0.52);
+  leftCheek.scale.set(1.1, 0.65, 0.32);
+  headGroup.add(leftCheek);
+
+  const rightCheek = new THREE.Mesh(leftCheekGeo, blushMaterial);
+  rightCheek.position.set(0.35, -0.15, 0.52);
+  rightCheek.scale.set(1.1, 0.65, 0.32);
+  headGroup.add(rightCheek);
+
+  // Dainty Cute Little Toddler Button Nose (uses skinMaterial for seamless organic blend)
+  const noseGeo = new THREE.SphereGeometry(0.038, 16, 16);
+  const nose = new THREE.Mesh(noseGeo, skinMaterial);
+  nose.position.set(0, -0.06, 0.70);
+  nose.scale.set(1.0, 0.72, 0.65);
+  headGroup.add(nose);
+
+  // Joyful Sweet Kid Smile
+  const smileCurve = new THREE.QuadraticBezierCurve3(
+    new THREE.Vector3(-0.16, -0.20, 0.66),
+    new THREE.Vector3(0, -0.30, 0.69),
+    new THREE.Vector3(0.16, -0.20, 0.66)
+  );
+  const smileGeo = new THREE.TubeGeometry(smileCurve, 18, 0.022, 8, false);
+  const smile = new THREE.Mesh(smileGeo, new THREE.MeshBasicMaterial({ color: 0x6E101D }));
+  headGroup.add(smile);
+
+  // 5. Giant Round Pixar Cartoon Eyes (Expressive Toddler Proportions)
+  function createEyeAssembly(xPos) {
+    const eyeAssembly = new THREE.Group();
+    eyeAssembly.position.set(xPos, 0.08, 0.54);
+
+    // Eye Sclera (White)
+    const scleraGeo = new THREE.SphereGeometry(0.24, 32, 32);
+    const sclera = new THREE.Mesh(scleraGeo, new THREE.MeshStandardMaterial({
+      color: 0xFFFFFF,
+      roughness: 0.15,
+      metalness: 0.02
+    }));
+    eyeAssembly.add(sclera);
+
+    // Pupil Pivot (Movable with gaze kinematics)
+    const pupilPivot = new THREE.Group();
+    pupilPivot.position.set(0, 0, 0.23);
+
+    // Outer Limbal Ring
+    const limbalGeo = new THREE.CircleGeometry(0.15, 32);
+    const limbal = new THREE.Mesh(limbalGeo, new THREE.MeshBasicMaterial({ color: 0x1A0903 }));
+    pupilPivot.add(limbal);
+
+    // Deep Warm Amber Honey Iris
+    const irisGeo = new THREE.CircleGeometry(0.135, 32);
+    const iris = new THREE.Mesh(irisGeo, new THREE.MeshBasicMaterial({ color: 0x8C4415 }));
+    iris.position.z = 0.003;
+    pupilPivot.add(iris);
+
+    // Golden Sunlight Fleck Ring
+    const innerIrisGeo = new THREE.CircleGeometry(0.098, 24);
+    const innerIris = new THREE.Mesh(innerIrisGeo, new THREE.MeshBasicMaterial({ color: 0xD48430 }));
+    innerIris.position.z = 0.006;
+    pupilPivot.add(innerIris);
+
+    // Large Toddler Disney Pupil
+    const pupilGeo = new THREE.CircleGeometry(0.072, 24);
+    const pupil = new THREE.Mesh(pupilGeo, new THREE.MeshBasicMaterial({ color: 0x060606 }));
+    pupil.position.z = 0.009;
+    pupilPivot.add(pupil);
+
+    // Double Glossy Pixar Catchlight Glints
+    const mainGlintGeo = new THREE.CircleGeometry(0.036, 16);
+    const mainGlint = new THREE.Mesh(mainGlintGeo, new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+    mainGlint.position.set(0.040, 0.044, 0.012);
+    pupilPivot.add(mainGlint);
+
+    const secGlintGeo = new THREE.CircleGeometry(0.016, 12);
+    const secGlint = new THREE.Mesh(secGlintGeo, new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+    secGlint.position.set(-0.034, -0.036, 0.012);
+    pupilPivot.add(secGlint);
+
+    eyeAssembly.add(pupilPivot);
+
+    // Upper Eyelid for Blinking
+    const eyelidGeo = new THREE.SphereGeometry(0.245, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.5);
+    const eyelid = new THREE.Mesh(eyelidGeo, skinMaterial);
+    eyelid.rotation.x = -Math.PI * 0.55;
+    eyelid.position.set(0, 0.01, 0.01);
+    eyeAssembly.add(eyelid);
+
+    return { assembly: eyeAssembly, pupilPivot: pupilPivot, eyelid: eyelid };
+  }
+
+  const leftEye = createEyeAssembly(-0.25);
+  const rightEye = createEyeAssembly(0.25);
+  headGroup.add(leftEye.assembly);
+  headGroup.add(rightEye.assembly);
+
+  // 6. Cute Little Girl Hair & Bridal Chunni Headpiece
+  const hairBackGeo = new THREE.SphereGeometry(0.76, 32, 28);
+  const hairBack = new THREE.Mesh(hairBackGeo, hairMaterial);
+  hairBack.position.set(0, 0.06, -0.12);
+  hairBack.scale.set(1.05, 1.05, 1.05);
+  headGroup.add(hairBack);
+
+  // Soft Front Baby Bangs
+  const bangLeftGeo = new THREE.SphereGeometry(0.26, 20, 20);
+  const bangLeft = new THREE.Mesh(bangLeftGeo, hairMaterial);
+  bangLeft.position.set(-0.24, 0.52, 0.52);
+  bangLeft.scale.set(1.15, 0.42, 0.55);
+  bangLeft.rotation.z = 0.20;
+  headGroup.add(bangLeft);
+
+  const bangRight = new THREE.Mesh(bangLeftGeo, hairMaterial);
+  bangRight.position.set(0.24, 0.52, 0.52);
+  bangRight.scale.set(1.15, 0.42, 0.55);
+  bangRight.rotation.z = -0.20;
+  headGroup.add(bangRight);
+
+  // 6. Cute Little Girl Hair: Soft Baby Bangs & Dual Floral Gajra Buns
+  function createBridalHairBun(isLeft) {
+    const bunGroup = new THREE.Group();
+    bunGroup.position.set(isLeft ? -0.50 : 0.50, 0.42, 0.02);
+
+    const bunMesh = new THREE.Mesh(new THREE.SphereGeometry(0.24, 20, 20), hairMaterial);
+    bunGroup.add(bunMesh);
+
+    // Jasmine Floral Gajra Ring
+    const gajraRing = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.042, 10, 24), pearlMaterial);
+    gajraRing.rotation.y = Math.PI * 0.5;
+    bunGroup.add(gajraRing);
+
+    // Kundan Gold Hair Pin
+    const goldPin = new THREE.Mesh(new THREE.SphereGeometry(0.042, 10, 10), goldMaterial);
+    goldPin.position.set(isLeft ? -0.24 : 0.24, 0, 0);
+    bunGroup.add(goldPin);
+
+    return bunGroup;
+  }
+  headGroup.add(createBridalHairBun(true));
+  headGroup.add(createBridalHairBun(false));
+
+  // Sacred Indian Bridal Red Chunni draped behind head and shoulders (framing veil)
+  const chunniGeo = new THREE.SphereGeometry(0.83, 32, 20, Math.PI * 0.96, Math.PI * 1.08, 0, Math.PI * 0.65);
+  const chunni = new THREE.Mesh(chunniGeo, chunniSheerMaterial);
+  chunni.position.set(0, 0.08, -0.06);
+  chunni.scale.set(1.06, 1.04, 1.08);
+  headGroup.add(chunni);
+
+  // Gold Zari Border outlining the Chunni dupatta arch across crown
+  const zariBorderGeo = new THREE.TorusGeometry(0.83, 0.022, 12, 40, Math.PI);
+  const zariBorder = new THREE.Mesh(zariBorderGeo, goldMaterial);
+  zariBorder.position.set(0, 0.22, 0.04);
+  zariBorder.rotation.x = Math.PI * 0.35;
+  headGroup.add(zariBorder);
+
+  // 7. Royal Gold Bridal Maang Tikka (Dainty for Child)
+  const tikkaChainGeo = new THREE.CylinderGeometry(0.01, 0.01, 0.32, 8);
+  const tikkaChain = new THREE.Mesh(tikkaChainGeo, goldMaterial);
+  tikkaChain.position.set(0, 0.52, 0.67);
+  tikkaChain.rotation.x = 0.20;
+  headGroup.add(tikkaChain);
+
+  const tikkaPendantGeo = new THREE.SphereGeometry(0.055, 16, 16);
+  const tikkaPendant = new THREE.Mesh(tikkaPendantGeo, goldMaterial);
+  tikkaPendant.position.set(0, 0.37, 0.71);
+  tikkaPendant.scale.set(1.1, 1.25, 0.7);
+  headGroup.add(tikkaPendant);
+
+  const rubyCenterGeo = new THREE.SphereGeometry(0.028, 12, 12);
+  const rubyCenter = new THREE.Mesh(rubyCenterGeo, rubyMaterial);
+  rubyCenter.position.set(0, 0.37, 0.75);
+  headGroup.add(rubyCenter);
+
+  // Tiny Cute Gold Jhumka Earrings
+  function createJhumka(xPos) {
+    const jhumka = new THREE.Group();
+    jhumka.position.set(xPos, -0.16, 0.38);
+
+    const studGeo = new THREE.SphereGeometry(0.042, 12, 12);
+    const stud = new THREE.Mesh(studGeo, goldMaterial);
+    jhumka.add(stud);
+
+    const bellGeo = new THREE.ConeGeometry(0.058, 0.068, 14, 1, true);
+    const bell = new THREE.Mesh(bellGeo, goldMaterial);
+    bell.position.y = -0.068;
+    bell.rotation.x = Math.PI;
+    jhumka.add(bell);
+
+    const pearlGeo = new THREE.SphereGeometry(0.024, 8, 8);
+    const pearl = new THREE.Mesh(pearlGeo, pearlMaterial);
+    pearl.position.y = -0.11;
+    jhumka.add(pearl);
+
+    return jhumka;
+  }
+  headGroup.add(createJhumka(-0.46));
+  headGroup.add(createJhumka(0.46));
+
+  // 8. Full Upper Body, Royal Velvet Choli & 24K Makeup Brush Rig
+  const bodyGroup = new THREE.Group();
+  bodyGroup.position.set(0, -0.58, 0);
+  mascotGroup.add(bodyGroup);
+
+  // Choli Torso
+  const torsoGeo = new THREE.CylinderGeometry(0.38, 0.54, 0.60, 24);
+  const torsoMesh = new THREE.Mesh(torsoGeo, bridalRedMaterial);
+  torsoMesh.position.set(0, -0.06, 0);
+  bodyGroup.add(torsoMesh);
+
+  // Gold Waistband
+  const waistGold = new THREE.Mesh(new THREE.TorusGeometry(0.52, 0.026, 12, 32), goldMaterial);
+  waistGold.rotation.x = Math.PI * 0.5;
+  waistGold.position.y = -0.34;
+  bodyGroup.add(waistGold);
+
+  // Neck
+  const neckGeo = new THREE.CylinderGeometry(0.18, 0.22, 0.26, 20);
+  const neckMesh = new THREE.Mesh(neckGeo, skinMaterial);
+  neckMesh.position.set(0, 0.32, 0);
+  bodyGroup.add(neckMesh);
+
+  // Kundan Choker Necklace
+  const necklace = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.032, 10, 24), goldMaterial);
+  necklace.rotation.x = Math.PI * 0.5;
+  necklace.position.set(0, 0.28, 0.02);
+  bodyGroup.add(necklace);
+
+  // Dupatta Drape over shoulders
+  const capeGeo = new THREE.CylinderGeometry(0.56, 0.86, 0.66, 28, 1, true, Math.PI * 0.75, Math.PI * 1.5);
+  const cape = new THREE.Mesh(capeGeo, bridalRedMaterial);
+  cape.position.set(0, -0.06, 0);
+  bodyGroup.add(cape);
+
+  // Left Arm
+  const leftArmGroup = new THREE.Group();
+  leftArmGroup.position.set(-0.46, 0.16, 0);
+  const leftArmMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.07, 0.40, 14), skinMaterial);
+  leftArmMesh.position.set(-0.06, -0.16, 0.06);
+  leftArmMesh.rotation.z = 0.32;
+  leftArmGroup.add(leftArmMesh);
+  const leftBangle = new THREE.Mesh(new THREE.TorusGeometry(0.088, 0.018, 8, 16), goldMaterial);
+  leftBangle.position.set(-0.12, -0.28, 0.10);
+  leftBangle.rotation.x = Math.PI * 0.5;
+  leftArmGroup.add(leftBangle);
+  const leftHand = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 10), skinMaterial);
+  leftHand.position.set(-0.15, -0.34, 0.14);
+  leftArmGroup.add(leftHand);
+  bodyGroup.add(leftArmGroup);
+
+  // Right Arm Holding 24K Bridal Makeup Brush
+  const rightArmGroup = new THREE.Group();
+  rightArmGroup.position.set(0.46, 0.16, 0);
+  const rightArmMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.07, 0.40, 14), skinMaterial);
+  rightArmMesh.position.set(0.06, -0.14, 0.08);
+  rightArmMesh.rotation.z = -0.38;
+  rightArmMesh.rotation.x = 0.35;
+  rightArmGroup.add(rightArmMesh);
+  const rightBangle = new THREE.Mesh(new THREE.TorusGeometry(0.088, 0.018, 8, 16), goldMaterial);
+  rightBangle.position.set(0.12, -0.24, 0.18);
+  rightBangle.rotation.x = Math.PI * 0.5;
+  rightArmGroup.add(rightBangle);
+  const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 10), skinMaterial);
+  rightHand.position.set(0.15, -0.28, 0.22);
+  rightArmGroup.add(rightHand);
+
+  // 24K Bridal Makeup Brush
+  const brushGroup = new THREE.Group();
+  brushGroup.position.set(0.18, -0.22, 0.28);
+  brushGroup.rotation.z = 0.55;
+  brushGroup.rotation.x = -0.35;
+
+  const handleMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.02, 0.42, 10), new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.3 }));
+  brushGroup.add(handleMesh);
+  const ferruleMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.02, 0.10, 12), goldMaterial);
+  ferruleMesh.position.y = 0.22;
+  brushGroup.add(ferruleMesh);
+  const bristleMesh = new THREE.Mesh(new THREE.ConeGeometry(0.034, 0.14, 12), new THREE.MeshStandardMaterial({ color: 0xD4AF37, roughness: 0.65 }));
+  bristleMesh.position.y = 0.32;
+  brushGroup.add(bristleMesh);
+  rightArmGroup.add(brushGroup);
+  bodyGroup.add(rightArmGroup);
+
+  // 9. Interactive Kinematics & Living Motion Engine
+  let targetGazeX = 0, targetGazeY = 0;
+  let currentGazeX = 0, currentGazeY = 0;
+  let isHovered = false;
+  let isBlinking = false;
+  let blinkProgress = 0;
+  let nextBlinkTime = performance.now() + 3500;
+
+  // Track Mouse Coordinates Across Entire Viewport
+  window.addEventListener('mousemove', (e) => {
+    const rect = toggle.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    // Normalize coordinates [-1, 1] relative to toggle center
+    const maxRange = Math.max(window.innerWidth, window.innerHeight);
+    const dx = (e.clientX - centerX) / (maxRange * 0.55);
+    const dy = (e.clientY - centerY) / (maxRange * 0.55);
+
+    targetGazeX = Math.max(-1, Math.min(1, dx));
+    targetGazeY = Math.max(-1, Math.min(1, dy));
+  }, { passive: true });
+
+  // Hover Excitement Response
+  toggle.addEventListener('mouseenter', () => {
+    isHovered = true;
+    if (window.charConciergeState) window.charConciergeState.mood = 'excited';
+  });
+
+  toggle.addEventListener('mouseleave', () => {
+    isHovered = false;
+    if (window.charConciergeState) window.charConciergeState.mood = 'happy';
+  });
+
+  // Animation Loop (60 FPS with Battery Conservation)
+  let animationFrameId = null;
+
+  function renderAsha(timestamp) {
+    // Throttle / Pause when tab is hidden or modal opened
+    if (document.hidden) {
+      animationFrameId = requestAnimationFrame(renderAsha);
+      return;
+    }
+
+    // Kinematic Dampening (lerp)
+    currentGazeX += (targetGazeX - currentGazeX) * 0.085;
+    currentGazeY += (targetGazeY - currentGazeY) * 0.085;
+
+    // Mood-Driven Emotional Kinematics (Haute Pixar Little Girl Caliber)
+    const mood = (window.charConciergeState && window.charConciergeState.mood) || 'happy';
+    let moodGazeOffX = 0, moodGazeOffY = 0;
+    let moodHeadTiltZ = 0, moodHeadPitchX = 0, moodHeadYawY = 0;
+    let moodEyelidBase = -Math.PI * 0.55;
+    let moodBounce = 0;
+
+    if (mood === 'sad' || mood === 'pouting') {
+      moodGazeOffY = 0.50;
+      moodHeadPitchX = 0.22;
+      moodHeadTiltZ = Math.sin(timestamp * 0.003) * 0.04;
+      moodEyelidBase = -Math.PI * 0.32;
+      moodBounce = Math.sin(timestamp * 0.0016) * 0.015 - 0.025;
+
+      if (rightArmGroup && brushGroup) {
+        rightArmGroup.rotation.z = -0.15;
+        brushGroup.rotation.x = -0.10;
+      }
+      if (smile) {
+        smile.scale.set(0.85, -1.0, 1.0);
+        smile.position.set(0, -0.40, 0.04);
+      }
+    } else if (mood === 'thinking' || mood === 'thinking_coupon') {
+      // Pondering / Generating Discount: Head cocked, brush tapping chin, eyes looking up-right
+      moodGazeOffX = 0.60;
+      moodGazeOffY = -0.50;
+      moodHeadYawY = 0.24;
+      moodHeadPitchX = -0.14;
+      moodHeadTiltZ = -0.20;
+      moodEyelidBase = -Math.PI * 0.48;
+      moodBounce = Math.sin(timestamp * 0.0035) * 0.025;
+
+      if (rightArmGroup && brushGroup) {
+        rightArmGroup.rotation.z = -0.20;
+        brushGroup.rotation.x = -0.15;
+        brushGroup.position.set(0.12, -0.08, 0.38);
+      }
+      if (smile) {
+        smile.scale.set(0.65, 0.70, 0.7);
+        smile.position.set(0.02, -0.03, 0.02);
+      }
+    } else if (mood === 'offering_deal' || mood === 'recommending') {
+      // Offering a Deal: Head leans forward, wide eyes, welcoming brush wave
+      moodHeadPitchX = -0.16;
+      moodHeadYawY = Math.sin(timestamp * 0.004) * 0.08;
+      moodEyelidBase = -Math.PI * 0.72;
+      moodBounce = Math.abs(Math.sin(timestamp * 0.0065)) * 0.055;
+
+      if (rightArmGroup && brushGroup) {
+        rightArmGroup.rotation.z = -0.45 + Math.sin(timestamp * 0.006) * 0.12;
+        brushGroup.rotation.x = -0.45 + Math.sin(timestamp * 0.006) * 0.15;
+      }
+      if (smile) {
+        smile.scale.set(1.25, 1.35, 1.0);
+        smile.position.set(0, 0.02, 0);
+      }
+    } else if (mood === 'celebrating' || mood === 'deal_done' || mood === 'excited') {
+      // Celebrating: Energetic celebratory bounce, high brush flourish!
+      moodHeadPitchX = Math.sin(timestamp * 0.009) * 0.12;
+      moodHeadYawY = Math.sin(timestamp * 0.007) * 0.15;
+      moodHeadTiltZ = Math.cos(timestamp * 0.008) * 0.10;
+      moodEyelidBase = -Math.PI * 0.65;
+      moodBounce = Math.abs(Math.sin(timestamp * 0.009)) * 0.09;
+
+      if (rightArmGroup && brushGroup) {
+        rightArmGroup.rotation.z = Math.sin(timestamp * 0.014) * 0.28;
+        brushGroup.rotation.x = -0.40 + Math.sin(timestamp * 0.016) * 0.36;
+      }
+      if (smile) {
+        smile.scale.set(1.35, 1.5, 1.0);
+        smile.position.set(0, 0.03, 0);
+      }
+    } else {
+      // Default Sweet Happy / Idle
+      if (rightArmGroup && brushGroup) {
+        rightArmGroup.rotation.z = Math.sin(timestamp * 0.003) * 0.06;
+        brushGroup.rotation.x = -0.38 + Math.sin(timestamp * 0.004) * 0.08;
+        brushGroup.position.set(0.18, -0.22, 0.28);
+      }
+      if (smile) {
+        smile.scale.set(1.0, 1.0, 1.0);
+        smile.position.set(0, 0, 0);
+      }
+    }
+
+    // Head 3D Yaw, Pitch & Playful Tilt
+    headGroup.rotation.y = (currentGazeX * 0.42) + moodHeadYawY;
+    headGroup.rotation.x = (currentGazeY * 0.28) + moodHeadPitchX;
+    headGroup.rotation.z = (-currentGazeX * 0.08) + moodHeadTiltZ;
+
+    // Pupils Spherical Shift
+    const pupilShiftX = (currentGazeX * 0.052) + (moodGazeOffX * 0.04);
+    const pupilShiftY = (-currentGazeY * 0.048) - (moodGazeOffY * 0.04);
+    leftEye.pupilPivot.position.set(pupilShiftX, pupilShiftY, 0.24);
+    rightEye.pupilPivot.position.set(pupilShiftX, pupilShiftY, 0.24);
+
+    // Idle Breathing & Floating Oscillation
+    const breathing = Math.sin(timestamp * 0.0024) * 0.032;
+    mascotGroup.position.y = breathing + moodBounce;
+
+    // Hover Bounce / Celebration Scale
+    const targetScale = isHovered ? 1.08 : 1.0;
+    mascotGroup.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.12);
+
+    // Organic Disney Blink Mechanism
+    if (timestamp > nextBlinkTime && !isBlinking) {
+      isBlinking = true;
+      blinkProgress = 0;
+    }
+
+    if (isBlinking) {
+      blinkProgress += 0.18;
+      if (blinkProgress <= 1.0) {
+        // Closing eyelid smoothly over eye
+        const blinkAmount = Math.sin(blinkProgress * Math.PI);
+        leftEye.eyelid.rotation.x = moodEyelidBase + blinkAmount * 1.65;
+        rightEye.eyelid.rotation.x = moodEyelidBase + blinkAmount * 1.65;
+      } else {
+        isBlinking = false;
+        leftEye.eyelid.rotation.x = moodEyelidBase;
+        rightEye.eyelid.rotation.x = moodEyelidBase;
+        // Schedule next random blink between 3.5s and 6.0s
+        nextBlinkTime = timestamp + 3500 + Math.random() * 2500;
+      }
+    } else {
+      leftEye.eyelid.rotation.x = moodEyelidBase;
+      rightEye.eyelid.rotation.x = moodEyelidBase;
+    }
+
+    renderer.render(scene, camera);
+    if (headerRenderer && headerCanvas && headerCanvas.offsetParent !== null) {
+      headerRenderer.render(scene, camera);
+    }
+    animationFrameId = requestAnimationFrame(renderAsha);
+  }
+
+  animationFrameId = requestAnimationFrame(renderAsha);
+
+  // Scroll-driven entrance: controlled by window scroll event
+  if (typeof window.checkConciergeScrollPosition === 'function') {
+    window.checkConciergeScrollPosition();
+  }
+})();
+
+// Initialize Mochi Mascot Concierge Engine
+window.mochiMascotInstance = null;
+window.mochiHeaderInstance = null;
+
+function initMochiConcierge() {
+  const canvas = document.getElementById('bunnyMascotCanvas');
+  if (!canvas) return;
+
+  if (!window.mochiMascotInstance) {
+    try {
+      if (typeof MochiCharacter !== 'undefined') {
+        window.mochiMascotInstance = new MochiCharacter({
+          canvas: canvas,
+          width: 168,
+          height: 168,
+          initialEmotion: 'welcome'
+        });
+      } else if (typeof CuteBunnyCharacter !== 'undefined') {
+        window.mochiMascotInstance = new CuteBunnyCharacter({
+          canvas: canvas,
+          width: 168,
+          height: 168,
+          theme: 'festive',
+          initialEmotion: 'welcoming'
+        });
+      }
+    } catch (e) {
+      console.warn("Mochi Mascot canvas init error:", e);
+    }
+  }
+
+  const headerCanvas = document.getElementById('bunnyHeaderCanvas');
+  if (headerCanvas && !window.mochiHeaderInstance) {
+    try {
+      if (typeof MochiCharacter !== 'undefined') {
+        window.mochiHeaderInstance = new MochiCharacter({
+          canvas: headerCanvas,
+          width: 96,
+          height: 96,
+          initialEmotion: 'welcome'
+        });
+      } else if (typeof CuteBunnyCharacter !== 'undefined') {
+        window.mochiHeaderInstance = new CuteBunnyCharacter({
+          canvas: headerCanvas,
+          width: 96,
+          height: 96,
+          theme: 'festive',
+          initialEmotion: 'welcoming'
+        });
+      }
+    } catch (e) {
+      console.warn("Mochi Header canvas init error:", e);
+    }
+  }
+}
+
+// Initialize Pip Finch Concierge Engine
+window.pipMascotInstance = null;
+window.pipHeaderInstance = null;
+
+function initPipConcierge() {
+  const canvas = document.getElementById('pipMascotCanvas');
+  if (!canvas || typeof PipCharacter === 'undefined') return;
+
+  if (!window.pipMascotInstance) {
+    try {
+      window.pipMascotInstance = new PipCharacter({
+        canvas: canvas,
+        width: 168,
+        height: 168,
+        initialEmotion: 'welcome'
+      });
+    } catch (e) {
+      console.warn("Pip Mascot canvas init error:", e);
+    }
+  }
+
+  const headerCanvas = document.getElementById('pipHeaderCanvas');
+  if (headerCanvas && !window.pipHeaderInstance) {
+    try {
+      window.pipHeaderInstance = new PipCharacter({
+        canvas: headerCanvas,
+        width: 96,
+        height: 96,
+        initialEmotion: 'welcome'
+      });
+    } catch (e) {
+      console.warn("Pip Header canvas init error:", e);
+    }
+  }
+}
+
+// Restore saved character preference (defaults to Mochi Bunny)
+document.addEventListener('DOMContentLoaded', () => {
+  const savedChar = localStorage.getItem('anshita_active_char') || 'mochi';
+  if (typeof window.toggleActiveConciergeCharacter === 'function') {
+    window.toggleActiveConciergeCharacter(savedChar);
+  }
+});
+
+// ═══ SCROLL-DRIVEN CONCIERGE EMERGENCE & CHATBOT SHRINK ANIMATION ═══
+(function initConciergeScrollTrigger() {
+  let hasScrolledDown = false;
+  let scrollTicking = false;
+  const SCROLL_THRESHOLD_ENTER = 180; // Pixels down from top before mascot emerges
+  const SCROLL_THRESHOLD_EXIT = 80;   // Pixels near top where mascot retreats/hides
+
+  window.checkConciergeScrollPosition = function() {
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (!wrap) return;
+
+    if (scrollY > SCROLL_THRESHOLD_ENTER) {
+      if (!wrap.classList.contains('char-entered')) {
+        hasScrolledDown = true;
+        if (typeof window.triggerConciergeEntrance === 'function') {
+          window.triggerConciergeEntrance();
+        }
+      }
+    } else if (scrollY < SCROLL_THRESHOLD_EXIT) {
+      if (wrap.classList.contains('char-entered')) {
+        hasScrolledDown = false;
+        if (typeof window.triggerConciergeExit === 'function') {
+          window.triggerConciergeExit();
+        }
+      }
+    }
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!scrollTicking) {
+      window.requestAnimationFrame(() => {
+        window.checkConciergeScrollPosition();
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
+  }, { passive: true });
+
+  // Initial check once DOM loads (if already scrolled down on refresh)
+  window.addEventListener('load', () => {
+    setTimeout(window.checkConciergeScrollPosition, 300);
+  });
+})();
+
+
+
+
+// Concierge Speech Bubble with Proper Animation, Auto-Dismiss, and Auto-Reappear
+let conciergeCycleTimer = null;
+let conciergeDismissTimer = null;
+let isHoveringBubble = false;
+let conciergeCycleIndex = 0;
+
+window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', durationMs = 7000) {
+  const chatBox = document.getElementById('chat-box');
+  // CRITICAL: NEVER show external speech bubble popup when chat window is actively open or user is chatting!
+  if (document.body.classList.contains('chat-is-open') || (chatBox && chatBox.classList.contains('open'))) {
+    return;
+  }
+
+  const bubble = document.getElementById('chat-speech-bubble');
+  const textEl = document.getElementById('csb-text');
+  const subEl = document.getElementById('csb-sub');
+  if (!bubble || !textEl) return;
+
+  clearTimeout(conciergeDismissTimer);
+  clearTimeout(conciergeCycleTimer);
+
+  // Soft fade transition for text
+  textEl.style.opacity = '0';
+  if (subEl) subEl.style.opacity = '0';
+
+  setTimeout(() => {
+    textEl.innerHTML = text;
+    if (subEl && sub) subEl.textContent = sub;
+    textEl.style.opacity = '1';
+    if (subEl) subEl.style.opacity = '1';
+  }, 160);
+
+  // Smooth slide-up & scale-in reveal
+  bubble.classList.add('active');
+
+  if (window.charConciergeState) {
+    window.charConciergeState.setMood('recommending', 3500);
+  }
+
+  // Automatically dismiss after durationMs (default 7 seconds)
+  if (durationMs > 0) {
+    conciergeDismissTimer = setTimeout(() => {
+      if (!isHoveringBubble) {
+        window.hideConciergeSpeech();
+      }
+    }, durationMs);
+  }
+};
+
+window.hideConciergeSpeech = function() {
+  const bubble = document.getElementById('chat-speech-bubble');
+  if (!bubble) return;
+  bubble.classList.remove('active');
+
+  // Schedule next helpful tip after 8 seconds of rest ONLY if chat box is closed/minimized
+  clearTimeout(conciergeCycleTimer);
+  conciergeCycleTimer = setTimeout(() => {
+    const chatBox = document.getElementById('chat-box');
+    if (!chatBox || !chatBox.classList.contains('open')) {
+      triggerNextConciergePrompt();
+    }
+  }, 8500);
+};
+
+// Periodic Concierge Insights rotation (adapts to current language & region)
+function triggerNextConciergePrompt() {
+  const chatBox = document.getElementById('chat-box');
+  if (document.body.classList.contains('chat-is-open') || (chatBox && chatBox.classList.contains('open'))) {
+    return; // Completely suppress popups while chatting
+  }
+
+  const lang = localStorage.getItem('anshita_chat_lang') || 'hindi';
+  const tipsByLang = {
+    'bundelkhandi': [
+      { text: '🙏 राम-राम जी! Anshita Makeover में आपका स्वागत है! ✨ ब्याह सिंगार खातिर कछु पूछने चाहत हो?', sub: 'AI Wedding Concierge' },
+      { text: '👑 <strong>रॉयल ब्राइडल पैकेज:</strong> फेरों से विदाई तक 18 घंटा आंसू-प्रूफ रूप!', sub: 'बुंदेलखंड विशेष' },
+      { text: '💄 <strong>विशेष छूट:</strong> ब्राइडल पैकेज के संगे 2 साइड मेकअप मुफ्त!', sub: 'सीमित अवधि ऑफर' }
+    ],
+    'baghelkhandi': [
+      { text: '🙏 राम-राम जी! कइसन मदद चाहि? ब्याह के सिंगार पैकेज जानै खातिर पूछें!', sub: 'AI Wedding Concierge' },
+      { text: '👑 <strong>शाही दुल्हन शृंगार:</strong> 18 घंटा वाटरप्रूफ और एचडी बेस!', sub: 'बघेलखंड विशेष' },
+      { text: '💄 <strong>विशेष ऑफर:</strong> दुल्हन शृंगार के साथ 2 सहेली/दीदी मेकअप मुफ्त!', sub: 'सीमित ऑफर' }
+    ],
+    'bhojpuri': [
+      { text: '🙏 राम-राम जी! Anshita Makeover में रउआ का स्वागत बा! बियाह के पैकेज जानीं!', sub: 'AI Wedding Concierge' },
+      { text: '👑 <strong>शाही दुल्हनिया शृंगार:</strong> बिदाई तक चमके वाला वाटरप्रूफ बेस!', sub: 'भोजपुरी विशेष' },
+      { text: '💄 <strong>धमाका ऑफर:</strong> दुल्हन के बुकिंग पर 2 साइड मेकअप बिल्कुल मुफ़्त!', sub: 'खास ऑफर' }
+    ],
+    'marathi': [
+      { text: '✨ राम-राम / नमस्कार! मी आपली काय मदत करू शकते? लग्न मेकअप विचारू शकता!', sub: 'AI Wedding Concierge' },
+      { text: '👑 <strong>शाही नवरी शृंगार:</strong> १८ तास टिकणारा एचडी आणि एअरब्रश!', sub: 'महाराष्ट्र विशेष' },
+      { text: '💄 <strong>खास सवलत:</strong> नववधू पॅकेजसोबत २ साइड मेकअप मोफत!', sub: 'मर्यादित ऑफर' }
+    ],
+    'english': [
+      { text: '✨ Namaste! May I help you find your dream bridal look?', sub: 'AI Wedding Concierge' },
+      { text: '👑 <strong>18-Hour Cry-Proof HD:</strong> Tailored for emotional sacred ceremonies.', sub: 'Signature Airbrush' },
+      { text: '💄 <strong>VIP Privilege:</strong> 2 Free Side Makeups included with Bridal Suites!', sub: 'Limited Privilege' },
+      { text: '🚗 <strong>Pan-India Destination:</strong> Anshita travels nationwide for your big day.', sub: 'Outstation Service' }
+    ],
+    'hindi': [
+      { text: '🙏 राम राम जी! Anshita Makeover में आपका स्वागत है! ✨ विवाह शृंगार के बारे में पूछें!', sub: 'AI Wedding Concierge' },
+      { text: '👑 <strong>18 घंटे वाटरप्रूफ बेस:</strong> फेरों से लेकर विदाई तक ताजगी बनी रहे।', sub: 'सिग्नेचर एचडी' },
+      { text: '💄 <strong>विशेष छूट:</strong> ब्राइडल पैकेज के साथ 2 साइड मेकअप बिल्कुल मुफ़्त!', sub: 'वीआईपी ऑफर' },
+      { text: '🚗 <strong>डेस्टिनेशन वेडिंग:</strong> पूरे भारत में विवाह शृंगार सुविधा उपलब्ध है।', sub: 'आउटस्टेशन सर्विस' }
+    ]
+  };
+
+  const pool = tipsByLang[lang] || tipsByLang['hindi'];
+  conciergeCycleIndex = (conciergeCycleIndex + 1) % pool.length;
+  const nextItem = pool[conciergeCycleIndex];
+  window.setConciergeSpeech(nextItem.text, nextItem.sub, 7000);
+}
+
+// Pause auto-dismissal when user hovers over speech bubble
+document.addEventListener('DOMContentLoaded', () => {
+  const bubble = document.getElementById('chat-speech-bubble');
+  if (bubble) {
+    bubble.addEventListener('mouseenter', () => {
+      isHoveringBubble = true;
+      clearTimeout(conciergeDismissTimer);
+    });
+    bubble.addEventListener('mouseleave', () => {
+      isHoveringBubble = false;
+      conciergeDismissTimer = setTimeout(() => {
+        window.hideConciergeSpeech();
+      }, 3000);
+    });
+  }
+
+  // Initial welcome trigger after 2.5s
+  setTimeout(() => {
+    if (typeof detectUserRegionAndRecommendLanguages === 'function') {
+      detectUserRegionAndRecommendLanguages();
+    }
+  }, 2500);
 });
 
 /* ── THREE.JS LIQUID GOLD & CELESTIAL STARDUST CANVAS (EVAGHER-INSPIRED) ── */
 (function initThreeBackground() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const canvas = document.getElementById('three-bg');
+  const pcv = document.getElementById('pcv');
   if (!canvas || typeof THREE === 'undefined') {
-    const pcv = document.getElementById('pcv');
-    if (pcv) pcv.style.display = 'block';
+    if (pcv) init2DSparkleFallback(pcv);
     return;
   }
 
@@ -5407,27 +8121,27 @@ document.querySelectorAll('a,button,.svc-card,.pkg-card,.art-card,.gal-item,.cpn
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Particle count: 480 desktop, 200 mobile
+    // Luxury celestial stardust count: 72 desktop, 32 mobile (ambient champagne glitter)
     const isMobile = window.innerWidth <= 768;
-    const particleCount = isMobile ? 220 : 480;
+    const particleCount = isMobile ? 32 : 72;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
     const originalPositions = new Float32Array(particleCount * 3);
+    const scales = new Float32Array(particleCount);
 
     const colorPalette = [
-      new THREE.Color(0xD4AF37), // Pure Gold
-      new THREE.Color(0xF0D060), // Champagne Light
-      new THREE.Color(0xE8A4B8), // Rose Gold
-      new THREE.Color(0xF5EDD6), // Cream Pearl
-      new THREE.Color(0xC2607A)  // Deep Rose
+      new THREE.Color(0xF5D77F), // Soft Champagne Gold
+      new THREE.Color(0xD4AF37), // Pure 24k Gold
+      new THREE.Color(0xFFF8E7), // Luminous Silk Ivory
+      new THREE.Color(0xE8B4C0)  // Delicate Rose Gold
     ];
 
     for (let i = 0; i < particleCount; i++) {
       const idx = i * 3;
-      const x = (Math.random() - 0.5) * 110;
-      const y = (Math.random() - 0.5) * 85;
-      const z = (Math.random() - 0.5) * 60;
+      const x = (Math.random() - 0.5) * 160;
+      const y = (Math.random() - 0.5) * 130;
+      const z = (Math.random() - 0.5) * 70;
       positions[idx] = originalPositions[idx] = x;
       positions[idx + 1] = originalPositions[idx + 1] = y;
       positions[idx + 2] = originalPositions[idx + 2] = z;
@@ -5436,19 +8150,21 @@ document.querySelectorAll('a,button,.svc-card,.pkg-card,.art-card,.gal-item,.cpn
       colors[idx] = col.r;
       colors[idx + 1] = col.g;
       colors[idx + 2] = col.b;
+      scales[i] = 0.6 + Math.random() * 0.9;
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    // Dynamic procedural circular particle texture (soft glow)
+    // Pure soft Gaussian-blurred radial champagne stardust orb texture
     const pCanvas = document.createElement('canvas');
     pCanvas.width = 64; pCanvas.height = 64;
     const pCtx = pCanvas.getContext('2d');
+    
     const pGrad = pCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
-    pGrad.addColorStop(0, 'rgba(255, 255, 255, 1)');
-    pGrad.addColorStop(0.35, 'rgba(240, 208, 96, 0.85)');
-    pGrad.addColorStop(0.65, 'rgba(212, 175, 55, 0.35)');
+    pGrad.addColorStop(0, 'rgba(255, 250, 235, 0.95)');
+    pGrad.addColorStop(0.2, 'rgba(240, 208, 96, 0.7)');
+    pGrad.addColorStop(0.55, 'rgba(212, 175, 55, 0.25)');
     pGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
     pCtx.fillStyle = pGrad;
     pCtx.beginPath();
@@ -5458,12 +8174,13 @@ document.querySelectorAll('a,button,.svc-card,.pkg-card,.art-card,.gal-item,.cpn
     const pTexture = new THREE.CanvasTexture(pCanvas);
 
     const material = new THREE.PointsMaterial({
-      size: isMobile ? 1.8 : 2.4,
+      size: isMobile ? 2.2 : 3.4,
       map: pTexture,
       transparent: true,
       vertexColors: true,
       blending: THREE.AdditiveBlending,
-      depthWrite: false
+      depthWrite: false,
+      opacity: 0.85
     });
 
     const particles = new THREE.Points(geometry, material);
@@ -5484,44 +8201,94 @@ document.querySelectorAll('a,button,.svc-card,.pkg-card,.art-card,.gal-item,.cpn
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // Animation Loop
+    // Animation Loop with dynamic glittering twinkling
     let clock = new THREE.Clock();
+    let animId = null;
     function animateThree() {
-      requestAnimationFrame(animateThree);
+      animId = requestAnimationFrame(animateThree);
+      if (document.hidden) return;
       const elapsedTime = clock.getElapsedTime();
 
       // Damped mouse parallax
       mouseX += (targetX - mouseX) * 0.05;
       mouseY += (targetY - mouseY) * 0.05;
 
-      camera.position.x = mouseX * 7;
-      camera.position.y = -mouseY * 5;
+      camera.position.x = mouseX * 8;
+      camera.position.y = -mouseY * 6;
       camera.lookAt(scene.position);
 
-      // Scroll influences gentle rotation
-      const scrollPct = window.scrollY / (document.documentElement.scrollHeight || 1);
-      particles.rotation.y = elapsedTime * 0.035 + scrollPct * 1.5;
-      particles.rotation.x = Math.sin(elapsedTime * 0.03) * 0.08 - scrollPct * 0.25;
+      // Evagher-grade dynamic scroll velocity integration
+      window.scrollVelSmoothed = window.scrollVelSmoothed || 0;
+      const rawVel = (window.lenis ? window.lenis.velocity : 0);
+      window.scrollVelSmoothed += (rawVel - window.scrollVelSmoothed) * 0.08;
 
-      // Harmonic liquid wave displacement
+      // Scroll influences rotation & celestial drift
+      const currentScroll = (window.lenis ? window.lenis.scroll : window.scrollY);
+      const scrollPct = currentScroll / (document.documentElement.scrollHeight || 1);
+      particles.rotation.y = elapsedTime * 0.035 + scrollPct * 1.6 + window.scrollVelSmoothed * 0.0015;
+      particles.rotation.x = Math.sin(elapsedTime * 0.025) * 0.09 - scrollPct * 0.28;
+      particles.position.y = -window.scrollVelSmoothed * 0.12;
+
+      // Harmonic liquid wave & shimmer displacement
       const posArr = geometry.attributes.position.array;
       for (let i = 0; i < particleCount; i++) {
         const idx = i * 3;
         const ox = originalPositions[idx];
         const oy = originalPositions[idx + 1];
         const oz = originalPositions[idx + 2];
-        posArr[idx + 1] = oy + Math.sin(elapsedTime * 0.8 + ox * 0.1) * 1.1;
-        posArr[idx + 2] = oz + Math.cos(elapsedTime * 0.6 + oy * 0.1) * 1.3;
+        posArr[idx + 1] = oy + Math.sin(elapsedTime * 0.9 + ox * 0.08) * 1.5;
+        posArr[idx + 2] = oz + Math.cos(elapsedTime * 0.7 + oy * 0.08) * 1.8;
       }
       geometry.attributes.position.needsUpdate = true;
+
+      // Subtle breathing pulse for gentle, non-intrusive shimmering stardust
+      material.size = (isMobile ? 2.2 : 3.4) + Math.sin(elapsedTime * 2.0) * 0.5;
 
       renderer.render(scene, camera);
     }
     animateThree();
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        cancelAnimationFrame(animId);
+        clock.start();
+        animateThree();
+      }
+    });
   } catch (err) {
     console.warn('Three.js initialization notice, fallback to 2D:', err);
-    const pcv = document.getElementById('pcv');
-    if (pcv) pcv.style.display = 'block';
+    if (pcv) init2DSparkleFallback(pcv);
+  }
+
+  function init2DSparkleFallback(c) {
+    c.style.display = 'block';
+    const ctx = c.getContext('2d');
+    let w = c.width = window.innerWidth;
+    let h = c.height = window.innerHeight;
+    window.addEventListener('resize', () => { w = c.width = window.innerWidth; h = c.height = window.innerHeight; });
+    const dots = Array.from({ length: 60 }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: 1 + Math.random() * 2.5,
+      alpha: Math.random(),
+      speed: 0.2 + Math.random() * 0.5,
+      pulse: Math.random() * 0.05
+    }));
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      dots.forEach(d => {
+        d.y -= d.speed;
+        if (d.y < 0) d.y = h;
+        d.alpha += d.pulse;
+        if (d.alpha <= 0.1 || d.alpha >= 0.9) d.pulse = -d.pulse;
+        ctx.fillStyle = `rgba(212, 175, 55, ${Math.max(0, Math.min(1, d.alpha))})`;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
   }
 })();
 
@@ -5529,50 +8296,6 @@ document.querySelectorAll('a,button,.svc-card,.pkg-card,.art-card,.gal-item,.cpn
 // WebGL liquid displacement shader intentionally disabled to prevent unnatural/alien distortion of bridal portraits.
 // Luxury presentation uses pure high-definition transforms with smooth golden luminescence.
 
-/* ── EVAGHER-STYLE SCROLL VELOCITY INERTIA SKEW ── */
-(function initScrollSkew() {
-  let scrollVelocity = 0, currentSkew = 0, lastScrollY = window.scrollY;
-  let isTicking = false;
-
-  const progressBar = document.getElementById('scroll-progress-bar');
-
-  window.addEventListener('scroll', () => {
-    const delta = window.scrollY - lastScrollY;
-    lastScrollY = window.scrollY;
-    scrollVelocity = delta;
-
-    if (progressBar) {
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (docHeight > 0) {
-        const pct = Math.min(Math.max((window.scrollY / docHeight) * 100, 0), 100);
-        progressBar.style.width = pct.toFixed(2) + '%';
-      }
-    }
-
-    if (!isTicking) {
-      requestAnimationFrame(renderSkew);
-      isTicking = true;
-    }
-  }, { passive: true });
-
-  function renderSkew() {
-    // Subtle luxury limit: max ±1.2 degrees
-    const targetSkew = Math.max(Math.min(scrollVelocity * 0.035, 1.2), -1.2);
-    currentSkew += (targetSkew - currentSkew) * 0.12;
-    scrollVelocity *= 0.88;
-
-    const skewVal = Math.abs(currentSkew) > 0.01 ? currentSkew.toFixed(3) : '0';
-    document.documentElement.style.setProperty('--scroll-skew', `${skewVal}deg`);
-
-    if (Math.abs(currentSkew) > 0.01 || Math.abs(scrollVelocity) > 0.1) {
-      requestAnimationFrame(renderSkew);
-    } else {
-      document.documentElement.style.setProperty('--scroll-skew', '0deg');
-      isTicking = false;
-    }
-  }
-  renderSkew();
-})();
 
 /* ── MAGNETIC BUTTON ACCENT INTERACTION (EVAGHER-INSPIRED) ── */
 document.querySelectorAll('.btn-p, .btn-o, .btn-wa, .calc-cta, .evt-cta').forEach(btn => {
@@ -5598,6 +8321,8 @@ function dismissPreloader() {
     document.documentElement.classList.add('preloader-skipped');
     if (typeof initReveal === 'function') initReveal();
     if (typeof countUp === 'function') countUp();
+    // Entrance is triggered on scroll down
+    if (typeof window.checkConciergeScrollPosition === 'function') window.checkConciergeScrollPosition();
     return;
   }
   
@@ -5605,6 +8330,8 @@ function dismissPreloader() {
   pl.style.pointerEvents = 'none';
   // Trigger Stage 2 dual curtain split (left slides left, right slides right)
   pl.classList.add('curtains-open');
+  // Entrance is triggered on scroll down
+  if (typeof window.checkConciergeScrollPosition === 'function') window.checkConciergeScrollPosition();
   
   // Stage 3 WebGL burst trigger if available
   try {
@@ -5631,6 +8358,8 @@ window.dismissPreloader = dismissPreloader;
     document.documentElement.classList.add('preloader-skipped');
     const pl = document.getElementById('preloader');
     if (pl) pl.style.display = 'none';
+    // Entrance is triggered on scroll down
+    if (typeof window.checkConciergeScrollPosition === 'function') window.checkConciergeScrollPosition();
   }
 })();
 
@@ -5641,8 +8370,9 @@ window.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // Auto trigger curtain parting once stroke animation finishes
-  setTimeout(dismissPreloader, 2800);
+  setTimeout(dismissPreloader, 1400);
+  window.addEventListener('click', dismissPreloader, { once: true });
+  window.addEventListener('scroll', dismissPreloader, { once: true, passive: true });
 
   // Keyboard accessibility: Escape key bypasses immediately
   window.addEventListener('keydown', (e) => {
@@ -5652,37 +8382,169 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-/* ── Scroll & Headroom Fallback Dynamics ── */
-let lastScrollY = window.scrollY;
-window.addEventListener('scroll',()=>{
-  const currY = window.scrollY;
+/* ═══════════════════════════════════════════════════════════════════
+   EVAGHER HAUTE-COUTURE SMOOTH MOMENTUM SCROLL & EDITORIAL PARALLAX
+   ═══════════════════════════════════════════════════════════════════ */
+(function initEvagherLuxuryScroll() {
+  const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const progressBar = document.getElementById('scroll-progress-bar');
+  const pr = document.querySelector('#scr .pr');
   const nav = document.getElementById('mnav');
-  if(nav){
-    nav.classList.toggle('scrolled', currY > 50);
-    nav.classList.toggle('headroom--top', currY <= 50);
-    nav.classList.toggle('headroom--not-top', currY > 50);
+  let lastScrollY = window.scrollY;
 
-    // Directional scroll behavior fallback
-    if(currY > 100 && currY > lastScrollY + 5){
-      if(!document.body.classList.contains('menu-open') && !document.body.classList.contains('admin-open')){
-        nav.classList.remove('headroom--pinned');
-        nav.classList.add('headroom--unpinned');
+  // Unified scroll handler for navigation, progress bar, and circular ring
+  function handleScrollMotion(currY, velocity = 0) {
+    // 1. Editorial Scroll Progress Bar
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (progressBar && docHeight > 0) {
+      const pct = Math.min(Math.max((currY / docHeight) * 100, 0), 100);
+      progressBar.style.width = pct.toFixed(2) + '%';
+    }
+
+    // 2. Circular Ring (#scr .pr)
+    if (pr && docHeight > 0) {
+      const pct = currY / docHeight;
+      const d = 119.4;
+      pr.style.strokeDashoffset = d - d * pct;
+    }
+
+    // 3. Navigation Headroom
+    if (nav) {
+      nav.classList.toggle('scrolled', currY > 50);
+      nav.classList.toggle('headroom--top', currY <= 50);
+      nav.classList.toggle('headroom--not-top', currY > 50);
+
+      if (currY > 100 && (velocity > 0.4 || (currY > lastScrollY + 4 && velocity === 0))) {
+        if (!document.body.classList.contains('menu-open') && !document.body.classList.contains('admin-open')) {
+          nav.classList.remove('headroom--pinned');
+          nav.classList.add('headroom--unpinned');
+        }
+      } else if (velocity < -0.4 || currY < lastScrollY - 4 || currY <= 50) {
+        nav.classList.remove('headroom--unpinned');
+        nav.classList.add('headroom--pinned');
       }
-    } else if(currY < lastScrollY - 5 || currY <= 50){
-      nav.classList.remove('headroom--unpinned');
-      nav.classList.add('headroom--pinned');
+    }
+    lastScrollY = currY;
+
+    // 4. Reveal check
+    checkScrollReveals();
+  }
+
+  // Initialize Lenis Smooth Scroll Engine (Haute-Couture Momentum Gliding)
+  if (!isReducedMotion && typeof Lenis !== 'undefined') {
+    try {
+      const lenis = new Lenis({
+        duration: 1.45, // Silky luxury momentum glide
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential deceleration
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        wheelMultiplier: 1.05, // Rich tactile responsiveness
+        touchMultiplier: 1.3,
+        infinite: false,
+      });
+      window.lenis = lenis;
+
+      // High-performance compositor RAF loop
+      function lenisRaf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(lenisRaf);
+      }
+      requestAnimationFrame(lenisRaf);
+
+      // Connect Lenis to GSAP ScrollTrigger and scroll velocity feedback
+      lenis.on('scroll', ({ scroll, velocity }) => {
+        handleScrollMotion(scroll, velocity);
+        if (typeof ScrollTrigger !== 'undefined') {
+          ScrollTrigger.update();
+        }
+
+        // Kinetic Marquee velocity acceleration (LxL Creative caliber)
+        const tracks = document.querySelectorAll('.marquee-track');
+        if (tracks.length && Math.abs(velocity) > 0.05) {
+          const speedFactor = Math.min(Math.abs(velocity) * 0.12, 2.5);
+          tracks.forEach(track => {
+            track.style.animationDuration = Math.max(16 / (1 + speedFactor), 3.5) + 's';
+          });
+        }
+      });
+
+      if (typeof gsap !== 'undefined') {
+        gsap.ticker.lagSmoothing(0);
+      }
+    } catch (e) {
+      console.warn('Lenis momentum notice:', e);
+      window.addEventListener('scroll', () => handleScrollMotion(window.scrollY, 0), { passive: true });
+    }
+  } else {
+    // Native scroll fallback
+    window.addEventListener('scroll', () => handleScrollMotion(window.scrollY, 0), { passive: true });
+  }
+
+  // Smooth Anchor link gliding (e.g., #services, #gallery, etc.)
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (!href || href === '#' || href.length < 2) return;
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        if (window.lenis) {
+          window.lenis.scrollTo(target, { offset: -70, duration: 1.35 });
+        } else {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+  });
+
+  // Evagher Editorial Parallax Imagery
+  if (!isReducedMotion && typeof ScrollTrigger !== 'undefined' && typeof gsap !== 'undefined') {
+    function setupParallax() {
+      // Editorial portrait & gallery images subtle vertical drift inside framing
+      document.querySelectorAll('.gal-item img, .lookbook-card img, .svc-split-card img, .editorial-card img').forEach(img => {
+        if (img.dataset.hasParallax) return;
+        img.dataset.hasParallax = 'true';
+        gsap.fromTo(img, 
+          { y: -16 },
+          {
+            y: 16,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: img.closest('.gal-item, .lookbook-card, .svc-split-card, .editorial-card') || img,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1.1,
+            }
+          }
+        );
+      });
+
+      // Editorial running watermarks subtle glide
+      document.querySelectorAll('.editorial-watermark').forEach(wm => {
+        if (wm.dataset.hasParallax) return;
+        wm.dataset.hasParallax = 'true';
+        gsap.to(wm, {
+          x: -50,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: wm.parentElement,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1.4,
+          }
+        });
+      });
+    }
+
+    if (document.readyState === 'complete') {
+      setupParallax();
+    } else {
+      window.addEventListener('load', setupParallax);
     }
   }
-  lastScrollY = currY;
+})();
 
-  const tot=document.documentElement.scrollHeight-innerHeight;
-  const pct=tot>0?currY/tot:0;
-  const d=119.4;
-  const pr = document.querySelector('#scr .pr');
-  if(pr) pr.style.strokeDashoffset=d-d*pct;
-  // Trigger reveal check on scroll as robust fallback
-  checkScrollReveals();
-}, { passive: true });
 
 /* ── Reveal ── */
 function checkScrollReveals(){
@@ -5762,6 +8624,27 @@ window.closeSideDrawer = function(){
 // Backward compatibility for legacy callers
 function toggleMob(){ toggleSideDrawer(); }
 
+/* ── Collapsible Service Inclusions & Kit Details ── */
+window.toggleSvcDetails = function(btn) {
+  if (!btn) return;
+  const container = btn.closest('.svc-split-right') || btn.parentElement;
+  if (!container) return;
+  const target = container.querySelector('.svc-details-collapsible');
+  if (!target) return;
+  const isOpen = target.classList.contains('open');
+  if (isOpen) {
+    target.classList.remove('open');
+    btn.classList.remove('open');
+    const labelSpan = btn.querySelector('.svc-toggle-text');
+    if (labelSpan) labelSpan.textContent = 'View Full Inclusions & Kit';
+  } else {
+    target.classList.add('open');
+    btn.classList.add('open');
+    const labelSpan = btn.querySelector('.svc-toggle-text');
+    if (labelSpan) labelSpan.textContent = 'Collapse Inclusions';
+  }
+};
+
 /* ═════════════════════════════════════════════════════════════════════
    ANSHITA VIP CART & COMBO PRIVILEGE ENGINE (E-COMMERCE TROUSSEAU)
 ═════════════════════════════════════════════════════════════════════ */
@@ -5812,6 +8695,24 @@ const AnshitaCart = {
     this.save();
     this.openDrawer();
     this.showToast(`✦ Added to Trousseau: ${service.title}`);
+
+    // Contextual Concierge Dialogue Triggers
+    if (typeof window.setConciergeSpeech === 'function') {
+      const isPkgOrCombo = !!service.isCombo || (service.category === 'bridal') || (service.title && service.title.toLowerCase().includes('package'));
+      if (isPkgOrCombo) {
+        // If package chosen: suggest add-on services at lowest bundle cost
+        window.setConciergeSpeech(
+          `✨ <strong>Royal Choice!</strong> Add Hair Artistry or Side Makeup at an exclusive <em>₹2,500 VIP rate</em>?`,
+          '💎 Concierge Privilege Offer'
+        );
+      } else {
+        // If single service chosen: suggest full bridal package with perks
+        window.setConciergeSpeech(
+          `💄 <strong>Exquisite!</strong> Looking for our all-inclusive <em>Bridal Package</em> with 2 free side makeups?`,
+          '👑 Package Recommendation'
+        );
+      }
+    }
   },
 
   removeItem(index) {
@@ -6885,149 +9786,354 @@ let peekWheelLock = false;
 let peekTouchStartX = 0;
 let peekTouchStartY = 0;
 let peekTouchDeltaX = 0;
+let lookbookAutoTimer = null;
+const LOOKBOOK_AUTO_ADVANCE_MS = 30000; // 30 seconds auto-advance
 
-function updatePeekStage(){
-  const total = window.peekGalleryItems.length;
-  const curr = window.peekGalleryItems[window.currentPeekIndex];
-  const prevIdx = (window.currentPeekIndex - 1 + total) % total;
-  const nextIdx = (window.currentPeekIndex + 1) % total;
+function startLookbookAutoAdvance(){
+  stopLookbookAutoAdvance();
+  lookbookAutoTimer = setTimeout(() => {
+    nextPeekImage();
+  }, LOOKBOOK_AUTO_ADVANCE_MS);
+}
 
-  const prev = window.peekGalleryItems[prevIdx];
-  const next = window.peekGalleryItems[nextIdx];
-
-  const imgActive = document.getElementById('peek-img-active');
-  const imgPrev = document.getElementById('peek-img-prev');
-  const imgNext = document.getElementById('peek-img-next');
-  const captionEl = document.getElementById('peek-info-caption');
-  const counterEl = document.getElementById('peek-info-counter');
-  const waBtn = document.getElementById('peek-wa-inquire');
-  const igBtn = document.getElementById('peek-ig-view');
-
-  if(imgActive && curr) imgActive.src = curr.src;
-  if(imgPrev && prev) imgPrev.src = prev.src;
-  if(imgNext && next) imgNext.src = next.src;
-
-  if(captionEl && curr){
-    const groupBadge = (window.currentPeekGroupTitle && window.currentPeekGroupKey !== 'all') ? `✦ ${window.currentPeekGroupTitle} · ` : '';
-    captionEl.textContent = `${groupBadge}${curr.caption}`;
-  }
-  if(counterEl) counterEl.textContent = `${String(window.currentPeekIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
-
-  if(waBtn && curr){
-    waBtn.href = `https://wa.me/${WA}?text=` + encodeURIComponent(`Namaste! I would like to inquire about the look: ${curr.caption} (${curr.category}).`);
-  }
-  if(igBtn && curr){
-    const linkLabel = document.getElementById('peek-link-label');
-    if(curr.media_type === 'youtube' || curr.youtube){
-      igBtn.href = curr.youtube || curr.external_url;
-      if(linkLabel) linkLabel.textContent = '▶ Watch on YouTube';
-    } else if(curr.media_type === 'instagram' || curr.instagram){
-      igBtn.href = curr.instagram || curr.external_url;
-      if(linkLabel) linkLabel.textContent = '📸 View on Instagram';
-    } else if(curr.external_url){
-      igBtn.href = curr.external_url;
-      if(linkLabel) linkLabel.textContent = '↗ View Source';
-    } else {
-      igBtn.href = curr.src;
-      if(linkLabel) linkLabel.textContent = '🔍 High-Res View';
-    }
-  }
-
-  // Render Related Looks & Angles Filmstrip
-  const relatedBox = document.getElementById('peek-related-container');
-  const relatedStrip = document.getElementById('peek-related-strip');
-  const relatedTitle = document.getElementById('peek-related-title');
-
-  if (relatedBox && relatedStrip) {
-    if (total > 1) {
-      relatedBox.style.display = 'flex';
-      if (relatedTitle) {
-        relatedTitle.textContent = `✦ Related Angles & Views (${window.currentPeekIndex + 1} of ${total})`;
-      }
-      relatedStrip.innerHTML = '';
-      window.peekGalleryItems.forEach((itm, idx) => {
-        const card = document.createElement('div');
-        card.className = `peek-thumb-card${idx === window.currentPeekIndex ? ' active' : ''}`;
-        card.title = itm.caption || `Angle ${idx + 1}`;
-        card.onclick = (e) => {
-          e.stopPropagation();
-          window.currentPeekIndex = idx;
-          updatePeekStage();
-          triggerPeekFeedback('select');
-        };
-        const thumbImg = document.createElement('img');
-        thumbImg.src = itm.src;
-        thumbImg.alt = itm.caption || 'Bridal Detail';
-        card.appendChild(thumbImg);
-        relatedStrip.appendChild(card);
-      });
-    } else {
-      relatedBox.style.display = 'none';
-    }
+function stopLookbookAutoAdvance(){
+  if(lookbookAutoTimer){
+    clearTimeout(lookbookAutoTimer);
+    lookbookAutoTimer = null;
   }
 }
 
+function renderLookbookSidebar(){
+  const listEl = document.getElementById('lb-album-list');
+  if(!listEl || !window.lookbookGroups) return;
+  listEl.innerHTML = '';
+
+  let idx = 1;
+  Object.entries(window.lookbookGroups).forEach(([key, grp]) => {
+    if(!grp || !grp.items || !grp.items.length) return;
+    const padNum = String(idx++).padStart(2, '0');
+    const isActive = (key === window.currentPeekGroupKey);
+    const firstImg = grp.items[0]?.src || grp.cover || '';
+    const imgCount = grp.items.length;
+    const hasVideo = grp.items.some(i => i.video_url || i.video || i.media_type === 'video_file' || i.media_type === 'youtube');
+    const countText = `${imgCount} IMAGES${hasVideo ? ' / 1 VIDEO' : ''}`;
+
+    const card = document.createElement('div');
+    card.className = `lb-album-card${isActive ? ' active' : ''}`;
+    card.onclick = () => {
+      window.openLookbook(key);
+    };
+    card.innerHTML = `
+      <span class="lb-album-num">${padNum}</span>
+      <img src="${firstImg}" alt="${grp.title || key}" class="lb-album-thumb" loading="lazy">
+      <div class="lb-album-info">
+        <h4>${grp.title || key}</h4>
+        <span>${countText}</span>
+      </div>
+    `;
+    listEl.appendChild(card);
+  });
+}
+
+function updatePeekStage(){
+  const total = window.peekGalleryItems.length;
+  if(total === 0) return;
+  const curr = window.peekGalleryItems[window.currentPeekIndex];
+
+  // 1. Center Hero Stage (Image or Video)
+  const heroImg = document.getElementById('peek-img-active');
+  const heroVid = document.getElementById('peek-hero-video-active');
+  const heroYt = document.getElementById('peek-hero-youtube-active');
+
+  if(curr){
+    const isLocalVideo = (curr.media_type === 'video_file' || (curr.video_url && !curr.video_url.includes('youtube')));
+    const isYt = (curr.media_type === 'youtube' || (curr.external_url && curr.external_url.includes('youtu')));
+
+    if(isLocalVideo && curr.video_url){
+      if(heroImg) heroImg.style.display = 'none';
+      if(heroYt) { heroYt.style.display = 'none'; heroYt.src = ''; }
+      if(heroVid){
+        heroVid.style.display = 'block';
+        if(heroVid.src !== curr.video_url){
+          heroVid.src = curr.video_url;
+          heroVid.load();
+        }
+        heroVid.play().catch(()=>{});
+      }
+    } else if(isYt){
+      if(heroImg) heroImg.style.display = 'none';
+      if(heroVid){ heroVid.pause(); heroVid.style.display = 'none'; }
+      if(heroYt){
+        heroYt.style.display = 'block';
+        const raw = curr.external_url || '';
+        const id = curr.embed_code || ((raw.match(/(?:v=|youtu\.be\/|shorts\/)([A-Za-z0-9_-]{11})/) || [])[1]);
+        if(id) heroYt.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}`;
+      }
+    } else {
+      if(heroVid){ heroVid.pause(); heroVid.style.display = 'none'; }
+      if(heroYt){ heroYt.src = ''; heroYt.style.display = 'none'; }
+      if(heroImg){
+        heroImg.style.display = 'block';
+        heroImg.src = curr.src || curr.thumbnail || '';
+        heroImg.alt = curr.caption || 'Bridal Haute Couture';
+      }
+    }
+  }
+
+  // 2. Mobile Counter
+  const mobCounter = document.getElementById('lb-mobile-counter');
+  const mobTag = document.getElementById('lb-mobile-album-tag');
+  if(mobCounter) mobCounter.textContent = `${String(window.currentPeekIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+  if(mobTag && window.currentPeekGroupTitle) mobTag.textContent = window.currentPeekGroupTitle;
+
+  // 3. Right Panel Details
+  const titleEl = document.getElementById('lb-album-title');
+  const descEl = document.getElementById('lb-album-desc');
+  const imgCountEl = document.getElementById('lb-metric-images');
+  const vidCountEl = document.getElementById('lb-metric-videos');
+  const durEl = document.getElementById('lb-metric-duration');
+
+  const currGroup = window.lookbookGroups ? window.lookbookGroups[window.currentPeekGroupKey] : null;
+  const albumTitle = (currGroup && currGroup.title) || window.currentPeekGroupTitle || 'HAUTE COUTURE';
+  const albumDesc = (currGroup && currGroup.description) || (curr ? curr.caption : 'Curated bridal makeover and styling archive by Anshita Makeover.');
+
+  if(titleEl) titleEl.textContent = albumTitle.toUpperCase();
+  if(descEl) descEl.textContent = albumDesc;
+  if(imgCountEl) imgCountEl.textContent = `🖼️ ${String(total).padStart(2, '0')}`;
+
+  // Check if any item in this lookbook has video
+  const videoItem = window.peekGalleryItems.find(i => i.video_url || i.video || i.media_type === 'video_file' || i.media_type === 'youtube');
+  const vidBox = document.getElementById('lb-video-container');
+  const vidElem = document.getElementById('peek-video-active');
+  const ytElem = document.getElementById('peek-youtube-active');
+  const playBtn = document.getElementById('lb-video-play-btn');
+
+  if(vidCountEl) vidCountEl.textContent = videoItem ? '🎬 01' : '🎬 00';
+  if(durEl) durEl.textContent = videoItem ? '⏱️ 02:45' : '⏱️ --:--';
+
+  if(vidBox && vidElem && ytElem){
+    if(videoItem){
+      vidBox.style.display = 'block';
+      const vUrl = videoItem.video_url || videoItem.video;
+      if(vUrl){
+        ytElem.style.display = 'none';
+        ytElem.src = '';
+        vidElem.style.display = 'block';
+        if(vidElem.src !== vUrl) {
+          vidElem.src = vUrl;
+          vidElem.load();
+        }
+        // Autoplay muted as requested
+        const playPromise = vidElem.play();
+        if(playPromise !== undefined){
+          playPromise.then(() => {
+            if(playBtn) playBtn.textContent = '❚❚';
+          }).catch(() => {
+            if(playBtn) playBtn.textContent = '▶';
+          });
+        }
+      } else if(videoItem.external_url || videoItem.embed_code){
+        vidElem.style.display = 'none';
+        ytElem.style.display = 'block';
+        const raw = videoItem.external_url || '';
+        const id = videoItem.embed_code || ((raw.match(/(?:v=|youtu\.be\/|shorts\/)([A-Za-z0-9_-]{11})/) || [])[1]);
+        if(id) ytElem.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}`;
+        if(playBtn) playBtn.style.display = 'none';
+      }
+    } else {
+      // If no video in album, hide video container cleanly
+      vidBox.style.display = 'none';
+      vidElem.pause();
+    }
+  }
+
+
+  // 4. Center Bottom Filmstrip Thumbnails
+  const strip = document.getElementById('peek-related-strip');
+  if(strip){
+    strip.innerHTML = '';
+    window.peekGalleryItems.forEach((itm, idx) => {
+      const card = document.createElement('div');
+      card.className = `lb-filmstrip-card${idx === window.currentPeekIndex ? ' active' : ''}`;
+      card.onclick = (e) => {
+        e.stopPropagation();
+        window.currentPeekIndex = idx;
+        updatePeekStage();
+        startLookbookAutoAdvance();
+      };
+      card.innerHTML = `<img src="${itm.src || itm.thumbnail || ''}" alt="Angle ${idx + 1}" loading="lazy">`;
+      strip.appendChild(card);
+    });
+  }
+
+  // 5. Inquire link setup
+  const waBtn = document.getElementById('peek-wa-inquire');
+  if(waBtn && curr){
+    waBtn.href = `https://wa.me/${WA}?text=` + encodeURIComponent(`Namaste Anshita! I would like to reserve/inquire about the ${albumTitle} bridal look (${curr.caption}).`);
+  }
+
+  // Restart 30s progression timer
+  startLookbookAutoAdvance();
+}
+
+window.toggleLookbookVideo = function(e){
+  if(e) e.stopPropagation();
+  const v = document.getElementById('peek-video-active');
+  const btn = document.getElementById('lb-video-play-btn');
+  if(!v) return;
+  if(v.paused){
+    v.play().then(() => { if(btn) btn.textContent = '❚❚'; }).catch(()=>{});
+  } else {
+    v.pause();
+    if(btn) btn.textContent = '▶';
+  }
+};
+
+window.seekLookbookVideo = function(e){
+  const v = document.getElementById('peek-video-active');
+  const bar = document.getElementById('lb-video-progress');
+  if(!v || !bar || !v.duration) return;
+  const rect = bar.getBoundingClientRect();
+  const pos = (e.clientX - rect.left) / rect.width;
+  v.currentTime = pos * v.duration;
+};
+
+// Video time update listener
+(function initLookbookVideoSync(){
+  window.addEventListener('DOMContentLoaded', () => {
+    const v = document.getElementById('peek-video-active');
+    const fill = document.getElementById('lb-video-progress-fill');
+    const curTime = document.getElementById('lb-video-cur-time');
+    const totTime = document.getElementById('lb-video-tot-time');
+    if(!v) return;
+
+    v.addEventListener('timeupdate', () => {
+      if(v.duration && fill){
+        const pct = (v.currentTime / v.duration) * 100;
+        fill.style.width = pct + '%';
+        if(curTime) curTime.textContent = formatTime(v.currentTime);
+        if(totTime) totTime.textContent = formatTime(v.duration);
+      }
+    });
+
+    function formatTime(sec){
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+  });
+})();
+
+window.shareCurrentLookbook = function(){
+  const curr = window.peekGalleryItems[window.currentPeekIndex];
+  const url = window.location.origin + '/gallery/';
+  if(navigator.share){
+    navigator.share({
+      title: window.currentPeekGroupTitle || 'Anshita Makeover Lookbook',
+      text: curr ? curr.caption : 'Explore Anshita Makeover Bridal Couture Lookbook',
+      url: url
+    }).catch(()=>{});
+  } else {
+    navigator.clipboard?.writeText(url).then(() => {
+      if(typeof AnshitaCart !== 'undefined' && AnshitaCart.showToast) {
+        AnshitaCart.showToast('✦ Lookbook Link Copied to Clipboard!');
+      } else {
+        alert('✦ Lookbook Link Copied!');
+      }
+    });
+  }
+};
+
+window.toggleLookbookFav = function(){
+  const icon = document.getElementById('lb-fav-icon');
+  if(!icon) return;
+  const isFav = icon.textContent === '♥';
+  icon.textContent = isFav ? '♡' : '♥';
+  icon.style.color = isFav ? '' : 'var(--gold)';
+  if(typeof AnshitaCart !== 'undefined' && AnshitaCart.showToast) {
+    AnshitaCart.showToast(isFav ? 'Removed from favorites' : '✦ Added to your private wedding favorites!');
+  }
+};
+
 function openPeekGallery(startIndex){
   window.currentPeekIndex = (startIndex !== undefined && startIndex >= 0 && startIndex < window.peekGalleryItems.length) ? startIndex : 0;
+  renderLookbookSidebar();
   updatePeekStage();
   const m = document.getElementById('editorial-peek-gallery');
   if(m){
     m.classList.add('open');
     document.body.style.overflow = 'hidden';
+    if(window.lenis) window.lenis.stop();
   }
+  startLookbookAutoAdvance();
 }
 
 function closePeekGallery(){
+  stopLookbookAutoAdvance();
+  const v = document.getElementById('peek-video-active');
+  if(v) v.pause();
+  const hv = document.getElementById('peek-hero-video-active');
+  if(hv) hv.pause();
+  const hyt = document.getElementById('peek-hero-youtube-active');
+  if(hyt) hyt.src = '';
+  const yt = document.getElementById('peek-youtube-active');
+  if(yt) yt.src = '';
   const m = document.getElementById('editorial-peek-gallery');
   if(m){
     m.classList.remove('open');
     document.body.style.overflow = '';
+    if(window.lenis) window.lenis.start();
   }
 }
 
+
 function nextPeekImage(){
+  if(!window.peekGalleryItems.length) return;
   window.currentPeekIndex = (window.currentPeekIndex + 1) % window.peekGalleryItems.length;
   updatePeekStage();
   triggerPeekFeedback('next');
 }
 
 function prevPeekImage(){
+  if(!window.peekGalleryItems.length) return;
   window.currentPeekIndex = (window.currentPeekIndex - 1 + window.peekGalleryItems.length) % window.peekGalleryItems.length;
   updatePeekStage();
   triggerPeekFeedback('prev');
 }
 
 function triggerPeekFeedback(dir){
-  const frame = document.getElementById('peek-slide-frame');
+  const frame = document.getElementById('lb-hero-frame');
   if(!frame) return;
-  const shift = dir === 'next' ? -12 : 12;
-  frame.style.transform = `scale(0.98) translateX(${shift}px)`;
+  const shift = dir === 'next' ? -10 : 10;
+  frame.style.transform = `scale(0.985) translateX(${shift}px)`;
   setTimeout(() => {
     frame.style.transform = 'scale(1) translateX(0)';
-  }, 250);
+  }, 220);
 }
 
-// Bi-Directional Wheel & Touch Navigation Listeners
+// Bi-Directional Wheel & Touch Navigation Listeners for Lookbook
 (function initPeekGestures(){
   const modal = document.getElementById('editorial-peek-gallery');
   if(!modal) return;
 
   // Mouse Wheel Navigation (Scroll Down or Right = Next, Scroll Up or Left = Previous)
   modal.addEventListener('wheel', (e) => {
+    // If scrolling inside sidebar or right panel, allow normal scroll
+    if(e.target.closest('#lb-sidebar') || e.target.closest('#lb-detail-panel')) return;
+
     e.preventDefault();
     if(peekWheelLock) return;
 
-    // Detect dominant axis scroll
     const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
 
     if(delta > 18){
       peekWheelLock = true;
       nextPeekImage();
-      setTimeout(() => { peekWheelLock = false; }, 420);
+      setTimeout(() => { peekWheelLock = false; }, 380);
     } else if(delta < -18){
       peekWheelLock = true;
       prevPeekImage();
-      setTimeout(() => { peekWheelLock = false; }, 420);
+      setTimeout(() => { peekWheelLock = false; }, 380);
     }
   }, { passive: false });
 
@@ -7043,45 +10149,18 @@ function triggerPeekFeedback(dir){
   modal.addEventListener('touchmove', (e) => {
     if(e.touches.length === 1){
       peekTouchDeltaX = e.touches[0].clientX - peekTouchStartX;
-      const deltaY = e.touches[0].clientY - peekTouchStartY;
-      // Slight responsive parallax while dragging
-      const frame = document.getElementById('peek-slide-frame');
-      if(frame && Math.abs(peekTouchDeltaX) > 10){
-        frame.style.transform = `translateX(${peekTouchDeltaX * 0.25}px)`;
-      }
     }
   }, { passive: true });
 
-  modal.addEventListener('touchend', (e) => {
-    const frame = document.getElementById('peek-slide-frame');
-    if(frame) frame.style.transform = '';
-
+  modal.addEventListener('touchend', () => {
     if(peekTouchDeltaX < -45){
-      // Swiped Left or dragged ➔ Next image
       nextPeekImage();
     } else if(peekTouchDeltaX > 45){
-      // Swiped Right ➔ Previous image
       prevPeekImage();
     }
   }, { passive: true });
 
-  // Picasa-style Direct Click Navigation (Clicking right side navigates Next, clicking left side navigates Previous)
-  const slideFrame = document.getElementById('peek-slide-frame');
-  if(slideFrame){
-    slideFrame.addEventListener('click', (e) => {
-      // If clicking inside interactive buttons or links, ignore
-      if(e.target.closest('a') || e.target.closest('button')) return;
-      const rect = slideFrame.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      if(clickX > rect.width * 0.52){
-        nextPeekImage();
-      } else if(clickX < rect.width * 0.48){
-        prevPeekImage();
-      }
-    });
-  }
-
-  // Keyboard navigation (Picasa Image Viewer: Left/Right, Up/Down, ESC)
+  // Keyboard navigation (Left/Right, Up/Down, ESC)
   window.addEventListener('keydown', (e) => {
     const isOpen = modal.classList.contains('open');
     if(!isOpen) return;
@@ -7328,15 +10407,28 @@ function toggleChat(shouldFocus = true) {
   if (!box) return;
   chatOpened = !box.classList.contains('open');
   if (chatOpened) {
+    document.body.classList.add('chat-is-open');
     box.classList.add('open');
     sessionStorage.setItem('anshita_chat_opened', 'true');
+    const bubble = document.getElementById('chat-speech-bubble');
+    if (bubble) bubble.classList.remove('active');
+    clearTimeout(conciergeDismissTimer);
+    clearTimeout(conciergeCycleTimer);
     const inp = document.getElementById('chat-inp');
     if (shouldFocus && inp && window.innerWidth > 768) {
       setTimeout(() => inp.focus(), 150);
     }
   } else {
+    document.body.classList.remove('chat-is-open');
     box.classList.remove('open');
     if (chatMaximized) toggleChatMaximize();
+    // Schedule helpful speech tip after closing chat
+    clearTimeout(conciergeCycleTimer);
+    conciergeCycleTimer = setTimeout(() => {
+      if (!document.body.classList.contains('chat-is-open')) {
+        triggerNextConciergePrompt();
+      }
+    }, 4500);
   }
 }
 
@@ -7465,6 +10557,23 @@ function detectUserRegionAndRecommendLanguages() {
     const isBhojpuri = userLoc.includes('varanasi') || userLoc.includes('patna') || userLoc.includes('gorakhpur') || userLoc.includes('ballia') || userLoc.includes('bhojpur') || userLoc.includes('gaya') || userLoc.includes('chhapra');
     const isMaharashtra = userLoc.includes('nagpur') || userLoc.includes('mumbai') || userLoc.includes('pune');
 
+    const speechGreetings = {
+      'bundelkhandi': 'राम-राम! का मदद कर सकत हैं आपकी?',
+      'baghelkhandi': 'प्रणाम! कइसन मदद चाहि?',
+      'bhojpuri': 'प्रणाम! हम रउआ का कइसे मदद करीं?',
+      'marathi': 'नमस्कार! मी आपली काय मदत करू शकते?',
+      'hindi': 'नमस्ते! मैं आपकी कैसे सहायता कर सकती हूँ?',
+      'english': '✨ Namaste! May I help you?'
+    };
+
+    let detectedLang = savedLang || 'hindi';
+    if (!savedLang) {
+      if (isBundelkhand) detectedLang = 'bundelkhandi';
+      else if (isBaghelkhand) detectedLang = 'baghelkhandi';
+      else if (isBhojpuri) detectedLang = 'bhojpuri';
+      else if (isMaharashtra) detectedLang = 'marathi';
+    }
+
     if (subTitle) {
       if (isBundelkhand) {
         subTitle.innerHTML = '✦ <strong>बुंदेलखंड विशेष</strong>: आपन बुंदेली बोली में बतराय के लाने नीचे चुनो:';
@@ -7476,10 +10585,32 @@ function detectUserRegionAndRecommendLanguages() {
         subTitle.innerHTML = '✦ अपने क्षेत्र व पसंद की भाषा या क्षेत्रीय बोली चुनें:';
       }
     }
+
+    // Set speech bubble text according to region
+    const greetText = speechGreetings[detectedLang] || speechGreetings['hindi'];
+    if (typeof window.setConciergeSpeech === 'function') {
+      window.setConciergeSpeech(greetText, 'Anshita AI Concierge', 7000);
+    }
   } catch (e) {
     console.debug('Region sensing error:', e);
   }
 }
+
+// IP-based Geo Location detection (Async refinement)
+(function detectUserGeoIP() {
+  try {
+    fetch('https://ipapi.co/json/', { cache: 'force-cache' })
+      .then(res => res.json())
+      .then(data => {
+        if (!data || !data.city) return;
+        const city = (data.city || '').toLowerCase();
+        const region = (data.region || '').toLowerCase();
+        localStorage.setItem('user_city_choice', city + ' ' + region);
+        detectUserRegionAndRecommendLanguages();
+      })
+      .catch(() => {});
+  } catch (err) {}
+})();
 
 window.selectChatLanguage = function(langCode, langName) {
   window.selectedChatLanguage = langCode;
@@ -7493,18 +10624,37 @@ window.selectChatLanguage = function(langCode, langName) {
     if (btn) btn.classList.add('active');
   }
 
+  // Update Speech Bubble greeting text
+  const speechGreetings = {
+    'bundelkhandi': '🙏 राम-राम जी! Anshita Makeover में आपका स्वागत है! ब्याह सिंगार खातिर कछु पूछने चाहत हो?',
+    'baghelkhandi': '🙏 राम-राम जी! Anshita Makeover मा आपका स्वागत बा! कइसन मदद चाहि?',
+    'bhojpuri': '🙏 राम-राम जी! Anshita Makeover में रउआ का स्वागत बा! बियाह के पैकेज जानीं!',
+    'marathi': '🙏 राम-राम / नमस्कार! Anshita Makeover मध्ये स्वागत आहे! लग्न मेकअप विचारू शकता!',
+    'hindi': '🙏 राम राम जी! Anshita Makeover में आपका स्वागत है! विवाह शृंगार के बारे में पूछें!',
+    'english': '✨ Namaste! Welcome to Anshita Makeover! May I help you find your dream bridal look?'
+  };
+  if (typeof window.setConciergeSpeech === 'function' && speechGreetings[langCode]) {
+    window.setConciergeSpeech(speechGreetings[langCode], 'Anshita AI Concierge', 7000);
+  }
+
   // Add system feedback in chat
   const greetings = {
-    'bundelkhandi': 'राम-राम! अब हम आपसे **बुंदेलखंडी** में बात करेंगे। किए का सिंगार या ब्याह पैकेज के बारे में पूछने चाहत हो? ✦',
-    'baghelkhandi': 'प्रणाम! अब हम आपसे **बघेलखंडी** मा बात करब। कौन सिंगार या लगन पैकेज के बारे मा जाने के बा? ✦',
-    'bhojpuri': 'प्रणाम! अब हम आपसे **भोजपुरी** में बातचीत करब। बताईं, ब्राइडल सूट्स भा बियाह के कवना सिंगार के बारे में जाने के बा? ✦',
-    'hindi': 'नमस्ते! अब हम आपसे **हिंदी** में बात करेंगे। आप हमारे ब्राइडल सूट्स, एयरब्रश मेकअप या पैकेज के बारे में क्या जानना चाहते हैं? ✦',
-    'english': 'Wonderful! I will now assist you in **English**. How may I guide you through our bridal suites, vanity kits, or destination booking today? ✦',
-    'marathi': 'नमस्कार! आता आम्ही आपल्याशी **मराठीत** संवाद साधू. आपल्या लग्न सोहळ्याच्या ब्राइडल मेकअप व पॅकेजबद्दल काय माहिती हवी आहे? ✦'
+    'bundelkhandi': '🙏 राम-राम जी! Anshita Makeover में आपका स्वागत है! अब हम आपसे **बुंदेलखंडी** में बात करेंगे। किए का सिंगार या ब्याह पैकेज के बारे में पूछने चाहत हो? ✦',
+    'baghelkhandi': '🙏 राम-राम जी! Anshita Makeover मा आपका स्वागत बा! अब हम आपसे **बघेलखंडी** मा बात करब। कौन सिंगार या लगन पैकेज के बारे मा जाने के बा? ✦',
+    'bhojpuri': '🙏 राम-राम जी! Anshita Makeover में रउआ का स्वागत बा! अब हम आपसे **भोजपुरी** में बातचीत करब। बताईं, ब्राइडल सूट्स भा बियाह के कवना सिंगार के बारे में जाने के बा? ✦',
+    'hindi': '🙏 राम राम जी! Anshita Makeover में आपका स्वागत है! अब हम आपसे **हिंदी** में बात करेंगे। आप हमारे ब्राइडल सूट्स, एयरब्रश मेकअप या पैकेज के बारे में क्या जानना चाहते हैं? ✦',
+    'english': 'Wonderful! Welcome to Anshita Makeover! I will now assist you in **English**. How may I guide you through our bridal suites, vanity kits, or destination booking today? ✦',
+    'marathi': '🙏 राम-राम / नमस्कार! Anshita Makeover मध्ये स्वागत आहे! आता आम्ही आपल्याशी **मराठीत** संवाद साधू. आपल्या लग्न सोहळ्याच्या ब्राइडल मेकअप व पॅकेजबद्दल काय माहिती हवी आहे? ✦'
   };
 
   const replyMsg = greetings[langCode] || `Language set to ${langName}. How may I help you?`;
   appendMsg(replyMsg, 'bot');
+
+  if (['hindi', 'bundelkhandi', 'baghelkhandi', 'bhojpuri'].includes(langCode)) {
+    if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
+      window.charConciergeState.setMood('ram_ram', 7000);
+    }
+  }
 
   const inp = document.getElementById('chat-inp');
   if (inp && window.innerWidth > 768) {
@@ -7537,6 +10687,87 @@ document.addEventListener('DOMContentLoaded', () => {
   detectUserRegionAndRecommendLanguages();
 });
 
+// Speech-to-Text Recognition for Asha Concierge
+let speechRecognitionInstance = null;
+let isRecordingSpeech = false;
+
+window.toggleSpeechToText = function() {
+  const micBtn = document.getElementById('chat-mic-btn');
+  const inp = document.getElementById('chat-inp');
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert("Speech recognition is supported in modern Chrome, Edge, and Safari browsers.");
+    return;
+  }
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (isRecordingSpeech && speechRecognitionInstance) {
+    speechRecognitionInstance.stop();
+    return;
+  }
+
+  try {
+    speechRecognitionInstance = new SpeechRecognition();
+    speechRecognitionInstance.continuous = false;
+    speechRecognitionInstance.interimResults = true;
+
+    // Detect language code from selectedChatLanguage
+    const langMap = {
+      'hindi': 'hi-IN',
+      'marathi': 'mr-IN',
+      'bundelkhandi': 'hi-IN',
+      'bhojpuri': 'hi-IN',
+      'english': 'en-IN'
+    };
+    speechRecognitionInstance.lang = langMap[window.selectedChatLanguage || 'hindi'] || 'hi-IN';
+
+    speechRecognitionInstance.onstart = function() {
+      isRecordingSpeech = true;
+      if (micBtn) micBtn.classList.add('recording');
+      if (inp) inp.placeholder = "Listening... Speak now 🎙️";
+      if (window.charConciergeState) window.charConciergeState.mood = 'listening';
+    };
+
+    speechRecognitionInstance.onresult = function(event) {
+      let finalTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        } else {
+          inp.value = event.results[i][0].transcript;
+        }
+      }
+      if (finalTranscript) {
+        inp.value = finalTranscript;
+      }
+    };
+
+    speechRecognitionInstance.onerror = function(event) {
+      console.warn("Speech recognition error:", event.error);
+      stopSpeechRecording();
+    };
+
+    speechRecognitionInstance.onend = function() {
+      stopSpeechRecording();
+      if (inp && inp.value.trim().length > 1) {
+        setTimeout(() => sendChat(), 300);
+      }
+    };
+
+    speechRecognitionInstance.start();
+  } catch (err) {
+    console.error("Speech recognition start failed:", err);
+    stopSpeechRecording();
+  }
+
+  function stopSpeechRecording() {
+    isRecordingSpeech = false;
+    if (micBtn) micBtn.classList.remove('recording');
+    if (inp) inp.placeholder = "Ask anything about bridal, hair, bookings...";
+    if (window.charConciergeState) window.charConciergeState.mood = 'happy';
+  }
+};
+
 function chatKey(e){if(e.key==='Enter')sendChat()}
 async function sendChat(){
   const inp=document.getElementById('chat-inp');
@@ -7544,6 +10775,35 @@ async function sendChat(){
   inp.value='';
   appendMsg(msg,'user');
   const typing=appendTyping();
+
+  const lowerMsg = msg.toLowerCase();
+  
+  // 1. Negative / Rejection / Disinterest -> SAD / POUTING (Turbosquid / Sketchfab cute expression)
+  const isNegative = /(nahi|nahin|na\b|no\b|cancel|chodo|chhod|not interested|expensive|costly|mehnga|mehanga|mat karo|rehne do|nahi chahiye|baad me|later|nah|nope|छोड़ो|नहीं|ना|महंगा|रहने दो)/i.test(lowerMsg);
+  
+  // 2. Deal Done / Booking confirmation -> CELEBRATING / HAPPY
+  const isDealDone = /(done|book|pakka|ha\b|haa\b|haan\b|yes\b|yep|deal|confirm|advance|reserve|final|payment|ready|बुक|हाँ|पक्का|डन|फाइनल)/i.test(lowerMsg);
+  
+  // 3. Discount / Coupon inquiry -> THINKING & GENERATING DISCOUNT
+  const isAskingDiscount = /(discount|coupon|offer|sasta|kam karo|kam hoga|off\b|privilege|deal|concession|छूट|डिस्काउंट|ऑफर|कूपन)/i.test(lowerMsg);
+
+  // 4. Cultural Greeting -> RAM RAM
+  const isGreeting = /(ram ram|namaste|hello|hi\b|hey\b|pranam|radhe|ram-ram|राम राम|नमस्ते|प्रणाम|राधे)/i.test(lowerMsg);
+
+  if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
+    if (isNegative) {
+      window.charConciergeState.setMood('sad', 10000);
+    } else if (isDealDone) {
+      window.charConciergeState.setMood('celebrating', 12000);
+    } else if (isAskingDiscount) {
+      window.charConciergeState.setMood('thinking_coupon', 8000);
+    } else if (isGreeting) {
+      window.charConciergeState.setMood('ram_ram', 8000);
+    } else {
+      window.charConciergeState.setMood('thinking', 4000);
+    }
+  }
+
   try{
     const r=await fetch('/api/chatbot/',{
       method:'POST',
@@ -7558,7 +10818,41 @@ async function sendChat(){
     typing.remove();
     appendMsg(d.reply,'bot');
     chatSessionId=d.session_id||chatSessionId;
-  }catch(e){typing.remove();appendMsg('Kuch error aa gaya. WhatsApp karo: '+WA,'bot')}
+    
+    // Trigger Anshita 3D Character Talking Lip-Sync
+    if (typeof window.startCharTalking === 'function') {
+      const speechDuration = Math.min(6500, Math.max(2200, (d.reply ? d.reply.length : 40) * 45));
+      window.startCharTalking(speechDuration);
+    }
+
+    if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
+      const rep = d.reply || '';
+      const isCouponOrDeal = rep.includes('GLAMOUR30') || rep.includes('SECRET10') || rep.includes('ANSHITA10') || rep.includes('GLAM50') || /(\d+%\s*OFF|डिस्काउंट|कूपन|सहेली|मुफ्त|FREE|विशेष उपहार)/i.test(rep);
+      const isBookingConfirmed = /(\bbooked\b|\breserved\b|\bcongratulations\b|बधाई|मुबारक|बुक हो गया|धन्यवाद)/i.test(rep);
+
+      if (isBookingConfirmed || isDealDone) {
+        window.charConciergeState.setMood('celebrating', 12000);
+      } else if (isCouponOrDeal) {
+        window.charConciergeState.setMood('offering_deal', 10000);
+      } else if (isNegative) {
+        window.charConciergeState.setMood('sad', 9000);
+      } else if (isGreeting || /(राम राम|namaste|नमस्ते|प्रणाम)/i.test(rep)) {
+        window.charConciergeState.setMood('ram_ram', 7000);
+      } else {
+        const isBookingOrOffer = rep.includes('₹') || rep.includes('Suite') || rep.includes('Package') || rep.includes('Book') || rep.includes('WhatsApp');
+        window.charConciergeState.setMood(isBookingOrOffer ? 'recommending' : 'happy', 5000);
+      }
+    }
+  }catch(e){
+    typing.remove();
+    appendMsg('Kuch error aa gaya. WhatsApp karo: '+WA,'bot');
+    if (typeof window.startCharTalking === 'function') {
+      window.startCharTalking(2000);
+    }
+    if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
+      window.charConciergeState.setMood('sad', 6000);
+    }
+  }
 }
 function renderMarkdownToHtml(md){
   if(!md) return '';
@@ -7822,10 +11116,42 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     headroomInstance.init();
   }
+
+  // Lenis engine initialized in Evagher luxury scroll handler above.
 });
 
 </script>
 
 {% block extra_js %}{% endblock %}
+
+<!-- WhatsApp Instant Booking FAB (SPEC-007 TSK-007.03) -->
+<a id="whatsapp-fab"
+   href="https://wa.me/{{ whatsapp|default:'917879223442' }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20book%20a%20bridal%20consultation.&utm_source=website&utm_medium=whatsapp_fab&utm_campaign=bridal_2024"
+   target="_blank"
+   rel="noopener noreferrer"
+   aria-label="Book a consultation on WhatsApp"
+   title="Book on WhatsApp">
+  <!-- WhatsApp SVG Icon -->
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+  <span class="fab-pulse-ring"></span>
+</a>
+
+<!-- PWA Service Worker Registration (SPEC-008 TSK-008.02) -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then(function(reg) {
+        console.log('[Anshita PWA] ServiceWorker registered successfully with scope:', reg.scope);
+      })
+      .catch(function(err) {
+        console.warn('[Anshita PWA] ServiceWorker registration failed:', err);
+      });
+  });
+}
+</script>
+
 </body>
 </html>

@@ -181,7 +181,7 @@ def build_courses():
 PACKAGE_ROWS = [
     dict(name='Imperial Royal HD Bridal Suite', package_type='bridal', price=35000,
          tagline='The signature HD bridal transformation', is_featured=True, order=0,
-         min_negotiated_price=28000, max_discount_percent=20, allow_ai_negotiation=True,
+         min_negotiated_price=26250, max_discount_percent=25, allow_ai_negotiation=True,
          features='High-definition luminous base\nCut-crease eye artistry\nDupatta & saree draping\n2 side makeups free'),
     dict(name='Master Airbrush Bridal Suite', package_type='bridal', price=45000,
          tagline='TEMPTU 24-hour cry-proof airbrush perfection', is_featured=True, order=1,
@@ -212,7 +212,7 @@ PACKAGE_ROWS = [
          tagline='Hydra-glow pre-bridal prep', is_featured=False, order=9,
          features='Hydra facial\nBrightening ritual'),
     dict(name='Bespoke Custom Couture', package_type='custom', price=None,
-         price_label='On Request', tagline='Tailored couture quote', is_featured=False, order=10,
+         display_label='On Request', tagline='Tailored couture quote', is_featured=False, order=10,
          features='Consultation-led bespoke quote'),
     dict(name='Legacy Trial Package', package_type='party', price=4000,
          tagline='Deprecated trial package', is_featured=False, order=99, is_active=False,
@@ -446,7 +446,7 @@ def build_look_media(groups=None):
         caption='Chandan art close-up', thumbnail_url='/static/core/images/authentic/bride_look1_portrait.jpg', order=1)
     add(kuhu, media_type='instagram', title='Kuhu Reel — Shubho Drishti',
         external_url='https://www.instagram.com/reel/Dap4JkvKL1E/', embed_code='Dap4JkvKL1E',
-        thumbnail_url='https://example.test/ig/kahu.jpg', order=2)
+        thumbnail_url='/static/core/images/curated/bengali_bride_subho_drishti.jpg', order=2)
     add(kuhu, media_type='youtube', title='Kuhu Cinematic Film',
         external_url='https://www.youtube.com/watch?v=dQw4w9WgXcQ', embed_code='dQw4w9WgXcQ',
         order=3)
@@ -462,7 +462,7 @@ MEDIA_ITEM_ROWS = [
     dict(title='Shubho Drishti — Bengali Bridal Reel', media_type='instagram',
          category='bridal', section='reels', caption='Traditional Bengali reveal',
          external_url='https://www.instagram.com/reel/Dap4JkvKL1E/', embed_code='Dap4JkvKL1E',
-         thumbnail_url='https://example.test/ig/shubho.jpg', views_count='128.4K+ views',
+         thumbnail_url='/static/core/images/curated/bengali_bride_mukut_chandan.jpg', views_count='128.4K+ views',
          is_featured=True, order=0),
     dict(title='Royal Reception Walk — YouTube', media_type='youtube',
          category='reception', section='reels', caption='Cinematic reception entry',

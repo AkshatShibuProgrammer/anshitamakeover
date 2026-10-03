@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare 3 Layout Options — Anshita Makeover</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090508;
+      --card-bg: rgba(22, 12, 18, 0.85);
+      --gold: #D4AF37;
+      --gold-light: #F7E7A9;
+      --text: #FFF8EE;
+      --text-sub: rgba(255, 248, 238, 0.65);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      padding: 30px 20px 60px;
+      line-height: 1.6;
+    }
+    header {
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto 35px;
+    }
+    h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      color: var(--gold-light);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    p.lead {
+      color: var(--text-sub);
+      font-size: 1rem;
+    }
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 50px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    .option-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .option-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-3px);
+    }
+    .option-header {
+      padding: 24px 28px 18px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .option-title-grp h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.45rem;
+      color: var(--gold-light);
+      margin-bottom: 4px;
+    }
+    .option-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--gold);
+      border: 1px solid var(--gold);
+    }
+    .option-badge.recommended {
+      background: var(--gold);
+      color: #000;
+    }
+    .option-desc {
+      color: var(--text-sub);
+      font-size: 0.92rem;
+    }
+    .img-wrapper {
+      width: 100%;
+      background: #000;
+      position: relative;
+    }
+    .img-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .img-wrapper:hover img {
+      transform: scale(1.01);
+    }
+    .option-footer {
+      padding: 20px 28px;
+      background: rgba(10, 5, 8, 0.9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .bullet-list {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+    }
+    .bullet-list span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bullet-list span strong {
+      color: var(--gold-light);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Visual Design Options</h1>
+    <p class="lead">Compare the 3 visual directions for Anshita Makeover to eliminate clutter and activate PowerPoint Morph animations.</p>
+  </header>
+
+  <div class="options-grid">
+
+    <!-- Option A -->
+    <div class="option-card" id="optionA">
+      <div class="option-header">
+        <div class="option-title-grp">
+          <h2>Option A: Unified Haute Couture Pinned Morph Showcase</h2>
+          <p class="option-desc">The Evagher / Apple Keynote Model: The screen pins, and scrolling down morphs through 6 signature bridal looks.</p>
+        </div>
+        <span class="option-badge recommended">⭐ Highly Recommended</span>
+      </div>
+      <div class="img-wrapper">
+        <img src="file:///C:/Users/Aksha/.gemini/antigravity-ide/brain/bae71adb-aa2a-4003-a463-e3b600c94f71/option_a_morph_1790698498092.jpg" alt="Option A: Unified Morph Showcase">
+      </div>
+      <div class="option-footer">
+        <div class="bullet-list">
+          <span>✦ <strong>Animation:</strong> Pinned Scroll Scrub (PowerPoint Morph)</span>
+          <span>✦ <strong>Clutter Reduction:</strong> Replaces 3 massive sections into 1 stage (deletes duplicate grids)</span>
+          <span>✦ <strong>Best For:</strong> High luxury, cinematic editorial feel</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option B -->
+    <div class="option-card" id="optionB">
+      <div class="option-header">
+        <div class="option-title-grp">
+          <h2>Option B: Interactive Studio Deck</h2>
+          <p class="option-desc">The Rapid Interactive Studio Model: Horizontal gold pill rail at the top with rapid 1-click tab switching.</p>
+        </div>
+        <span class="option-badge">Interactive Suite</span>
+      </div>
+      <div class="img-wrapper">
+        <img src="file:///C:/Users/Aksha/.gemini/antigravity-ide/brain/bae71adb-aa2a-4003-a463-e3b600c94f71/option_b_deck_1790698520251.jpg" alt="Option B: Interactive Studio Deck">
+      </div>
+      <div class="option-footer">
+        <div class="bullet-list">
+          <span>✦ <strong>Animation:</strong> Click & Swipe Tab Morph</span>
+          <span>✦ <strong>Clutter Reduction:</strong> Ultra-compact (zero extra scroll runway)</span>
+          <span>✦ <strong>Best For:</strong> Fast browsing, mobile users</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option C -->
+    <div class="option-card" id="optionC">
+      <div class="option-header">
+        <div class="option-title-grp">
+          <h2>Option C: Editorial Two-Door Split</h2>
+          <p class="option-desc">The High-Fashion Magazine Model: Clean separation between pure artistic visual portfolio and booking atelier.</p>
+        </div>
+        <span class="option-badge">Magazine Layout</span>
+      </div>
+      <div class="img-wrapper">
+        <img src="file:///C:/Users/Aksha/.gemini/antigravity-ide/brain/bae71adb-aa2a-4003-a463-e3b600c94f71/option_c_split_1790698542984.jpg" alt="Option C: Editorial Two-Door Split">
+      </div>
+      <div class="option-footer">
+        <div class="bullet-list">
+          <span>✦ <strong>Animation:</strong> Smooth Hover & Staggered Reveal</span>
+          <span>✦ <strong>Clutter Reduction:</strong> Separates photography from pricing cards</span>
+          <span>✦ <strong>Best For:</strong> Editorial storytelling & catalog clarity</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

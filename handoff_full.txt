@@ -1,0 +1,616 @@
+<USER_REQUEST>
+fetch [rena/01a0d489-anshitamakeover](https://github.com/AkshatShibuProgrammer/anshitamakeover/tree/arena%2F01a0d489-anshitamakeover)
+from cloud and replace local version with cloud any doubt then ask and rerun
+# Anshita Makeover — Implementation Handoff
+
+## Repository
+
+- Repository: `AkshatShibuProgrammer/anshitamakeover`
+- Branch: `arena/01a0d489-anshitamakeover`
+- Pull request: https://github.com/AkshatShibuProgrammer/anshitamakeover/pull/2
+- Base branch: `24092026`
+
+The next AI should treat the repository as the source of truth and audit the current working tree before changing anything.
+
+---
+
+# 1. Original product plan
+
+The site was planned as a luxury bridal makeup and beauty studio website with a clear editorial structure.
+
+## Homepage purpose
+
+The homepage should be a concise discovery and conversion page, not the entire website.
+
+It should include:
+
+1. Existing opening animation/preloader.
+2. Hero section with:
+   - Bridal positioning.
+   - Strong visual.
+   - Primary Services CTA.
+   - Gallery/lookbook CTA.
+   - Beauty Plan/booking CTA.
+3. Occasion discovery:
+   - Wedding/Bridal.
+   - Engagement/Roka.
+   - Reception/Cocktail.
+   - Haldi/Sangeet.
+   - Family/Bridesmaids.
+4. Small featured services section:
+   - Only strongest services.
+   - Maximum approximately three to six cards.
+   - Starting-from prices.
+   - Links to dedicated service pages.
+5. Small featured gallery/lookbook section:
+   - Only strongest album cards.
+   - No full gallery grid on homepage.
+   - Clicking opens the hybrid album viewer.
+6. Trust section near the bottom:
+   - Sinha Family Group logo.
+   - Accurate relationship/context.
+   - Reviews or trust proof.
+   - Location/travel positioning.
+7. Final conversion section:
+   - Beauty Plan.
+   - Build Your Look.
+   - WhatsApp enquiry.
+   - Direct booking.
+
+The homepage should not contain the complete services catalogue, full package catalogue, giant comparison matrices, or a long duplicated gallery.
+
+---
+
+# 2. Dedicated site areas
+
+## Services
+
+Required route:
+
+```text
+/services/
+```
+
+Required detail route:
+
+```text
+/services/<id>/
+```
+
+The dedicated Services page should provide:
+
+- Editorial introduction.
+- Category filters.
+- Active admin-managed services only.
+- Service images.
+- Service category.
+- Short description.
+- Inclusions/features.
+- “Starting from” price.
+- Service detail CTA.
+- Add-to-Beauty-Plan CTA.
+- WhatsApp enquiry CTA.
+
+Service categories include:
+
+- Bridal.
+- Engagement/Roka.
+- Reception/Cocktail.
+- Haldi/Sangeet.
+- Hair/Draping.
+- Skin/Pre-bridal.
+- Family/Bridesmaids.
+- Nails, where applicable.
+
+Pricing requirements:
+
+- Admin-controlled.
+- Publicly presented primarily as “starting from”.
+- Never hardcoded into recommendation or booking logic.
+- Recalculated server-side.
+
+---
+
+## Packages
+
+Required route:
+
+```text
+/packages/
+```
+
+Required detail route:
+
+```text
+/packages/<id>/
+```
+
+The package catalogue should be separate from Services and should include:
+
+- Bridal packages.
+- Engagement/reception combinations.
+- Multi-event wedding bundles.
+- Inclusions.
+- Package savings.
+- Starting-from prices.
+- Detail page.
+- Beauty Plan/cart CTA.
+- WhatsApp enquiry CTA.
+
+Packages must be:
+
+- Active-only.
+- Admin-controlled.
+- Database-priced.
+- Hidden if unpublished/inactive.
+- Safe when no packages exist.
+
+---
+
+## Gallery/lookbook
+
+Required route:
+
+```text
+/gallery/
+```
+
+The gallery should be data-driven using published album/lookbook records.
+
+Each album card should show:
+
+- Cover image.
+- Album/look name.
+- Category.
+- Optional client name where approved.
+- Photo/video count.
+- Optional external platform link.
+- Clear “Open album” affordance.
+
+Gallery filtering should support categories such as:
+
+- Bridal.
+- Engagement.
+- Reception.
+- Sangeet/Haldi.
+- Hair/Draping.
+- Party/Family.
+- Nails.
+- Studio/Academy.
+
+The gallery must not expose unpublished or unapproved media.
+
+---
+
+# 3. Hybrid album viewer requirements
+
+The album viewer was planned as a mixed-media viewer inspired by a Picasa-style album plus a split/editorial layout.
+
+It must support:
+
+## Image-only albums
+
+- Main image.
+- Thumbnail navigation.
+- Previous/next.
+- Captions.
+- Keyboard navigation.
+
+## Video-only albums
+
+- Video playback or supported embed.
+- Poster/thumbnail.
+- Previous/next.
+- Caption.
+- External provider link where configured.
+
+## Mixed albums
+
+- Images and videos in the same album.
+- Correct media-type rendering.
+- No broken thumbnails.
+- No accidental image treatment for videos.
+
+## Interaction requirements
+
+- Mobile-friendly.
+- Touch/swipe-friendly.
+- Keyboard-accessible.
+- Escape closes viewer.
+- Focus returns to invoking control.
+- Visible close button.
+- No confusing nested scrolling on mobile.
+- Native page scrolling must not be hijacked.
+- Reduced-motion mode must disable or simplify transitions.
+
+---
+
+# 4. Beauty Plan / booking flow
+
+The generic retail cart concept was intentionally rejected in favor of:
+
+- “Beauty Plan”
+- “My Bridal Plan”
+
+The exact final label can be chosen consistently, but it should not feel like a generic ecommerce cart.
+
+Required behavior:
+
+1. Shared top navigation button opens Beauty Plan/cart.
+2. Users can add multiple services/packages.
+3. Users can change quantities where applicable.
+4. Users can submit:
+   - Name.
+   - Phone.
+   - Email, optional.
+   - City/location.
+   - Event date.
+   - Notes.
+5. API stores a BookingEnquiry.
+6. Server resolves submitted IDs against active services/packages.
+7. Server recalculates the total.
+8. Browser-provided `estimated_total` must never be trusted.
+9. Invalid/inactive IDs must not generate fake totals.
+10. Successful enquiry provides:
+    - Enquiry reference.
+    - WhatsApp handoff.
+11. Admin can:
+    - View enquiries.
+    - Change status.
+    - Archive enquiries.
+
+Existing booking API:
+
+```text
+POST /api/booking/
+```
+
+Admin enquiry page:
+
+```text
+/admin-portal/enquiries/
+```
+
+---
+
+# 5. Build Your Look/package builder
+
+Required route:
+
+```text
+/build-your-look/
+```
+
+Required API:
+
+```text
+POST /api/package-builder/
+```
+
+The builder can ask questions or accept structured preferences, but the AI/recommendation layer must be guarded.
+
+It must:
+
+- Recommend only active database services.
+- Use only database prices.
+- Never invent services.
+- Never invent prices.
+- Never mutate database records.
+- Never publish content.
+- Respect an optional budget ceiling.
+- Respect admin-defined maximum discount limits.
+- Clamp invalid discounts.
+- Safely handle invalid JSON.
+- Safely handle missing/empty input.
+- Return HTTP 405 for unsupported methods.
+- Remain functional without an external Gemini/AI call.
+
+Dedicated tests should cover:
+
+- Public page.
+- Active-service filtering.
+- Database pricing.
+- Budget exclusion.
+- Discount clamping.
+- Invalid JSON.
+- Unsupported methods.
+- Empty input.
+- Inactive records.
+
+---
+
+# 6. Admin requirements
+
+Admin must be able to control:
+
+- Service price.
+- Discount price.
+- Minimum negotiated price.
+- Maximum discount percentage.
+- AI negotiation permission.
+- Service active/inactive state.
+- Service order.
+- Package price.
+- Package inclusions.
+- Gallery album publishing.
+- Gallery album featured state.
+- Gallery media approval/consent.
+- Gallery media type.
+- Album cover.
+- External media URLs.
+- Booking enquiry status.
+
+AI/admin automation must not bypass these rules.
+
+---
+
+# 7. Animation requirements
+
+The existing opening animation must be preserved and improved, not casually replaced.
+
+Required improvements:
+
+- Skip button.
+- Escape-key skip.
+- Session-based preloader skip where appropriate.
+- Guaranteed fallback dismissal if animation fails.
+- `prefers-reduced-motion` support.
+- No native-scroll hijacking.
+- No permanent loading overlay.
+- Mobile-safe behavior.
+- Decorative animation should not block page content.
+- Heavy scripts should be deferred/lazy-loaded where possible.
+
+Animation-related routes/templates must be checked before deletion.
+
+---
+
+# 8. Accessibility requirements
+
+Required audit:
+
+- Semantic headings.
+- Alt text for meaningful images.
+- Empty alt for decorative imagery.
+- Keyboard access to buttons/cards.
+- Visible focus states.
+- Correct button labels.
+- Modal focus management.
+- Escape-to-close.
+- Screen-reader status announcements.
+- Sufficient color contrast.
+- No hover-only information.
+- Mobile touch targets.
+- Reduced-motion support.
+- No forced scroll locking that traps users.
+
+---
+
+# 9. Security requirements
+
+The next AI should review:
+
+- Duplicate migration chain.
+- CSRF exemptions.
+- Admin authentication.
+- Staff/session authorization.
+- File upload MIME and size validation.
+- Raw exception messages.
+- `|safe` template output.
+- Hardcoded settings.
+- `DEBUG`.
+- `ALLOWED_HOSTS`.
+- Secure cookie settings.
+- `X_FRAME_OPTIONS`.
+- AI action validation.
+- Prompt injection.
+- Admin mutation allowlists.
+
+Public recommendation APIs may be stateless, but authenticated admin mutations should use proper CSRF/authentication unless there is a documented reason otherwise.
+
+---
+
+# 10. Known current problems from the audit
+
+These are important and should be fixed before declaring completion.
+
+## A. Working tree/PR synchronization
+
+The working tree has repeatedly contained changes not represented in PR #2.
+
+First action should be:
+
+```bash
+git status
+git log --oneline --decorate -10
+git fetch origin
+git diff origin/arena/01a0d489-anshitamakeover...HEAD
+```
+
+Do not assume the PR equals the local workspace.
+
+---
+
+## B. Duplicate migrations
+
+Previously present:
+
+```text
+0013_lookgroup_is_featured_and_more.py
+0013_lookgroup_is_published_lookgroup_seo_description_and_more.py
+```
+
+These were combined into:
+
+```text
+0013_lookgroup_catalogue_fields.py
+```
+
+Verify that the duplicate files are actually gone from both the working tree and remote PR.
+
+Then run:
+
+```bash
+python manage.py showmigrations
+python manage.py migrate --plan
+python manage.py makemigrations --check --dry-run
+```
+
+---
+
+## C. LookGroup model/schema drift
+
+The public context expected:
+
+- `photo_count`
+- `video_count`
+- `count_summary`
+- `is_featured`
+- `show_external_link_button`
+
+The model and migrations previously disagreed.
+
+These properties/fields must remain synchronized with:
+
+- Models.
+- Migration.
+- Factory.
+- Admin media view.
+- Public context.
+- Templates.
+- Tests.
+
+---
+
+## D. Navigation drift
+
+Search for stale links:
+
+```bash
+grep -R 'href="/#services"\|href="/#packages"\|href="/#gallery"' \
+  -n django/core/templates
+```
+
+All dedicated catalogue links should use:
+
+```django
+{% url 'services' %}
+{% url 'packages' %}
+{% url 'gallery' %}
+```
+
+Keep homepage anchors only for intentional homepage-only sections.
+
+---
+
+## E. Animation route drift
+
+Check:
+
+```bash
+grep -R "animation_lab" -n django
+```
+
+If the route is registered, the view and template must exist.
+
+If the route is intentionally removed, remove all imports and URL references and document why. Do not leave a broken import.
+
+---
+
+## F. Visual verification is still incomplete
+
+Passing unit/API tests does not prove the creative plan.
+
+A browser audit must verify:
+
+- Homepage layout.
+- Homepage card count.
+- Services page appearance.
+- Gallery page appearance.
+- Viewer opening behavior.
+- Button links.
+- Mobile layout.
+- Reduced-motion behavior.
+- Empty data states.
+- Broken/missing image fallbacks.
+
+Chromium was previously unavailable locally, so the next AI should either install it or clearly document that browser verification remains pending.
+
+---
+
+# 11. Required validation commands
+
+From repository root:
+
+```bash
+python testing/run_all.py
+```
+
+Django checks:
+
+```bash
+cd django
+python manage.py check
+python manage.py check --deploy
+python manage.py makemigrations --check --dry-run
+python manage.py showmigrations
+```
+
+Navigation audit:
+
+```bash
+grep -R 'href="/#services"\|href="/#packages"\|href="/#gallery"' \
+  -n django/core/templates
+```
+
+Route audit:
+
+```bash
+grep -R "services_page\|gallery_page\|packages_page\|animation_lab" \
+  -n django/core
+```
+
+Git/PR audit:
+
+```bash
+git status
+git diff origin/arena/01a0d489-anshitamakeover...HEAD
+gh pr view 2
+```
+
+---
+
+# 12. Definition of done
+
+The work is complete only when all of the following are true:
+
+- Homepage matches the agreed editorial structure.
+- Homepage does not contain the complete catalogue.
+- Services is a proper dedicated page.
+- Packages is a proper dedicated page.
+- Gallery is a proper dedicated page.
+- Gallery viewer handles image, video, and mixed albums.
+- All shared navigation uses dedicated routes.
+- Beauty Plan booking is server-verified.
+- Package builder is guarded.
+- Animation is preserved and accessible.
+- Duplicate migrations are removed.
+- Fresh migrations succeed.
+- No missing imports/routes/templates.
+- No stale navigation anchors remain.
+- Working tree is clean.
+- PR contains the final state.
+- Unit/API/smoke/performance suites pass.
+- Browser-level visual verification is completed.
+- E2E/BDD limitations are explicitly documented if dependencies remain unavailable.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-09-27T02:04:33+05:30.
+
+The user's current state is as follows:
+Active Document: f:\Code by Akshat\Anshita\anshitamakeover aiarena\workspace-01a06312-9f47-7052-a276-d661b1051b1c\django\core\models.py (LANGUAGE_PYTHON)
+Cursor is on line: 520
+Other open documents:
+- f:\Code by Akshat\Anshita\anshitamakeover aiarena\workspace-01a06312-9f47-7052-a276-d661b1051b1c\django\core\models.py (LANGUAGE_PYTHON)
+- f:\Code by Akshat\Anshita\anshitamakeover aiarena\workspace-01a06312-9f47-7052-a276-d661b1051b1c\django\core\migrations\0013_lookgroup_is_published_lookgroup_seo_description_and_more.py (LANGUAGE_PYTHON)
+</ADDITIONAL_METADATA>

@@ -11,3 +11,6 @@ urlpatterns = [
     path('', include('core.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
   + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+
+handler404 = 'core.views.public.custom_404_view'
+
