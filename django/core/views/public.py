@@ -410,5 +410,45 @@ def gameplay_view(request):
     context['page_title'] = "Atelier Chronicles | 3D Interactive Makeup Gameplay & Stories"
     return render(request, 'core/gameplay.html', context)
 
+def service_worker_js(request):
+    """PWA Service Worker endpoint serving sw.js with root scope authority"""
+    import os
+    from django.conf import settings
+    from django.http import HttpResponse
+    sw_path = os.path.join(settings.BASE_DIR, 'core', 'static', 'sw.js')
+    try:
+        with open(sw_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except Exception:
+        content = "// sw fallback\nself.addEventListener('fetch', () => {});"
+    response = HttpResponse(content, content_type="application/javascript; charset=utf-8")
+    response['Service-Worker-Allowed'] = '/'
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return response
+
+def manifest_json(request):
+    """PWA Web App Manifest endpoint"""
+    import os
+    from django.conf import settings
+    from django.http import HttpResponse
+    manifest_path = os.path.join(settings.BASE_DIR, 'core', 'static', 'core', 'manifest.json')
+    try:
+        with open(manifest_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except Exception:
+        content = "{}"
+    response = HttpResponse(content, content_type="application/manifest+json; charset=utf-8")
+    response['Cache-Control'] = 'public, max-age=86400'
+    return response
+
+def offline_view(request):
+    """Offline fallback page for PWA"""
+    lang = getattr(request, 'GET', {}).get('lang') if hasattr(request, 'GET') else 'english'
+    if not lang and hasattr(request, 'COOKIES'):
+        lang = request.COOKIES.get('lang', 'english')
+    context = compile_home_context(lang or 'english')
+    return render(request, 'core/offline.html', context)
+
+
 
 

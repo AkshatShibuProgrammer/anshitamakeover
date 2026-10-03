@@ -48,6 +48,9 @@ urlpatterns = [
     path('robots.txt', views.robots_txt, name='robots_txt'),
     path('sitemap.xml', views.sitemap_xml, name='sitemap_xml'),
     path('llms.txt', views.llms_txt, name='llms_txt'),
+    path('sw.js', views.service_worker_js, name='service_worker_js'),
+    path('manifest.json', views.manifest_json, name='manifest_json'),
+    path('offline/', views.offline_view, name='offline'),
 ]
 
 

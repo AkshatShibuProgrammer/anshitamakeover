@@ -4,7 +4,8 @@ from .public import (
     sinha_logo_studio, animation_lab, services_page, service_detail,
     packages_page, package_detail, gallery_page, gallery_album_detail, booking_enquiry,
     package_builder, package_builder_api, admin_booking_enquiries,
-    robots_txt, sitemap_xml, llms_txt, custom_404_view, gameplay_view
+    robots_txt, sitemap_xml, llms_txt, custom_404_view, gameplay_view,
+    service_worker_js, manifest_json, offline_view
 )
 from .chatbot import chatbot_api, gemini_chat, admin_ai_command, fallback_chatbot, admin_ai_status, get_gemini_api_key
 from .auth import admin_login, admin_logout_view, admin_portal
@@ -60,5 +61,8 @@ __all__ = [
     'llms_txt',
     'custom_404_view',
     'gameplay_view',
+    'service_worker_js',
+    'manifest_json',
+    'offline_view',
 ]
 

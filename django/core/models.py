@@ -200,6 +200,44 @@ class MakeupPackage(models.Model):
         return [f.strip() for f in self.features.splitlines() if f.strip()]
 
 
+def convert_imagefield_to_webp(image_field, quality=85):
+    """
+    SPEC-008 TSK-008.06: Convert uploaded ImageField asset to WebP format.
+    Preserves original name stem, sets quality to 85, and updates file object.
+    """
+    if not image_field or not hasattr(image_field, 'file'):
+        return
+    import os
+    from io import BytesIO
+    from django.core.files.base import ContentFile
+    from PIL import Image
+
+    filename = os.path.basename(image_field.name)
+    name, ext = os.path.splitext(filename)
+    if ext.lower() == '.webp':
+        return
+
+    try:
+        image_field.file.seek(0)
+        img = Image.open(image_field.file)
+        
+        # Preserve transparency if RGBA, otherwise convert to RGB
+        if img.mode in ('RGBA', 'LA') or (img.mode == 'P' and 'transparency' in img.info):
+            img = img.convert('RGBA')
+        elif img.mode != 'RGB':
+            img = img.convert('RGB')
+            
+        output = BytesIO()
+        img.save(output, format='WEBP', quality=quality, method=4)
+        output.seek(0)
+        
+        new_name = f"{name}.webp"
+        image_field.save(new_name, ContentFile(output.read()), save=False)
+    except Exception:
+        # Graceful fallback: do not interrupt user save if conversion fails
+        pass
+
+
 class GalleryImage(models.Model):
     CATEGORY_CHOICES = [
         ('bridal', 'Bridal'),
@@ -230,6 +268,11 @@ class GalleryImage(models.Model):
 
     def __str__(self):
         return self.caption or f"Gallery Image {self.id}"
+
+    def save(self, *args, **kwargs):
+        if self.image and hasattr(self.image, 'file'):
+            convert_imagefield_to_webp(self.image)
+        super().save(*args, **kwargs)
 
 
 class MediaItem(models.Model):
@@ -282,6 +325,11 @@ class MediaItem(models.Model):
 
     def __str__(self):
         return f"[{self.get_media_type_display()}] {self.title}"
+
+    def save(self, *args, **kwargs):
+        if self.image_file and hasattr(self.image_file, 'file'):
+            convert_imagefield_to_webp(self.image_file)
+        super().save(*args, **kwargs)
 
     @property
     def display_thumb(self):
@@ -594,6 +642,11 @@ class LookMediaItem(models.Model):
 
     def __str__(self):
         return f"[{self.get_media_type_display()}] {self.title or self.caption or f'Item {self.id}'} in {self.group.name}"
+
+    def save(self, *args, **kwargs):
+        if self.image_file and hasattr(self.image_file, 'file'):
+            convert_imagefield_to_webp(self.image_file)
+        super().save(*args, **kwargs)
 
     @property
     def display_thumb(self):

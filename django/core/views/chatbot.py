@@ -78,6 +78,45 @@ def get_gemini_api_key():
     return api_key
 
 
+MOOD_NAMES = ('welcome', 'happy', 'thinking', 'hesitant', 'sad', 'waiting', 'coupon', 'wink', 'surprised')
+
+_MOOD_TAG = re.compile(r'\[\[mood:([a-z]+)\]\]', re.I)
+_CELEBRATE_TAG = re.compile(r'\[\[celebrate\]\]', re.I)
+
+_INFER_RULES = (
+    ('sad',       r'\b(unavailable|fully booked|sold out|no slots|apolog|sorry|regret)\b'),
+    ('coupon',    r'\b(discount|coupon|promo|offer code|\d+\s*%\s*off|privilege rate)\b'),
+    ('happy',     r'\b(confirmed|booked|congratul|perfect|wonderful|great choice|deal)\b'),
+    ('surprised', r'\b(surprise|guess what|incredible|amazing news)\b'),
+    ('waiting',   r'\b(whenever you|take your time|no rush|let me know)\b'),
+    ('hesitant',  r'\b(would you like|shall we|may i suggest|if you prefer)\b'),
+)
+_INFER_COMPILED = [(n, re.compile(p, re.I)) for n, p in _INFER_RULES]
+
+
+def infer_mood(text):
+    for name, pattern in _INFER_COMPILED:
+        if pattern.search(text or ''):
+            return name
+    return 'welcome' if len(text or '') < 120 else 'happy'
+
+
+def parse_expression(text):
+    """Strip expression tags. Returns (clean_text, mood, celebrate).
+
+    clean_text is what the guest sees AND what is stored in history — tags must
+    never leak, or Gemini will start imitating them in later turns.
+    """
+    text = text or ''
+    m = _MOOD_TAG.search(text)
+    mood = m.group(1).lower() if (m and m.group(1).lower() in MOOD_NAMES) else None
+    celebrate = bool(_CELEBRATE_TAG.search(text))
+    clean = _CELEBRATE_TAG.sub('', _MOOD_TAG.sub('', text))
+    clean = re.sub(r'[ \t]{2,}', ' ', clean)
+    clean = re.sub(r'\n{3,}', '\n\n', clean).strip()
+    return clean, (mood or infer_mood(clean)), celebrate
+
+
 # ── API: Chatbot ──────────────────────────────────────────────
 @csrf_exempt
 @require_POST
@@ -89,7 +128,12 @@ def chatbot_api(request):
         language = data.get('language', 'english').strip().lower()
 
         if not user_msg:
-            return JsonResponse({'reply': 'Greetings! How may I assist you with our bridal and beauty services today? ✨', 'session_id': session_id})
+            return JsonResponse({
+                'reply': 'Greetings! How may I assist you with our bridal and beauty services today? ✨',
+                'session_id': session_id,
+                'mood': 'welcome',
+                'celebrate': False
+            })
 
         # Load Gemini API key (env var priority, candidate file fallback)
         api_key = get_gemini_api_key()
@@ -104,11 +148,23 @@ def chatbot_api(request):
                 logging.getLogger(__name__).warning("Gemini AI error (%s), activating fallback", e)
                 reply = fallback_chatbot(user_msg, language=language)
 
+        reply, mood, celebrate = parse_expression(reply)
+
         ChatMessage.objects.create(session_id=session_id, message=user_msg, response=reply)
-        return JsonResponse({'reply': reply, 'session_id': session_id})
+        return JsonResponse({
+            'reply': reply,
+            'session_id': session_id,
+            'mood': mood,
+            'celebrate': celebrate
+        })
 
     except Exception as e:
-        return JsonResponse({'reply': 'We are temporarily unable to process your request. Please connect with us directly on WhatsApp at +91 78792 23442.', 'session_id': ''})
+        return JsonResponse({
+            'reply': 'We are temporarily unable to process your request. Please connect with us directly on WhatsApp at +91 78792 23442.',
+            'session_id': '',
+            'mood': 'sad',
+            'celebrate': False
+        })
 
 
 # How many past exchanges are re-sent to Gemini as context (token budget!).
@@ -306,6 +362,22 @@ CRITICAL BUSINESS INSTRUCTIONS:
 - ABSOLUTE MINIMUM NEGOTIATED FLOOR: never quote below the authorized floor supplied above.
 - NEVER stop mid-sentence.
 - Use ✦ bullet points. Plain text only (no markdown tables, no HTML <br>).
+
+5. EXPRESSION TAG (drives the 3D concierge character on screen):
+- Begin EVERY reply with exactly one tag on its own: [[mood:NAME]]
+- NAME must be exactly one of: welcome, happy, thinking, hesitant, sad, waiting, coupon, wink, surprised
+- Choose by tone:
+    thinking  = you need more information or ask a clarifying question
+    happy     = confirmed booking, delighted guest, agreement reached
+    sad       = something unavailable, sold out, you are apologising
+    coupon    = you give a discount code, VIP code or privilege rate
+    hesitant  = the guest is unsure and you are reassuring them
+    wink      = playful aside, or closing the deal
+    surprised = delightful reveal, unexpected good news
+    waiting   = the guest has not chosen anything yet
+    welcome   = greeting or first message
+- Add [[celebrate]] on a confirmed booking or when you grant a privilege rate.
+- Both tags are stripped before the guest sees the reply. Never explain them.
 """
 
     history = headroom_compress_history(conversation_history(session_id))

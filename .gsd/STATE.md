@@ -29,15 +29,32 @@
 
 ---
 
-## 🔴 Active: Milestone 4 — SPEC-007: Haute Conversion Engine
+### ✅ Milestone 4 — SPEC-007: Haute Conversion Engine
+- Desktop inline WhatsApp CTA button with official SVG icon and UTM tracking (`utm_medium=whatsapp_cta`).
+- Dual-direction marquee service strip (forward & reverse continuous loops with pause on hover).
+- Animated glass metric counters (`1200+ Brides Transformed`, `15 Cities Covered`, `12+ Years of Artistry`) with ease-out cubic CountUp on viewport entrance.
+- Kinetic parallax on hero headline characters linked to scroll momentum, respecting `prefers-reduced-motion`.
+- Verified via Selenium (`verify_whatsapp_fab.png`, `verify_marquee_strip.png`, `verify_metric_counters.png`).
 
-**Next Task:** Execute TSK-007.01 — Font preload + kinetic hero tagline span-split
+---
 
-Files to touch:
-- `django/core/templates/core/base.html` (WhatsApp FAB, font preload)
-- `django/core/templates/core/home.html` (kinetic headline, marquee, counters)
-- `django/core/static/core/css/style.css` (animation keyframes, FAB styles)
-- `anshita_project/settings.py` (WHATSAPP_PHONE)
+### ✅ Milestone 5 — SPEC-008: Performance, PWA & Lighthouse 90+
+- Web App Manifest (`/manifest.json`) and Service Worker (`/sw.js`) with root scope authority (`Service-Worker-Allowed: /`).
+- Multi-layer luxury offline fallback template (`/offline/`) pre-cached on installation.
+- Complete Open Graph & Twitter Card social meta with custom 1200×630 `og-cover.jpg`.
+- Verified `BeautySalon` Schema.org JSON-LD with aggregateRating (4.98/5, 120 reviews) and studio contact phone `+91-7879223442`.
+- `BreadcrumbList` structured data implemented in Lookbook Cinema Gallery and Curated Packages.
+- Hero image LCP preloaded (`fetchpriority="high"`, `decoding="sync"`), and below-the-fold assets lazy-loaded.
+- Automatic WebP image conversion pipeline on model save (`GalleryImage`, `MediaItem`, `LookMediaItem`) with quality 85 and original stem retention.
+- WhiteNoise `CompressedStaticFilesStorage` configured in `STORAGES` with 148 compressed `.gz` static files generated in `staticfiles/`.
+- Validated via automated test suite `scratch/test_pwa_and_performance_spec008.py` and real Chrome browser Selenium test.
+
+---
+
+## 🔴 Active Milestone: Milestone 6 — SPEC-009: Oracle Cloud Production Launch
+- Production Settings & Security Hardening
+- Nginx HTTPS Reverse Proxy + Gunicorn Stack Configuration
+- CI/CD Deployment Automation & Cloudflare CDN Integration
 
 ---
 
@@ -51,16 +68,19 @@ Files to touch:
 | 004 | Hero Portrait Showcase | ✅ | ✅ | ✅ Verified |
 | 005 | Geo SEO Pan-India | ✅ | ✅ | Completed |
 | 006 | 3D Cylinder Gallery | ✅ | ✅ | ✅ Verified |
-| 007 | WhatsApp CTA + Kinetic Typography | ✅ | ✅ | ⏳ Pending |
-| 008 | Performance + PWA + Lighthouse | ✅ | ✅ | ⏳ Pending |
-| 009 | Oracle Cloud Deployment | ✅ | ✅ | ⏳ Pending |
+| 007 | WhatsApp CTA + Kinetic Typography | ✅ | ✅ | ✅ Verified |
+| 008 | Performance + PWA + Lighthouse | ✅ | ✅ | ✅ Verified |
+| 009 | Oracle Cloud Deployment | ✅ | ✅ | ⏳ Ready for Architecture & Planning |
 | 010 | 3D Mascot Emotions & Hindi Welcome | ✅ | ✅ | ✅ Verified |
 | 011 | WorksWheel Uncropped Gallery & Scrubber | ✅ | ✅ | ✅ Verified |
 | 012 | Luxury Review Marquee & Accreditation | ✅ | ✅ | ✅ Verified |
 | 013 | 3D Interactive Makeup Gameplay Stories | ✅ | ✅ | ✅ Verified |
+| 014 | Pinned Viewport WorksWheel Scroll Engine | ✅ | ✅ | ✅ Verified |
+| 015 | Standalone 3D Character Suite & Marketplace | ✅ | ✅ | ✅ Verified |
+| 016 | Chat Intent Emotion Bridge & Bubble Guard | ✅ | ✅ | ✅ Verified |
 
 ---
 
 ## Unit Test Suite
-- **233/233 tests passing** ✅ (last run: 2026-10-01, 403s)
+- **233/233 tests passing** ✅ (last run: 2026-10-02, 335s)
 - Report: `testing/reports/index.html`

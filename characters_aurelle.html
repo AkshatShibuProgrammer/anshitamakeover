@@ -1,0 +1,2974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#060606">
+  <title>Maison Aurelle — Haute Bridal Concierge</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --obsidian: #060606;
+      --gold: #C8A96A;
+      --gold-soft: #ead7ad;
+      --ivory: #f3ede1;
+      --muted: #b9b0a2;
+      --line: rgba(200, 169, 106, .29);
+      --glass: rgba(12, 12, 12, .76);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--obsidian);
+      color: var(--ivory);
+      font-family: "Outfit", sans-serif;
+    }
+
+    body { -webkit-font-smoothing: antialiased; }
+
+    button {
+      color: inherit;
+      font: inherit;
+    }
+
+    #app {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 560px;
+      overflow: hidden;
+      isolation: isolate;
+      background: #060606;
+    }
+
+    #stage {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+      touch-action: none;
+      outline: none;
+    }
+
+    #stage.is-dragging { cursor: grabbing; }
+
+    .stage-vignette,
+    .film-grain {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .stage-vignette {
+      z-index: 1;
+      background:
+        radial-gradient(ellipse at 50% 44%, transparent 22%, rgba(0, 0, 0, .16) 55%, rgba(0, 0, 0, .84) 120%),
+        linear-gradient(180deg, rgba(0, 0, 0, .22), transparent 27%, transparent 70%, rgba(0, 0, 0, .43));
+    }
+
+    .stage-vignette::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 43%;
+      width: min(72vw, 940px);
+      height: min(72vw, 940px);
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(166, 123, 61, .075), rgba(89, 49, 34, .025) 43%, transparent 70%);
+      filter: blur(22px);
+    }
+
+    .film-grain {
+      z-index: 2;
+      opacity: .10;
+      background-image:
+        repeating-radial-gradient(circle at 19% 24%, rgba(255,255,255,.16) 0 0.5px, transparent .7px 4px);
+      mix-blend-mode: soft-light;
+    }
+
+    .hud {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .topbar {
+      position: absolute;
+      top: max(22px, env(safe-area-inset-top));
+      left: clamp(20px, 4vw, 70px);
+      right: clamp(20px, 4vw, 70px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .wordmark {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      pointer-events: auto;
+      user-select: none;
+    }
+
+    .wordmark-seal {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(200, 169, 106, .7);
+      border-radius: 50%;
+      color: var(--gold);
+      font-size: 14px;
+      box-shadow: 0 0 22px rgba(200, 169, 106, .08), inset 0 0 12px rgba(200, 169, 106, .06);
+    }
+
+    .wordmark-main {
+      font-family: "Cinzel", serif;
+      font-size: 12px;
+      line-height: 1.35;
+      letter-spacing: .19em;
+      color: #f0e7d6;
+    }
+
+    .wordmark-sub {
+      display: block;
+      margin-top: 2px;
+      color: #8f8678;
+      font: 9px "Outfit", sans-serif;
+      letter-spacing: .25em;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      pointer-events: auto;
+    }
+
+    .atelier-status {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #bdb4a5;
+      font-size: 9px;
+      letter-spacing: .20em;
+      text-transform: uppercase;
+    }
+
+    .status-light {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #b8a06f;
+      box-shadow: 0 0 11px rgba(200, 169, 106, .75);
+    }
+
+    .widget-toggle {
+      padding: 10px 13px;
+      border: 1px solid rgba(200, 169, 106, .38);
+      border-radius: 3px;
+      background: rgba(8, 8, 8, .50);
+      color: #d4c39f;
+      font-size: 9px;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: .25s ease;
+      backdrop-filter: blur(12px);
+    }
+
+    .widget-toggle:hover,
+    .widget-toggle[aria-pressed="true"] {
+      border-color: rgba(200, 169, 106, .8);
+      background: rgba(200, 169, 106, .10);
+      color: #f3e5c6;
+    }
+
+    .identity {
+      position: absolute;
+      top: 28%;
+      left: clamp(28px, 6.5vw, 120px);
+      width: min(285px, 22vw);
+      pointer-events: none;
+      transition: opacity .35s ease;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      color: var(--gold);
+      font-size: 9px;
+      letter-spacing: .23em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 25px;
+      height: 1px;
+      background: var(--gold);
+      opacity: .75;
+    }
+
+    .identity h1 {
+      margin: 0 0 7px -3px;
+      color: #f0e7d8;
+      font-family: "Cinzel", serif;
+      font-size: clamp(39px, 4vw, 58px);
+      font-weight: 400;
+      line-height: .99;
+      letter-spacing: .065em;
+      text-shadow: 0 7px 35px rgba(0, 0, 0, .56);
+    }
+
+    .identity-role {
+      color: var(--gold-soft);
+      font-size: 10px;
+      letter-spacing: .2em;
+      line-height: 1.7;
+      text-transform: uppercase;
+    }
+
+    .identity-copy {
+      max-width: 270px;
+      margin: 18px 0 0;
+      color: #b5ac9e;
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 1.85;
+      letter-spacing: .015em;
+    }
+
+    .identity-rule {
+      width: 46px;
+      height: 1px;
+      margin-top: 20px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+    }
+
+    .identity-footnote {
+      margin-top: 12px;
+      color: #827b70;
+      font-size: 8px;
+      letter-spacing: .19em;
+      text-transform: uppercase;
+    }
+
+    .mood-panel {
+      position: absolute;
+      top: 49%;
+      right: clamp(24px, 5.5vw, 108px);
+      width: 237px;
+      padding: 19px 17px 16px;
+      border: 1px solid rgba(200, 169, 106, .23);
+      border-radius: 3px;
+      background:
+        linear-gradient(145deg, rgba(20, 18, 15, .86), rgba(7, 7, 7, .72)),
+        rgba(7, 7, 7, .76);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, .25), inset 0 1px rgba(255,255,255,.025);
+      backdrop-filter: blur(15px);
+      transform: translateY(-50%);
+      pointer-events: auto;
+    }
+
+    .mood-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .mood-heading span:first-child {
+      color: #9f9583;
+      font-size: 8px;
+      letter-spacing: .20em;
+      text-transform: uppercase;
+    }
+
+    .mood-current {
+      color: var(--gold-soft);
+      font-size: 9px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .mood-caption {
+      margin: 4px 0 13px;
+      color: #776f64;
+      font-size: 10px;
+      font-weight: 300;
+    }
+
+    .mood-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .mood-button {
+      position: relative;
+      display: flex;
+      min-height: 49px;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 8px;
+      border: 1px solid rgba(255,255,255,.075);
+      border-radius: 2px;
+      background: rgba(255,255,255,.025);
+      text-align: left;
+      cursor: pointer;
+      transition: .24s ease;
+    }
+
+    .mood-button:hover {
+      border-color: rgba(200,169,106,.42);
+      background: rgba(200,169,106,.07);
+    }
+
+    .mood-button.is-active {
+      border-color: rgba(200,169,106,.72);
+      background: linear-gradient(125deg, rgba(200,169,106,.14), rgba(200,169,106,.035));
+      box-shadow: inset 0 0 16px rgba(200,169,106,.035);
+    }
+
+    .mood-mark {
+      display: grid;
+      width: 21px;
+      height: 21px;
+      flex: 0 0 21px;
+      place-items: center;
+      border: 1px solid rgba(200,169,106,.36);
+      border-radius: 50%;
+      color: var(--gold);
+      font-size: 11px;
+    }
+
+    .mood-text strong {
+      display: block;
+      color: #e5dccd;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .02em;
+    }
+
+    .mood-text small {
+      display: block;
+      margin-top: 3px;
+      color: #827a6d;
+      font-size: 8px;
+      font-weight: 300;
+      white-space: nowrap;
+    }
+
+    .mood-button.is-active .mood-text strong { color: #f2dfb7; }
+
+    .mood-note {
+      margin-top: 13px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(200,169,106,.14);
+      color: #827a6d;
+      font-size: 8px;
+      letter-spacing: .12em;
+      line-height: 1.6;
+      text-transform: uppercase;
+    }
+
+    .drag-note {
+      position: absolute;
+      left: 50%;
+      bottom: 153px;
+      color: rgba(226, 213, 189, .55);
+      font-size: 8px;
+      letter-spacing: .21em;
+      text-align: center;
+      text-transform: uppercase;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .drag-note span { color: var(--gold); }
+
+    .widget-preview {
+      position: absolute;
+      left: clamp(18px, 3.2vw, 48px);
+      bottom: 119px;
+      width: 260px;
+      padding: 12px 14px 13px;
+      border: 1px solid rgba(200,169,106,.27);
+      border-radius: 4px;
+      background: linear-gradient(130deg, rgba(17,16,14,.89), rgba(8,8,8,.80));
+      box-shadow: 0 20px 55px rgba(0,0,0,.34), inset 0 1px rgba(255,255,255,.035);
+      backdrop-filter: blur(18px);
+      pointer-events: auto;
+      transition: opacity .3s ease, transform .3s ease;
+    }
+
+    .widget-preview.is-hidden {
+      opacity: 0;
+      transform: translateY(14px);
+      pointer-events: none;
+    }
+
+    .widget-topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 9px;
+      color: #a99b7e;
+      font-size: 8px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .widget-live {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #8f8779;
+      font-size: 7px;
+    }
+
+    .widget-live i {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #a8bf85;
+      box-shadow: 0 0 8px rgba(168,191,133,.75);
+    }
+
+    .widget-body {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .widget-avatar {
+      position: relative;
+      width: 84px;
+      height: 84px;
+      flex: 0 0 84px;
+      overflow: hidden;
+      padding: 0;
+      border: 1px solid rgba(200,169,106,.58);
+      border-radius: 50%;
+      background: #090909;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(200,169,106,.08);
+    }
+
+    .widget-avatar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 4px solid rgba(7,7,7,.25);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    #widget-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .widget-copy { min-width: 0; }
+
+    .widget-copy-label {
+      color: #8a8173;
+      font-size: 7px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .widget-name {
+      margin-top: 4px;
+      color: #f0e5d1;
+      font-family: "Cinzel", serif;
+      font-size: 15px;
+      letter-spacing: .08em;
+    }
+
+    .widget-line {
+      display: block;
+      max-width: 135px;
+      margin-top: 4px;
+      overflow: hidden;
+      color: #b5a98f;
+      font-size: 9px;
+      font-weight: 300;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .widget-hello {
+      margin-top: 9px;
+      padding: 5px 8px;
+      border: 1px solid rgba(200,169,106,.35);
+      border-radius: 2px;
+      background: rgba(200,169,106,.07);
+      color: #cfba8d;
+      font-size: 8px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .widget-hello:hover { background: rgba(200,169,106,.17); }
+
+    .selector-dock {
+      position: absolute;
+      left: 50%;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      display: flex;
+      width: min(770px, 62vw);
+      min-height: 76px;
+      align-items: center;
+      gap: 15px;
+      padding: 10px 14px;
+      border: 1px solid rgba(200,169,106,.31);
+      border-radius: 4px;
+      background: linear-gradient(110deg, rgba(9,9,9,.90), rgba(18,16,13,.78), rgba(8,8,8,.91));
+      box-shadow: 0 15px 55px rgba(0,0,0,.46), inset 0 1px rgba(255,255,255,.035);
+      backdrop-filter: blur(18px);
+      transform: translateX(-50%);
+      pointer-events: auto;
+    }
+
+    .selector-label {
+      width: 100px;
+      flex: 0 0 100px;
+      padding-left: 2px;
+      color: #938875;
+      font-size: 8px;
+      letter-spacing: .16em;
+      line-height: 1.65;
+      text-transform: uppercase;
+    }
+
+    .selector-label strong {
+      display: block;
+      color: #d5c8ae;
+      font-weight: 400;
+    }
+
+    .selector-track {
+      display: flex;
+      min-width: 0;
+      flex: 1;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .character-pill {
+      position: relative;
+      display: flex;
+      min-width: 105px;
+      flex: 1 1 0;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 9px;
+      border: 1px solid rgba(255,255,255,.075);
+      border-radius: 3px;
+      background: rgba(255,255,255,.025);
+      text-align: left;
+      cursor: pointer;
+      transition: background .25s ease, border-color .25s ease, transform .25s ease;
+    }
+
+    .character-pill:hover {
+      border-color: rgba(200,169,106,.46);
+      background: rgba(200,169,106,.07);
+      transform: translateY(-2px);
+    }
+
+    .character-pill.is-active {
+      border-color: rgba(200,169,106,.83);
+      background: linear-gradient(135deg, rgba(200,169,106,.16), rgba(200,169,106,.035));
+      box-shadow: inset 0 0 16px rgba(200,169,106,.045);
+    }
+
+    .pill-monogram {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      place-items: center;
+      border: 1px solid rgba(200,169,106,.41);
+      border-radius: 50%;
+      color: #e3d1a8;
+      font-family: "Cinzel", serif;
+      font-size: 10px;
+    }
+
+    .character-pill[data-character="mochi"] .pill-monogram { color: #f1d8d2; border-color: rgba(230,193,190,.55); }
+    .character-pill[data-character="noor"] .pill-monogram { color: #c7c9d2; }
+    .character-pill[data-character="tara"] .pill-monogram { color: #a9c098; }
+    .character-pill[data-character="gia"] .pill-monogram { color: #e9c1e0; }
+
+    .pill-copy { min-width: 0; }
+
+    .pill-copy strong {
+      display: block;
+      color: #e5ddcf;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .07em;
+    }
+
+    .pill-copy small {
+      display: block;
+      margin-top: 3px;
+      overflow: hidden;
+      color: #817a6d;
+      font-size: 7px;
+      letter-spacing: .06em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pill-indicator {
+      position: absolute;
+      right: 8px;
+      top: 9px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .character-pill.is-active .pill-indicator {
+      background: var(--gold);
+      box-shadow: 0 0 7px rgba(200,169,106,.85);
+    }
+
+    .selector-count {
+      width: 43px;
+      flex: 0 0 43px;
+      color: #837967;
+      font-family: "Cinzel", serif;
+      font-size: 9px;
+      letter-spacing: .1em;
+      text-align: right;
+    }
+
+    .selector-count span { color: var(--gold-soft); }
+
+    #transition {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      opacity: 0;
+      background:
+        radial-gradient(ellipse at 50% 48%, rgba(200,169,106,.08), transparent 42%),
+        linear-gradient(90deg, rgba(0,0,0,.95), rgba(4,4,4,.90) 35%, rgba(0,0,0,.95));
+      pointer-events: none;
+    }
+
+    .noscript-note {
+      position: absolute;
+      z-index: 20;
+      inset: 45% 10%;
+      color: #f3ede1;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    @media (max-width: 920px) {
+      .identity { width: 240px; }
+      .mood-panel { right: 22px; width: 219px; }
+      .selector-dock { width: min(740px, 74vw); }
+      .character-pill { min-width: 90px; padding-left: 7px; }
+      .selector-label { width: 78px; flex-basis: 78px; }
+    }
+
+    @media (max-width: 680px) {
+      #app { min-height: 540px; }
+
+      .topbar {
+        top: max(13px, env(safe-area-inset-top));
+        left: 15px;
+        right: 15px;
+      }
+
+      .wordmark { gap: 8px; }
+      .wordmark-seal { width: 29px; height: 29px; font-size: 12px; }
+      .wordmark-main { font-size: 10px; }
+      .wordmark-sub { font-size: 7px; }
+      .atelier-status { display: none; }
+      .widget-toggle { padding: 8px 9px; font-size: 8px; }
+
+      .identity {
+        top: 78px;
+        left: 17px;
+        right: 17px;
+        width: auto;
+        text-align: center;
+      }
+
+      .eyebrow {
+        justify-content: center;
+        margin-bottom: 7px;
+        font-size: 7px;
+      }
+
+      .eyebrow::before { width: 16px; }
+
+      .identity h1 {
+        margin: 0 0 4px;
+        font-size: clamp(31px, 10vw, 42px);
+      }
+
+      .identity-role {
+        font-size: 8px;
+        letter-spacing: .15em;
+      }
+
+      .identity-copy,
+      .identity-rule,
+      .identity-footnote { display: none; }
+
+      .mood-panel {
+        top: auto;
+        right: auto;
+        bottom: 87px;
+        left: 50%;
+        width: min(355px, calc(100% - 24px));
+        padding: 8px 9px;
+        transform: translateX(-50%);
+        border-radius: 4px;
+      }
+
+      .mood-heading { margin: 0 1px 7px; }
+      .mood-heading span:first-child { font-size: 7px; }
+      .mood-current { font-size: 8px; }
+      .mood-caption,
+      .mood-note { display: none; }
+
+      .mood-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+      }
+
+      .mood-button {
+        min-height: 39px;
+        justify-content: center;
+        padding: 5px 3px;
+      }
+
+      .mood-mark { display: none; }
+      .mood-text strong { font-size: 9px; }
+      .mood-text small { display: none; }
+
+      .widget-preview {
+        left: 12px;
+        bottom: 154px;
+        width: 88px;
+        padding: 6px;
+        border-radius: 50px;
+      }
+
+      .widget-topline,
+      .widget-copy { display: none; }
+
+      .widget-body { justify-content: center; }
+      .widget-avatar {
+        width: 72px;
+        height: 72px;
+        flex-basis: 72px;
+      }
+
+      .selector-dock {
+        left: 10px;
+        right: 10px;
+        bottom: max(9px, env(safe-area-inset-bottom));
+        width: auto;
+        min-height: 60px;
+        gap: 0;
+        padding: 6px;
+        transform: none;
+      }
+
+      .selector-label,
+      .selector-count { display: none; }
+
+      .selector-track {
+        justify-content: flex-start;
+        gap: 5px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .selector-track::-webkit-scrollbar { display: none; }
+
+      .character-pill {
+        min-width: 72px;
+        min-height: 44px;
+        flex: 1 0 72px;
+        justify-content: center;
+        gap: 5px;
+        padding: 5px 6px;
+      }
+
+      .pill-monogram {
+        width: 23px;
+        height: 23px;
+        flex-basis: 23px;
+        font-size: 8px;
+      }
+
+      .pill-copy strong { font-size: 9px; }
+      .pill-copy small { display: none; }
+      .pill-indicator { top: 5px; right: 5px; }
+
+      .drag-note { display: none; }
+    }
+
+    @media (max-height: 650px) and (min-width: 681px) {
+      .identity { top: 23%; }
+      .mood-panel { top: 47%; }
+      .widget-preview { bottom: 102px; }
+      .selector-dock { bottom: 12px; min-height: 66px; }
+      .drag-note { bottom: 126px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main id="app" aria-label="Maison Aurelle interactive bridal concierge">
+    <canvas id="stage" aria-label="Interactive 3D bridal concierge. Drag to rotate."></canvas>
+    <div class="stage-vignette" aria-hidden="true"></div>
+    <div class="film-grain" aria-hidden="true"></div>
+
+    <div class="hud">
+      <header class="topbar">
+        <div class="wordmark" aria-label="Maison Aurelle">
+          <span class="wordmark-seal" aria-hidden="true">✦</span>
+          <span class="wordmark-main">
+            MAISON AURELLE
+            <span class="wordmark-sub">BRIDAL COUTURE · BEAUTY ATELIER</span>
+          </span>
+        </div>
+
+        <div class="topbar-right">
+          <div class="atelier-status"><span class="status-light"></span> ATELIER · OPEN BY APPOINTMENT</div>
+          <button id="widget-toggle" class="widget-toggle" type="button" aria-pressed="true">Widget preview · on</button>
+        </div>
+      </header>
+
+      <section id="identity" class="identity" aria-live="polite">
+        <div class="eyebrow">Your personal concierge</div>
+        <h1 id="character-name">ASHA</h1>
+        <div id="character-role" class="identity-role">ROYAL BRIDAL STYLIST</div>
+        <p id="character-description" class="identity-copy">
+          A warm welcome to your most beautiful chapter. Discover heirloom bridal details, made personal.
+        </p>
+        <div class="identity-rule"></div>
+        <div id="character-footnote" class="identity-footnote">A bespoke beauty experience</div>
+      </section>
+
+      <aside class="mood-panel" aria-label="Concierge expression controls">
+        <div class="mood-heading">
+          <span>Her expression</span>
+          <span id="mood-current" class="mood-current">Welcoming</span>
+        </div>
+        <p class="mood-caption">A little feeling for every moment.</p>
+
+        <div class="mood-grid">
+          <button class="mood-button is-active" type="button" data-mood="welcome" aria-pressed="true">
+            <span class="mood-mark">✧</span>
+            <span class="mood-text"><strong>Welcoming</strong><small>Namaste · welcome</small></span>
+          </button>
+          <button class="mood-button" type="button" data-mood="happy" aria-pressed="false">
+            <span class="mood-mark">✦</span>
+            <span class="mood-text"><strong>Happy</strong><small>Deal closed · joy</small></span>
+          </button>
+          <button class="mood-button" type="button" data-mood="thinking" aria-pressed="false">
+            <span class="mood-mark">◌</span>
+            <span class="mood-text"><strong>Thinking</strong><small>Selecting looks</small></span>
+          </button>
+          <button class="mood-button" type="button" data-mood="hesitant" aria-pressed="false">
+            <span class="mood-mark">♡</span>
+            <span class="mood-text"><strong>Hesitant</strong><small>Soft empathy</small></span>
+          </button>
+        </div>
+
+        <div class="mood-note">Each look, thoughtfully considered.</div>
+      </aside>
+
+      <div id="widget-preview" class="widget-preview">
+        <div class="widget-topline">
+          <span>Your little concierge</span>
+          <span class="widget-live"><i></i> Live preview</span>
+        </div>
+        <div class="widget-body">
+          <button id="widget-avatar" class="widget-avatar" type="button" aria-label="Ask the miniature concierge to welcome you">
+            <canvas id="widget-canvas"></canvas>
+          </button>
+          <div class="widget-copy">
+            <div class="widget-copy-label">A little hello from</div>
+            <div id="widget-name" class="widget-name">ASHA</div>
+            <span id="widget-line" class="widget-line">Namaste, beautiful.</span>
+            <button id="widget-hello" class="widget-hello" type="button">Say hello</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="drag-note"><span>Drag</span> to explore · move your cursor to connect</div>
+
+      <footer class="selector-dock" aria-label="Choose your concierge">
+        <div class="selector-label"><strong>Meet your</strong>concierge</div>
+        <nav id="selector-track" class="selector-track" aria-label="Concierge characters"></nav>
+        <div id="selector-count" class="selector-count"><span>01</span> / 05</div>
+      </footer>
+    </div>
+
+    <div id="transition" aria-hidden="true"></div>
+    <noscript><div class="noscript-note">Please enable JavaScript to enter the atelier.</div></noscript>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+  <script>
+    (() => {
+      "use strict";
+
+      if (!window.THREE) {
+        document.getElementById("character-name").textContent = "A little magic is loading";
+        return;
+      }
+
+      const THREE = window.THREE;
+      const gsap = window.gsap || null;
+      const stageCanvas = document.getElementById("stage");
+      const widgetCanvas = document.getElementById("widget-canvas");
+      const transitionCurtain = document.getElementById("transition");
+      const selectorTrack = document.getElementById("selector-track");
+      const app = document.getElementById("app");
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x060606);
+      scene.fog = new THREE.Fog(0x060606, 15, 33);
+
+      const camera = new THREE.PerspectiveCamera(37, 1, 0.1, 80);
+      const focus = { x: 0, y: 0.03, z: 0 };
+
+      let renderer;
+      let widgetRenderer;
+
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas: stageCanvas,
+          antialias: true,
+          alpha: false,
+          powerPreference: "high-performance"
+        });
+        widgetRenderer = new THREE.WebGLRenderer({
+          canvas: widgetCanvas,
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance"
+        });
+      } catch (error) {
+        document.getElementById("character-name").textContent = "WebGL is unavailable";
+        document.getElementById("character-description").textContent =
+          "Please open this atelier in a browser with WebGL enabled.";
+        return;
+      }
+
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      [renderer, widgetRenderer].forEach((r) => {
+        r.setPixelRatio(pixelRatio);
+        r.outputEncoding = THREE.sRGBEncoding;
+        r.toneMapping = THREE.ACESFilmicToneMapping;
+        r.toneMappingExposure = 1.12;
+        r.shadowMap.enabled = true;
+        r.shadowMap.type = THREE.PCFSoftShadowMap;
+      });
+      renderer.setClearColor(0x060606, 1);
+      widgetRenderer.setClearColor(0x060606, 1);
+
+      const widgetCamera = new THREE.PerspectiveCamera(42, 1, 0.1, 50);
+      widgetCamera.position.set(0, 0.52, 6.1);
+      widgetCamera.lookAt(0, 0.48, 0);
+
+      const clock = new THREE.Clock();
+
+      function makeFabricTexture(base, highlight, style = "silk") {
+        const canvas = document.createElement("canvas");
+        canvas.width = 128;
+        canvas.height = 128;
+        const ctx = canvas.getContext("2d");
+
+        ctx.fillStyle = base;
+        ctx.fillRect(0, 0, 128, 128);
+
+        if (style === "velvet") {
+          for (let i = -128; i < 256; i += 5) {
+            ctx.beginPath();
+            ctx.moveTo(i, 0);
+            ctx.lineTo(i + 68, 128);
+            ctx.strokeStyle = i % 10 === 0
+              ? "rgba(255,226,190,.07)"
+              : "rgba(0,0,0,.07)";
+            ctx.lineWidth = i % 10 === 0 ? 1 : 2;
+            ctx.stroke();
+          }
+          for (let i = 0; i < 260; i++) {
+            const x = (i * 37) % 128;
+            const y = (i * 61) % 128;
+            ctx.fillStyle = i % 3 === 0 ? "rgba(255,255,255,.055)" : "rgba(0,0,0,.06)";
+            ctx.fillRect(x, y, 1, 2);
+          }
+        } else if (style === "plush") {
+          for (let i = 0; i < 180; i++) {
+            const x = (i * 29) % 128;
+            const y = (i * 47) % 128;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + ((i % 5) - 2), y + 4 + (i % 5));
+            ctx.strokeStyle = i % 2 ? "rgba(255,255,255,.09)" : "rgba(134,115,99,.06)";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        } else {
+          for (let i = -128; i < 256; i += 8) {
+            ctx.beginPath();
+            ctx.moveTo(i, 0);
+            ctx.lineTo(i + 36, 128);
+            ctx.strokeStyle = "rgba(255,255,255,.055)";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+          ctx.strokeStyle = "rgba(0,0,0,.09)";
+          for (let y = 7; y < 128; y += 12) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(128, y);
+            ctx.stroke();
+          }
+        }
+
+        if (highlight) {
+          ctx.globalAlpha = .18;
+          ctx.fillStyle = highlight;
+          for (let y = 9; y < 128; y += 32) {
+            for (let x = 12; x < 128; x += 32) {
+              ctx.beginPath();
+              ctx.arc(x, y, 1, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+          ctx.globalAlpha = 1;
+        }
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.encoding = THREE.sRGBEncoding;
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(2.2, 2.2);
+        texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
+        return texture;
+      }
+
+      function makeEnvironmentTexture() {
+        const canvas = document.createElement("canvas");
+        canvas.width = 512;
+        canvas.height = 256;
+        const ctx = canvas.getContext("2d");
+        const gradient = ctx.createLinearGradient(0, 0, 0, 256);
+        gradient.addColorStop(0, "#101018");
+        gradient.addColorStop(.25, "#29211b");
+        gradient.addColorStop(.53, "#080809");
+        gradient.addColorStop(.78, "#151018");
+        gradient.addColorStop(1, "#070708");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 512, 256);
+
+        const glows = [
+          [76, 80, 52, "rgba(255,218,166,.65)"],
+          [185, 54, 25, "rgba(255,242,218,.42)"],
+          [322, 95, 68, "rgba(118,105,154,.40)"],
+          [438, 57, 32, "rgba(255,206,127,.62)"],
+          [276, 210, 56, "rgba(172,97,86,.24)"]
+        ];
+
+        glows.forEach(([x, y, radius, color]) => {
+          const radial = ctx.createRadialGradient(x, y, 1, x, y, radius);
+          radial.addColorStop(0, color);
+          radial.addColorStop(1, "rgba(0,0,0,0)");
+          ctx.fillStyle = radial;
+          ctx.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+        });
+
+        ctx.fillStyle = "rgba(255,231,188,.21)";
+        ctx.fillRect(112, 0, 6, 256);
+        ctx.fillRect(350, 0, 4, 256);
+        ctx.fillStyle = "rgba(255,255,255,.12)";
+        ctx.fillRect(209, 0, 2, 256);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+        texture.encoding = THREE.sRGBEncoding;
+        return texture;
+      }
+
+      scene.environment = makeEnvironmentTexture();
+
+      const sphereGeometry = new THREE.SphereGeometry(1, 32, 24);
+
+      function physical(color, options = {}) {
+        return new THREE.MeshPhysicalMaterial({
+          color,
+          roughness: options.roughness === undefined ? .45 : options.roughness,
+          metalness: options.metalness === undefined ? 0 : options.metalness,
+          clearcoat: options.clearcoat === undefined ? .12 : options.clearcoat,
+          clearcoatRoughness: options.clearcoatRoughness === undefined ? .32 : options.clearcoatRoughness,
+          envMapIntensity: options.envMapIntensity === undefined ? .8 : options.envMapIntensity,
+          transparent: options.transparent || false,
+          opacity: options.opacity === undefined ? 1 : options.opacity,
+          side: options.side === undefined ? THREE.FrontSide : options.side,
+          emissive: options.emissive || 0x000000,
+          emissiveIntensity: options.emissiveIntensity === undefined ? 0 : options.emissiveIntensity
+        });
+      }
+
+      function fabric(base, highlight, style = "silk", options = {}) {
+        return new THREE.MeshPhysicalMaterial({
+          map: makeFabricTexture(base, highlight, style),
+          roughness: options.roughness === undefined ? .62 : options.roughness,
+          metalness: options.metalness === undefined ? .08 : options.metalness,
+          clearcoat: options.clearcoat === undefined ? .18 : options.clearcoat,
+          clearcoatRoughness: .42,
+          envMapIntensity: options.envMapIntensity === undefined ? .75 : options.envMapIntensity,
+          side: THREE.DoubleSide
+        });
+      }
+
+      const M = {
+        gold: physical("#C8A96A", { roughness: .24, metalness: .78, clearcoat: .3, envMapIntensity: 1.7, emissive: "#4a3210", emissiveIntensity: .12 }),
+        paleGold: physical("#e2c989", { roughness: .22, metalness: .72, clearcoat: .32, envMapIntensity: 1.8 }),
+        antiqueGold: physical("#9d7740", { roughness: .34, metalness: .72, clearcoat: .2, envMapIntensity: 1.4 }),
+        ruby: physical("#9d1730", { roughness: .16, metalness: .12, clearcoat: 1, clearcoatRoughness: .1, emissive: "#3b0612", emissiveIntensity: .14 }),
+        emerald: physical("#087457", { roughness: .15, metalness: .14, clearcoat: 1, clearcoatRoughness: .08, emissive: "#003e2b", emissiveIntensity: .16 }),
+        gemGlass: physical("#c7f1ec", { roughness: .11, metalness: .1, clearcoat: 1, clearcoatRoughness: .05, emissive: "#4e8292", emissiveIntensity: .07 }),
+        pearl: physical("#f5eee1", { roughness: .15, metalness: .12, clearcoat: 1, envMapIntensity: 1.4 }),
+        eyeWhite: physical("#f7f2ea", { roughness: .16, clearcoat: .85, envMapIntensity: 1.2 }),
+        liner: physical("#1c1114", { roughness: .26, clearcoat: .2 }),
+        limbalRing: physical("#0d090b", { roughness: .18, clearcoat: .4 }),
+        blush: new THREE.MeshPhysicalMaterial({
+          color: "#f57d76", roughness: .50, transparent: true, opacity: .32,
+          depthWrite: false, clearcoat: .2
+        }),
+        blushWarm: new THREE.MeshPhysicalMaterial({
+          color: "#e6845e", roughness: .50, transparent: true, opacity: .28,
+          depthWrite: false, clearcoat: .2
+        }),
+        softPink: physical("#edb2b4", { roughness: .28, clearcoat: .32 }),
+        darkHair: physical("#21130f", { roughness: .29, clearcoat: .48, envMapIntensity: 1 }),
+        blackHair: physical("#111116", { roughness: .22, clearcoat: .74, envMapIntensity: 1.15 }),
+        ivoryHair: physical("#d7c9d3", { roughness: .26, clearcoat: .78, envMapIntensity: 1.2 }),
+        redVelvet: fabric("#5d1023", "#b56a52", "velvet", { roughness: .56, metalness: .13, envMapIntensity: .95 }),
+        redSatin: fabric("#7a1830", "#c88c70", "silk", { roughness: .33, metalness: .2, envMapIntensity: 1.12 }),
+        bunnyFur: fabric("#e7e0d3", "#fff8eb", "plush", { roughness: .76, metalness: 0, envMapIntensity: .48 }),
+        bunnyFurLight: physical("#f0e9dc", { roughness: .68, clearcoat: .08 }),
+        bunnyPink: physical("#de9ca6", { roughness: .48, clearcoat: .22, emissive: "#501c28", emissiveIntensity: .09 }),
+        burgundy: fabric("#541426", "#a66556", "velvet", { roughness: .4, metalness: .13 }),
+        blackCloth: fabric("#121216", "#5c5360", "velvet", { roughness: .47, metalness: .12 }),
+        blazerSatin: physical("#29272d", { roughness: .25, metalness: .24, clearcoat: .56, envMapIntensity: 1.15 }),
+        porcelain: physical("#f5ded2", { roughness: .34, clearcoat: .32, envMapIntensity: .95 }),
+        skinAsha: physical("#cc8e5e", { roughness: .38, clearcoat: .35, clearcoatRoughness: .18, envMapIntensity: .95, emissive: "#3d1b09", emissiveIntensity: .08 }),
+        skinTara: physical("#d49868", { roughness: .38, clearcoat: .35, clearcoatRoughness: .18, envMapIntensity: .95, emissive: "#401e0a", emissiveIntensity: .08 }),
+        skinGia: physical("#f7dbd0", { roughness: .32, clearcoat: .42, clearcoatRoughness: .14, envMapIntensity: 1.05, emissive: "#452622", emissiveIntensity: .06 }),
+        skinNoor: physical("#f6dfd4", { roughness: .32, clearcoat: .42, clearcoatRoughness: .14, envMapIntensity: 1.05, emissive: "#452622", emissiveIntensity: .06 }),
+        irisAsha: physical("#4a2a1a", { roughness: .12, clearcoat: 1, clearcoatRoughness: .03, envMapIntensity: 1.8, emissive: "#2e1509", emissiveIntensity: .18 }),
+        irisTara: physical("#402b1c", { roughness: .12, clearcoat: 1, clearcoatRoughness: .03, envMapIntensity: 1.8, emissive: "#28170b", emissiveIntensity: .18 }),
+        irisNoor: physical("#563b33", { roughness: .12, clearcoat: 1, clearcoatRoughness: .03, envMapIntensity: 1.8, emissive: "#331c15", emissiveIntensity: .18 }),
+        irisGia: physical("#5e4256", { roughness: .12, clearcoat: 1, clearcoatRoughness: .03, envMapIntensity: 1.8, emissive: "#381d32", emissiveIntensity: .18 }),
+        pupil: physical("#0a0608", { roughness: .04, clearcoat: 1, clearcoatRoughness: .01, envMapIntensity: 2.0 }),
+        plushEye: physical("#08080a", { roughness: .07, clearcoat: 1, envMapIntensity: 1.6 }),
+        crimsonLip: physical("#b6414a", { roughness: .20, clearcoat: .75, clearcoatRoughness: .08, emissive: "#4a0d16", emissiveIntensity: .12 }),
+        roseLip: physical("#c96a77", { roughness: .18, clearcoat: .80, clearcoatRoughness: .08, emissive: "#521622", emissiveIntensity: .12 }),
+        black: physical("#100f12", { roughness: .34, clearcoat: .22 }),
+        emeraldSilk: fabric("#0c4939", "#b99451", "silk", { roughness: .43, metalness: .16, envMapIntensity: .95 }),
+        marigoldSilk: fabric("#bd7022", "#edc176", "silk", { roughness: .36, metalness: .22, envMapIntensity: 1.08 }),
+        ivorySilk: fabric("#e8dfd4", "#fff6e7", "silk", { roughness: .49, metalness: .07 }),
+        roseSilk: fabric("#b77b9e", "#f2d7df", "silk", { roughness: .28, metalness: .27, envMapIntensity: 1.18 }),
+        lilacSilk: fabric("#82708f", "#d6bee7", "silk", { roughness: .3, metalness: .27, envMapIntensity: 1.2 }),
+        holographic: physical("#d9b8d9", { roughness: .2, metalness: .38, clearcoat: 1, clearcoatRoughness: .08, envMapIntensity: 1.45 }),
+        shadowRose: new THREE.MeshPhysicalMaterial({
+          color: "#bc77a9", transparent: true, opacity: .38, roughness: .38,
+          depthWrite: false, side: THREE.DoubleSide
+        }),
+        blackOpening: physical("#3a1119", { roughness: .6, clearcoat: .08 }),
+        stageMetal: physical("#171512", { roughness: .3, metalness: .7, clearcoat: .35, envMapIntensity: 1.2 }),
+        stageFloor: new THREE.MeshStandardMaterial({ color: "#080808", roughness: .82, metalness: .08 })
+      };
+
+      function addEllipsoid(parent, material, position, scale, options = {}) {
+        const mesh = new THREE.Mesh(sphereGeometry, material);
+        mesh.position.set(position[0], position[1], position[2]);
+        mesh.scale.set(scale[0], scale[1], scale[2]);
+        mesh.castShadow = options.castShadow !== false;
+        mesh.receiveShadow = options.receiveShadow !== false;
+        if (options.rotation) {
+          mesh.rotation.set(options.rotation[0], options.rotation[1], options.rotation[2]);
+        }
+        parent.add(mesh);
+        return mesh;
+      }
+
+      function addCylinder(parent, material, radiusTop, radiusBottom, height, position, segments = 20) {
+        const mesh = new THREE.Mesh(
+          new THREE.CylinderGeometry(radiusTop, radiusBottom, height, segments, 1, false),
+          material
+        );
+        mesh.position.set(position[0], position[1], position[2]);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        parent.add(mesh);
+        return mesh;
+      }
+
+      function addTorus(parent, material, radius, tube, position, rotation = [0, 0, 0], segments = 42) {
+        const mesh = new THREE.Mesh(
+          new THREE.TorusGeometry(radius, tube, 9, segments),
+          material
+        );
+        mesh.position.set(position[0], position[1], position[2]);
+        mesh.rotation.set(rotation[0], rotation[1], rotation[2]);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        parent.add(mesh);
+        return mesh;
+      }
+
+      function addHorizontalTorus(parent, material, radius, tube, position) {
+        return addTorus(parent, material, radius, tube, position, [Math.PI / 2, 0, 0], 64);
+      }
+
+      function curveTube(parent, points, radius, material, tubularSegments = 32, radialSegments = 8, closed = false) {
+        const vectors = points.map((p) => Array.isArray(p)
+          ? new THREE.Vector3(p[0], p[1], p[2])
+          : p);
+        const curve = new THREE.CatmullRomCurve3(vectors, closed, "catmullrom", .32);
+        const geometry = new THREE.TubeGeometry(curve, tubularSegments, radius, radialSegments, closed);
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        parent.add(mesh);
+        return mesh;
+      }
+
+      function addPanel(parent, points, material, z = 0) {
+        const shape = new THREE.Shape();
+        shape.moveTo(points[0][0], points[0][1]);
+        for (let i = 1; i < points.length; i++) shape.lineTo(points[i][0], points[i][1]);
+        shape.closePath();
+
+        const geometry = new THREE.ShapeGeometry(shape, 16);
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.z = z;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        parent.add(mesh);
+        return mesh;
+      }
+
+      function addPanelBorder(parent, points, z, material, radius = .016) {
+        const path = points.map((p) => [p[0], p[1], z]);
+        path.push([points[0][0], points[0][1], z]);
+        return curveTube(parent, path, radius, material, Math.max(24, points.length * 8), 6, false);
+      }
+
+      function addPlatform(root) {
+        const pedestal = new THREE.Mesh(
+          new THREE.CylinderGeometry(.88, .98, .13, 64, 1, false),
+          M.stageMetal
+        );
+        pedestal.position.set(0, -2.28, 0);
+        pedestal.castShadow = true;
+        pedestal.receiveShadow = true;
+        root.add(pedestal);
+
+        addHorizontalTorus(root, M.gold, .9, .018, [0, -2.22, 0]);
+        addHorizontalTorus(root, M.antiqueGold, .97, .012, [0, -2.34, 0]);
+      }
+
+      function addSkirtEmbroidery(root, rows, material = M.gold) {
+        const gemGeometry = new THREE.OctahedronGeometry(.028, 0);
+        rows.forEach((row, rowIndex) => {
+          const count = row.count || 7;
+          for (let i = 0; i < count; i++) {
+            const u = count === 1 ? .5 : i / (count - 1);
+            const x = (u - .5) * row.radius * 1.46;
+            const z = Math.sqrt(Math.max(.02, row.radius * row.radius - x * x)) + .018;
+            const gem = new THREE.Mesh(gemGeometry, material);
+            gem.position.set(x, row.y + (i % 2 ? .018 : 0), z);
+            gem.scale.set(.8, 1.18, .55);
+            gem.rotation.z = (i % 2 ? .3 : -.3) + rowIndex * .08;
+            gem.castShadow = true;
+            root.add(gem);
+          }
+        });
+      }
+
+      function addHem(root, radius, y) {
+        addHorizontalTorus(root, M.paleGold, radius, .021, [0, y, 0]);
+        addHorizontalTorus(root, M.gold, radius - .045, .008, [0, y + .032, 0]);
+      }
+
+      function buildHumanArms(character, config) {
+        [-1, 1].forEach((side) => {
+          const key = side < 0 ? "left" : "right";
+          const pivot = new THREE.Group();
+          pivot.position.set(side * .61, -.08, .08);
+          character.root.add(pivot);
+          character.armPivots[key] = pivot;
+
+          addEllipsoid(pivot, config.sleeve, [0, -.25, 0], [.225, .38, .22]);
+          addEllipsoid(pivot, config.forearm || config.skin, [0, -.59, .075], [.15, .32, .16]);
+          addHorizontalTorus(pivot, config.cuff || M.gold, .154, .018, [0, -.69, .075]);
+
+          const hand = new THREE.Group();
+          hand.position.set(0, -.87, .13);
+          pivot.add(hand);
+
+          addEllipsoid(hand, config.skin, [0, 0, 0], [.15, .19, .12]);
+
+          for (let i = 0; i < 3; i++) {
+            addEllipsoid(
+              hand,
+              config.skin,
+              [(i - 1) * .085, -.14, .035],
+              [.043, .105, .055],
+              { castShadow: false }
+            );
+          }
+
+          addEllipsoid(
+            hand,
+            config.skin,
+            [side < 0 ? .13 : -.13, -.035, .015],
+            [.06, .13, .06],
+            { rotation: [0, 0, side < 0 ? -.55 : .55], castShadow: false }
+          );
+
+          if (config.bracelet) {
+            addHorizontalTorus(hand, config.bracelet, .145, .012, [0, .12, .01]);
+          }
+        });
+      }
+
+      function makeHumanEye(character, parent, side, config) {
+        const eyeGroup = new THREE.Group();
+        // Snug, natural spacing for cute stylized proportions
+        const eyeX = side * (config.xOffset || .215);
+        const eyeY = config.y === undefined ? .05 : config.y;
+        const eyeZ = config.z === undefined ? .588 : config.z;
+        eyeGroup.position.set(eyeX, eyeY, eyeZ);
+        // Angle naturally following the cute curved doll face
+        eyeGroup.rotation.y = side * 0.08;
+        eyeGroup.rotation.z = side * -0.015;
+        parent.add(eyeGroup);
+
+        const r = config.scleraRadius || 0.145;
+        // Wide doe-eye ratio: slightly wider than tall (prevents startling vertical oval look)
+        const eyeScale = config.eyeScale || [1.14, 0.98, 0.56];
+
+        // 1. Glossy White Sclera Eyeball (soft dewy porcelain tone, perfectly rounded)
+        const scleraMat = physical("#f7f2ea", {
+          roughness: 0.14,
+          clearcoat: 1.0,
+          clearcoatRoughness: 0.04,
+          envMapIntensity: 1.2
+        });
+        const sclera = addEllipsoid(eyeGroup, scleraMat, [0, 0, 0], [r * eyeScale[0], r * eyeScale[1], r * eyeScale[2]], { castShadow: false });
+
+        // 2. Dynamic Iris / Pupil Rig (tracked by cursor gaze)
+        const pupilPivot = new THREE.Group();
+        // Sits right at the front surface of the sclera
+        pupilPivot.position.set(0, -0.002, r * eyeScale[2] * 0.74);
+        eyeGroup.add(pupilPivot);
+
+        // Iris base: large & doe-eyed, occupying ~84% of vertical sclera so it looks sweet and expressive!
+        const irisMat = config.iris || M.irisAsha;
+        const irisR = r * 0.88;
+        const irisMesh = addEllipsoid(pupilPivot, irisMat, [0, 0, 0.012], [irisR * 0.96, irisR * 1.02, 0.038], { castShadow: false });
+
+        // Dark outer Limbal Ring (the classic beauty mark in anime & Disney character art)
+        const limbalRing = addTorus(pupilPivot, M.limbalRing, irisR * 0.96, 0.014, [0, 0, 0.014], [0, 0, 0], 36);
+
+        // Vibrant Iris interior shimmer ring
+        const irisRing = addTorus(pupilPivot, config.irisGlow || M.gold, irisR * 0.62, 0.009, [0, 0, 0.032], [0, 0, 0], 30);
+
+        // Inner dark deep pupil (rich obsidian core)
+        const pupilDark = addEllipsoid(pupilPivot, M.pupil, [0, 0, 0.036], [irisR * 0.52, irisR * 0.55, 0.024], { castShadow: false });
+
+        // 3. Anime / Disney "Catchlights" (crisp sparkling reflections that bring the gaze alive)
+        const catchlightMat = physical("#ffffff", {
+          roughness: 0.01,
+          clearcoat: 1.0,
+          clearcoatRoughness: 0.01,
+          emissive: "#ffffff",
+          emissiveIntensity: 0.98
+        });
+        // Big primary sparkle (top-left)
+        addEllipsoid(pupilPivot, catchlightMat, [-irisR * 0.30, irisR * 0.32, 0.056], [irisR * 0.32, irisR * 0.34, 0.024], { castShadow: false });
+        
+        // Secondary soft glow sparkle (bottom-right)
+        addEllipsoid(pupilPivot, catchlightMat, [irisR * 0.32, -irisR * 0.24, 0.052], [irisR * 0.16, irisR * 0.16, 0.018], { castShadow: false });
+
+        // Micro sparkle (top-right accent)
+        addEllipsoid(pupilPivot, catchlightMat, [irisR * 0.22, irisR * 0.38, 0.052], [irisR * 0.09, irisR * 0.09, 0.014], { castShadow: false });
+
+        // 4. Lush Upper Eyelid & Eyelashes (hugs the top curve of the iris like a soft anime eyelid)
+        const linerMat = config.liner || M.liner;
+        const topPts = [
+          [-r * 1.22, -r * 0.18, r * 0.44],
+          [-r * 0.65, r * 0.72, r * 0.60],
+          [0, r * 0.88, r * 0.64],
+          [r * 0.65, r * 0.72, r * 0.60],
+          [r * 1.22, -r * 0.14, r * 0.44]
+        ];
+        curveTube(eyeGroup, topPts, 0.020, linerMat, 24, 7);
+
+        // Lower soft lash line
+        const btmPts = [
+          [-r * 0.88, -r * 0.52, r * 0.42],
+          [0, -r * 0.78, r * 0.54],
+          [r * 0.85, -r * 0.52, r * 0.42]
+        ];
+        curveTube(eyeGroup, btmPts, 0.009, linerMat, 18, 5);
+
+        // Chic winged eyeliner flick on outer corners
+        const wingDir = side > 0 ? 1 : -1;
+        curveTube(
+          eyeGroup,
+          [
+            [wingDir * r * 1.15, -r * 0.06, r * 0.44],
+            [wingDir * r * 1.45, r * 0.22, r * 0.40],
+            [wingDir * r * 1.70, r * 0.45, r * 0.36]
+          ],
+          0.014,
+          linerMat,
+          16,
+          6
+        );
+
+        character.eyeGroups.push(eyeGroup);
+        character.pupilGroups.push(pupilPivot);
+        return eyeGroup;
+      }
+
+      function buildHumanFace(character, config) {
+        const head = new THREE.Group();
+        head.position.set(0, config.headY === undefined ? 1.05 : config.headY, 0);
+        character.root.add(head);
+        character.headRig = head;
+
+        // Elegant tapered neck connecting seamlessly to torso to banish floating-head gaps!
+        const neck = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.22, 0.34, 0.52, 28, 1, false),
+          config.skin
+        );
+        neck.position.set(0, -0.46, -0.02);
+        neck.castShadow = true;
+        neck.receiveShadow = true;
+        head.add(neck);
+
+        // Soft royal choker / necklace collar bridging neck & bodice
+        addHorizontalTorus(head, M.gold, 0.28, 0.024, [0, -0.58, -0.02]);
+        addHorizontalTorus(head, M.paleGold, 0.24, 0.014, [0, -0.50, -0.02]);
+
+        // Cute rounded doll head with soft porcelain cheeks and gentle chin
+        const headMesh = addEllipsoid(head, config.skin, [0, 0, 0], config.headScale || [.68, .76, .64]);
+
+        // Soft delicate ears on the sides
+        [-1, 1].forEach((side) => {
+          const earMesh = addEllipsoid(head, config.skin, [side * .62, -.02, -.06], [.11, .16, .09]);
+          earMesh.rotation.set(0, side * 0.25, -side * 0.15);
+        });
+
+        const eyeConfig = {
+          iris: config.iris || M.irisAsha,
+          irisGlow: config.irisGlow || M.gold,
+          xOffset: config.eyeX || .22,
+          y: config.eyeY === undefined ? .06 : config.eyeY,
+          z: config.eyeZ === undefined ? .588 : config.eyeZ,
+          liner: config.liner || M.liner,
+          scleraRadius: 0.145,
+          eyeScale: [1.14, 0.98, 0.56]
+        };
+
+        [-1, 1].forEach((side) => {
+          makeHumanEye(character, head, side, eyeConfig);
+
+          // Gentle, sweet natural arched eyebrows
+          const brow = new THREE.Group();
+          brow.position.set(side * .22, .26, .58);
+          brow.rotation.z = side < 0 ? .04 : -.04;
+          head.add(brow);
+          curveTube(
+            brow,
+            [
+              [-.12, -0.015, 0],
+              [-.05, .04, .01],
+              [.04, .045, .01],
+              [.13, -0.01, 0]
+            ],
+            config.browRadius || .017,
+            config.browMaterial || M.darkHair,
+            20,
+            7
+          );
+          character.browGroups.push(brow);
+        });
+
+        // Cute petite button nose
+        addEllipsoid(head, config.skin, [0, -.065, .58], [.036, .052, .046], { castShadow: false });
+        addEllipsoid(head, config.skin, [0, -.092, .595], [.048, .040, .044], { castShadow: false });
+
+        // Soft glowing kawaii blush on cheeks (warm radiant glow)
+        const blushMat = config.blushMat || M.blush;
+        addEllipsoid(head, blushMat, [-.34, -.09, .51], [.16, .085, .04], { castShadow: false });
+        addEllipsoid(head, blushMat, [.34, -.09, .51], [.16, .085, .04], { castShadow: false });
+
+        // Charming delicate smile
+        const mouth = new THREE.Group();
+        mouth.position.set(0, -.23, .565);
+        head.add(mouth);
+        
+        // Sweet upward curved lip
+        curveTube(
+          mouth,
+          [
+            [-.11, .015, -0.01],
+            [-.05, -.020, .012],
+            [0, -.030, .018],
+            [.05, -.020, .012],
+            [.11, .015, -0.01]
+          ],
+          .016,
+          config.lip || M.crimsonLip,
+          24,
+          7
+        );
+        // Soft lower lip fullness highlight
+        curveTube(
+          mouth,
+          [
+            [-.05, -.028, .016],
+            [0, -.045, .022],
+            [.05, -.028, .016]
+          ],
+          .012,
+          config.lip || M.crimsonLip,
+          16,
+          6
+        );
+
+        character.mouthGroup = mouth;
+        character.mouthOpen = addEllipsoid(
+          mouth,
+          M.blackOpening,
+          [0, -.010, .012],
+          [.06, .036, .015],
+          { castShadow: false }
+        );
+        character.mouthOpen.visible = false;
+
+        return head;
+      }
+
+      function makeBunnyEye(character, parent, side) {
+        const eyeGroup = new THREE.Group();
+        // Mochi head is [.80, .77, .65], at x=0.24, y=0.12, head surface z ≈ 0.61.
+        // Position eyes at z=0.595 with radius 0.18 so big glossy boba eyes emerge adorably!
+        eyeGroup.position.set(side * .24, .12, .595);
+        eyeGroup.rotation.y = side * 0.12;
+        parent.add(eyeGroup);
+
+        const r = 0.185;
+        // Big sparkling boba / anime plush eyes
+        const bobaMat = physical("#120d14", {
+          roughness: 0.04,
+          clearcoat: 1.0,
+          clearcoatRoughness: 0.02,
+          envMapIntensity: 2.0
+        });
+        addEllipsoid(eyeGroup, bobaMat, [0, 0, 0], [r, r * 1.16, r * 0.68], { castShadow: false });
+
+        const pupilPivot = new THREE.Group();
+        pupilPivot.position.set(0, 0, r * 0.65);
+        eyeGroup.add(pupilPivot);
+
+        // Huge sparkling white catchlights (makes Mochi look irresistible and ultra-cute)
+        const catchlightMat = physical("#ffffff", {
+          roughness: 0.01,
+          clearcoat: 1.0,
+          clearcoatRoughness: 0.01,
+          emissive: "#ffffff",
+          emissiveIntensity: 0.98
+        });
+        addEllipsoid(pupilPivot, catchlightMat, [-r * 0.34, r * 0.36, 0.038], [r * 0.36, r * 0.38, 0.02], { castShadow: false });
+        addEllipsoid(pupilPivot, catchlightMat, [r * 0.34, -r * 0.28, 0.032], [r * 0.19, r * 0.19, 0.015], { castShadow: false });
+        addEllipsoid(pupilPivot, catchlightMat, [r * 0.24, r * 0.40, 0.032], [r * 0.11, r * 0.11, 0.01], { castShadow: false });
+
+        character.eyeGroups.push(eyeGroup);
+        character.pupilGroups.push(pupilPivot);
+        return eyeGroup;
+      }
+
+      class CharacterBase {
+        constructor(targetScene, metadata) {
+          this.scene = targetScene;
+          this.meta = metadata;
+          this.phase = Math.random() * Math.PI * 2;
+          this.stage = new THREE.Group();
+          this.stage.name = metadata.name + " presentation stage";
+          this.root = new THREE.Group();
+          this.root.name = metadata.name + " character model";
+          this.stage.add(this.root);
+          this.scene.add(this.stage);
+          this.stage.visible = false;
+
+          this.eyeGroups = [];
+          this.pupilGroups = [];
+          this.browGroups = [];
+          this.armPivots = {};
+          this.moodHead = { x: 0, y: 0, z: 0 };
+          this.currentMood = "welcome";
+          this.earPivots = [];
+          this.earMood = 0;
+          this.nextBlink = 2.5 + Math.random() * 2.2;
+          this.brushGlow = null;
+          this.brushTipMaterial = null;
+          this.stage.rotation.y = 0;
+
+          addPlatform(this.root);
+        }
+
+        setActive(active) {
+          if (this.brushGlow) this.brushGlow.intensity = active ? 1.05 : 0;
+          if (this.brushTipMaterial) this.brushTipMaterial.emissiveIntensity = active ? .9 : .08;
+        }
+
+        blink() {
+          if (!gsap || !this.eyeGroups.length) return;
+          this.eyeGroups.forEach((eye) => {
+            gsap.killTweensOf(eye.scale);
+            eye.scale.y = 1;
+            gsap.to(eye.scale, {
+              y: .07,
+              duration: .085,
+              ease: "power2.in",
+              yoyo: true,
+              repeat: 1,
+              onComplete: () => { eye.scale.y = 1; }
+            });
+          });
+        }
+
+        applyMood(mood, instant = false) {
+          this.currentMood = mood;
+          const pose = {
+            welcome: {
+              head: { x: 0, y: 0, z: -.015 },
+              arms: { left: .51, right: -.51 },
+              mouth: { x: 1, y: 1 },
+              brows: 0,
+              ear: .015,
+              open: false
+            },
+            happy: {
+              head: { x: -.015, y: 0, z: -.015 },
+              arms: { left: -.46, right: .46 },
+              mouth: { x: 1.13, y: 1.14 },
+              brows: -.025,
+              ear: .11,
+              open: true
+            },
+            thinking: {
+              head: { x: -.025, y: -.12, z: -.12 },
+              arms: { left: 0, right: -2.28 },
+              mouth: { x: .78, y: .82 },
+              brows: .06,
+              ear: -.055,
+              open: false
+            },
+            hesitant: {
+              head: { x: .015, y: .08, z: .15 },
+              arms: { left: .20, right: -.20 },
+              mouth: { x: .84, y: .78 },
+              brows: .035,
+              ear: -.10,
+              open: false
+            }
+          }[mood] || null;
+
+          if (!pose) return;
+
+          const duration = instant ? 0 : .52;
+
+          if (gsap && !instant) {
+            gsap.to(this.moodHead, { ...pose.head, duration, ease: "power2.out", overwrite: true });
+            gsap.to(this.earMood ? this : this, { earMood: pose.ear, duration, ease: "power2.out", overwrite: true });
+
+            Object.keys(pose.arms).forEach((side) => {
+              if (this.armPivots[side]) {
+                gsap.to(this.armPivots[side].rotation, {
+                  z: pose.arms[side],
+                  duration: .58,
+                  ease: "power2.inOut",
+                  overwrite: true
+                });
+              }
+            });
+
+            if (this.mouthGroup) {
+              gsap.to(this.mouthGroup.scale, {
+                x: pose.mouth.x,
+                y: pose.mouth.y,
+                duration: .38,
+                ease: "power2.out",
+                overwrite: true
+              });
+            }
+
+            this.browGroups.forEach((brow, index) => {
+              const direction = index === 0 ? 1 : -1;
+              gsap.to(brow.rotation, {
+                z: direction * pose.brows,
+                duration: .38,
+                ease: "power2.out",
+                overwrite: true
+              });
+            });
+          } else {
+            Object.assign(this.moodHead, pose.head);
+            this.earMood = pose.ear;
+
+            Object.keys(pose.arms).forEach((side) => {
+              if (this.armPivots[side]) this.armPivots[side].rotation.z = pose.arms[side];
+            });
+
+            if (this.mouthGroup) this.mouthGroup.scale.set(pose.mouth.x, pose.mouth.y, 1);
+
+            this.browGroups.forEach((brow, index) => {
+              brow.rotation.z = (index === 0 ? 1 : -1) * pose.brows;
+            });
+          }
+
+          if (this.mouthOpen) this.mouthOpen.visible = pose.open;
+        }
+
+        update(time, delta, gazeX, gazeY) {
+          const sway = Math.sin(time * .77 + this.phase);
+          this.root.position.y = Math.sin(time * 1.2 + this.phase) * .026;
+          this.root.rotation.z = sway * .009;
+
+          if (this.breathMesh && this.breathBaseY) {
+            this.breathMesh.scale.y = this.breathBaseY * (1 + Math.sin(time * 1.55 + this.phase) * .012);
+          }
+
+          if (this.headRig) {
+            const smooth = Math.min(1, delta * 5.4);
+            const targetX = this.moodHead.x + gazeY * .105;
+            const targetY = this.moodHead.y + gazeX * .205;
+            this.headRig.rotation.x += (targetX - this.headRig.rotation.x) * smooth;
+            this.headRig.rotation.y += (targetY - this.headRig.rotation.y) * smooth;
+            this.headRig.rotation.z += (this.moodHead.z + sway * .012 - this.headRig.rotation.z) * smooth;
+          }
+
+          this.pupilGroups.forEach((pupil) => {
+            const tx = THREE.MathUtils.clamp(gazeX * .035, -.04, .04);
+            const ty = THREE.MathUtils.clamp(gazeY * .025, -.03, .03);
+            pupil.position.x += (tx - pupil.position.x) * Math.min(1, delta * 7);
+            pupil.position.y += (ty - pupil.position.y) * Math.min(1, delta * 7);
+          });
+
+          if (this.earPivots.length) {
+            this.earPivots.forEach((ear, index) => {
+              const side = index === 0 ? -1 : 1;
+              const wiggle = Math.sin(time * 1.25 + this.phase + index) * .025;
+              ear.rotation.z = side * (this.earMood + wiggle);
+            });
+          }
+
+          if (time > this.nextBlink) {
+            this.blink();
+            this.nextBlink = time + 2.4 + Math.random() * 3.1;
+          }
+        }
+
+        dispose() {
+          if (this.stage.parent) this.stage.parent.remove(this.stage);
+        }
+      }
+
+      class AshaCharacter extends CharacterBase {
+        constructor(targetScene) {
+          super(targetScene, {
+            name: "Asha",
+            id: "asha",
+            role: "Royal bridal stylist",
+            shortRole: "ROYAL BRIDAL STYLIST",
+            description: "A warm welcome to your most beautiful chapter. Discover heirloom bridal details, made personal.",
+            footnote: "The royal finishing touch"
+          });
+          this.build();
+        }
+
+        build() {
+          const root = this.root;
+
+          const skirt = new THREE.Mesh(
+            new THREE.LatheGeometry([
+              new THREE.Vector2(.82, -2.15),
+              new THREE.Vector2(.95, -2.06),
+              new THREE.Vector2(.87, -1.78),
+              new THREE.Vector2(.74, -1.38),
+              new THREE.Vector2(.62, -.95),
+              new THREE.Vector2(.52, -.48),
+              new THREE.Vector2(.51, -.20),
+              new THREE.Vector2(.60, .03)
+            ], 64),
+            M.redVelvet
+          );
+          skirt.castShadow = true;
+          skirt.receiveShadow = true;
+          root.add(skirt);
+
+          this.breathMesh = addEllipsoid(root, M.redSatin, [0, -.55, .025], [.57, .72, .47]);
+          this.breathBaseY = this.breathMesh.scale.y;
+
+          addHorizontalTorus(root, M.gold, .565, .026, [0, -.49, .015]);
+          addHorizontalTorus(root, M.paleGold, .54, .009, [0, -.54, .015]);
+          addHem(root, .91, -2.08);
+
+          addSkirtEmbroidery(root, [
+            { y: -1.83, radius: .88, count: 9 },
+            { y: -1.55, radius: .79, count: 9 },
+            { y: -1.27, radius: .70, count: 7 },
+            { y: -.99, radius: .61, count: 7 },
+            { y: -.74, radius: .56, count: 5 }
+          ]);
+
+          buildHumanArms(this, {
+            skin: M.skinAsha,
+            sleeve: M.redVelvet,
+            forearm: M.skinAsha,
+            cuff: M.gold
+          });
+
+          const head = buildHumanFace(this, {
+            skin: M.skinAsha,
+            iris: M.irisAsha,
+            lip: M.crimsonLip,
+            browMaterial: M.darkHair,
+            headY: 1.05,
+            headScale: [.68, .76, .64]
+          });
+
+          addEllipsoid(head, M.darkHair, [0, .05, -.18], [.75, .92, .57]);
+          addEllipsoid(head, M.darkHair, [-.57, -.22, -.08], [.21, .58, .39]);
+          addEllipsoid(head, M.darkHair, [.57, -.22, -.08], [.21, .58, .39]);
+
+          // Velvet dupatta crown and its hand-finished gold border.
+          addEllipsoid(head, M.redVelvet, [0, .31, -.20], [.84, .66, .58]);
+          curveTube(
+            head,
+            [
+              [-.76, .38, .13],
+              [-.57, .67, .24],
+              [-.28, .86, .31],
+              [0, .91, .33],
+              [.30, .84, .30],
+              [.60, .65, .22],
+              [.76, .38, .13]
+            ],
+            .018,
+            M.gold,
+            36,
+            7
+          );
+
+          const leftDrape = [
+            [-.59, .39], [-.78, .20], [-.84, -.45], [-.69, -.84], [-.46, -.68], [-.43, -.13]
+          ];
+          const rightDrape = [
+            [.59, .39], [.78, .20], [.84, -.45], [.69, -.84], [.46, -.68], [.43, -.13]
+          ];
+          addPanel(head, leftDrape, M.redSatin, .37);
+          addPanel(head, rightDrape, M.redSatin, .37);
+          addPanelBorder(head, leftDrape, .395, M.paleGold, .014);
+          addPanelBorder(head, rightDrape, .395, M.paleGold, .014);
+
+          // A maang tikka, ruby drop and antique jhumkas.
+          curveTube(
+            head,
+            [[0, .83, .38], [0, .69, .47], [0, .52, .59], [0, .39, .62]],
+            .018,
+            M.gold,
+            24,
+            7
+          );
+          addEllipsoid(head, M.gold, [0, .40, .62], [.095, .12, .050]);
+          addEllipsoid(head, M.ruby, [0, .40, .675], [.060, .08, .028]);
+          addEllipsoid(head, M.paleGold, [0, .48, .645], [.023, .023, .016]);
+
+          [-1, 1].forEach((side) => {
+            const earring = new THREE.Group();
+            earring.position.set(side * .70, -.055, .13);
+            head.add(earring);
+            addTorus(earring, M.gold, .078, .013, [0, 0, 0], [0, 0, 0], 32);
+            addEllipsoid(earring, M.gold, [0, -.145, .005], [.09, .115, .075]);
+            addEllipsoid(earring, M.ruby, [0, -.145, .07], [.038, .055, .025]);
+            addEllipsoid(earring, M.paleGold, [0, -.24, .01], [.027, .035, .026]);
+          });
+        }
+      }
+
+      class MochiCharacter extends CharacterBase {
+        constructor(targetScene) {
+          super(targetScene, {
+            name: "Mochi",
+            id: "mochi",
+            role: "Haute velvet mascot",
+            shortRole: "HAUTE VELVET MASCOT",
+            description: "A cashmere-soft little muse with a very good eye for the finishing details.",
+            footnote: "Small paws · very big sparkle"
+          });
+          this.build();
+        }
+
+        build() {
+          const root = this.root;
+
+          addEllipsoid(root, M.bunnyFur, [-.41, -1.64, .18], [.34, .24, .40]);
+          addEllipsoid(root, M.bunnyFur, [.41, -1.64, .18], [.34, .24, .40]);
+          addEllipsoid(root, M.bunnyPink, [-.41, -1.72, .52], [.19, .11, .038], { castShadow: false });
+          addEllipsoid(root, M.bunnyPink, [.41, -1.72, .52], [.19, .11, .038], { castShadow: false });
+
+          this.breathMesh = addEllipsoid(root, M.bunnyFur, [0, -.84, 0], [.83, .84, .64]);
+          this.breathBaseY = this.breathMesh.scale.y;
+          addEllipsoid(root, M.bunnyFurLight, [0, -.95, .54], [.46, .52, .18], { castShadow: false });
+
+          [-1, 1].forEach((side) => {
+            const pivot = new THREE.Group();
+            pivot.position.set(side * .62, -.57, .17);
+            root.add(pivot);
+            this.armPivots[side < 0 ? "left" : "right"] = pivot;
+            addEllipsoid(pivot, M.bunnyFur, [0, -.19, 0], [.22, .34, .22]);
+            addEllipsoid(pivot, M.bunnyFur, [0, -.43, .16], [.235, .225, .18]);
+            addEllipsoid(pivot, M.bunnyPink, [0, -.445, .32], [.105, .10, .026], { castShadow: false });
+            addEllipsoid(pivot, M.bunnyPink, [-.12, -.44, .32], [.047, .05, .025], { castShadow: false });
+            addEllipsoid(pivot, M.bunnyPink, [.12, -.44, .32], [.047, .05, .025], { castShadow: false });
+          });
+
+          const head = new THREE.Group();
+          head.position.set(0, .57, 0);
+          root.add(head);
+          this.headRig = head;
+
+          addEllipsoid(head, M.bunnyFur, [0, 0, 0], [.80, .77, .65]);
+          addEllipsoid(head, M.bunnyFurLight, [0, -.245, .48], [.31, .20, .20], { castShadow: false });
+          addEllipsoid(head, M.bunnyFurLight, [-.12, -.21, .57], [.20, .16, .15], { castShadow: false });
+          addEllipsoid(head, M.bunnyFurLight, [.12, -.21, .57], [.20, .16, .15], { castShadow: false });
+
+          makeBunnyEye(this, head, -1);
+          makeBunnyEye(this, head, 1);
+
+          addEllipsoid(head, M.blush, [-.49, -.18, .42], [.16, .09, .035], { castShadow: false });
+          addEllipsoid(head, M.blush, [.49, -.18, .42], [.16, .09, .035], { castShadow: false });
+
+          // Tiny heart-shaped nose.
+          const noseShape = new THREE.Shape();
+          noseShape.moveTo(0, -.065);
+          noseShape.bezierCurveTo(-.14, .015, -.10, .12, 0, .065);
+          noseShape.bezierCurveTo(.10, .12, .14, .015, 0, -.065);
+          const nose = new THREE.Mesh(new THREE.ShapeGeometry(noseShape, 18), M.bunnyPink);
+          nose.position.set(0, -.125, .715);
+          nose.scale.set(.62, .62, 1);
+          head.add(nose);
+
+          this.mouthGroup = new THREE.Group();
+          this.mouthGroup.position.set(0, -.30, .69);
+          head.add(this.mouthGroup);
+          curveTube(
+            this.mouthGroup,
+            [[0, -.005, 0], [0, -.07, .01], [-.075, -.095, .015]],
+            .012,
+            M.crimsonLip,
+            15,
+            6
+          );
+          curveTube(
+            this.mouthGroup,
+            [[0, -.07, .01], [.075, -.095, .015]],
+            .012,
+            M.crimsonLip,
+            12,
+            6
+          );
+          this.mouthOpen = addEllipsoid(
+            this.mouthGroup,
+            M.blackOpening,
+            [0, -.055, .015],
+            [.055, .042, .015],
+            { castShadow: false }
+          );
+          this.mouthOpen.visible = false;
+
+          // Long, bendable ears with rosy lining and gold-threaded tips.
+          [-1, 1].forEach((side, index) => {
+            const ear = new THREE.Group();
+            ear.position.set(side * .37, .48, -.045);
+            head.add(ear);
+            this.earPivots.push(ear);
+
+            addEllipsoid(ear, M.bunnyFur, [0, .62, 0], [.225, .71, .15]);
+            addEllipsoid(ear, M.bunnyPink, [0, .65, .137], [.137, .52, .027], { castShadow: false });
+            addEllipsoid(ear, M.gold, [0, 1.22, .015], [.17, .09, .11]);
+            curveTube(
+              ear,
+              [[-.15, .20, .13], [-.13, .54, .154], [-.10, .91, .14], [-.035, 1.13, .12]],
+              .008,
+              M.paleGold,
+              20,
+              5
+            );
+            curveTube(
+              ear,
+              [[.15, .20, .13], [.13, .54, .154], [.10, .91, .14], [.035, 1.13, .12]],
+              .008,
+              M.paleGold,
+              20,
+              5
+            );
+            addTorus(ear, M.paleGold, .09, .009, [0, 1.14, .02], [Math.PI / 2, 0, 0], 24);
+          });
+
+          // Burgundy satin sash, embroidered edge and emerald brooch.
+          const sash = [
+            [-.58, -.36], [-.44, -.57], [.55, -1.15], [.62, -.90], [-.32, -.22]
+          ];
+          addPanel(root, sash, M.burgundy, .604);
+          addPanelBorder(root, sash, .628, M.gold, .017);
+          curveTube(root, [[-.48, -.45, .635], [-.12, -.70, .638], [.20, -.92, .635]], .008, M.paleGold, 24, 5);
+
+          addTorus(root, M.gold, .15, .026, [.30, -.76, .69], [0, 0, 0], 40);
+          addEllipsoid(root, M.emerald, [.30, -.76, .72], [.11, .13, .055]);
+          addEllipsoid(root, M.paleGold, [.27, -.71, .77], [.025, .025, .015]);
+        }
+      }
+
+      class NoorCharacter extends CharacterBase {
+        constructor(targetScene) {
+          super(targetScene, {
+            name: "Noor",
+            id: "noor",
+            role: "Parisian & Indo-western artist",
+            shortRole: "GLAMOUR ARTIST",
+            description: "A precise eye, a Parisian point of view, and a golden brush for your finishing glow.",
+            footnote: "Modern glamour, made effortless"
+          });
+          this.build();
+        }
+
+        build() {
+          const root = this.root;
+
+          const skirt = new THREE.Mesh(
+            new THREE.LatheGeometry([
+              new THREE.Vector2(.68, -2.15),
+              new THREE.Vector2(.72, -1.88),
+              new THREE.Vector2(.66, -1.45),
+              new THREE.Vector2(.55, -.96),
+              new THREE.Vector2(.48, -.52),
+              new THREE.Vector2(.52, -.23)
+            ], 56),
+            M.blackCloth
+          );
+          skirt.castShadow = true;
+          skirt.receiveShadow = true;
+          root.add(skirt);
+
+          this.breathMesh = addEllipsoid(root, M.blackCloth, [0, -.59, .015], [.63, .73, .46]);
+          this.breathBaseY = this.breathMesh.scale.y;
+
+          // Ivory silk inset and satin lapels.
+          const blouse = [
+            [-.37, -.10], [-.22, .16], [0, .22], [.22, .16], [.37, -.10], [.21, -.67], [0, -.78], [-.21, -.67]
+          ];
+          addPanel(root, blouse, M.ivorySilk, .435);
+
+          const lapelLeft = [
+            [-.61, .08], [-.35, .27], [-.10, -.07], [-.30, -.47], [-.58, -.18]
+          ];
+          const lapelRight = [
+            [.61, .08], [.35, .27], [.10, -.07], [.30, -.47], [.58, -.18]
+          ];
+          addPanel(root, lapelLeft, M.blazerSatin, .49);
+          addPanel(root, lapelRight, M.blazerSatin, .49);
+          addPanelBorder(root, lapelLeft, .515, M.antiqueGold, .009);
+          addPanelBorder(root, lapelRight, .515, M.antiqueGold, .009);
+
+          [-.62, .62].forEach((x) => addEllipsoid(root, M.gold, [x, -.49, .44], [.026, .026, .022]));
+
+          buildHumanArms(this, {
+            skin: M.skinNoor,
+            sleeve: M.blackCloth,
+            forearm: M.skinNoor,
+            cuff: M.antiqueGold
+          });
+
+          const head = buildHumanFace(this, {
+            skin: M.skinNoor,
+            iris: M.irisNoor,
+            irisGlow: M.paleGold,
+            lip: M.roseLip,
+            browMaterial: M.blackHair,
+            headY: 1.05,
+            headScale: [.68, .76, .64]
+          });
+
+          // Sleek chin-length bob and sculpted side pieces.
+          addEllipsoid(head, M.blackHair, [0, .055, -.19], [.75, .95, .60]);
+          addEllipsoid(head, M.blackHair, [-.60, -.25, -.02], [.235, .68, .43]);
+          addEllipsoid(head, M.blackHair, [.60, -.25, -.02], [.235, .68, .43]);
+
+          const fringe = [
+            [-.57, .56], [-.48, .77], [-.23, .84], [0, .75],
+            [.22, .84], [.51, .68], [.32, .51], [.11, .58], [-.12, .52]
+          ];
+          addPanel(head, fringe, M.blackHair, .45);
+
+          curveTube(
+            head,
+            [[-.52, .37, .40], [-.38, .53, .47], [-.20, .60, .46]],
+            .012,
+            M.blazerSatin,
+            18,
+            5
+          );
+          curveTube(
+            head,
+            [[.52, .37, .40], [.38, .53, .47], [.20, .60, .46]],
+            .012,
+            M.blazerSatin,
+            18,
+            5
+          );
+
+          // Fine gold hoops.
+          [-1, 1].forEach((side) => {
+            addTorus(head, M.gold, .095, .012, [side * .70, -.09, .12], [0, 0, 0], 32);
+            addEllipsoid(head, M.paleGold, [side * .70, -.205, .12], [.023, .035, .02]);
+          });
+
+          // A miniature golden blending brush held close to the atelier jacket.
+          const brush = new THREE.Group();
+          brush.position.set(.17, -.70, .29);
+          brush.rotation.z = -.18;
+          this.armPivots.right.add(brush);
+
+          addCylinder(brush, M.gold, .027, .033, .77, [0, .35, 0], 16);
+          addCylinder(brush, M.antiqueGold, .038, .038, .085, [0, .06, 0], 16);
+          addCylinder(brush, M.paleGold, .041, .025, .09, [0, .70, 0], 16);
+
+          const brushTip = physical("#d7bb7d", {
+            roughness: .24,
+            metalness: .3,
+            clearcoat: .75,
+            emissive: "#ac7929",
+            emissiveIntensity: .9
+          });
+          this.brushTipMaterial = brushTip;
+          addCylinder(brush, brushTip, .07, .025, .22, [0, .84, 0], 18);
+
+          for (let i = -2; i <= 2; i++) {
+            curveTube(
+              brush,
+              [[i * .012, .91, .006], [i * .019, 1.00, .006], [i * .025, 1.055, .006]],
+              .004,
+              M.paleGold,
+              8,
+              4
+            );
+          }
+
+          this.brushGlow = new THREE.PointLight(0xffc66d, 0, 2.0, 2);
+          this.brushGlow.position.set(0, .90, .20);
+          brush.add(this.brushGlow);
+        }
+      }
+
+      class TaraCharacter extends CharacterBase {
+        constructor(targetScene) {
+          super(targetScene, {
+            name: "Tara",
+            id: "tara",
+            role: "Heritage drape & henna guru",
+            shortRole: "HERITAGE DRAPE GURU",
+            description: "A graceful guide to storied silks, considered draping, and the poetry of henna.",
+            footnote: "A tradition, beautifully told"
+          });
+          this.build();
+        }
+
+        build() {
+          const root = this.root;
+
+          const skirt = new THREE.Mesh(
+            new THREE.LatheGeometry([
+              new THREE.Vector2(.82, -2.15),
+              new THREE.Vector2(.94, -2.06),
+              new THREE.Vector2(.87, -1.78),
+              new THREE.Vector2(.74, -1.37),
+              new THREE.Vector2(.60, -.94),
+              new THREE.Vector2(.50, -.49),
+              new THREE.Vector2(.50, -.18),
+              new THREE.Vector2(.60, .02)
+            ], 64),
+            M.emeraldSilk
+          );
+          skirt.castShadow = true;
+          skirt.receiveShadow = true;
+          root.add(skirt);
+
+          this.breathMesh = addEllipsoid(root, M.emeraldSilk, [0, -.58, .02], [.56, .72, .47]);
+          this.breathBaseY = this.breathMesh.scale.y;
+          addHorizontalTorus(root, M.gold, .55, .025, [0, -.50, .02]);
+          addHem(root, .90, -2.08);
+
+          addSkirtEmbroidery(root, [
+            { y: -1.84, radius: .88, count: 9 },
+            { y: -1.57, radius: .80, count: 9 },
+            { y: -1.30, radius: .71, count: 7 },
+            { y: -1.03, radius: .63, count: 7 }
+          ]);
+
+          // Marigold silk pallu, bordered in hand-worked gold.
+          const pallu = [
+            [-.69, .17], [-.49, .32], [-.24, -.01], [.59, -.77],
+            [.73, -1.05], [.51, -1.26], [.30, -1.02], [-.60, -.12]
+          ];
+          addPanel(root, pallu, M.marigoldSilk, .478);
+          addPanelBorder(root, pallu, .505, M.gold, .019);
+          curveTube(
+            root,
+            [[-.50, .18, .512], [-.17, -.12, .515], [.17, -.46, .515], [.49, -.82, .512]],
+            .009,
+            M.paleGold,
+            32,
+            5
+          );
+
+          buildHumanArms(this, {
+            skin: M.skinTara,
+            sleeve: M.emeraldSilk,
+            forearm: M.skinTara,
+            cuff: M.gold,
+            bracelet: M.paleGold
+          });
+
+          const head = buildHumanFace(this, {
+            skin: M.skinTara,
+            iris: M.irisTara,
+            irisGlow: M.gold,
+            lip: M.crimsonLip,
+            browMaterial: M.darkHair,
+            headY: 1.05,
+            headScale: [.68, .76, .64]
+          });
+
+          // Classic braided bun, jasmine gajra and small gold hair ornaments.
+          addEllipsoid(head, M.darkHair, [0, .16, -.22], [.68, .78, .55]);
+          addEllipsoid(head, M.darkHair, [0, .45, -.39], [.43, .40, .34]);
+          addEllipsoid(head, M.darkHair, [-.22, -.14, -.30], [.23, .59, .32]);
+          addEllipsoid(head, M.darkHair, [.22, -.14, -.30], [.23, .59, .32]);
+
+          const flowerCount = 24;
+          for (let i = 0; i < flowerCount; i++) {
+            const angle = (i / flowerCount) * Math.PI * 2;
+            const x = Math.cos(angle) * .43;
+            const y = .45 + Math.sin(angle) * .42;
+            const z = -.045 + Math.cos(angle * 2) * .022;
+            addEllipsoid(head, M.pearl, [x, y, z], [.055, .06, .045], { castShadow: false });
+            addEllipsoid(head, M.ivorySilk, [x + .025, y + .025, z + .018], [.025, .027, .024], { castShadow: false });
+          }
+
+          curveTube(
+            head,
+            [[0, -.12, -.36], [.035, -.43, -.43], [.02, -.78, -.37], [.14, -1.08, -.29], [.19, -1.27, -.20]],
+            .074,
+            M.darkHair,
+            32,
+            9
+          );
+          for (let i = 0; i < 5; i++) {
+            addTorus(head, M.gold, .078, .008, [.02 + i * .025, -.35 - i * .17, -.34], [Math.PI / 2, 0, 0], 18);
+          }
+
+          // Temple necklace and a fine nath chain.
+          addHorizontalTorus(root, M.gold, .37, .035, [0, .31, .42]);
+          addHorizontalTorus(root, M.paleGold, .32, .012, [0, .27, .43]);
+
+          for (let i = 0; i < 13; i++) {
+            const angle = Math.PI + (i / 12) * Math.PI;
+            const x = Math.cos(angle) * .37;
+            const y = .31 + Math.sin(angle) * .11;
+            addEllipsoid(root, M.gold, [x, y, .42 + Math.cos(angle) * .025], [.023, .032, .02], { castShadow: false });
+          }
+
+          addEllipsoid(head, M.ruby, [0, .64, .60], [.044, .061, .025]);
+          addEllipsoid(head, M.gold, [0, .64, .576], [.066, .08, .018]);
+
+          [-1, 1].forEach((side) => {
+            addTorus(head, M.gold, .087, .013, [side * .70, -.08, .12], [0, 0, 0], 30);
+            addEllipsoid(head, M.gold, [side * .70, -.19, .13], [.07, .09, .055]);
+          });
+
+          // Delicate petite hoop nath, poised at the side of the cute nose.
+          addTorus(head, M.gold, .068, .009, [-.12, -.10, .615], [0, 0, 0], 32);
+          curveTube(
+            head,
+            [[-.16, -.09, .61], [-.34, -.06, .56], [-.48, -.02, .48], [-.65, -.06, .24]],
+            .008,
+            M.paleGold,
+            24,
+            5
+          );
+        }
+      }
+
+      class GiaCharacter extends CharacterBase {
+        constructor(targetScene) {
+          super(targetScene, {
+            name: "Gia",
+            id: "gia",
+            role: "Editorial nail & crystal icon",
+            shortRole: "EDITORIAL BEAUTY ICON",
+            description: "An editorial eye for crystalline nails, pearlescent highlights, and a little unexpected color.",
+            footnote: "Made for your close-up"
+          });
+          this.build();
+        }
+
+        build() {
+          const root = this.root;
+
+          const skirt = new THREE.Mesh(
+            new THREE.LatheGeometry([
+              new THREE.Vector2(.83, -2.15),
+              new THREE.Vector2(.94, -2.05),
+              new THREE.Vector2(.83, -1.71),
+              new THREE.Vector2(.70, -1.31),
+              new THREE.Vector2(.57, -.90),
+              new THREE.Vector2(.50, -.49),
+              new THREE.Vector2(.55, -.18),
+              new THREE.Vector2(.63, .04)
+            ], 60),
+            M.lilacSilk
+          );
+          skirt.castShadow = true;
+          skirt.receiveShadow = true;
+          root.add(skirt);
+
+          this.breathMesh = addEllipsoid(root, M.holographic, [0, -.57, .025], [.58, .71, .47]);
+          this.breathBaseY = this.breathMesh.scale.y;
+          addHorizontalTorus(root, M.paleGold, .56, .018, [0, -.48, .04]);
+          addHem(root, .90, -2.08);
+
+          // Iridescent corset panels and fine rose-gold seams.
+          const leftPanel = [[-.46, -.06], [-.25, .18], [-.02, -.24], [-.06, -.71], [-.40, -.66]];
+          const rightPanel = [[.46, -.06], [.25, .18], [.02, -.24], [.06, -.71], [.40, -.66]];
+          addPanel(root, leftPanel, M.roseSilk, .474);
+          addPanel(root, rightPanel, M.holographic, .482);
+          addPanelBorder(root, leftPanel, .50, M.paleGold, .011);
+          addPanelBorder(root, rightPanel, .51, M.paleGold, .011);
+
+          buildHumanArms(this, {
+            skin: M.skinGia,
+            sleeve: M.lilacSilk,
+            forearm: M.skinGia,
+            cuff: M.paleGold
+          });
+
+          const head = buildHumanFace(this, {
+            skin: M.skinGia,
+            iris: M.irisGia,
+            irisGlow: M.paleGold,
+            lip: M.roseLip,
+            browMaterial: M.darkHair,
+            headY: 1.05,
+            headScale: [.68, .76, .64]
+          });
+
+          // Glossy rose-lilac hair, styled into two sculpted high buns.
+          addEllipsoid(head, M.ivoryHair, [0, .06, -.19], [.75, .91, .58]);
+          addEllipsoid(head, M.holographic, [-.51, .73, -.13], [.36, .36, .33]);
+          addEllipsoid(head, M.roseSilk, [.51, .73, -.13], [.36, .36, .33]);
+
+          [-1, 1].forEach((side) => {
+            const x = side * .51;
+            addTorus(head, M.paleGold, .29, .018, [x, .73, -.09], [0, 0, 0], 42);
+            const points = [];
+            for (let i = 0; i <= 18; i++) {
+              const angle = (i / 18) * Math.PI * 3.2;
+              points.push([
+                x + Math.cos(angle) * (.04 + i * .009),
+                .73 + Math.sin(angle) * (.04 + i * .009),
+                .16 + i * .004
+              ]);
+            }
+            curveTube(head, points, .012, side < 0 ? M.roseSilk : M.lilacSilk, 40, 5);
+          });
+
+          // Holographic lids and tiny pearl / crystal face stickers.
+          [-1, 1].forEach((side) => {
+            addEllipsoid(head, M.shadowRose, [side * .22, .12, .56], [.16, .07, .030], { castShadow: false });
+            for (let i = 0; i < 3; i++) {
+              addEllipsoid(
+                head,
+                M.pearl,
+                [side * (.38 + i * .038), -.10 + i * .05, .52],
+                [.026, .026, .020],
+                { castShadow: false }
+              );
+            }
+          });
+
+          const crystal = new THREE.Mesh(new THREE.OctahedronGeometry(.075, 0), M.gemGlass);
+          crystal.position.set(.54, .34, .52);
+          crystal.rotation.set(.3, .4, .15);
+          head.add(crystal);
+
+          const tinyCrystal = new THREE.Mesh(new THREE.OctahedronGeometry(.045, 0), M.ruby);
+          tinyCrystal.position.set(-.54, .31, .51);
+          tinyCrystal.rotation.set(.2, .3, -.2);
+          head.add(tinyCrystal);
+
+          addHorizontalTorus(root, M.paleGold, .37, .022, [0, .31, .43]);
+          for (let i = 0; i < 11; i++) {
+            const angle = (i / 10) * Math.PI;
+            const x = Math.cos(angle) * .37;
+            const y = .31 + Math.sin(angle) * .10;
+            addEllipsoid(root, M.pearl, [x, y, .45], [.034, .034, .028], { castShadow: false });
+          }
+
+          // An editorial hand raised to show miniature, faceted crystal nail art.
+          curveTube(
+            root,
+            [[.57, -.49, .20], [.73, -.30, .35], [.87, -.08, .48]],
+            .11,
+            M.skinGia,
+            20,
+            9
+          );
+
+          const displayHand = new THREE.Group();
+          displayHand.position.set(.91, .03, .50);
+          displayHand.rotation.z = -.13;
+          root.add(displayHand);
+
+          addEllipsoid(displayHand, M.skinGia, [0, 0, 0], [.19, .23, .11]);
+
+          const fingerHeights = [.31, .42, .46, .40, .31];
+          for (let i = 0; i < 5; i++) {
+            const x = (i - 2) * .075;
+            const height = fingerHeights[i];
+            curveTube(
+              displayHand,
+              [
+                [x, .12, .015],
+                [x + (i - 2) * .014, .20 + height * .25, .035],
+                [x + (i - 2) * .021, .24 + height * .66, .055],
+                [x + (i - 2) * .026, .24 + height, .07]
+              ],
+              i === 0 || i === 4 ? .031 : .035,
+              M.skinGia,
+              18,
+              7
+            );
+
+            const nail = new THREE.Mesh(new THREE.OctahedronGeometry(.041, 0), i % 2 ? M.gemGlass : M.pearl);
+            nail.position.set(x + (i - 2) * .026, .25 + height, .096);
+            nail.scale.set(.65, 1.25, .36);
+            nail.rotation.z = (i - 2) * .10;
+            displayHand.add(nail);
+          }
+
+          addTorus(displayHand, M.gold, .07, .012, [-.11, .01, .11], [0, 0, 0], 24);
+          addEllipsoid(displayHand, M.gemGlass, [-.11, .01, .13], [.032, .038, .018]);
+        }
+      }
+
+      const characterClasses = {
+        asha: AshaCharacter,
+        mochi: MochiCharacter,
+        noor: NoorCharacter,
+        tara: TaraCharacter,
+        gia: GiaCharacter
+      };
+
+      const characters = [
+        new AshaCharacter(scene),
+        new MochiCharacter(scene),
+        new NoorCharacter(scene),
+        new TaraCharacter(scene),
+        new GiaCharacter(scene)
+      ];
+
+      // The procedural character builders are deliberately exposed for reuse:
+      // const asha = new BridalConcierge3D.AshaCharacter(yourThreeScene);
+      window.BridalConcierge3D = Object.freeze({
+        version: "1.0.0",
+        characters,
+        scene,
+        CharacterBase,
+        AshaCharacter,
+        MochiCharacter,
+        NoorCharacter,
+        TaraCharacter,
+        GiaCharacter,
+        createCharacter(name, targetScene) {
+          const Constructor = characterClasses[String(name).toLowerCase()];
+          return Constructor ? new Constructor(targetScene) : null;
+        }
+      });
+
+      // Cinematic warm key, soft fill, and a bright silhouette rim.
+      const hemisphere = new THREE.HemisphereLight(0xfff0e4, 0x1a1215, 1.25);
+      scene.add(hemisphere);
+
+      const ambient = new THREE.AmbientLight(0xfff5ee, .52);
+      scene.add(ambient);
+
+      const keyLight = new THREE.DirectionalLight(0xffe8d6, 2.2);
+      keyLight.position.set(-3.2, 5.0, 5.5);
+      keyLight.castShadow = true;
+      keyLight.shadow.mapSize.set(1024, 1024);
+      keyLight.shadow.camera.left = -5;
+      keyLight.shadow.camera.right = 5;
+      keyLight.shadow.camera.top = 6;
+      keyLight.shadow.camera.bottom = -5;
+      keyLight.shadow.bias = -.00035;
+      scene.add(keyLight);
+
+      const fillLight = new THREE.DirectionalLight(0xc9d5f0, 1.35);
+      fillLight.position.set(4.2, 2.4, 4.8);
+      scene.add(fillLight);
+
+      const rimLight = new THREE.DirectionalLight(0xffdf96, 2.8);
+      rimLight.position.set(-3.5, 3.8, -4);
+      scene.add(rimLight);
+
+      const coolRim = new THREE.DirectionalLight(0x9d94cc, 1.35);
+      coolRim.position.set(4.5, 1.2, -3.5);
+      scene.add(coolRim);
+
+      // Soft beauty ring / front portrait fill to illuminate delicate doll facial features
+      const faceFill = new THREE.PointLight(0xffecd6, .72, 9, 2);
+      faceFill.position.set(0, 1.15, 3.8);
+      scene.add(faceFill);
+
+      // Fine atelier halo behind the figures.
+      const haloMaterial = new THREE.MeshBasicMaterial({
+        color: 0x8d7040,
+        transparent: true,
+        opacity: .25,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+      const halo = new THREE.Mesh(new THREE.RingGeometry(2.40, 2.414, 160), haloMaterial);
+      halo.position.set(0, .12, -1.65);
+      scene.add(halo);
+
+      const haloInner = new THREE.Mesh(
+        new THREE.RingGeometry(2.56, 2.568, 160),
+        new THREE.MeshBasicMaterial({
+          color: 0x6b5737,
+          transparent: true,
+          opacity: .15,
+          side: THREE.DoubleSide,
+          depthWrite: false
+        })
+      );
+      haloInner.position.set(0, .12, -1.68);
+      scene.add(haloInner);
+
+      const haloArc = curveTube(
+        scene,
+        [
+          [-2.55, -.62, -1.57],
+          [-2.18, 1.54, -1.57],
+          [-.84, 2.49, -1.57],
+          [.78, 2.50, -1.57],
+          [2.19, 1.47, -1.57],
+          [2.55, -.54, -1.57]
+        ],
+        .009,
+        M.antiqueGold,
+        84,
+        5
+      );
+      haloArc.material.transparent = true;
+      haloArc.material.opacity = .4;
+
+      for (let i = 0; i < 12; i++) {
+        const angle = (i / 12) * Math.PI * 2;
+        const jewel = new THREE.Mesh(new THREE.OctahedronGeometry(.028, 0), M.gold);
+        jewel.position.set(Math.cos(angle) * 2.41, .12 + Math.sin(angle) * 2.41, -1.48);
+        jewel.scale.set(.8, 1.3, .55);
+        scene.add(jewel);
+      }
+
+      const floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), M.stageFloor);
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.y = -2.43;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      const roster = characters.map((character) => character.meta);
+      const monograms = { asha: "A", mochi: "M", noor: "N", tara: "T", gia: "G" };
+
+      roster.forEach((item, index) => {
+        const button = document.createElement("button");
+        button.className = "character-pill" + (index === 0 ? " is-active" : "");
+        button.type = "button";
+        button.dataset.character = item.id;
+        button.setAttribute("aria-label", "Meet " + item.name + ", " + item.role);
+        button.setAttribute("aria-pressed", index === 0 ? "true" : "false");
+        button.innerHTML = `
+          <span class="pill-monogram">${monograms[item.id]}</span>
+          <span class="pill-copy">
+            <strong>${item.name}</strong>
+            <small>${item.shortRole}</small>
+          </span>
+          <span class="pill-indicator"></span>
+        `;
+        button.addEventListener("click", () => switchCharacter(index));
+        selectorTrack.appendChild(button);
+      });
+
+      let activeIndex = 0;
+      let currentMood = "welcome";
+      let transitionToken = 0;
+      let dragging = false;
+      let dragStartX = 0;
+      let dragStartY = 0;
+      let dragRotationY = 0;
+      let dragRotationX = 0;
+      let gazeX = 0;
+      let gazeY = 0;
+
+      const cameraPresets = [
+        { x: .10, y: .12, z: 8.45, focusY: .02 },
+        { x: -.24, y: .22, z: 8.75, focusY: .08 },
+        { x: .28, y: .12, z: 8.38, focusY: .02 },
+        { x: -.18, y: .16, z: 8.48, focusY: .02 },
+        { x: .20, y: .10, z: 8.48, focusY: .02 }
+      ];
+
+      function cameraDistance(index) {
+        return cameraPresets[index].z + (window.innerWidth <= 680 ? 1.02 : 0);
+      }
+
+      function setCameraFor(index, duration = 0) {
+        const preset = cameraPresets[index];
+        const destination = {
+          x: preset.x,
+          y: preset.y,
+          z: cameraDistance(index)
+        };
+        const target = {
+          x: 0,
+          y: preset.focusY,
+          z: 0
+        };
+
+        if (gsap && duration > 0) {
+          gsap.to(camera.position, { ...destination, duration, ease: "power3.inOut", overwrite: true });
+          gsap.to(focus, { ...target, duration, ease: "power3.inOut", overwrite: true });
+        } else {
+          camera.position.set(destination.x, destination.y, destination.z);
+          Object.assign(focus, target);
+        }
+      }
+
+      setCameraFor(0);
+      camera.lookAt(focus.x, focus.y, focus.z);
+
+      const moodLabels = {
+        welcome: "Welcoming",
+        happy: "Happy",
+        thinking: "Thinking",
+        hesitant: "Hesitant"
+      };
+
+      const moodMessages = {
+        welcome: "Namaste, beautiful.",
+        happy: "A little sparkle, sealed.",
+        thinking: "Curating your look.",
+        hesitant: "Take your time, love."
+      };
+
+      function updateIdentity() {
+        const meta = characters[activeIndex].meta;
+        const title = document.getElementById("character-name");
+        const identity = document.getElementById("identity");
+
+        if (gsap) {
+          gsap.to(identity, {
+            opacity: .25,
+            duration: .13,
+            onComplete: () => {
+              title.textContent = meta.name.toUpperCase();
+              document.getElementById("character-role").textContent = meta.shortRole;
+              document.getElementById("character-description").textContent = meta.description;
+              document.getElementById("character-footnote").textContent = meta.footnote;
+              document.getElementById("widget-name").textContent = meta.name.toUpperCase();
+              gsap.to(identity, { opacity: 1, duration: .32, ease: "power2.out" });
+            }
+          });
+        } else {
+          title.textContent = meta.name.toUpperCase();
+          document.getElementById("character-role").textContent = meta.shortRole;
+          document.getElementById("character-description").textContent = meta.description;
+          document.getElementById("character-footnote").textContent = meta.footnote;
+          document.getElementById("widget-name").textContent = meta.name.toUpperCase();
+        }
+
+        document.getElementById("widget-line").textContent = moodMessages[currentMood];
+        document.getElementById("selector-count").innerHTML =
+          `<span>${String(activeIndex + 1).padStart(2, "0")}</span> / 05`;
+
+        document.querySelectorAll(".character-pill").forEach((button, index) => {
+          const active = index === activeIndex;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+      }
+
+      function updateMoodButtons() {
+        document.getElementById("mood-current").textContent = moodLabels[currentMood];
+        document.getElementById("widget-line").textContent = moodMessages[currentMood];
+
+        document.querySelectorAll(".mood-button").forEach((button) => {
+          const active = button.dataset.mood === currentMood;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+      }
+
+      function chooseMood(mood) {
+        if (!moodLabels[mood]) return;
+        currentMood = mood;
+        characters[activeIndex].applyMood(mood);
+        updateMoodButtons();
+      }
+
+      document.querySelectorAll(".mood-button").forEach((button) => {
+        button.addEventListener("click", () => chooseMood(button.dataset.mood));
+      });
+
+      function switchCharacter(index) {
+        if (index === activeIndex || index < 0 || index >= characters.length) return;
+
+        const token = ++transitionToken;
+        if (gsap) {
+          gsap.killTweensOf(transitionCurtain);
+          gsap.to(transitionCurtain, {
+            opacity: 1,
+            duration: .22,
+            ease: "power2.in",
+            onComplete: () => {
+              if (token !== transitionToken) return;
+
+              characters[activeIndex].setActive(false);
+              characters[activeIndex].stage.visible = false;
+              activeIndex = index;
+
+              const next = characters[activeIndex];
+              next.stage.visible = true;
+              next.stage.rotation.set(0, 0, 0);
+              next.setActive(true);
+              next.applyMood(currentMood, true);
+
+              updateIdentity();
+              updateMoodButtons();
+              setCameraFor(activeIndex, .86);
+
+              next.stage.scale.set(.95, .95, .95);
+              gsap.to(next.stage.scale, {
+                x: 1, y: 1, z: 1,
+                duration: .88,
+                ease: "back.out(1.15)",
+                overwrite: true
+              });
+
+              gsap.to(transitionCurtain, {
+                opacity: 0,
+                duration: .52,
+                delay: .18,
+                ease: "power2.out"
+              });
+            }
+          });
+        } else {
+          characters[activeIndex].setActive(false);
+          characters[activeIndex].stage.visible = false;
+          activeIndex = index;
+          characters[activeIndex].stage.visible = true;
+          characters[activeIndex].setActive(true);
+          characters[activeIndex].applyMood(currentMood, true);
+          setCameraFor(activeIndex);
+          updateIdentity();
+        }
+      }
+
+      const widgetPreview = document.getElementById("widget-preview");
+      const widgetToggle = document.getElementById("widget-toggle");
+      let widgetVisible = true;
+
+      widgetToggle.addEventListener("click", () => {
+        widgetVisible = !widgetVisible;
+        widgetPreview.classList.toggle("is-hidden", !widgetVisible);
+        widgetToggle.setAttribute("aria-pressed", widgetVisible ? "true" : "false");
+        widgetToggle.textContent = widgetVisible ? "Widget preview · on" : "Widget preview · off";
+      });
+
+      function widgetWelcome() {
+        chooseMood("welcome");
+        if (gsap) {
+          gsap.fromTo(
+            document.getElementById("widget-avatar"),
+            { scale: .96 },
+            { scale: 1.04, duration: .18, yoyo: true, repeat: 1, ease: "power2.out" }
+          );
+        }
+      }
+
+      document.getElementById("widget-avatar").addEventListener("click", widgetWelcome);
+      document.getElementById("widget-hello").addEventListener("click", widgetWelcome);
+
+      characters.forEach((character, index) => {
+        character.stage.visible = index === 0;
+        character.setActive(index === 0);
+      });
+      characters[0].applyMood("welcome", true);
+      updateIdentity();
+      updateMoodButtons();
+
+      window.addEventListener("pointermove", (event) => {
+        gazeX = (event.clientX / Math.max(1, window.innerWidth) - .5) * 2;
+        gazeY = (.5 - event.clientY / Math.max(1, window.innerHeight)) * 2;
+
+        if (dragging) {
+          const dx = event.clientX - dragStartX;
+          const dy = event.clientY - dragStartY;
+          const active = characters[activeIndex];
+          active.stage.rotation.y = dragRotationY + dx * .008;
+          active.stage.rotation.x = THREE.MathUtils.clamp(dragRotationX + dy * .0015, -.18, .18);
+        }
+      }, { passive: true });
+
+      stageCanvas.addEventListener("pointerdown", (event) => {
+        if (event.button !== undefined && event.button !== 0) return;
+        dragging = true;
+        dragStartX = event.clientX;
+        dragStartY = event.clientY;
+        dragRotationY = characters[activeIndex].stage.rotation.y;
+        dragRotationX = characters[activeIndex].stage.rotation.x;
+        stageCanvas.classList.add("is-dragging");
+        try { stageCanvas.setPointerCapture(event.pointerId); } catch (_) {}
+      });
+
+      function stopDrag() {
+        dragging = false;
+        stageCanvas.classList.remove("is-dragging");
+      }
+
+      stageCanvas.addEventListener("pointerup", stopDrag);
+      stageCanvas.addEventListener("pointercancel", stopDrag);
+      stageCanvas.addEventListener("lostpointercapture", stopDrag);
+
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowRight") switchCharacter((activeIndex + 1) % characters.length);
+        if (event.key === "ArrowLeft") switchCharacter((activeIndex + characters.length - 1) % characters.length);
+        if (event.key === "Escape" && widgetVisible) {
+          widgetVisible = false;
+          widgetPreview.classList.add("is-hidden");
+          widgetToggle.setAttribute("aria-pressed", "false");
+          widgetToggle.textContent = "Widget preview · off";
+        }
+      });
+
+      function resize() {
+        const width = Math.max(1, window.innerWidth);
+        const height = Math.max(1, window.innerHeight);
+
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.fov = width <= 680 ? 39 : 37;
+        camera.updateProjectionMatrix();
+
+        widgetRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        widgetRenderer.setSize(160, 160, false);
+        widgetCamera.aspect = 1;
+        widgetCamera.updateProjectionMatrix();
+
+        setCameraFor(activeIndex, .35);
+      }
+
+      window.addEventListener("resize", resize, { passive: true });
+      resize();
+
+      function render() {
+        requestAnimationFrame(render);
+        const delta = Math.min(clock.getDelta(), .05);
+        const time = clock.elapsedTime;
+        const active = characters[activeIndex];
+
+        active.update(time, delta, gazeX, gazeY);
+        camera.lookAt(focus.x, focus.y, focus.z);
+
+        renderer.render(scene, camera);
+        widgetRenderer.render(scene, widgetCamera);
+      }
+
+      render();
+    })();
+  </script>
+</body>
+</html>

@@ -1231,6 +1231,27 @@ body.is-admin .filmstrip-del-btn {
 {% endblock %}
 
 {% block content %}
+<!-- Structured Data: Breadcrumbs (SPEC-008 TSK-008.03) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://anshitamakeover.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Lookbook & Cinema Gallery",
+      "item": "https://anshitamakeover.com/gallery/"
+    }
+  ]
+}
+</script>
 <main class="cinema-page-wrapper">
   
   <div class="cinema-studio-layout">

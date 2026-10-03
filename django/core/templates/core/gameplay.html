@@ -186,13 +186,67 @@ footer,
   overflow: hidden;
 }
 
-#duoMascotCanvas {
+/* Companion Switcher Selector */
+.duo-companion-bar {
+  position: relative;
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(18, 7, 16, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 999px;
+  padding: 4px 6px;
+  margin-top: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+}
+.duo-companion-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: rgba(245, 237, 214, 0.7);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.25s ease;
+}
+.duo-companion-btn:hover {
+  color: #fff;
+  background: rgba(212, 175, 55, 0.15);
+}
+.duo-companion-btn.active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(139, 94, 26, 0.45));
+  border-color: var(--duo-gold);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.35);
+}
+
+.duo-canvas-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.duo-mascot-canvas {
   position: absolute;
   inset: 0;
   width: 100% !important;
   height: 100% !important;
-  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
   cursor: pointer;
+}
+.duo-mascot-canvas.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* Speech Bubble above 3D Mascot */
@@ -700,9 +754,11 @@ footer,
 {% endblock %}
 
 {% block content %}
-<!-- Three.js + Confetti CDN -->
+<!-- Three.js + Confetti CDN + Companion Mascots -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="{% static 'core/js/characters/MochiCharacter.js' %}"></script>
+<script src="{% static 'core/js/characters/PipCharacter.js' %}"></script>
 
 <div class="duo-game-container" id="duoGame">
   
@@ -736,21 +792,38 @@ footer,
   <!-- ═══ MAIN ARENA ═══ -->
   <div class="duo-arena">
     
-    <!-- LEFT: 3D Cute Bridal Bunny Mascot "Asha" (Host) -->
+    <!-- LEFT: 3D Animated Mascots (Asha, Mochi, Pip) -->
     <div class="duo-host-panel">
       
+      <!-- Companion Selector Tabs -->
+      <div class="duo-companion-bar" id="duoCompanionBar" role="tablist" aria-label="Select 3D Beauty Coach">
+        <button type="button" class="duo-companion-btn active" id="tabCoachAsha" onclick="switchGameplayCoach('asha')" title="Switch to Asha (Bridal Muse)">
+          <span>👧</span> Asha
+        </button>
+        <button type="button" class="duo-companion-btn" id="tabCoachMochi" onclick="switchGameplayCoach('mochi')" title="Switch to Mochi (Velvet Mascot)">
+          <span>🐰</span> Mochi
+        </button>
+        <button type="button" class="duo-companion-btn" id="tabCoachPip" onclick="switchGameplayCoach('pip')" title="Switch to Pip (Celestial Muse)">
+          <span>🐦</span> Pip
+        </button>
+      </div>
+
       <!-- Speech Bubble above Mascot -->
       <div class="duo-speech-bubble" id="duoSpeechBubble">
         <div class="duo-speech-header">
-          <span class="duo-speech-title">ASHA · BEAUTY COACH</span>
-          <span class="duo-speech-mood" id="duoMoodIcon">🐰✨</span>
+          <span class="duo-speech-title" id="duoSpeechTitle">ASHA · BEAUTY COACH</span>
+          <span class="duo-speech-mood" id="duoMoodIcon">👧✨</span>
         </div>
         <div class="duo-speech-hi" id="duoSpeechHi">नमस्ते! मैं आशा हूँ। चलिए आज का पहला ब्राइडल मास्टरक्लास सीक्रेट सीखते हैं!</div>
         <div class="duo-speech-en" id="duoSpeechEn">"Namaste! I'm Asha. Let's master our first bridal secret together!"</div>
       </div>
 
-      <!-- 3D WebGL Canvas for Animated Asha -->
-      <canvas id="duoMascotCanvas"></canvas>
+      <!-- 3D WebGL Canvases for Animated Mascots -->
+      <div class="duo-canvas-stage">
+        <canvas id="duoMascotCanvas" class="duo-mascot-canvas active" title="Asha - Pixar Bridal Coach"></canvas>
+        <canvas id="duoMochiCanvas" class="duo-mascot-canvas" title="Mochi - Haute Velvet Bunny"></canvas>
+        <canvas id="duoPipCanvas" class="duo-mascot-canvas" title="Pip - Celestial Finch Muse"></canvas>
+      </div>
     </div>
 
     <!-- RIGHT: Real Bride Storyline & Interactive Challenge -->
@@ -1532,7 +1605,6 @@ function animateMascot(time = 0) {
       brushGroup.rotation.x = -0.10;
       mascotBounce = -0.03;
     } else {
-      // Gentle idle brush shimmer
       rightArmGroup.rotation.z = Math.sin(time * 0.003) * 0.06;
       brushGroup.rotation.x = -0.40 + Math.sin(time * 0.004) * 0.08;
       mascotBounce = 0;
@@ -1544,13 +1616,98 @@ function animateMascot(time = 0) {
   }
 }
 
+let activeGameplayCoach = 'asha';
+let mochiGameplayInstance = null;
+let pipGameplayInstance = null;
+
+function initGameplayMochi() {
+  const canvas = document.getElementById('duoMochiCanvas');
+  if (!canvas || !window.MochiCharacter || mochiGameplayInstance) return;
+  const rect = canvas.getBoundingClientRect();
+  mochiGameplayInstance = new window.MochiCharacter({
+    canvas: canvas,
+    width: rect.width || 380,
+    height: rect.height || 600,
+    autoBlink: true,
+    cameraFov: 32,
+    cameraPos: [0, 0.15, 3.4],
+    cameraTarget: [0, -0.05, 0]
+  });
+  mochiGameplayInstance.start();
+}
+
+function initGameplayPip() {
+  const canvas = document.getElementById('duoPipCanvas');
+  if (!canvas || !window.PipCharacter || pipGameplayInstance) return;
+  const rect = canvas.getBoundingClientRect();
+  pipGameplayInstance = new window.PipCharacter({
+    canvas: canvas,
+    width: rect.width || 380,
+    height: rect.height || 600,
+    autoBlink: true,
+    cameraFov: 32,
+    cameraPos: [0, 0.15, 3.3],
+    cameraTarget: [0, -0.05, 0]
+  });
+  pipGameplayInstance.start();
+}
+
+function switchGameplayCoach(coachId) {
+  activeGameplayCoach = coachId;
+
+  // Update tabs
+  ['asha', 'mochi', 'pip'].forEach(id => {
+    const tab = document.getElementById(`tabCoach${id.charAt(0).toUpperCase() + id.slice(1)}`);
+    if (tab) tab.classList.toggle('active', id === coachId);
+  });
+
+  // Switch canvas visibility
+  const ashaCanvas = document.getElementById('duoMascotCanvas');
+  const mochiCanvas = document.getElementById('duoMochiCanvas');
+  const pipCanvas = document.getElementById('duoPipCanvas');
+
+  if (ashaCanvas) ashaCanvas.classList.toggle('active', coachId === 'asha');
+  if (mochiCanvas) mochiCanvas.classList.toggle('active', coachId === 'mochi');
+  if (pipCanvas) pipCanvas.classList.toggle('active', coachId === 'pip');
+
+  const titleEl = document.getElementById('duoSpeechTitle');
+  const moodEl = document.getElementById('duoMoodIcon');
+
+  if (coachId === 'asha') {
+    if (titleEl) titleEl.textContent = 'ASHA · BEAUTY COACH';
+    if (moodEl) moodEl.textContent = '👧✨';
+  } else if (coachId === 'mochi') {
+    if (!mochiGameplayInstance) initGameplayMochi();
+    if (titleEl) titleEl.textContent = 'MOCHI · VELVET COACH';
+    if (moodEl) moodEl.textContent = '🐰🎀';
+    if (mochiGameplayInstance) mochiGameplayInstance.setEmotion('happy');
+  } else if (coachId === 'pip') {
+    if (!pipGameplayInstance) initGameplayPip();
+    if (titleEl) titleEl.textContent = 'PIP · CELESTIAL GUIDE';
+    if (moodEl) moodEl.textContent = '🐦👑';
+    if (pipGameplayInstance) pipGameplayInstance.setEmotion('happy');
+  }
+}
+
 function setMascotMood(mood) {
   mascotMood = mood;
   const moodIcon = document.getElementById('duoMoodIcon');
   if (moodIcon) {
-    if (mood === 'excited') moodIcon.textContent = '💖🎉';
-    else if (mood === 'sad') moodIcon.textContent = '🥺💔';
-    else moodIcon.textContent = '👑✨';
+    if (mood === 'excited') {
+      moodIcon.textContent = activeGameplayCoach === 'mochi' ? '🐰🎉' : activeGameplayCoach === 'pip' ? '🐦💖' : '👧💖';
+    } else if (mood === 'sad') {
+      moodIcon.textContent = activeGameplayCoach === 'mochi' ? '🐰🥺' : activeGameplayCoach === 'pip' ? '🐦💔' : '👧💔';
+    } else {
+      moodIcon.textContent = activeGameplayCoach === 'mochi' ? '🐰✨' : activeGameplayCoach === 'pip' ? '🐦👑' : '👧✨';
+    }
+  }
+
+  // Forward to Mochi and Pip instances
+  if (mochiGameplayInstance) {
+    mochiGameplayInstance.setEmotion(mood === 'excited' ? 'happy' : mood === 'sad' ? 'sad' : 'neutral');
+  }
+  if (pipGameplayInstance) {
+    pipGameplayInstance.setEmotion(mood === 'excited' ? 'happy' : mood === 'sad' ? 'sad' : 'neutral');
   }
 }
 

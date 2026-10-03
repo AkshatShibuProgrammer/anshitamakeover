@@ -1,0 +1,840 @@
+{% load static %}
+<!-- ══════════════════════════════════════════════════════════════════════════
+     MOCHI & PIP — SCROLL-ENTRANCE CHATBOT CONCIERGE
+     Four-state choreography: hidden -> peek -> out -> retreat
+     Cast: Mochi 🐰 + Pip 🐦 (Docked bottom-right at z-index 900)
+     ══════════════════════════════════════════════════════════════════════════ -->
+
+<style>
+/* Concierge Stage & Container */
+#cc-stage {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 320px;
+  height: 520px;
+  z-index: 900;
+  pointer-events: none;
+  overflow: visible;
+  font-family: var(--font-b, 'Outfit', 'Segoe UI', Arial, sans-serif);
+}
+
+#cc-canvas {
+  position: absolute;
+  right: 0;
+  bottom: 120px;
+  width: 320px;
+  height: 380px;
+  display: block;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 3;
+  touch-action: none;
+}
+
+/* Speech Bubble */
+#cc-bubble {
+  position: absolute;
+  right: 24px;
+  bottom: 430px;
+  max-width: 260px;
+  background: linear-gradient(135deg, var(--gold-d, #A07820) 0%, var(--gold, #D4AF37) 100%);
+  color: #110e08;
+  font-family: var(--font-b, 'Outfit', sans-serif);
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.45;
+  padding: 11px 16px;
+  border-radius: 16px 16px 4px 16px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 0 0 16px rgba(212, 175, 55, 0.25);
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(12px) scale(0.94);
+  transition: opacity 0.35s var(--trans, cubic-bezier(.17,.67,.4,1)), transform 0.35s var(--trans, cubic-bezier(.17,.67,.4,1));
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+#cc-bubble.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+#cc-bubble::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  bottom: -9px;
+  border-width: 9px 8px 0 0;
+  border-style: solid;
+  border-color: var(--gold-d, #A07820) transparent transparent transparent;
+}
+#cc-bubble .wave {
+  display: inline-block;
+  transform-origin: 70% 70%;
+  animation: cc-wave 2s infinite;
+}
+@keyframes cc-wave {
+  0%, 100% { transform: rotate(0deg); }
+  20%, 60% { transform: rotate(14deg); }
+  40%, 80% { transform: rotate(-10deg); }
+}
+
+/* Docked Panel Surface */
+#cc-dock {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 320px;
+  background: var(--dark2, #1A1A1A);
+  border: 1px solid var(--card-border, rgba(212,175,55,.18));
+  border-radius: var(--radius, 14px);
+  padding: 14px 14px 12px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.65), 0 0 24px rgba(212, 175, 55, 0.15);
+  color: var(--text-main, #F5EDD6);
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(24px) scale(0.96);
+  transition: opacity 0.4s var(--cc-ease-out, cubic-bezier(.34,1.56,.64,1)), transform 0.4s var(--cc-ease-out, cubic-bezier(.34,1.56,.64,1));
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+#cc-dock.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Dock Header */
+.cc-dock-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--card-border, rgba(212,175,55,.18));
+  padding-bottom: 8px;
+}
+.cc-dock-title {
+  font-family: var(--font-b, 'Outfit', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--gold, #D4AF37);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cc-dock-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cc-tool-btn {
+  background: transparent;
+  border: 1px solid var(--card-border, rgba(212,175,55,.2));
+  color: var(--text-sub, rgba(245,237,214,.72));
+  border-radius: 8px;
+  padding: 3px 8px;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cc-tool-btn:hover {
+  color: var(--gold-l, #F0D060);
+  border-color: var(--gold, #D4AF37);
+  background: rgba(212, 175, 55, 0.1);
+}
+.cc-tool-btn:focus-visible {
+  outline: 2px solid var(--gold-l, #F0D060);
+  outline-offset: 2px;
+}
+
+/* Switcher Button Pills */
+.cc-switcher {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: var(--dark3, #222222);
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid var(--card-border, rgba(212,175,55,.15));
+}
+.cc-switch-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-sub, rgba(245,237,214,.72));
+  font-family: var(--font-b, 'Outfit', sans-serif);
+  font-size: 0.74rem;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.25s ease;
+}
+.cc-switch-btn.active {
+  background: linear-gradient(135deg, var(--gold-d, #A07820) 0%, var(--gold, #D4AF37) 100%);
+  color: #110e08;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+.cc-switch-btn:focus-visible {
+  outline: 2px solid var(--gold-l, #F0D060);
+}
+
+/* Quick Replies Chips */
+.cc-chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.cc-chip {
+  background: var(--dark3, #222222);
+  border: 1px solid var(--card-border, rgba(212,175,55,.2));
+  color: var(--text-main, #F5EDD6);
+  font-family: var(--font-b, 'Outfit', sans-serif);
+  font-size: 0.72rem;
+  font-weight: 400;
+  padding: 4px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.cc-chip:hover {
+  border-color: var(--gold, #D4AF37);
+  background: rgba(212, 175, 55, 0.12);
+  color: var(--gold-l, #F0D060);
+  transform: translateY(-1px);
+}
+.cc-chip:focus-visible {
+  outline: 2px solid var(--gold-l, #F0D060);
+}
+
+/* Event Log / Conversation Stream */
+.cc-log {
+  max-height: 110px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  font-family: var(--font-b, 'Outfit', sans-serif);
+  font-size: 0.70rem;
+  line-height: 1.4;
+  color: var(--text-sub, rgba(245,237,214,.72));
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 4px;
+}
+.cc-log-msg {
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 2px solid var(--gold, #D4AF37);
+}
+.cc-log-msg.user {
+  border-left-color: var(--rose, #E8A4B8);
+  color: #fff;
+  align-self: flex-end;
+  background: rgba(232, 164, 184, 0.1);
+}
+
+/* Input Bar inside Dock */
+.cc-input-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+.cc-input {
+  flex: 1;
+  background: var(--dark3, #222222);
+  border: 1px solid var(--card-border, rgba(212,175,55,.2));
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-family: var(--font-b, 'Outfit', sans-serif);
+  font-size: 0.75rem;
+  color: var(--text-main, #F5EDD6);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.cc-input:focus {
+  border-color: var(--gold, #D4AF37);
+}
+.cc-send-btn {
+  background: linear-gradient(135deg, var(--gold-d, #A07820) 0%, var(--gold, #D4AF37) 100%);
+  color: #110e08;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-family: var(--font-b, 'Outfit', sans-serif);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cc-send-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(212, 175, 55, 0.35);
+}
+
+/* Responsive adjustments */
+@media (max-width: 760px) {
+  #cc-stage {
+    right: 12px;
+    bottom: 12px;
+    width: 236px;
+    height: 322px;
+  }
+  #cc-canvas {
+    width: 236px;
+    height: 322px;
+  }
+  #cc-dock {
+    width: 216px;
+    padding: 10px;
+  }
+  #cc-bubble {
+    right: 20px;
+    bottom: 230px;
+    max-width: 180px;
+    font-size: 0.76rem;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .cc-log {
+    display: none; /* preserve real estate */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #cc-bubble .wave { animation: none !important; }
+  #cc-dock { transition: opacity 0.2s ease !important; transform: none !important; }
+  #cc-bubble { transition: opacity 0.2s ease !important; transform: none !important; }
+}
+</style>
+
+<div id="cc-stage" role="region" aria-label="3D Concierge Assistant">
+  <!-- Speech Bubble -->
+  <button type="button" id="cc-bubble" aria-live="polite" onclick="window.ConciergeController && window.ConciergeController.comeOut()">
+    <span id="cc-bubble-text">May I help you? <span class="wave">🐰</span></span>
+  </button>
+
+  <!-- 3D WebGL Canvas for Mochi & Pip -->
+  <canvas id="cc-canvas" width="340" height="460" aria-label="Interactive 3D Concierge Character"></canvas>
+
+  <!-- Docked Control & Interaction Panel -->
+  <div id="cc-dock" role="dialog" aria-modal="false" aria-label="Concierge Chat">
+    <div class="cc-dock-hdr">
+      <div class="cc-dock-title">
+        <span>✨</span> <span id="cc-dock-name">Mochi Concierge</span>
+      </div>
+      <div class="cc-dock-tools">
+        <button type="button" class="cc-tool-btn" id="cc-mute-btn" onclick="window.ConciergeController && window.ConciergeController.toggleMute()" title="Toggle voice audio">🔊</button>
+        <button type="button" class="cc-tool-btn" id="cc-close-btn" onclick="window.ConciergeController && window.ConciergeController.unpeek()" title="Hide concierge">✕</button>
+      </div>
+    </div>
+
+    <!-- Character Switcher Pills -->
+    <div class="cc-switcher" role="tablist" aria-label="Select Concierge Character">
+      <button type="button" class="cc-switch-btn active" id="cc-sw-mochi" role="tab" aria-selected="true" onclick="window.ConciergeController && window.ConciergeController.switchCast('mochi')">
+        <span>🐰</span> Mochi
+      </button>
+      <button type="button" class="cc-switch-btn" id="cc-sw-pip" role="tab" aria-selected="false" onclick="window.ConciergeController && window.ConciergeController.switchCast('pip')">
+        <span>🐦</span> Pip
+      </button>
+    </div>
+
+    <!-- Quick Reply Chips -->
+    <div class="cc-chips-wrap" aria-label="Quick questions">
+      <button type="button" class="cc-chip" onclick="window.ConciergeController && window.ConciergeController.ask('Bridal package options and pricing?')">✦ Bridal Packages</button>
+      <button type="button" class="cc-chip" onclick="window.ConciergeController && window.ConciergeController.ask('Today VIP discount code?')">🏷️ VIP Discount</button>
+      <button type="button" class="cc-chip" onclick="window.ConciergeController && window.ConciergeController.ask('How to book on WhatsApp?')">💬 WhatsApp Book</button>
+    </div>
+
+    <!-- Event & Chat Log -->
+    <div class="cc-log" id="cc-log" aria-live="polite">
+      <div class="cc-log-msg">Welcome to Anshita Makeover. Tap any question or say hello!</div>
+    </div>
+
+    <!-- Input Bar -->
+    <form class="cc-input-row" onsubmit="event.preventDefault(); window.ConciergeController && window.ConciergeController.submitInput();">
+      <input type="text" class="cc-input" id="cc-text-input" placeholder="Ask Mochi or Pip..." autocomplete="off">
+      <button type="submit" class="cc-send-btn">Ask</button>
+    </form>
+  </div>
+</div>
+
+<script>
+/**
+ * Mochi & Pip — Scroll-Entrance Chatbot Concierge Controller
+ */
+(function () {
+  'use strict';
+
+  const G = window.gsap || null;
+  const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const HIDDEN_Y = -1.78, PEEK_Y = -1.02, OUT_Y = 0.0;
+
+  let renderer = null, scene = null, camera = null, clock = null;
+  let dockRig = null;
+  let cur = null, curId = 'mochi';
+  let characters = {};
+  let phase = 'hidden', retreatTimer = null, idleChatTimer = null;
+  let muted = false;
+  let sessionId = 'concierge_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+  let bubbleTimer = null;
+  let talker = null;
+
+  const cvs = document.getElementById('cc-canvas');
+  const dockEl = document.getElementById('cc-dock');
+  const bubbleEl = document.getElementById('cc-bubble');
+  const bubbleText = document.getElementById('cc-bubble-text');
+  const logEl = document.getElementById('cc-log');
+
+  const VOICE_TUNE = {
+    Mochi: { rate: 0.94, pitch: 1.22, lang: 'en-IN' },
+    Pip: { rate: 1.10, pitch: 1.42, lang: 'en-IN' }
+  };
+
+  function getCsrf() {
+    if (typeof window.getCsrfToken === 'function') return window.getCsrfToken();
+    const cookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+    return cookie ? cookie.split('=')[1] : '';
+  }
+
+  function makeTalker(character) {
+    const synth = window.speechSynthesis;
+    let active = false, t0 = 0;
+    function envelope(t) {
+      const syl = Math.abs(Math.sin(t * Math.PI * 5.5)); /* ~5.5 syllables/sec */
+      const breath = 0.55 + 0.45 * Math.abs(Math.sin(t * 1.6));
+      return Math.pow(syl, 0.7) * breath;
+    }
+    return {
+      get active() { return active; },
+      speak: function (text, opts) {
+        opts = opts || {};
+        if (!synth || REDUCED || muted) return false;
+        const u = new SpeechSynthesisUtterance(String(text).slice(0, 600));
+        const tune = VOICE_TUNE[character.name] || { rate: 1.0, pitch: 1.05, lang: 'en-IN' };
+        u.rate = opts.rate || tune.rate;
+        u.pitch = opts.pitch || tune.pitch;
+        u.lang = opts.lang || tune.lang;
+        u.onstart = function () { active = true; t0 = performance.now() / 1000; };
+        u.onend = u.onerror = function () {
+          active = false;
+          if (character.mouth && character.mouth.setTalk) character.mouth.setTalk(0);
+        };
+        synth.cancel();
+        synth.speak(u);
+        return true;
+      },
+      cancel: function () {
+        if (synth) synth.cancel();
+        active = false;
+        if (character.mouth && character.mouth.setTalk) character.mouth.setTalk(0);
+      },
+      tick: function () {
+        if (!character.mouth || !character.mouth.setTalk) return;
+        character.mouth.setTalk(active ? envelope(performance.now() / 1000 - t0) : 0);
+      }
+    };
+  }
+
+  function showBubble(text, opts) {
+    opts = opts || {};
+    clearTimeout(bubbleTimer);
+    bubbleText.innerHTML = text;
+    bubbleEl.classList.add('show');
+    if (!opts.sticky) {
+      bubbleTimer = setTimeout(() => {
+        bubbleEl.classList.remove('show');
+      }, opts.duration || 6500);
+    }
+  }
+
+  function hideBubble() {
+    clearTimeout(bubbleTimer);
+    bubbleEl.classList.remove('show');
+  }
+
+  function appendLog(msg, isUser = false) {
+    if (!logEl) return;
+    const div = document.createElement('div');
+    div.className = 'cc-log-msg' + (isUser ? ' user' : '');
+    div.textContent = msg;
+    logEl.appendChild(div);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function armIdleChat() {
+    clearTimeout(idleChatTimer);
+    idleChatTimer = setTimeout(() => {
+      if (phase === 'out' && cur && cur.emotion !== 'waiting') {
+        cur.setEmotion('waiting', false);
+      }
+    }, 15000);
+  }
+
+  function peek() {
+    if (phase !== 'hidden' || !cur || !dockRig) return;
+    phase = 'peek';
+    if (G) {
+      G.to(dockRig.position, { y: PEEK_Y, duration: 1.15, ease: 'back.out(1.25)' });
+    } else {
+      dockRig.position.y = PEEK_Y;
+    }
+    cur.setEmotion('wink', false);
+    showBubble(cur.name === 'Mochi' ? 'May I help you? <span class="wave">🐰</span>' : 'May I help you? <span class="wave">🐦</span>', { sticky: true });
+    clearTimeout(retreatTimer);
+    retreatTimer = setTimeout(function () {
+      if (phase === 'peek') unpeek();
+    }, 11000);
+  }
+
+  function unpeek() {
+    phase = 'hidden';
+    clearTimeout(retreatTimer);
+    hideBubble();
+    if (dockEl) dockEl.classList.remove('open');
+    if (talker) talker.cancel();
+    if (G && dockRig) {
+      G.to(dockRig.position, { y: HIDDEN_Y, duration: 0.75, ease: 'power2.in' });
+    } else if (dockRig) {
+      dockRig.position.y = HIDDEN_Y;
+    }
+  }
+
+  function comeOut() {
+    if (phase === 'out' || !cur || !dockRig) return;
+    phase = 'out';
+    clearTimeout(retreatTimer);
+    hideBubble();
+    if (G) {
+      G.timeline()
+        .to(dockRig.position, { y: OUT_Y + 0.16, duration: 0.8, ease: 'power3.out' })
+        .to(dockRig.position, { y: OUT_Y, duration: 0.45, ease: 'bounce.out' });
+    } else {
+      dockRig.position.y = OUT_Y;
+    }
+    cur.setEmotion('happy', false);
+    if (dockEl) dockEl.classList.add('open');
+    setTimeout(function () {
+      if (phase !== 'out') return;
+      cur.setEmotion('welcome', false);
+      const greeting = cur.name === 'Mochi'
+        ? 'Ram Ram! Main Mochi hoon. Bridal, hair, nails — sab bataungi. 😊'
+        : 'Hello! Pip here. Shall we find your royal look? ✨';
+      showBubble(greeting);
+      appendLog(greeting);
+      if (talker) talker.speak(greeting);
+      armIdleChat();
+    }, 1500);
+  }
+
+  async function ask(msg) {
+    if (!msg || !msg.trim()) return;
+    appendLog(msg, true);
+    if (phase !== 'out') comeOut();
+    if (cur) cur.setEmotion('thinking', false);
+    showBubble('Hmm…', { sticky: true });
+    armIdleChat();
+
+    try {
+      const r = await fetch('/api/chatbot/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrf() },
+        body: JSON.stringify({ message: msg, session_id: sessionId })
+      });
+      const d = await r.json();
+      sessionId = d.session_id || sessionId;
+      const mood = d.mood || 'welcome';
+      if (cur) {
+        cur.setEmotion(mood, false);
+        if (d.celebrate && cur.onSpark) cur.onSpark(new THREE.Vector3(0.15, 1.2, 0.4), 16);
+      }
+      showBubble(d.reply);
+      appendLog(d.reply);
+      if (talker) talker.speak(d.reply);
+    } catch (e) {
+      if (cur) cur.setEmotion('sad', false);
+      const errReply = 'Kuch error aa gaya. Direct WhatsApp karo: +91 78792 23442.';
+      showBubble(errReply);
+      appendLog(errReply);
+    }
+  }
+
+  function submitInput() {
+    const input = document.getElementById('cc-text-input');
+    if (!input || !input.value.trim()) return;
+    const msg = input.value.trim();
+    input.value = '';
+    ask(msg);
+  }
+
+  function switchCast(id) {
+    if (!characters[id] || id === curId) return;
+    const prev = cur;
+    curId = id;
+
+    // Button states
+    document.getElementById('cc-sw-mochi').classList.toggle('active', id === 'mochi');
+    document.getElementById('cc-sw-pip').classList.toggle('active', id === 'pip');
+    document.getElementById('cc-sw-mochi').setAttribute('aria-selected', String(id === 'mochi'));
+    document.getElementById('cc-sw-pip').setAttribute('aria-selected', String(id === 'pip'));
+    document.getElementById('cc-dock-name').textContent = id === 'mochi' ? 'Mochi Concierge' : 'Pip Concierge';
+
+    // Camera adjustment & retreat-and-return animation
+    if (G && dockRig) {
+      G.to(dockRig.position, {
+        y: PEEK_Y,
+        duration: 0.35,
+        ease: 'power2.in',
+        onComplete: () => {
+          prev.root.visible = false;
+          cur = characters[id];
+          cur.root.visible = true;
+          if (camera) {
+            if (id === 'pip') {
+              camera.position.set(0, 1.30, 4.2);
+              camera.lookAt(0, 1.05, 0);
+            } else {
+              camera.position.set(0, 1.25, 4.3);
+              camera.lookAt(0, 1.08, 0);
+            }
+          }
+          talker = makeTalker(cur);
+          G.to(dockRig.position, {
+            y: OUT_Y,
+            duration: 0.55,
+            ease: 'bounce.out',
+            onComplete: () => {
+              cur.setEmotion('welcome', false);
+              const intro = id === 'mochi'
+                ? 'Mochi here! Cashmere-soft and ready to assist you. 🐰'
+                : 'Pip is here! Ready to add sparkle to your celebration. 🐦';
+              showBubble(intro);
+              appendLog(intro);
+              if (talker) talker.speak(intro);
+            }
+          });
+        }
+      });
+    } else {
+      prev.root.visible = false;
+      cur = characters[id];
+      cur.root.visible = true;
+      talker = makeTalker(cur);
+      cur.setEmotion('welcome', false);
+    }
+  }
+
+  function toggleMute() {
+    muted = !muted;
+    const btn = document.getElementById('cc-mute-btn');
+    if (btn) btn.textContent = muted ? '🔇' : '🔊';
+    if (muted && talker) talker.cancel();
+  }
+
+  function init3D() {
+    if (!cvs || !window.THREE || !window.LumiereCharacters) return;
+    const THREE = window.THREE;
+    const LC = window.LumiereCharacters;
+
+    const width = cvs.clientWidth || 320;
+    const height = cvs.clientHeight || 380;
+
+    renderer = new THREE.WebGLRenderer({ canvas: cvs, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(width, height, false);
+    renderer.outputEncoding = THREE.sRGBEncoding;
+
+    scene = new THREE.Scene();
+    scene.environment = LC.makeEnvironment(renderer);
+
+    camera = new THREE.PerspectiveCamera(36, width / height, 0.1, 50);
+    camera.position.set(0, 1.25, 4.3);
+    camera.lookAt(0, 1.08, 0);
+
+    // Warm 3-point lighting rig matching brand
+    const key = new THREE.DirectionalLight(0xffd9a8, 1.25);
+    key.position.set(3.8, 5.5, 4.1);
+    scene.add(key);
+
+    const fill = new THREE.DirectionalLight(0xa6b8dc, 0.42);
+    fill.position.set(-4, 2.7, 1.5);
+    scene.add(fill);
+
+    const rim = new THREE.DirectionalLight(0xffc786, 1.60);
+    rim.position.set(-2.5, 4.1, -4.6);
+    scene.add(rim);
+
+    const front = new THREE.PointLight(0xffdfb0, 0.38, 7);
+    front.position.set(0.2, 2.4, 3.7);
+    scene.add(front);
+
+    scene.add(new THREE.AmbientLight(0x34291e, 0.55));
+
+    // CRITICAL: Parent characters to dockRig (not root scene) to avoid CharacterBase update() overwrites
+    dockRig = new THREE.Group();
+    dockRig.position.y = HIDDEN_Y;
+    scene.add(dockRig);
+
+    // Instantiate Mochi & Pip
+    const mochi = new LC.MochiCharacter();
+    const pip = new LC.PipCharacter();
+
+    characters.mochi = mochi;
+    characters.pip = pip;
+
+    dockRig.add(mochi.root);
+    dockRig.add(pip.root);
+
+    pip.root.visible = false;
+    cur = mochi;
+    curId = 'mochi';
+
+    talker = makeTalker(cur);
+    clock = new THREE.Clock();
+
+    // Sparkle emitter
+    const sparkleTex = LC.makeSparkleTexture();
+    const activeSparkles = [];
+    function emitSparkle(pos, count = 10) {
+      for (let i = 0; i < count; i++) {
+        const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: sparkleTex,
+          color: 0xf4d28b,
+          transparent: true,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending
+        }));
+        sprite.scale.setScalar(0.08);
+        sprite.position.copy(pos).add(new THREE.Vector3((Math.random() - 0.5) * 0.15, (Math.random() - 0.5) * 0.12, (Math.random() - 0.5) * 0.15));
+        sprite.userData = {
+          vel: new THREE.Vector3((Math.random() - 0.5) * 0.8, 0.5 + Math.random() * 1.0, (Math.random() - 0.5) * 0.6),
+          life: 0.5 + Math.random() * 0.5
+        };
+        scene.add(sprite);
+        activeSparkles.push(sprite);
+      }
+    }
+    mochi.onSpark = emitSparkle;
+    pip.onSpark = emitSparkle;
+
+    // Pointer tracking
+    const ray = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    let downX = 0, downY = 0;
+
+    window.addEventListener('pointermove', (e) => {
+      const r = cvs.getBoundingClientRect();
+      const px = ((e.clientX - (r.left + r.width / 2)) / (window.innerWidth / 2));
+      const py = ((e.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2));
+      if (cur) {
+        cur.gazeTarget.x = Math.max(-1, Math.min(1, px));
+        cur.gazeTarget.y = Math.max(-1, Math.min(1, py));
+      }
+    }, { passive: true });
+
+    cvs.addEventListener('pointerdown', (e) => {
+      downX = e.clientX;
+      downY = e.clientY;
+      armIdleChat();
+    });
+
+    cvs.addEventListener('pointerup', (e) => {
+      if (Math.abs(e.clientX - downX) > 6 || Math.abs(e.clientY - downY) > 6) return;
+      const r = cvs.getBoundingClientRect();
+      ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+      ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+      ray.setFromCamera(ndc, camera);
+      const hits = ray.intersectObject(cur.root, true);
+
+      if (phase !== 'out') {
+        comeOut();
+        return;
+      }
+      cur.react();
+      if (hits.length && cur.onSpark) cur.onSpark(hits[0].point, 8);
+    });
+
+    // Main Render Loop
+    function animate() {
+      requestAnimationFrame(animate);
+      const dt = Math.min(clock.getDelta(), 0.05);
+      const time = clock.elapsedTime;
+
+      if (cur && cur.root.visible) cur.update(dt, time);
+      if (talker) talker.tick();
+
+      // Update sparkles
+      for (let i = activeSparkles.length - 1; i >= 0; i--) {
+        const s = activeSparkles[i];
+        s.userData.life -= dt;
+        if (s.userData.life <= 0) {
+          scene.remove(s);
+          activeSparkles.splice(i, 1);
+        } else {
+          s.userData.vel.y -= 1.6 * dt;
+          s.position.addScaledVector(s.userData.vel, dt);
+          s.material.opacity = Math.max(0, s.userData.life);
+        }
+      }
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Scroll trigger setup
+    function setupScrollTrigger() {
+      if (window.gsap && window.ScrollTrigger) {
+        window.gsap.registerPlugin(window.ScrollTrigger);
+        window.ScrollTrigger.create({
+          trigger: '#services-section',
+          start: 'top 72%',
+          onEnter: peek,
+          onLeaveBack: unpeek
+        });
+      } else {
+        setTimeout(peek, 1800);
+      }
+    }
+    setupScrollTrigger();
+  }
+
+  // Window resize handler
+  window.addEventListener('resize', () => {
+    if (!cvs || !renderer || !camera) return;
+    const w = cvs.clientWidth || 320;
+    const h = cvs.clientHeight || 380;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  });
+
+  // Expose controller globally
+  window.ConciergeController = {
+    peek: peek,
+    unpeek: unpeek,
+    comeOut: comeOut,
+    ask: ask,
+    submitInput: submitInput,
+    switchCast: switchCast,
+    toggleMute: toggleMute
+  };
+
+  // Wait for DOM and libraries
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init3D);
+  } else {
+    setTimeout(init3D, 200);
+  }
+})();
+</script>

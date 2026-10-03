@@ -8,21 +8,30 @@
 <meta name="description" content="{% block meta_description %}Anshita Makeover — India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio{% endblock %}">
 <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
 <link rel="icon" type="image/jpeg" href="{% static 'core/images/logo.jpeg' %}">
-<link rel="apple-touch-icon" href="{% static 'core/images/logo.jpeg' %}">
+<link rel="apple-touch-icon" href="{% static 'core/images/icons/icon-192.png' %}">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#060606">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Anshita">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Anshita Makeover">
 <meta property="og:title" content="{% block og_title %}Anshita Makeover — India's Premier Bridal Studio{% endblock %}">
 <meta property="og:description" content="Anshita Makeover — India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio">
-<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}">
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/og-cover.jpg' %}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
 <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
 
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Anshita Makeover — India's Premier Bridal Studio">
 <meta name="twitter:description" content="India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio">
-<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}">
+<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/og-cover.jpg' %}">
 
 <!-- Structured Data: LocalBusiness & BridalSalon -->
 <script type="application/ld+json">
@@ -33,8 +42,14 @@
   "image": "{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/logo.jpeg' %}",
   "description": "Luxury bespoke bridal makeup, HD airbrush artistry, couture hairstyling, and draping studio.",
   "url": "https://anshitamakeover.com/",
-  "telephone": "+91-9876543210",
+  "telephone": "+91-7879223442",
   "priceRange": "₹₹₹",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.98",
+    "bestRating": "5",
+    "ratingCount": "120"
+  },
   "address": {
     "@type": "PostalAddress",
     "addressCountry": "IN"
@@ -53,6 +68,7 @@
   ]
 }
 </script>
+<link rel="preload" as="image" href="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -61,6 +77,10 @@
 <script src="{% static 'core/js/ScrollTrigger.min.js' %}"></script>
 <script src="{% static 'core/js/lenis.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.12.0/headroom.min.js"></script>
+<script src="{% static 'core/js/characters/CuteBunnyCharacter.js' %}"></script>
+<script src="{% static 'core/js/characters/MochiCharacter.js' %}"></script>
+<script src="{% static 'core/js/characters/PipCharacter.js' %}"></script>
+<script src="{% static 'core/js/lumiere-characters.js' %}"></script>
 
 <link rel="stylesheet" href="{% static 'core/css/animations.css' %}">
 <script>
@@ -6971,6 +6991,8 @@ document.addEventListener('mouseout', e => {
 });
 
 /* ── AI ROYAL CONCIERGE STATE & QUICK ACTIONS ── */
+window.activeConciergeChar = localStorage.getItem('anshita_active_char') || 'asha';
+
 window.charConciergeState = {
   mood: 'happy',
   speechTimer: null,
@@ -6990,7 +7012,8 @@ window.charConciergeState = {
         'deal_done': '🎊 Vivah Confirmed!',
         'excited': '✨ Excited!',
         'recommending': '👑 Curating Look',
-        'listening': '🎙️ Listening...'
+        'listening': '🎙️ Listening...',
+        'ram_ram': '🙏 राम राम जी!'
       };
       moodBadge.textContent = moodText[newMood] || '💖 Welcoming';
       if (newMood === 'sad') {
@@ -7005,10 +7028,40 @@ window.charConciergeState = {
         moodBadge.style.background = 'rgba(234, 179, 8, 0.2)';
         moodBadge.style.borderColor = 'rgba(234, 179, 8, 0.5)';
         moodBadge.style.color = '#fde047';
+      } else if (newMood === 'ram_ram') {
+        moodBadge.style.background = 'rgba(245, 158, 11, 0.25)';
+        moodBadge.style.borderColor = 'rgba(245, 158, 11, 0.6)';
+        moodBadge.style.color = '#fbbf24';
       } else {
         moodBadge.style.background = 'rgba(212, 175, 55, 0.18)';
         moodBadge.style.borderColor = 'rgba(212, 175, 55, 0.4)';
         moodBadge.style.color = 'var(--gold)';
+      }
+    }
+
+    // Synchronize emotion with Cute Bunny mascot if instantiated
+    if (window.bunnyMascotInstance || window.bunnyHeaderInstance) {
+      const bunnyMoodMap = {
+        'happy': 'welcoming',
+        'welcoming': 'welcoming',
+        'excited': 'happy_deal',
+        'celebrating': 'happy_deal',
+        'deal_done': 'happy_deal',
+        'offering_deal': 'happy_deal',
+        'recommending': 'happy_deal',
+        'sad': 'sad_hesitant',
+        'pouting': 'sad_hesitant',
+        'thinking': 'thinking_coupon',
+        'thinking_coupon': 'thinking_coupon',
+        'listening': 'thinking_coupon',
+        'ram_ram': 'ram_ram'
+      };
+      const bunnyEmo = bunnyMoodMap[newMood] || 'welcoming';
+      if (window.bunnyMascotInstance && typeof window.bunnyMascotInstance.setEmotion === 'function') {
+        window.bunnyMascotInstance.setEmotion(bunnyEmo);
+      }
+      if (window.bunnyHeaderInstance && typeof window.bunnyHeaderInstance.setEmotion === 'function') {
+        window.bunnyHeaderInstance.setEmotion(bunnyEmo);
       }
     }
 
@@ -7022,8 +7075,67 @@ window.charConciergeState = {
           moodBadge.style.borderColor = 'rgba(212, 175, 55, 0.4)';
           moodBadge.style.color = 'var(--gold)';
         }
+        if (window.bunnyMascotInstance && typeof window.bunnyMascotInstance.setEmotion === 'function') {
+          window.bunnyMascotInstance.setEmotion('welcoming');
+        }
+        if (window.bunnyHeaderInstance && typeof window.bunnyHeaderInstance.setEmotion === 'function') {
+          window.bunnyHeaderInstance.setEmotion('welcoming');
+        }
       }, autoResetMs);
     }
+  }
+};
+
+window.toggleActiveConciergeCharacter = function(forceChar) {
+  const charOrder = ['asha', 'mochi', 'pip'];
+  let currentIdx = charOrder.indexOf(window.activeConciergeChar || 'asha');
+  if (currentIdx === -1) currentIdx = 0;
+  const nextChar = forceChar || charOrder[(currentIdx + 1) % charOrder.length];
+  window.activeConciergeChar = nextChar;
+  localStorage.setItem('anshita_active_char', nextChar);
+
+  const ashaStage = document.getElementById('ashaMascotStage');
+  const bunnyStage = document.getElementById('bunnyMascotStage');
+  const pipStage = document.getElementById('pipMascotStage');
+
+  const ashaHdr = document.getElementById('ashaHeaderCanvas');
+  const bunnyHdr = document.getElementById('bunnyHeaderCanvas');
+  const pipHdr = document.getElementById('pipHeaderCanvas');
+
+  const charName = document.getElementById('conciergeCharName');
+  const toggleIcon = document.getElementById('charToggleIcon');
+  const toggleBtn = document.getElementById('chat-char-toggle-btn');
+
+  // Hide all stages & headers first
+  if (ashaStage) ashaStage.style.display = 'none';
+  if (bunnyStage) bunnyStage.style.display = 'none';
+  if (pipStage) pipStage.style.display = 'none';
+
+  if (ashaHdr) ashaHdr.style.display = 'none';
+  if (bunnyHdr) bunnyHdr.style.display = 'none';
+  if (pipHdr) pipHdr.style.display = 'none';
+
+  if (nextChar === 'mochi' || nextChar === 'bunny') {
+    if (bunnyStage) bunnyStage.style.display = 'block';
+    if (bunnyHdr) bunnyHdr.style.display = 'block';
+    if (charName) charName.innerHTML = 'Mochi Mascot <span class="chat-vip-badge">Velvet Mascot</span>';
+    if (toggleIcon) toggleIcon.textContent = '🐦';
+    if (toggleBtn) toggleBtn.title = 'Switch to Pip (Celestial Finch 🐦)';
+    if (typeof initMochiConcierge === 'function') initMochiConcierge();
+    else if (typeof initBunnyConcierge === 'function') initBunnyConcierge();
+  } else if (nextChar === 'pip') {
+    if (pipStage) pipStage.style.display = 'block';
+    if (pipHdr) pipHdr.style.display = 'block';
+    if (charName) charName.innerHTML = 'Pip Concierge <span class="chat-vip-badge">Celestial Muse</span>';
+    if (toggleIcon) toggleIcon.textContent = '👧';
+    if (toggleBtn) toggleBtn.title = 'Switch to Asha (Bridal Stylist 👧)';
+    if (typeof initPipConcierge === 'function') initPipConcierge();
+  } else {
+    if (ashaStage) ashaStage.style.display = 'block';
+    if (ashaHdr) ashaHdr.style.display = 'block';
+    if (charName) charName.innerHTML = 'Asha Concierge <span class="chat-vip-badge">Atelier</span>';
+    if (toggleIcon) toggleIcon.textContent = '🐰';
+    if (toggleBtn) toggleBtn.title = 'Switch to Mochi (Velvet Mascot 🐰)';
   }
 };
 
@@ -7656,6 +7768,106 @@ window.quickAskConcierge = function(query) {
     }
   }, 2200);
 })();
+
+// Initialize Mochi Mascot Concierge Engine
+window.mochiMascotInstance = null;
+window.mochiHeaderInstance = null;
+
+function initMochiConcierge() {
+  const canvas = document.getElementById('bunnyMascotCanvas');
+  if (!canvas) return;
+
+  if (!window.mochiMascotInstance) {
+    try {
+      if (typeof MochiCharacter !== 'undefined') {
+        window.mochiMascotInstance = new MochiCharacter({
+          canvas: canvas,
+          width: 168,
+          height: 168,
+          initialEmotion: 'welcome'
+        });
+      } else if (typeof CuteBunnyCharacter !== 'undefined') {
+        window.mochiMascotInstance = new CuteBunnyCharacter({
+          canvas: canvas,
+          width: 168,
+          height: 168,
+          theme: 'festive',
+          initialEmotion: 'welcoming'
+        });
+      }
+    } catch (e) {
+      console.warn("Mochi Mascot canvas init error:", e);
+    }
+  }
+
+  const headerCanvas = document.getElementById('bunnyHeaderCanvas');
+  if (headerCanvas && !window.mochiHeaderInstance) {
+    try {
+      if (typeof MochiCharacter !== 'undefined') {
+        window.mochiHeaderInstance = new MochiCharacter({
+          canvas: headerCanvas,
+          width: 96,
+          height: 96,
+          initialEmotion: 'welcome'
+        });
+      } else if (typeof CuteBunnyCharacter !== 'undefined') {
+        window.mochiHeaderInstance = new CuteBunnyCharacter({
+          canvas: headerCanvas,
+          width: 96,
+          height: 96,
+          theme: 'festive',
+          initialEmotion: 'welcoming'
+        });
+      }
+    } catch (e) {
+      console.warn("Mochi Header canvas init error:", e);
+    }
+  }
+}
+
+// Initialize Pip Finch Concierge Engine
+window.pipMascotInstance = null;
+window.pipHeaderInstance = null;
+
+function initPipConcierge() {
+  const canvas = document.getElementById('pipMascotCanvas');
+  if (!canvas || typeof PipCharacter === 'undefined') return;
+
+  if (!window.pipMascotInstance) {
+    try {
+      window.pipMascotInstance = new PipCharacter({
+        canvas: canvas,
+        width: 168,
+        height: 168,
+        initialEmotion: 'welcome'
+      });
+    } catch (e) {
+      console.warn("Pip Mascot canvas init error:", e);
+    }
+  }
+
+  const headerCanvas = document.getElementById('pipHeaderCanvas');
+  if (headerCanvas && !window.pipHeaderInstance) {
+    try {
+      window.pipHeaderInstance = new PipCharacter({
+        canvas: headerCanvas,
+        width: 96,
+        height: 96,
+        initialEmotion: 'welcome'
+      });
+    } catch (e) {
+      console.warn("Pip Header canvas init error:", e);
+    }
+  }
+}
+
+// Restore saved character preference (Asha or Bunny)
+document.addEventListener('DOMContentLoaded', () => {
+  const savedChar = localStorage.getItem('anshita_active_char') || 'asha';
+  if (typeof window.toggleActiveConciergeCharacter === 'function') {
+    window.toggleActiveConciergeCharacter(savedChar);
+  }
+});
 
 
 
@@ -10352,6 +10564,12 @@ window.selectChatLanguage = function(langCode, langName) {
   const replyMsg = greetings[langCode] || `Language set to ${langName}. How may I help you?`;
   appendMsg(replyMsg, 'bot');
 
+  if (['hindi', 'bundelkhandi', 'baghelkhandi', 'bhojpuri'].includes(langCode)) {
+    if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
+      window.charConciergeState.setMood('ram_ram', 7000);
+    }
+  }
+
   const inp = document.getElementById('chat-inp');
   if (inp && window.innerWidth > 768) {
     setTimeout(() => inp.focus(), 100);
@@ -10483,6 +10701,9 @@ async function sendChat(){
   // 3. Discount / Coupon inquiry -> THINKING & GENERATING DISCOUNT
   const isAskingDiscount = /(discount|coupon|offer|sasta|kam karo|kam hoga|off\b|privilege|deal|concession|छूट|डिस्काउंट|ऑफर|कूपन)/i.test(lowerMsg);
 
+  // 4. Cultural Greeting -> RAM RAM
+  const isGreeting = /(ram ram|namaste|hello|hi\b|hey\b|pranam|radhe|ram-ram|राम राम|नमस्ते|प्रणाम|राधे)/i.test(lowerMsg);
+
   if (window.charConciergeState && typeof window.charConciergeState.setMood === 'function') {
     if (isNegative) {
       window.charConciergeState.setMood('sad', 10000);
@@ -10490,6 +10711,8 @@ async function sendChat(){
       window.charConciergeState.setMood('celebrating', 12000);
     } else if (isAskingDiscount) {
       window.charConciergeState.setMood('thinking_coupon', 8000);
+    } else if (isGreeting) {
+      window.charConciergeState.setMood('ram_ram', 8000);
     } else {
       window.charConciergeState.setMood('thinking', 4000);
     }
@@ -10527,6 +10750,8 @@ async function sendChat(){
         window.charConciergeState.setMood('offering_deal', 10000);
       } else if (isNegative) {
         window.charConciergeState.setMood('sad', 9000);
+      } else if (isGreeting || /(राम राम|namaste|नमस्ते|प्रणाम)/i.test(rep)) {
+        window.charConciergeState.setMood('ram_ram', 7000);
       } else {
         const isBookingOrOffer = rep.includes('₹') || rep.includes('Suite') || rep.includes('Package') || rep.includes('Book') || rep.includes('WhatsApp');
         window.charConciergeState.setMood(isBookingOrOffer ? 'recommending' : 'happy', 5000);
@@ -10826,6 +11051,21 @@ window.addEventListener('DOMContentLoaded', () => {
   </svg>
   <span class="fab-pulse-ring"></span>
 </a>
+
+<!-- PWA Service Worker Registration (SPEC-008 TSK-008.02) -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then(function(reg) {
+        console.log('[Anshita PWA] ServiceWorker registered successfully with scope:', reg.scope);
+      })
+      .catch(function(err) {
+        console.warn('[Anshita PWA] ServiceWorker registration failed:', err);
+      });
+  });
+}
+</script>
 
 </body>
 </html>

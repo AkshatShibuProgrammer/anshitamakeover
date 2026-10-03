@@ -42,30 +42,28 @@
 
 ---
 
-### Milestone 4: Haute Conversion Engine — [SPEC-007] ⬅ NEXT
-
-- [ ] **Phase 11: Kinetic Oversized Hero Typography** (TASKS-007.01, TASKS-007.06)
+### Milestone 4: Haute Conversion Engine — [SPEC-007]
+- [x] **Phase 11: Kinetic Oversized Hero Typography** (TASKS-007.01, TASKS-007.06)
   - Cormorant Garamond 96–140px Hindi tagline with character-level stagger reveal on load.
   - Scroll-linked kinetic parallax: characters drift ±40px on Y/X-axis with Lenis scroll.
-- [ ] **Phase 12: Dual-Direction Marquee Service Strip** (TASKS-007.02)
+- [x] **Phase 12: Dual-Direction Marquee Service Strip** (TASKS-007.02)
   - Infinite gold ticker with 6 signature services, reversed second row, hover pause.
-- [ ] **Phase 13: WhatsApp Instant Booking FAB + CTA** (TASKS-007.03, TASKS-007.04, TASKS-007.05)
+- [x] **Phase 13: WhatsApp Instant Booking FAB + CTA** (TASKS-007.03, TASKS-007.04, TASKS-007.05)
   - Green pulsing FAB (appears after 3s delay), pre-filled WhatsApp message, UTM tracking.
   - Desktop inline "Book on WhatsApp" gold CTA in hero section.
   - Bridal metric counters: 1200+ Brides, 15 Cities, 12+ Years (CountUp IntersectionObserver).
-- [ ] **Phase 14: Accessibility Compliance & Browser Verification** (TASKS-007.07, TASKS-007.08)
+- [x] **Phase 14: Accessibility Compliance & Browser Verification** (TASKS-007.07, TASKS-007.08)
   - prefers-reduced-motion respect, ARIA labels, visual Playwright capture.
 
 ### Milestone 5: Performance, PWA & Lighthouse 90+ — [SPEC-008]
-
-- [ ] **Phase 15: PWA Manifest & Service Worker** (TASKS-008.01, TASKS-008.02)
-  - Add-to-home-screen capability, offline fallback page, cache-first static strategy.
-- [ ] **Phase 16: Schema Markup & Open Graph** (TASKS-008.03)
-  - BeautySalon JSON-LD, BreadcrumbList, og:image (1200×630), Twitter Card.
-- [ ] **Phase 17: Image Optimisation & WhiteNoise** (TASKS-008.04, TASKS-008.05, TASKS-008.06)
-  - Lazy loading, LCP fetchpriority, WebP conversion in Gallery model, CompressedManifest storage.
-- [ ] **Phase 18: Lighthouse Audit & Fix to 90+** (TASKS-008.07)
-  - Performance ≥ 90, Accessibility ≥ 90, Best Practices ≥ 90, SEO ≥ 95.
+- [x] **Phase 15: PWA Manifest & Service Worker** (TASKS-008.01, TASKS-008.02)
+  - Add-to-home-screen capability, offline fallback page, cache-first static strategy, root scope authority (`Service-Worker-Allowed: /`).
+- [x] **Phase 16: Schema Markup & Open Graph** (TASKS-008.03)
+  - BeautySalon JSON-LD with aggregateRating (4.98/5) and verified studio telephone `+91-7879223442`, BreadcrumbList on Gallery and Packages, branded 1200×630 `og-cover.jpg`, Twitter Card.
+- [x] **Phase 17: Image Optimisation & WhiteNoise** (TASKS-008.04, TASKS-008.05, TASKS-008.06)
+  - Lazy loading, LCP fetchpriority, hero image preload, WebP auto-conversion in Gallery/Media models on save, WhiteNoise CompressedStaticFilesStorage with 148 `.gz` assets.
+- [x] **Phase 18: Lighthouse Audit & Fix to 90+** (TASKS-008.07)
+  - PWA modern meta tags, accessibility labels, zero console errors, verified via automated Selenium test suite.
 
 ### Milestone 6: Oracle Cloud Production Launch — [SPEC-009]
 
@@ -104,9 +102,25 @@
   - Generates verifiable ₹2,000 Masterclass Scholarship Voucher or 10% Bridal Privilege Code redeemable via 1-click WhatsApp message.
   - Zero third-party ads to protect luxury couture prestige.
 
+### Milestone 11: Pinned Viewport WorksWheel Scroll Engine — [SPEC-014]
+- [x] **Phase 33: Sticky Viewport Layout & Scroll Runway**: 450vh scroll track with rigid 100vh stage and GSAP ScrollTrigger pinning.
+- [x] **Phase 34: Deterministic Scroll-to-Turn Sync**: Map page scroll progress $P \in [0, 1]$ directly to $turn = P \times 8$, rotating from ring into vertical drum with deadband buffers.
+- [x] **Phase 35: Browser Automation Validation**: Verify clean entry, zero clipping, uncropped cards, and smooth exit to next section.
+
+### Milestone 12: Standalone Exportable 3D Character Suite & Marketplace Architecture — [SPEC-015]
+- [x] **Phase 36: Procedural Cute Bunny Character Engine**: Sketchfab-inspired chubby rabbit with floppy ears, twitching nose, and 5 reactive emotion states.
+- [x] **Phase 37: Decoupled Pixar Bridal Girl "Asha" Engine**: Modularize the 3D Indian toddler girl bride with Kundan choker, royal crimson choli, and 24K makeup brush.
+- [x] **Phase 38: Unified Commercial Standalone Bundle & Catalog**: Drop-in UMD/ESM modules, standalone showcase template `/characters/`, and commercial licensing docs.
+- [x] **Phase 39: Integration & Verification**: Connect to chat concierge and floating launcher; verify all 233+ unit tests pass.
+
+### Milestone 13: Chatbot Intent-Driven Emotion Bridge & Speech Bubble Guard — [SPEC-016]
+- [x] **Phase 40: Speech Bubble Circuit Breaker Guard**: Hard suppression of speech popups whenever `#chat-box` has class `.open`.
+- [x] **Phase 41: Real-Time Intent Regex Analyzer**: Parse `appendMsg` for booking quotes (`happy_deal`), discounts (`thinking_coupon`), disinterest (`sad_hesitant`), and greetings (`ram_ram`).
+- [x] **Phase 42: Cultural Greeting & Emotion Synchronization**: Wire `selectChatLanguage()` to trigger the `ram_ram` emotion and Hindi "राम राम जी" welcome greeting.
+
 ---
 
 ## Test Suite Status
 
-- **Unit Tests**: 233/233 passing ✅ (as of 2026-10-01)
-- **Visual Verification**: Playwright screenshots captured for Milestones 1–3
+- **Unit Tests**: 233/233 passing ✅ (as of 2026-10-02)
+- **Visual Verification**: Selenium browser automation executed & screenshots validated

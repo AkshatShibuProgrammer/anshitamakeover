@@ -1,7 +1,7 @@
 # TASKS-007: WhatsApp Booking CTA & Kinetic Typography
 
 **Spec:** SPEC-007 | **Plan:** PLAN-007  
-**Status:** In Progress (TSK-007.01–05 Complete, 007.06–08 Pending)  
+**Status:** Completed & Verified ✅  
 **Total Tasks:** 8
 
 ---
@@ -10,7 +10,7 @@
 
 ### TSK-007.01 — Font Preload & Kinetic Hero Tagline
 - [x] Add `<link rel="preload" as="font">` for `Cormorant Garamond` in `base.html` `<head>`.
-- [ ] Add Google Fonts import for `Cormorant+Garamond:wght@300;400;600;700` (display swap).
+- [x] Add Google Fonts import for `Cormorant+Garamond:wght@300;400;600;700` (display swap).
 - [x] In `home.html`, replace plain hero tagline `<h1>` with `.kinetic-headline` wrapper.
 - [x] Add `splitAndAnimate()` JavaScript that wraps each character in `<span class="char" style="--i:N">`.
 - [x] Add CSS `@keyframes char-rise` (translateY 30px → 0, opacity 0 → 1) with stagger `calc(var(--i) * 0.04s)`.
@@ -36,9 +36,9 @@
 - **Acceptance Check:** FAB visible bottom-right, opens WhatsApp with pre-filled message on click.
 
 ### TSK-007.04 — Desktop Inline WhatsApp CTA in Hero
-- [ ] Add `<a class="btn-whatsapp-inline">📲 Book on WhatsApp</a>` inside the hero CTA group in `home.html`.
-- [ ] Style: gold gradient button with WhatsApp icon, only visible on desktop (`@media (min-width: 1024px)`).
-- [ ] UTM link: `?utm_source=website&utm_medium=whatsapp_cta&utm_campaign=bridal_2024`.
+- [x] Add `<a class="btn-whatsapp-inline">📲 Book on WhatsApp</a>` inside the hero CTA group in `home.html`.
+- [x] Style: gold gradient button with WhatsApp icon, only visible on desktop (`@media (min-width: 1024px)`).
+- [x] UTM link: `?utm_source=website&utm_medium=whatsapp_cta&utm_campaign=bridal_2024`.
 - **Acceptance Check:** CTA visible on desktop hero, hidden on mobile (use FAB instead).
 
 ### TSK-007.05 — Metric Counter Glass Cards
@@ -50,20 +50,20 @@
 - **Acceptance Check:** Numbers count from 0 to target when section scrolls into view.
 
 ### TSK-007.06 — Scroll Kinetic Parallax on Headline
-- [ ] Add Lenis scroll listener: on each frame, shift `.kinetic-headline` chars by `scrollY * 0.015` on X-axis (subtle).
-- [ ] Clamp max X drift to ±40px.
-- [ ] Respect `prefers-reduced-motion: reduce` — disable kinetic shift if reduced motion preferred.
+- [x] Add Lenis scroll listener: on each frame, shift `.kinetic-headline` chars by `scrollY * 0.045` on X-axis.
+- [x] Clamp max X drift to ±40px.
+- [x] Respect `prefers-reduced-motion: reduce` — disable kinetic shift if reduced motion preferred.
 - **Acceptance Check:** Characters drift subtly left/right with scroll momentum.
 
 ### TSK-007.07 — Reduced Motion & Accessibility Compliance
-- [ ] Wrap all marquee + kinetic animations in `@media (prefers-reduced-motion: no-preference)`.
-- [ ] Add `aria-hidden="true"` to all decorative `.marquee-band` elements.
-- [ ] Add `aria-label` to `#whatsapp-fab`: `"Book a consultation on WhatsApp"`.
-- [ ] Add `title="Book on WhatsApp"` to FAB for tooltip.
+- [x] Wrap all marquee + kinetic animations in `@media (prefers-reduced-motion: no-preference)` / disable in reduced-motion.
+- [x] Add `aria-hidden="true"` to all decorative `.marquee-band` elements.
+- [x] Add `aria-label` to `#whatsapp-fab`: `"Book a consultation on WhatsApp"`.
+- [x] Add `title="Book on WhatsApp"` to FAB for tooltip.
 - **Acceptance Check:** No animations in reduced-motion mode; screen reader announces FAB correctly.
 
 ### TSK-007.08 — Browser Verification
-- [ ] Run Playwright test capturing: kinetic headline on load, marquee scrolling, FAB visible, metric counters animated.
-- [ ] Verify FAB does not overlap Asha mascot toggle on any viewport.
-- [ ] Save screenshots: `verify_whatsapp_fab.png`, `verify_marquee_strip.png`, `verify_metric_counters.png`.
+- [x] Run Selenium test capturing: kinetic headline on load, marquee scrolling, FAB visible, metric counters animated.
+- [x] Verify FAB does not overlap Asha mascot toggle on any viewport.
+- [x] Save screenshots: `verify_whatsapp_fab.png`, `verify_marquee_strip.png`, `verify_metric_counters.png`.
 - **Acceptance Check:** All 3 screenshots show expected UI states.

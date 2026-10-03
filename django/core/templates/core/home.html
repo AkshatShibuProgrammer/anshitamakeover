@@ -1000,6 +1000,54 @@ body {
   box-shadow: 0 12px 30px rgba(212, 175, 55, 0.55);
   color: #000;
 }
+.btn-whatsapp-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 26px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, rgba(37, 211, 102, 0.16) 0%, rgba(212, 175, 55, 0.22) 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
+  color: #FFFDF8 !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 700;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 16px rgba(37, 211, 102, 0.25);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-whatsapp-inline svg {
+  color: #25D366;
+  filter: drop-shadow(0 0 6px rgba(37, 211, 102, 0.6));
+  transition: transform 0.3s ease;
+}
+.btn-whatsapp-inline:hover {
+  background: linear-gradient(135deg, rgba(37, 211, 102, 0.3) 0%, rgba(212, 175, 55, 0.4) 100%);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 0 0 25px rgba(37, 211, 102, 0.45);
+  color: #fff;
+}
+.btn-whatsapp-inline:hover svg {
+  transform: scale(1.15) rotate(6deg);
+}
+@media (max-width: 640px) {
+  .btn-whatsapp-inline {
+    display: none; /* Mobile visitors utilize bottom WhatsApp FAB */
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+  }
+  .am-hero__word {
+    transform: none !important;
+    transition: none !important;
+  }
+}
 .am-hero__scroll-down {
   position: absolute;
   bottom: 36px;
@@ -1313,18 +1361,32 @@ body[data-page-zone="dark"] .hg-explore-all-btn {
 .works-wheel-section {
   position: relative;
   width: 100%;
-  padding: 70px 4vw 90px;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 4vw 14px;
   background: radial-gradient(circle at 50% 30%, #150611 0%, #0a0309 70%, #060205 100%);
   overflow: hidden;
+  box-sizing: border-box;
+  touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
 }
+.home-gallery-header {
+  flex-shrink: 0;
+  max-height: 14vh;
+  margin-bottom: 6px;
+}
 .works-wheel-stage-container {
+  flex: 1;
+  height: auto;
+  max-height: 76vh;
   position: relative;
   width: 100%;
   max-width: 1300px;
-  margin: 24px auto 0;
-  height: 580px;
+  margin: 0 auto;
   perspective: 1200px;
   overflow: hidden;
 }
@@ -1332,7 +1394,7 @@ body[data-page-zone="dark"] .hg-explore-all-btn {
   position: absolute;
   inset: 0;
   cursor: grab;
-  touch-action: pan-x;
+  touch-action: pan-y;
   outline: none;
 }
 .works-wheel-stage:active {
@@ -1495,13 +1557,18 @@ body[data-page-zone="dark"] .hg-explore-all-btn {
   transform: translateX(-6px);
 }
 .works-wheel-hint {
+  flex-shrink: 0;
+  height: 4vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   font-family: 'Space Mono', monospace;
   font-size: 0.72rem;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: rgba(212, 175, 55, 0.75);
-  margin-top: 14px;
+  margin-top: 4px;
 }
 
 .hg-card-play-orb {
@@ -2604,9 +2671,9 @@ body[data-page-zone="dark"] .about-metric-item span {
 
   <!-- Left: Dynamic Auto-Cycling Haute Couture Carousel -->
   <div class="am-hero__split-left" id="heroCarousel">
-    <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" class="hero-cycle-img active" alt="Sacred Vivah Crimson Bride">
-    <img src="{% static 'core/images/curated/dsc09702.jpg' %}" class="hero-cycle-img" alt="Palace Maroon Velvet Heritage">
-    <img src="{% static 'core/images/curated/ig_post_DM-_ZJVTCIo_slide_1.jpg' %}" class="hero-cycle-img" alt="Miss Rajak Mauve Shimmer Evening Glamour">
+    <img src="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" id="hero-portrait-img" class="hero-cycle-img active" alt="Sacred Vivah Crimson Bride" fetchpriority="high" decoding="sync">
+    <img src="{% static 'core/images/curated/dsc09702.jpg' %}" class="hero-cycle-img" alt="Palace Maroon Velvet Heritage" loading="lazy" decoding="async">
+    <img src="{% static 'core/images/curated/ig_post_DM-_ZJVTCIo_slide_1.jpg' %}" class="hero-cycle-img" alt="Miss Rajak Mauve Shimmer Evening Glamour" loading="lazy" decoding="async">
     
     <div class="hero-carousel-pills">
       <span class="hc-pill active" onclick="setHeroCycle(0)" title="Look 01"></span>
@@ -2632,8 +2699,16 @@ body[data-page-zone="dark"] .about-metric-item span {
         <span>{{ t.hero_btn_explore|default:'Explore Lookbook' }}</span>
         <span>→</span>
       </a>
-      <a href="https://wa.me/{{ whatsapp|default:'917879223442' }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20check%20bridal%20availability%20for%20my%20wedding%20date." target="_blank" rel="noopener" class="about-ig-btn" style="color:var(--gold);border-color:rgba(212,175,55,0.4)">
-        <span>{{ t.hero_btn_reserve_date|default:'💬 Reserve Date' }}</span>
+      <a href="https://wa.me/{{ whatsapp|default:'917879223442' }}?text=Namaste%20Anshita%20Makeover!%20I%20would%20like%20to%20book%20a%20bridal%20consultation.&utm_source=website&utm_medium=whatsapp_cta&utm_campaign=bridal_2024"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="btn-whatsapp-inline"
+         aria-label="Book on WhatsApp with Anshita Studio"
+         title="Book on WhatsApp">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        <span>{{ t.hero_btn_reserve_date|default:'Book on WhatsApp' }}</span>
       </a>
     </div>
 
@@ -2691,7 +2766,7 @@ body[data-page-zone="dark"] .about-metric-item span {
     <article class="look-card-row" id="lookCard1">
       <div class="look-photo-box">
         <span class="look-badge-pill">Cultural Vivah</span>
-        <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Sacred Vivah & Cultural Heritage Bridal Couture">
+        <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Sacred Vivah & Cultural Heritage Bridal Couture" loading="lazy" decoding="async">
       </div>
       <div class="look-content-box">
         <span class="look-num-label">EDITORIAL {CULTURAL} · 01 / 03</span>
@@ -2709,7 +2784,7 @@ body[data-page-zone="dark"] .about-metric-item span {
     <article class="look-card-row look-card-row--flip" id="lookCard2">
       <div class="look-photo-box">
         <span class="look-badge-pill">Reception Starlight</span>
-        <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Ivory Cathedral Reception Glamour">
+        <img src="{% static 'core/images/curated/reception_ivory_bride.jpg' %}" alt="Ivory Cathedral Reception Glamour" loading="lazy" decoding="async">
       </div>
       <div class="look-content-box">
         <span class="look-num-label">EDITORIAL {RECEPTION} · 02 / 03</span>
@@ -2727,7 +2802,7 @@ body[data-page-zone="dark"] .about-metric-item span {
     <article class="look-card-row" id="lookCard3">
       <div class="look-photo-box">
         <span class="look-badge-pill">Palace Sangeet</span>
-        <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia Emerald Heritage">
+        <img src="{% static 'core/images/curated/fuchsia_emerald_bride_hq.jpg' %}" alt="Imperial Fuchsia Emerald Heritage" loading="lazy" decoding="async">
       </div>
       <div class="look-content-box">
         <span class="look-num-label">EDITORIAL {PALACE} · 03 / 03</span>
@@ -3443,6 +3518,18 @@ body[data-page-zone="dark"] .about-metric-item span {
       li.innerHTML = `<button type="button" data-idx="${i}">${item.title}</button>`;
       indexEl.appendChild(li);
     }
+
+    // Card click: only trigger if not dragged, and turn to front if not active
+    card.addEventListener('click', (e) => {
+      if (dragDistance > 12) {
+        e.preventDefault();
+        return;
+      }
+      if (Math.abs(i - activeIndex) > 0.4) {
+        e.preventDefault();
+        to(i + 1);
+      }
+    });
   });
 
   const turn = { current: 0 };
@@ -3467,8 +3554,8 @@ body[data-page-zone="dark"] .about-metric-item span {
       drumR,
       bow: cardH * BOW,
       depth: cardH * LENS,
-      title: Math.max(24, cardH * TITLE),
-      index: Math.max(13, cardH * INDEX)
+      title: Math.max(22, cardH * TITLE),
+      index: Math.max(12, cardH * INDEX)
     };
   }
 
@@ -3490,6 +3577,9 @@ body[data-page-zone="dark"] .about-metric-item span {
       card.style.marginLeft = `${-metrics.cardW / 2}px`;
       card.style.marginTop = `${-metrics.cardH / 2}px`;
     });
+    if (typeof ScrollTrigger !== 'undefined') {
+      ScrollTrigger.refresh();
+    }
   }
 
   applyMetrics();
@@ -3516,7 +3606,32 @@ body[data-page-zone="dark"] .about-metric-item span {
     });
   }
 
-  // Wheel interaction
+  // Native GSAP ScrollTrigger Viewport Pinning (Lenis Integrated)
+  if (typeof ScrollTrigger !== 'undefined') {
+    ScrollTrigger.create({
+      trigger: '#gallery-showcase',
+      pin: true,
+      start: 'top top',
+      end: '+=3200',
+      scrub: 0.45,
+      anticipatePin: 1,
+      onUpdate: (self) => {
+        const p = self.progress;
+        let next = 0;
+        if (p <= 0.12) {
+          next = 0; // Rest state ring framing Works '26
+        } else if (p < 0.92) {
+          const drumProgress = (p - 0.12) / (0.92 - 0.12);
+          next = 1 + drumProgress * (last - 1);
+        } else {
+          next = last; // Settle on final card before releasing pin
+        }
+        to(next);
+      }
+    });
+  }
+
+  // Wheel interaction (Direct wheel backup)
   let settlingTimer = 0;
   stage.addEventListener('wheel', (e) => {
     const next = target.current + e.deltaY / WHEEL_UNITS;
@@ -3528,13 +3643,17 @@ body[data-page-zone="dark"] .about-metric-item span {
 
   // Pointer drag interaction
   let dragStartY = null;
+  let dragDistance = 0;
   stage.addEventListener('pointerdown', (e) => {
     dragStartY = e.clientY;
+    dragDistance = 0;
     stage.setPointerCapture(e.pointerId);
   });
   stage.addEventListener('pointermove', (e) => {
     if (dragStartY === null) return;
-    to(target.current + (dragStartY - e.clientY) / DRAG_UNITS);
+    const dy = dragStartY - e.clientY;
+    dragDistance += Math.abs(dy);
+    to(target.current + dy / DRAG_UNITS);
     dragStartY = e.clientY;
   });
   function onPointerEnd() {
@@ -3661,6 +3780,25 @@ window.triggerHeroEntrance = function() {
     '-=0.3'
   );
 };
+
+// Kinetic Parallax on Hero Headline (SPEC-007 TSK-007.06)
+(function initKineticHeadline() {
+  const words = document.querySelectorAll('.am-hero__h1 .am-hero__word');
+  if (!words.length) return;
+  const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (isReduced) return;
+
+  window.addEventListener('scroll', () => {
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+    if (scrollY < window.innerHeight) {
+      const shift = Math.max(-40, Math.min(40, scrollY * 0.045));
+      words.forEach((word, idx) => {
+        const factor = (idx === 0) ? -1 : (idx === 1 ? 0.6 : 1.2);
+        word.style.transform = `translateX(${shift * factor}px)`;
+      });
+    }
+  }, { passive: true });
+})();
 
 (function initGSAPScrollAnimations() {
   if (typeof gsap === 'undefined') return;
