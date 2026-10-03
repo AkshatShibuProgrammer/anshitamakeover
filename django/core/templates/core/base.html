@@ -2894,6 +2894,7 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   opacity: 0;
   transform: translateY(120px) scale(0.15) rotate(-24deg);
   pointer-events: none;
+  visibility: hidden;
 }
 .chat-toggle-wrap.char-entered {
   animation: conciergeRoyalEntrance 1.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -7861,9 +7862,9 @@ function initPipConcierge() {
   }
 }
 
-// Restore saved character preference (Asha or Bunny)
+// Restore saved character preference (defaults to Mochi Bunny)
 document.addEventListener('DOMContentLoaded', () => {
-  const savedChar = localStorage.getItem('anshita_active_char') || 'asha';
+  const savedChar = localStorage.getItem('anshita_active_char') || 'mochi';
   if (typeof window.toggleActiveConciergeCharacter === 'function') {
     window.toggleActiveConciergeCharacter(savedChar);
   }
