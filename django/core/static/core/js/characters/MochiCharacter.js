@@ -212,6 +212,55 @@
     return sphere(parent, material, [x, y, z], [radius, radius * .63, radius * .22], 16);
   }
 
+  /**
+   * Bake a set of sibling meshes that share one material into a single
+   * BufferGeometry (one draw call instead of N). Used for the static
+   * decorations — pom-pom tufts, ear shells, eye catchlights — where the
+   * meshes never animate independently (audit §8.2 draw-call budget).
+   * Returns null when the inputs are not mergeable, in which case the
+   * caller keeps the original meshes.
+   */
+  function mergeSiblingMeshes(parent, meshes, material) {
+    if (!meshes.length || !THREE.BufferGeometry) return null;
+    const positions = [], normals = [], indices = [];
+    const normalMatrix = new THREE.Matrix3();
+    let vertexOffset = 0;
+    for (const mesh of meshes) {
+      const geom = mesh.geometry;
+      if (!geom || !geom.attributes || !geom.attributes.position) return null;
+      mesh.updateMatrix();
+      const pos = geom.attributes.position.clone().applyMatrix4(mesh.matrix);
+      positions.push(...pos.array);
+      if (geom.attributes.normal) {
+        normalMatrix.getNormalMatrix(mesh.matrix);
+        const nrm = geom.attributes.normal.clone().applyNormalMatrix(normalMatrix);
+        normals.push(...nrm.array);
+      }
+      const count = geom.attributes.position.count;
+      if (geom.index) {
+        for (let i = 0; i < geom.index.count; i++) indices.push(geom.index.array[i] + vertexOffset);
+      } else {
+        for (let i = 0; i < count; i++) indices.push(i + vertexOffset);
+      }
+      vertexOffset += count;
+      parent.remove(mesh);
+      geom.dispose();
+    }
+    const merged = new THREE.BufferGeometry();
+    merged.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    if (normals.length === positions.length) {
+      merged.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+    } else {
+      merged.computeVertexNormals();
+    }
+    merged.setIndex(indices);
+    const mesh = new THREE.Mesh(merged, material);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    parent.add(mesh);
+    return mesh;
+  }
+
   function createArms(parent, options) {
     const config = Object.assign({ x: .39, y: .82, z: .02, upper: .2, fore: .18, radius: .082, skinRadius: .105, sleeve: null, skin: null }, options);
     function make(side) {
@@ -268,6 +317,20 @@
       this.armSwingX = 0;
       this.phase = Math.random() * Math.PI * 2;
 
+      // ── Scroll-scrubbed walk state (mascot-scroll-engine.js) ────────────
+      this.walk = {
+        progress: 0,
+        gaitPhase: 0,
+        locomotion: 0,     // 0 = idle, 1 = full stride
+        speed: 0,
+        direction: 1,
+        docked: false,
+        phase: 'hidden',
+        earSway: 0.075,
+        hopAmplitude: 0.28
+      };
+      this.paused = false;
+
       this.initScene();
       this.build();
       this.setupListeners();
@@ -289,20 +352,30 @@
       this.renderer.setSize(this.width, this.height, false);
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-      const ambient = new THREE.AmbientLight(0xfff3e5, 1.15);
-      this.scene.add(ambient);
-
-      const keyLight = new THREE.DirectionalLight(0xffecd6, 1.35);
-      keyLight.position.set(2.4, 3.8, 3.2);
-      this.scene.add(keyLight);
-
-      const fillLight = new THREE.DirectionalLight(0xe4f2ff, 0.7);
-      fillLight.position.set(-2.4, 1.8, 2.2);
-      this.scene.add(fillLight);
-
-      const rimLight = new THREE.DirectionalLight(0xc8a96a, 0.95);
-      rimLight.position.set(0, 3.2, -2.5);
-      this.scene.add(rimLight);
+      // ── Studio treatment ─────────────────────────────────────────────
+      // Filmic pipeline + real light rig + environment. Without these the
+      // geometry reads as flat chalk; with them it reads as plush velvet.
+      const studio = window.StudioTreatment;
+      if (studio) {
+        studio.applyRendererPipeline(this.renderer, { exposure: 1.05 });
+        this.envMap = studio.buildStudioEnvironment(this.renderer);
+        if (this.envMap) this.scene.environment = this.envMap;
+        this.lights = studio.createStudioLights(this.scene, { scale: 1 });
+        this.shadowCatcher = studio.createShadowCatcher({ size: 8, y: 0, opacity: 0.32 });
+        this.scene.add(this.shadowCatcher);
+      } else {
+        const ambient = new THREE.AmbientLight(0xfff3e5, 1.15);
+        this.scene.add(ambient);
+        const keyLight = new THREE.DirectionalLight(0xffecd6, 1.35);
+        keyLight.position.set(2.4, 3.8, 3.2);
+        this.scene.add(keyLight);
+        const fillLight = new THREE.DirectionalLight(0xe4f2ff, 0.7);
+        fillLight.position.set(-2.4, 1.8, 2.2);
+        this.scene.add(fillLight);
+        const rimLight = new THREE.DirectionalLight(0xc8a96a, 0.95);
+        rimLight.position.set(0, 3.2, -2.5);
+        this.scene.add(rimLight);
+      }
     }
 
     build() {
@@ -324,25 +397,47 @@
       const sash = colorMat(0x5b1428, { roughness: .31, sheen: new THREE.Color(0xbf6674) });
       const gold = goldMat(), emerald = gemMat(0x1b9869);
 
+      // Matte plush palette — merged into one vertex-coloured material at the
+      // end of the build (audit §8.2 draw-call budget).
+      this.palette = { fur: fur, cream: cream, chestFur: chestFur, pink: pink };
+
       sphere(this.bodyGroup, fur, [0, .67, 0], [.48, .54, .43], 30);
       sphere(this.bodyGroup, chestFur, [0, .62, .345], [.24, .28, .10], 24);
 
-      // Pom-pom tail
+      // Pom-pom tail (kept on the instance for walk-cycle wagging)
       const tail = new THREE.Group();
+      this.tail = tail;
       tail.position.set(0, .47, -.375);
       this.bodyGroup.add(tail);
-      sphere(tail, fur, [0, 0, -.02], [.125, .13, .115], 20);
+      // Pom-pom tufts: 15 primitives merged into 2 draw calls (one per
+      // material) — they never animate independently of the tail group.
+      const tailFurMeshes = [], tailCreamMeshes = [];
+      const tailCore = sphere(tail, fur, [0, 0, -.02], [.125, .13, .115], 20);
+      if (tailCore) tailFurMeshes.push(tailCore);
       for (let i = 0; i < 14; i++) {
         const y = 1 - (i / 13) * 2, rr = Math.sqrt(Math.max(0, 1 - y * y)), a = i * 2.39996, d = .072;
         const rad = .052 + (i % 3) * .009;
-        sphere(tail, i % 4 === 0 ? chestFur : fur, [Math.cos(a) * rr * d, y * .085, -.035 + Math.sin(a) * rr * d], [rad, rad, rad], 12);
+        const tuft = sphere(tail, i % 4 === 0 ? chestFur : fur,
+          [Math.cos(a) * rr * d, y * .085, -.035 + Math.sin(a) * rr * d], [rad, rad, rad], 12);
+        (i % 4 === 0 ? tailCreamMeshes : tailFurMeshes).push(tuft);
+      }
+      if (!mergeSiblingMeshes(tail, tailFurMeshes, fur)) {
+        tailFurMeshes.forEach(m => tail.add(m));
+      }
+      if (!mergeSiblingMeshes(tail, tailCreamMeshes, chestFur)) {
+        tailCreamMeshes.forEach(m => tail.add(m));
       }
       this.tickers.push(t => { tail.rotation.y = Math.sin(t * 1.35) * .11; tail.rotation.x = Math.sin(t * .95) * .05; });
 
-      // Feet
+      // Feet — grouped so the scroll scrubber can pitch/lift them per stride
+      this.feet = [];
       [-1, 1].forEach(side => {
-        sphere(this.bodyGroup, fur, [side * .22, .14, .08], [.18, .12, .22], 18);
-        sphere(this.bodyGroup, pink, [side * .22, .13, .24], [.1, .04, .025], 14);
+        const foot = new THREE.Group();
+        foot.position.set(side * .22, .14, .08);
+        this.bodyGroup.add(foot);
+        sphere(foot, fur, [0, 0, 0], [.18, .12, .22], 18);
+        sphere(foot, pink, [0, -.01, .16], [.1, .04, .025], 14);
+        this.feet.push({ group: foot, side: side, baseY: .14, baseZ: .08, phase: side < 0 ? 0 : Math.PI });
       });
 
       // Head
@@ -390,11 +485,59 @@
         e.group.rotation.x = Math.sin(t * 1.55 + e.side) * .075;
         e.group.rotation.z = -e.side * (.13 + Math.sin(t * .7 + e.side) * .05);
       }));
+
+      // The mouth rebuilds its geometry whenever the mood changes, so it must
+      // never be welded into a merged cluster.
+      if (this.mouth) {
+        this.mouth.userData.noMerge = true;
+        this.mouth.traverse(o => { o.userData.noMerge = true; });
+      }
+
+      this.optimizeDrawCalls();
+    }
+
+    /**
+     * Bake static decorations into merged geometries (audit §8.2: <25 draw
+     * calls). Only meshes that share a material *and* an identical chain of
+     * animated ancestors are welded, so the motion graph is untouched.
+     */
+    optimizeDrawCalls() {
+      const opt = window.AnshitaRigOptimizer;
+      if (!opt || !this.root) return 0;
+      const animated = [
+        this.root, this.bodyGroup, this.headRig, this.tail, this.mouth,
+        this.armL && this.armL.shoulder, this.armR && this.armR.shoulder,
+        this.armL && this.armL.elbow, this.armR && this.armR.elbow,
+      ];
+      (this.earParts || []).forEach(e => animated.push(e.group));
+      (this.feet || []).forEach(f => animated.push(f.group));
+      if (this.eyes && this.eyes.eyes) {
+        this.eyes.eyes.forEach(e => { animated.push(e.eye); animated.push(e.iris); });
+      }
+      (this.extraMotionNodes || []).forEach(n => animated.push(n));
+      this.drawCallMergeSaved = opt.mergeStaticByMaterial(this.root, animated);
+      if (this.palette && opt.mergeMaterialFamily) {
+        const family = Object.keys(this.palette).map(k => this.palette[k]);
+        this.drawCallMergeSaved += opt.mergeMaterialFamily(
+          this.root, family, animated, { name: 'plush' });
+      }
+      // Move every authored colour into linear space last, so the merge pass
+      // compares materials in the space they were authored in.
+      if (window.StudioTreatment && window.StudioTreatment.lineariseMaterials) {
+        window.StudioTreatment.lineariseMaterials(this.scene);
+      }
+      return this.drawCallMergeSaved;
     }
 
     setupListeners() {
+      this._listeners = this._listeners || [];
+      const add = (type, fn, opts) => {
+        window.addEventListener(type, fn, opts);
+        this._listeners.push({ type: type, fn: fn, opts: opts });
+      };
+
       if (this.interactiveCursor) {
-        window.addEventListener('mousemove', (e) => {
+        add('mousemove', (e) => {
           const rect = this.canvas.getBoundingClientRect();
           const cx = rect.left + rect.width / 2;
           const cy = rect.top + rect.height / 2;
@@ -403,8 +546,10 @@
         }, { passive: true });
       }
 
-      window.addEventListener('resize', () => {
+      add('resize', () => {
         if (!this.canvas) return;
+        // The scroll engine owns sizing while the rig is on the walk stage.
+        if (this.walkOwner) return;
         const w = this.canvas.clientWidth || 240;
         const h = this.canvas.clientHeight || 240;
         if (w !== this.width || h !== this.height) {
@@ -435,20 +580,27 @@
 
     start() {
       this.isRunning = true;
-      const clock = new THREE.Clock();
+      this.clock = new THREE.Clock();
       const animate = () => {
         if (!this.isRunning) return;
-        requestAnimationFrame(animate);
-        const dt = Math.min(clock.getDelta(), 0.1);
-        const time = clock.getElapsedTime();
+        this._rafId = requestAnimationFrame(animate);
+        const dt = Math.min(this.clock.getDelta(), 0.1);
+        const time = this.clock.getElapsedTime();
+
+        // Battery gate (audit §3): a hidden tab or a paused rig costs zero GPU.
+        if (this.paused || (typeof document !== 'undefined' && document.hidden)) return;
+
+        this.applyWalkPose(dt);
 
         const breath = Math.sin(time * 1.85 + this.phase) * .009;
         this.bodyGroup.scale.set(this.squash, (1 + breath) / Math.sqrt(this.squash), this.squash);
-        this.root.position.y = 0.10 + Math.sin(time * 1.35 + this.phase) * .012 + this.jump + this.stanceY;
+        this.root.position.y = 0.10 + Math.sin(time * 1.35 + this.phase) * .012 + this.jump +
+          this.stanceY + (this.walkAerial || 0);
 
         const st = time * .55 + this.phase;
         this.root.rotation.z = this.hipBase + this.wiggle + Math.sin(st * 1.15) * .012;
-        this.root.rotation.y = this.spin + Math.sin(st * .42) * .035;
+        this.root.rotation.y = this.spin + (this.walkYaw || 0) + Math.sin(st * .42) * .035;
+        this.root.rotation.x = this.walkLean || 0;
 
         this.gaze.x += (this.gazeTarget.x - this.gaze.x) * Math.min(1, dt * 4);
         this.gaze.y += (this.gazeTarget.y - this.gaze.y) * Math.min(1, dt * 4);
@@ -468,6 +620,186 @@
         this.renderer.render(this.scene, this.camera);
       };
       animate();
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       SCROLL-SCRUBBED AMBULATORY LOCOMOTION  (spec §4.2 / §6)
+       The engine drives `scrub(progress, opts)`; this rig translates scroll
+       delta into an authentic bunny hop cycle — aerial arc, ear cartilage
+       inertia, alternating paw pushes, landing squash & stretch.
+       ══════════════════════════════════════════════════════════════════════ */
+
+    scrub(progress, opts) {
+      opts = opts || {};
+      const w = this.walk;
+      w.progress = Math.max(0, Math.min(1, Number(progress) || 0));
+      if (typeof opts.gaitPhase === 'number') w.gaitPhase = opts.gaitPhase;
+      if (typeof opts.direction === 'number') w.direction = opts.direction;
+      if (typeof opts.speed === 'number') w.speed = opts.speed;
+      if (typeof opts.phase === 'string') w.phase = opts.phase;
+      if (typeof opts.docked === 'boolean') w.docked = opts.docked;
+      if (typeof opts.hopAmplitudePx === 'number') {
+        // Pixels → WebGL units at the default camera framing (~93px per unit).
+        w.hopAmplitude = Math.max(.14, Math.min(.55, opts.hopAmplitudePx / 93));
+      }
+      if (typeof opts.earSwayDeg === 'number') {
+        w.earSway = Math.max(.02, Math.min(.22, opts.earSwayDeg * Math.PI / 180));
+      }
+      // `locomotion` is the master blend; `docked` freezes the stride instantly.
+      const target = (typeof opts.locomotion === 'number' ? opts.locomotion : 1) * (w.docked ? 0 : 1);
+      w.locomotion += (target - w.locomotion) * .25;
+      return this;
+    }
+
+    applyWalkPose(dt) {
+      const w = this.walk;
+      const loco = w.locomotion;
+      const gait = w.gaitPhase;
+
+      if (loco < .0005) {
+        // Settle every walk-driven channel back to the idle rig.
+        this.walkAerial = (this.walkAerial || 0) * Math.max(0, 1 - dt * 8);
+        this.walkLean = (this.walkLean || 0) * Math.max(0, 1 - dt * 8);
+        this.walkYaw = (this.walkYaw || 0) * Math.max(0, 1 - dt * 8);
+        this.squash = 1 + (this.squash - 1) * Math.max(0, 1 - dt * 8);
+        this.wiggle = this.wiggle * Math.max(0, 1 - dt * 8);
+        this.armSwingX = (this.armSwingX || 0) * Math.max(0, 1 - dt * 8);
+        if (this.armL && this.armR) {
+          this.armL.shoulder.rotation.x *= Math.max(0, 1 - dt * 8);
+          this.armR.shoulder.rotation.x *= Math.max(0, 1 - dt * 8);
+        }
+        if (this.feet) {
+          this.feet.forEach(f => {
+            f.group.position.y += (f.baseY - f.group.position.y) * Math.min(1, dt * 8);
+            f.group.rotation.x *= Math.max(0, 1 - dt * 8);
+          });
+        }
+        return;
+      }
+
+      const hop = Math.abs(Math.sin(gait));            // 0 = touchdown, 1 = apex
+      const stride = Math.sin(gait);
+
+      // 1. Aerial arc — A_hop ≈ 0.28 WebGL units (26 px at default framing).
+      this.walkAerial = loco * hop * w.hopAmplitude;
+
+      // 2. Landing squash & airborne stretch (Disney principles).
+      const landing = loco * (1 - hop) * .055;
+      const stretch = loco * hop * .03;
+      this.squash = 1 - landing + stretch;
+
+      // 3. Ear cartilage inertia — the ears lag the body by φ = π/4.
+      const earLag = Math.sin(gait - Math.PI / 4);
+      if (this.earParts) {
+        this.earParts.forEach(e => {
+          e.group.rotation.x += (earLag * w.earSway * loco) - e.group.rotation.x * .55;
+        });
+      }
+
+      // 4. Alternating paw pushes + hip sway.
+      if (this.feet) {
+        this.feet.forEach(f => {
+          const local = Math.sin(gait + f.phase);
+          f.group.position.y = f.baseY + Math.max(0, local) * .06 * loco;
+          f.group.rotation.x = local * .38 * loco;
+        });
+      }
+      this.wiggle = stride * .035 * loco;
+
+      // 5. Counter-swinging arms, slight forward lean while travelling.
+      this.armSwingX = stride * .5 * loco;
+      if (this.armL && this.armR) {
+        this.armL.shoulder.rotation.x = this.armSwingX;
+        this.armR.shoulder.rotation.x = -this.armSwingX;
+      }
+      this.walkLean = -.055 * loco;
+
+      // 6. Face the direction of travel (turns forward while docking).
+      const facing = w.phase === 'docking' ? 0 : (w.direction >= 0 ? -.22 : .22);
+      this.walkYaw = facing * loco * (w.phase === 'walking' ? 1 : .5);
+
+      // 7. Tail wags faster with the gait.
+      if (this.tail) {
+        this.tail.rotation.y += Math.sin(gait * 2.2) * .05 * loco;
+      }
+    }
+
+    /** Seats the mascot for its medallion pose (engine p ≥ 0.95). */
+    dock() {
+      this.walk.docked = true;
+      this.walk.locomotion = 0;
+      this.walkAerial = 0;
+      this.walkLean = 0;
+      this.walkYaw = 0;
+      this.squash = 1;
+      this.wiggle = 0;
+      return this;
+    }
+
+    undock() {
+      this.walk.docked = false;
+      return this;
+    }
+
+    pause() {
+      this.paused = true;
+      return this;
+    }
+
+    resume() {
+      this.paused = false;
+      if (this.clock) this.clock.getDelta(); // drop the paused interval
+      return this;
+    }
+
+    /**
+     * Disposes every GPU resource owned by this rig (audit §7.1: WebGL OOM /
+     * context exhaustion when hot-swapping Mochi ↔ Pip ↔ Asha).
+     */
+    destroy() {
+      this.isRunning = false;
+      this.paused = true;
+      if (this._rafId) cancelAnimationFrame(this._rafId);
+      if (this._listeners) {
+        this._listeners.forEach(l => {
+          try { window.removeEventListener(l.type, l.fn, l.opts); } catch (e) { /* noop */ }
+        });
+        this._listeners = [];
+      }
+      if (this.scene) {
+        const seenGeo = new Set(), seenMat = new Set(), seenTex = new Set();
+        this.scene.traverse(node => {
+          if (node.geometry && !seenGeo.has(node.geometry)) {
+            seenGeo.add(node.geometry);
+            node.geometry.dispose();
+          }
+          const materials = Array.isArray(node.material) ? node.material : (node.material ? [node.material] : []);
+          materials.forEach(mat => {
+            if (seenMat.has(mat)) return;
+            seenMat.add(mat);
+            ['map', 'alphaMap', 'normalMap', 'roughnessMap', 'metalnessMap',
+              'emissiveMap', 'envMap', 'sheenColorMap', 'clearcoatMap'].forEach(slot => {
+                const tex = mat[slot];
+                if (tex && tex.isTexture && !seenTex.has(tex)) {
+                  seenTex.add(tex);
+                  tex.dispose();
+                }
+              });
+            mat.dispose();
+          });
+        });
+        while (this.scene.children.length) this.scene.remove(this.scene.children[0]);
+      }
+      if (this.envMap && this.envMap.dispose) this.envMap.dispose();
+      if (this.renderer) {
+        this.renderer.dispose();
+        if (this.renderer.forceContextLoss) {
+          try { this.renderer.forceContextLoss(); } catch (e) { /* noop */ }
+        }
+      }
+      this.eyes = this.mouth = this.tickers = this.earParts = this.feet = null;
+      this.destroyed = true;
+      return this;
     }
   }
 

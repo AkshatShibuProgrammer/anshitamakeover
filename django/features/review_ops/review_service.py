@@ -1,21 +1,47 @@
 from core.models import CustomerReview
+from core.security import sanitize_text
+
+# Field budgets (audit §7.1): reviews are publicly rendered, so every free-text
+# field is sanitised at the service layer — the single place that writes rows.
+MAX_REVIEW_NAME_CHARS = 80
+MAX_REVIEW_TEXT_CHARS = 1200
+MAX_REVIEW_EVENT_CHARS = 60
+MAX_REVIEW_LOCATION_CHARS = 60
+MAX_REVIEW_DATE_CHARS = 40
+
+
+def _safe_rating(value):
+    """Coerce any client-supplied value into an int in 1..5 without raising."""
+    try:
+        rating = int(str(value).strip() or 5)
+    except (TypeError, ValueError):
+        rating = 5
+    return max(1, min(5, rating))
+
 
 def create_customer_review(data):
-    """Create a verified public customer review"""
-    name = data.get('client_name', '').strip()
-    review_text = data.get('review_text', '').strip()
-    event_type = data.get('event_type', 'Bridal Makeover').strip()
-    location = data.get('location', '').strip()
-    rating = int(data.get('rating', 5))
-    wedding_date = data.get('wedding_date', '').strip()
+    """Create a verified public customer review.
+
+    All string fields pass through ``sanitize_text`` (HTML-stripping +
+    control-character removal) and are length-capped, so a review can never
+    smuggle markup, script tags, or an oversized payload into the public
+    testimonials section.
+    """
+    data = data if isinstance(data, dict) else {}
+    name = sanitize_text(str(data.get('client_name', '')), max_length=MAX_REVIEW_NAME_CHARS)
+    review_text = sanitize_text(str(data.get('review_text', '')), max_length=MAX_REVIEW_TEXT_CHARS)
+    event_type = sanitize_text(str(data.get('event_type', '')) or 'Bridal Makeover',
+                               max_length=MAX_REVIEW_EVENT_CHARS)
+    location = sanitize_text(str(data.get('location', '')), max_length=MAX_REVIEW_LOCATION_CHARS)
+    rating = _safe_rating(data.get('rating', 5))
+    wedding_date = sanitize_text(str(data.get('wedding_date', '')), max_length=MAX_REVIEW_DATE_CHARS)
 
     if not name or not review_text:
         return {'ok': False, 'error': 'Name and review text are required.'}
 
-    rating = max(1, min(5, rating))
     review = CustomerReview.objects.create(
         client_name=name,
-        event_type=event_type or 'Royal Bride',
+        event_type=event_type or 'Bridal Makeover',
         location=location or 'India',
         rating=rating,
         review_text=review_text,

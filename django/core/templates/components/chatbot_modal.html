@@ -1,4 +1,13 @@
 {% load static %}
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SCROLL-SCRUBBED 3D WALK STAGE (audit §6)
+     The Mochi / Pip WebGL canvas is re-parented into this full-viewport
+     transparent layer during scroll phases 1–3, then seats itself inside
+     #chat-toggle on docking. pointer-events:none keeps the page interactive
+     while the mascot walks across it.
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div id="mascot-walk-stage" aria-hidden="true"></div>
+
 <!-- CHATBOT CONCIERGE COMPONENT (FB MESSENGER MOVABLE STYLE) -->
 <div id="chatbot" class="chat-container">
   <div class="chat-box" id="chat-box">

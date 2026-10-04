@@ -4,7 +4,10 @@ from django.http import JsonResponse, Http404
 from django.core.paginator import Paginator
 from ..models import StudioService, MakeupPackage, BookingEnquiry, LookGroup, LookMediaItem
 from .common import admin_required
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect, ensure_csrf_cookie
+from django.views.decorators.http import require_POST
+from ..ratelimit import rate_limit
+from ..security import sanitize_text
 from features.public_ops.public_service import (
     compile_home_context,
     compile_academy_context,
@@ -13,13 +16,19 @@ from features.public_ops.public_service import (
     compile_chatbot_context
 )
 
-@csrf_exempt
+# CSRF-protected + throttled: enquiry creation writes client PII to the
+# database, so it must not be forgeable from a third-party page nor floodable.
+@csrf_protect
+@require_POST
+@rate_limit(key='ip', rate='10/m', block=True, scope='booking_enquiry')
 def booking_enquiry(request):
-    if request.method != 'POST':
-        return JsonResponse({'ok': False, 'error': 'POST required'}, status=405)
     try:
         data = json.loads(request.body or '{}')
         name, phone = str(data.get('name', '')).strip(), str(data.get('phone', '')).strip()
+        # Server-side sanitiser: enquiry copy is rendered inside the admin
+        # portal, so markup must never reach the database.
+        name = sanitize_text(name, max_length=160, keep_newlines=False)
+        phone = sanitize_text(phone, max_length=30, keep_newlines=False)
         if not name or not phone:
             return JsonResponse({'ok': False, 'error': 'Name and phone are required.'}, status=400)
         items = data.get('items') if isinstance(data.get('items'), list) else []
@@ -37,8 +46,23 @@ def booking_enquiry(request):
                 verified_total += float(obj.price) * qty
         if not verified_total and not items:
             return JsonResponse({'ok': False, 'error': 'Please select at least one published service.'}, status=400)
-        enquiry = BookingEnquiry.objects.create(name=name, phone=phone, email=str(data.get('email', '')).strip(), city=str(data.get('city', '')).strip(), notes=str(data.get('notes', '')).strip(), event_date=data.get('event_date') or None, cart_items=items, estimated_total=verified_total)
-        return JsonResponse({'ok': True, 'id': enquiry.id, 'message': 'Your availability request has been received.'}, status=201)
+        enquiry = BookingEnquiry.objects.create(
+            name=name,
+            phone=phone,
+            email=sanitize_text(str(data.get('email', '')), max_length=254, keep_newlines=False),
+            city=sanitize_text(str(data.get('city', '')), max_length=160, keep_newlines=False),
+            notes=sanitize_text(str(data.get('notes', '')), max_length=4000),
+            event_date=data.get('event_date') or None,
+            cart_items=items,
+            estimated_total=verified_total,
+        )
+        # Public reference is a UUID — never the sequential integer PK (IDOR).
+        return JsonResponse({
+            'ok': True,
+            'id': str(enquiry.public_id),
+            'reference': str(enquiry.public_id)[:8].upper(),
+            'message': 'Your availability request has been received.',
+        }, status=201)
     except (ValueError, TypeError, json.JSONDecodeError):
         return JsonResponse({'ok': False, 'error': 'Please check the booking details.'}, status=400)
 
@@ -48,13 +72,15 @@ def package_builder(request):
     context = compile_home_context(lang)
     return render(request, 'core/package_builder.html', context)
 
-@csrf_exempt
+@csrf_protect
+@rate_limit(key='ip', rate='30/m', block=True, scope='package_builder_api')
 def package_builder_api(request):
     if request.method != 'POST':
         return JsonResponse({'ok': False, 'error': 'POST required'}, status=405)
     try:
         data = json.loads(request.body or '{}')
         categories = data.get('categories') if isinstance(data.get('categories'), list) else []
+        categories = [sanitize_text(str(c), max_length=60, keep_newlines=False) for c in categories][:12]
         budget = float(data.get('budget') or 0)
         services = list(StudioService.objects.filter(is_active=True, category__in=categories).order_by('order', 'id')) if categories else list(StudioService.objects.filter(is_active=True).order_by('order', 'id')[:3])
         selected, total = [], 0.0

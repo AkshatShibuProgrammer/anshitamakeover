@@ -64,22 +64,35 @@ def test_api_006_language_switch_json(live_base_url):
     assert r.cookies.get('lang') == 'hindi'
 
 
-def test_api_007_chatbot_fallback_reply(live_base_url):
-    """TC-API-007: chatbot answers without a Gemini key (fallback engine)."""
-    r = requests.post(live_base_url + '/api/chatbot/',
-                      json={'message': 'What are your bridal packages?',
-                            'session_id': str(uuid.uuid4())}, timeout=30)
+def test_api_007_chatbot_fallback_reply(anon_session):
+    """TC-API-007: chatbot answers without a Gemini key (fallback engine).
+
+    The endpoint is CSRF-protected (audit §7.1), so the probe must present the
+    same cookie + X-CSRFToken pair the browser widget sends; a bare
+    ``requests.post`` is a forged cross-site request and is correctly 403'd.
+    """
+    r = anon_session.post(anon_session.base_url + '/api/chatbot/',
+                          json={'message': 'What are your bridal packages?',
+                                'session_id': str(uuid.uuid4())}, timeout=30)
     assert r.status_code == 200
     body = r.json()
     assert body['reply']
     assert body['session_id']
 
 
-def test_api_008_chatbot_negotiation_floor(live_base_url):
+def test_api_008_chatbot_negotiation_floor(anon_session):
     """TC-API-008: budget below floor never undercuts the floor price."""
-    r = requests.post(live_base_url + '/api/chatbot/',
-                      json={'message': 'I can only pay 20000'}, timeout=30)
+    r = anon_session.post(anon_session.base_url + '/api/chatbot/',
+                          json={'message': 'I can only pay 20000'}, timeout=30)
+    assert r.status_code == 200
     assert '₹26,250' in r.json()['reply']
+
+
+def test_api_008b_chatbot_post_without_csrf_is_rejected(live_base_url):
+    """TC-API-008b: a forged cross-site chat POST is refused (hardening proof)."""
+    r = requests.post(live_base_url + '/api/chatbot/',
+                      json={'message': 'no token here'}, timeout=30)
+    assert r.status_code == 403
 
 
 def test_api_009_review_submit_validation(anon_session):

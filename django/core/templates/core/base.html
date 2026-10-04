@@ -15,6 +15,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Anshita">
+<!-- CSRF token for the JSON widgets (chat, cart, booking). Read by getCsrf();
+     kept in the DOM so the csrftoken cookie can stay HttpOnly in production. -->
+<meta name="csrf-token" content="{{ csrf_token }}">
+<meta name="anshita-rate-limit" content="15/m">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
@@ -77,10 +81,26 @@
 <script src="{% static 'core/js/ScrollTrigger.min.js' %}"></script>
 <script src="{% static 'core/js/lenis.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.12.0/headroom.min.js"></script>
+<script src="{% static 'core/js/characters/studio-treatment.js' %}"></script>
+<script src="{% static 'core/js/characters/rig-optimize.js' %}"></script>
+<!-- Real GLB concierge rigs (audit §6): skinned models + native walk clips,
+     scrubbed by scroll. The procedural rigs below stay as the fallback when a
+     model cannot be fetched. -->
+{# Optional GLB path — NOT loaded by default. GltfWalkCharacter.js +
+   /static/core/models/{mochi,pip}.glb remain available as an opt-in
+   alternative rig, but it loads ~355 KB of loader + model for every visitor,
+   and the shipped GLBs (Fox.glb / Parrot.glb) are not the canonical Mochi &
+   Pip — the procedural rigs are (see the studio's own patch_mochi_pip.py).
+   To enable, restore these two tags plus the modelUrl branch in
+   initMochiConcierge/initPipConcierge. #}
 <script src="{% static 'core/js/characters/CuteBunnyCharacter.js' %}"></script>
 <script src="{% static 'core/js/characters/MochiCharacter.js' %}"></script>
 <script src="{% static 'core/js/characters/PipCharacter.js' %}"></script>
 <script src="{% static 'core/js/lumiere-characters.js' %}"></script>
+<!-- Security: strict DOM sanitiser for every innerHTML sink (audit §7.1) -->
+<script src="{% static 'core/js/sanitize-html.js' %}"></script>
+<!-- Scroll-scrubbed walk-and-dock controller (audit §6) -->
+<script src="{% static 'core/js/controllers/mascot-scroll-engine.js' %}"></script>
 
 <link rel="stylesheet" href="{% static 'core/css/animations.css' %}">
 <script>
@@ -2832,6 +2852,83 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   position: relative;
   display: flex;
   align-items: center;
+}
+
+/* ═══ SCROLL-SCRUBBED MASCOT WALK STAGE (audit §6) ═══
+   Full-viewport transparent layer that hosts the walking character. The
+   medallion itself is parked inside it (invisible but laid out) so the dock
+   target can always be measured with getBoundingClientRect(). */
+#mascot-walk-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 9400;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+#mascot-walk-stage.is-live {
+  opacity: 1;
+  visibility: visible;
+}
+/* The runway: a soft stage band along the bottom of the viewport. Very low
+   contrast — it lifts the character off the page without hiding content. */
+#mascot-walk-stage::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 26vh;
+  pointer-events: none;
+  /* Behind the character canvas (which carries z-index 9401). */
+  z-index: 0;
+  background: linear-gradient(to top,
+    rgba(10, 3, 9, 0.55) 0%,
+    rgba(10, 3, 9, 0.26) 42%,
+    rgba(10, 3, 9, 0) 100%);
+}
+#mascot-walk-stage canvas.mascot-walk-canvas--active {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  border-radius: 0 !important;
+  pointer-events: none !important;
+  display: block;
+  z-index: 9401;
+}
+@media (max-width: 760px) {
+  #mascot-walk-stage canvas.mascot-walk-canvas--active { width: 100vw !important; height: 100vh !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #mascot-walk-stage { transition: none; }
+}
+
+/* Scrubbed states — these replace the legacy threshold keyframes, so the
+   entrance is driven frame-by-frame by mascot-scroll-engine.js instead of a
+   one-shot CSS animation. */
+.chat-toggle-wrap.char-scrubbing {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+.chat-toggle-wrap.char-docked {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: none !important;
+  animation: none !important;
+}
+/* Keep the hidden medallion geometrically in place so the walk spline can
+   steer onto its exact centre (the legacy translateY(90px) broke that). */
+html.mascot-engine-ready .chat-toggle-wrap.char-pre-entry {
+  transform: none !important;
+  animation: none !important;
 }
 
 /* ═══ 3D LIVING CONCIERGE CHARACTER STAGE & CANVAS ═══ */
@@ -7155,6 +7252,13 @@ window.toggleActiveConciergeCharacter = function(forceChar) {
     if (charName) charName.innerHTML = 'Asha Concierge <span class="chat-vip-badge">Atelier</span>';
     if (toggleIcon) toggleIcon.textContent = '🐰';
     if (toggleBtn) toggleBtn.title = 'Switch to Mochi (Velvet Mascot 🐰)';
+    // Asha has no ambulatory rig yet, so the engine falls back to the
+    // scroll-scrubbed medallion (no walking locomotion) for this character.
+    if (window.mascotScrollEngine) {
+      window.mascotScrollEngine.detachCharacter();
+      window.mascotScrollEngine.mode = 'css-fallback';
+      window.mascotScrollEngine.refreshCharacter();
+    }
   }
 };
 
@@ -7828,6 +7932,9 @@ function initMochiConcierge() {
   if (!window.mochiMascotInstance) {
     try {
       if (typeof MochiCharacter !== 'undefined') {
+        // The procedural Mochi (ported from the studio's index-expressions.html
+        // — see patch_mochi_pip.py) is the canonical character; the GLB path is
+        // kept in GltfWalkCharacter.js as an opt-in alternative only.
         window.mochiMascotInstance = new MochiCharacter({
           canvas: canvas,
           width: 168,
@@ -7871,6 +7978,14 @@ function initMochiConcierge() {
       console.warn("Mochi Header canvas init error:", e);
     }
   }
+
+  // Hand the medallion rig to the scroll-scrubbed walk engine (audit §6).
+  // The engine re-parents this canvas onto the full-viewport walk stage and
+  // drives the hop cycle with scroll distance; when the mascot docks, the
+  // canvas is seated back inside #chat-toggle.
+  if (window.mascotScrollEngine && window.mochiMascotInstance) {
+    window.mascotScrollEngine.attachCharacter(window.mochiMascotInstance, 'mochi');
+  }
 }
 
 // Initialize Pip Finch Concierge Engine
@@ -7907,6 +8022,11 @@ function initPipConcierge() {
       console.warn("Pip Header canvas init error:", e);
     }
   }
+
+  // Parity with Mochi: Pip shares the same walk-and-dock timeline (audit §5.2).
+  if (window.mascotScrollEngine && window.pipMascotInstance) {
+    window.mascotScrollEngine.attachCharacter(window.pipMascotInstance, 'pip');
+  }
 }
 
 // Restore saved character preference (defaults to Mochi Bunny)
@@ -7919,12 +8039,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ═══ SCROLL-DRIVEN CONCIERGE EMERGENCE & CHATBOT SHRINK ANIMATION ═══
 (function initConciergeScrollTrigger() {
-  let hasScrolledDown = false;
-  let scrollTicking = false;
-  const SCROLL_THRESHOLD_ENTER = 180; // Pixels down from top before mascot emerges
-  const SCROLL_THRESHOLD_EXIT = 80;   // Pixels near top where mascot retreats/hides
+  // ── PRIMARY PATH: scroll-scrubbed walk engine (audit §6) ────────────────
+  // mascot-scroll-engine.js boots on DOMContentLoaded and owns the whole
+  // timeline: per-pixel scrubbing, hop cycle, spline docking, portal bloom.
+  // Nothing here is threshold-based any more.
+  function engineActive() {
+    return !!(window.mascotScrollEngine && window.mascotScrollEngine.mode !== 'idle');
+  }
 
   window.checkConciergeScrollPosition = function() {
+    if (engineActive()) {
+      window.mascotScrollEngine.readScrollPosition();
+      return;
+    }
+    legacyThresholdCheck();
+  };
+
+  // ── FALLBACK PATH: no WebGL / rig without scrub() support ───────────────
+  // Kept deliberately conservative so a device without WebGL still gets a
+  // usable (if simpler) concierge rather than nothing at all.
+  let hasScrolledDown = false;
+  const SCROLL_THRESHOLD_ENTER = 180;
+  const SCROLL_THRESHOLD_EXIT = 80;
+
+  function legacyThresholdCheck() {
     const scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
     const wrap = document.getElementById('chat-toggle-wrap');
     if (!wrap) return;
@@ -7944,16 +8082,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
-  };
+  }
 
   window.addEventListener('scroll', () => {
-    if (!scrollTicking) {
-      window.requestAnimationFrame(() => {
-        window.checkConciergeScrollPosition();
-        scrollTicking = false;
-      });
-      scrollTicking = true;
-    }
+    // The engine owns its own passive scroll listener + rAF sampling.
+    if (engineActive()) return;
+    window.checkConciergeScrollPosition();
   }, { passive: true });
 
   // Initial check once DOM loads (if already scrolled down on refresh)
@@ -7983,6 +8117,10 @@ window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', duratio
   const subEl = document.getElementById('csb-sub');
   if (!bubble || !textEl) return;
 
+  // The docking greeting ("How may I help you today? ✨") is owned by the walk
+  // engine: marketing tips must not clobber it until the visitor scrolls away.
+  if (bubble.getAttribute('data-mascot-greeting') === '1') return;
+
   clearTimeout(conciergeDismissTimer);
   clearTimeout(conciergeCycleTimer);
 
@@ -7991,7 +8129,10 @@ window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', duratio
   if (subEl) subEl.style.opacity = '0';
 
   setTimeout(() => {
-    textEl.innerHTML = text;
+    // XSS gate (audit §7.1): bubble copy is attacker-influencable via AI
+    // replies, so it only ever lands in the DOM through the sanitiser.
+    if (window.AnshitaSanitizer) window.AnshitaSanitizer.setHtml(textEl, text);
+    else textEl.textContent = String(text || '');
     if (subEl && sub) subEl.textContent = sub;
     textEl.style.opacity = '1';
     if (subEl) subEl.style.opacity = '1';
@@ -8017,6 +8158,14 @@ window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', duratio
 window.hideConciergeSpeech = function() {
   const bubble = document.getElementById('chat-speech-bubble');
   if (!bubble) return;
+
+  // The docking greeting stays put until the visitor scrolls the mascot away
+  // (the walk engine clears data-mascot-greeting on undock).
+  if (bubble.getAttribute('data-mascot-greeting') === '1' &&
+      !document.body.classList.contains('chat-is-open')) {
+    return;
+  }
+
   bubble.classList.remove('active');
 
   // Schedule next helpful tip after 8 seconds of rest ONLY if chat box is closed/minimized
@@ -8027,6 +8176,13 @@ window.hideConciergeSpeech = function() {
       triggerNextConciergePrompt();
     }
   }, 8500);
+};
+
+// Called by the walk engine when the visitor scrolls the mascot back up, so
+// the docking greeting can give way to the regular rotating tips again.
+window.releaseMascotGreeting = function() {
+  const bubble = document.getElementById('chat-speech-bubble');
+  if (bubble) bubble.removeAttribute('data-mascot-greeting');
 };
 
 // Periodic Concierge Insights rotation (adapts to current language & region)
@@ -10933,7 +11089,10 @@ function appendMsg(text, role){
   const d = document.createElement('div');
   d.className = 'msg ' + role;
   if(role === 'bot'){
-    d.innerHTML = renderMarkdownToHtml(text);
+    // renderMarkdownToHtml escapes first; the sanitiser is defence in depth
+    // so a future renderer change can never reintroduce an XSS sink.
+    const html = renderMarkdownToHtml(text);
+    d.innerHTML = window.AnshitaSanitizer ? window.AnshitaSanitizer.sanitize(html) : html;
   } else {
     d.textContent = text;
   }
@@ -10949,7 +11108,14 @@ function appendTyping(){
 }
 
 /* ── CSRF ── */
-function getCsrf(){return document.cookie.split(';').find(c=>c.trim().startsWith('csrftoken='))?.split('=')[1]||''}
+function getCsrf(){
+  // Prefer the <meta name="csrf-token"> value: production keeps the
+  // csrftoken cookie HttpOnly (audit §7.2), so document.cookie is empty there.
+  const meta=document.querySelector('meta[name="csrf-token"]');
+  if(meta && meta.content && meta.content!=='NOTPROVIDED') return meta.content;
+  const cookie=document.cookie.split(';').find(c=>c.trim().startsWith('csrftoken='));
+  return cookie?cookie.split('=')[1]:'';
+}
 
 /* ── Admin Login Modal ── */
 function openLoginModal(){document.getElementById('adm-login-modal').classList.add('open')}

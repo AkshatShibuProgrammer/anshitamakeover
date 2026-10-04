@@ -404,6 +404,9 @@
 
   function getCsrf() {
     if (typeof window.getCsrfToken === 'function') return window.getCsrfToken();
+    // Production keeps the cookie HttpOnly — prefer the meta tag (audit §7.2).
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    if (meta && meta.content && meta.content !== 'NOTPROVIDED') return meta.content;
     const cookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
     return cookie ? cookie.split('=')[1] : '';
   }
@@ -450,7 +453,9 @@
   function showBubble(text, opts) {
     opts = opts || {};
     clearTimeout(bubbleTimer);
-    bubbleText.innerHTML = text;
+    // XSS gate (audit §7.1): sanitise before touching innerHTML.
+    if (window.AnshitaSanitizer) window.AnshitaSanitizer.setHtml(bubbleText, text);
+    else bubbleText.textContent = String(text || '');
     bubbleEl.classList.add('show');
     if (!opts.sticky) {
       bubbleTimer = setTimeout(() => {

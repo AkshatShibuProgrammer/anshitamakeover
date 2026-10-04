@@ -129,17 +129,27 @@ class UrlRoutingTests(RegressionTestCase):
         self.assertEqual(self.client.get('/api/chatbot/').status_code, 405)
         self.assertEqual(self.client.get('/api/review/submit/').status_code, 405)
 
-    def test_tc_sec_012_secret_key_not_hardcoded_in_repo_docs(self):
-        """TC-SEC-012: settings module exposes SECRET_KEY (lock current state).
+    def test_tc_sec_012_secret_key_env_driven_prod_fails_fast(self):
+        """TC-SEC-012 (KD-004 remediated): secrets are environment-driven.
 
-        KNOWN DEFECT KD-004: SECRET_KEY is hardcoded and DEBUG=True in
-        settings.py. Acceptable for the preview environment, must be replaced
-        by env-var based secrets before any public production deployment.
-        NOTE: Django forces DEBUG=False during test runs, so the source file
-        is inspected instead.
+        The base profile reads DJANGO_SECRET_KEY / DJANGO_DEBUG from the
+        environment (with a clearly-labelled dev-only fallback), and the
+        production profile refuses to boot without a real secret instead of
+        shipping the committed fallback that used to exist.
+        NOTE: Django forces DEBUG=False during test runs, so the source files
+        are inspected rather than the live settings object.
         """
         from pathlib import Path
         from django.conf import settings
         self.assertTrue(settings.SECRET_KEY)
-        settings_src = (Path(settings.BASE_DIR) / 'anshita_project' / 'settings.py').read_text()
-        self.assertIn('DEBUG = True', settings_src)  # locked as-is; see KD-004
+        app_dir = Path(settings.BASE_DIR) / 'anshita_project'
+        settings_src = (app_dir / 'settings.py').read_text()
+        prod_src = (app_dir / 'settings_production.py').read_text()
+
+        self.assertIn("os.environ.get('DJANGO_SECRET_KEY')", settings_src)
+        self.assertIn("_env_bool('DJANGO_DEBUG'", settings_src)
+        self.assertIn('dev-only-insecure', settings_src)  # fallback is labelled
+        # Production: no committed secret, hard failure instead.
+        self.assertNotIn('anshita-makeover-secret-key', prod_src)
+        self.assertIn('ImproperlyConfigured', prod_src)
+        self.assertIn("os.environ.get('DJANGO_SECRET_KEY', '')", prod_src)
