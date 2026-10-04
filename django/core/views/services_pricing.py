@@ -109,7 +109,7 @@ def admin_price_update(request):
             if 'bundle_price' in data and data['bundle_price'] is not None:
                 b_pr = float(data['bundle_price'])
                 site.offer_grand_combo_bundle_price = b_pr
-                MakeupPackage.objects.filter(name__icontains='Grand Royal Heritage').update(price=b_pr, price_label=f"₹{int(b_pr):,}")
+                MakeupPackage.objects.filter(name__icontains='Grand Royal Heritage').update(price=b_pr, display_label=f"₹{int(b_pr):,}")
             if 'active' in data:
                 site.offer_rules_active = bool(data['active'])
             site.save()
@@ -289,7 +289,7 @@ def admin_service_manage(request):
                 pkg.package_type = package_type
                 pkg.tagline = tagline
                 pkg.price = price
-                pkg.price_label = price_label
+                pkg.display_label = price_label
                 pkg.features = features
                 pkg.is_featured = is_featured
                 pkg.is_active = is_active
@@ -302,7 +302,7 @@ def admin_service_manage(request):
                 package_type=package_type,
                 tagline=tagline,
                 price=price,
-                price_label=price_label,
+                display_label=price_label,
                 features=features,
                 is_featured=is_featured,
                 is_active=is_active

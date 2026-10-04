@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asha — 3D Pixar Bridal Concierge Mascot (Standalone Package Demo)</title>
+  <style>
+    :root {
+      --bg: #0d040d;
+      --card-bg: rgba(26, 12, 24, 0.75);
+      --gold: #d4af37;
+      --gold-light: #f5edd6;
+      --ruby: #9b111e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at 50% 25%, #240a20 0%, #0d040d 75%, #050105 100%);
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+    }
+    .package-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .package-badge {
+      display: inline-block;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .package-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .package-sub {
+      color: rgba(245, 237, 214, 0.7);
+      font-size: 0.95rem;
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+    .demo-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 28px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(212, 175, 55, 0.15);
+      padding: 24px;
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .avatar-wrapper {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.22) 0%, rgba(20, 6, 18, 0.95) 75%);
+      border: 2px solid rgba(212, 175, 55, 0.65);
+      box-shadow: inset 0 0 25px rgba(212, 175, 55, 0.35), 0 10px 30px rgba(0,0,0,0.6);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    #ashaCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .current-emotion-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(10, 4, 10, 0.8);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      color: var(--gold-light);
+      margin-bottom: 20px;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ruby);
+      box-shadow: 0 0 8px var(--ruby);
+    }
+    .controls-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(245, 237, 214, 0.6);
+      margin-bottom: 12px;
+      align-self: flex-start;
+    }
+    .emotion-buttons-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+    }
+    .emo-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: center;
+    }
+    .emo-btn:hover {
+      background: rgba(212, 175, 55, 0.15);
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+    .emo-btn.active {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(184, 139, 34, 0.2) 100%);
+      border-color: var(--gold);
+      color: var(--gold);
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.3);
+    }
+    .emo-btn.full-width {
+      grid-column: span 2;
+    }
+    .code-snippet-box {
+      margin-top: 24px;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: #ddd;
+      overflow-x: auto;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="./PixarBridalGirlCharacter.umd.js"></script>
+</head>
+<body>
+
+  <div class="package-header">
+    <div class="package-badge">Standalone Digital Asset</div>
+    <h1 class="package-title">Asha — 3D Bridal Concierge Mascot</h1>
+    <p class="package-sub">Procedural 3D Indian little girl bride holding a 24K makeup brush with living eye tracking, natural blinking, and 5 reactive emotion states.</p>
+  </div>
+
+  <div class="demo-card">
+    <div class="avatar-wrapper">
+      <canvas id="ashaCanvas" width="240" height="240"></canvas>
+    </div>
+
+    <div class="current-emotion-badge">
+      <span class="pulse-dot"></span>
+      <span>Active Mood: <strong id="currentEmotionLabel" style="color:var(--gold);">Welcoming</strong></span>
+    </div>
+
+    <div class="controls-label">Test Reactive Emotions</div>
+    <div class="emotion-buttons-grid">
+      <button type="button" class="emo-btn active" onclick="switchMood('welcoming', this)">
+        <span>👑</span> Welcoming
+      </button>
+      <button type="button" class="emo-btn" onclick="switchMood('ram_ram', this)">
+        <span>🙏</span> Ram Ram
+      </button>
+      <button type="button" class="emo-btn" onclick="switchMood('happy_deal', this)">
+        <span>🎉</span> Happy Deal
+      </button>
+      <button type="button" class="emo-btn" onclick="switchMood('sad_hesitant', this)">
+        <span>🥺</span> Sad / Hesitant
+      </button>
+      <button type="button" class="emo-btn full-width" onclick="switchMood('thinking_coupon', this)">
+        <span>🤔</span> Thinking (Coupon Calc)
+      </button>
+    </div>
+
+    <div class="code-snippet-box">
+      // 3-Line Drop-in Integration:<br>
+      const asha = new PixarBridalGirlCharacter({ canvas: '#ashaCanvas' });<br>
+      asha.setEmotion('happy_deal');
+    </div>
+  </div>
+
+  <script>
+    let mascot = null;
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        mascot = new PixarBridalGirlCharacter({
+          canvas: '#ashaCanvas',
+          onEmotionChange: (emotion) => {
+            const labels = {
+              welcoming: '👑 Welcoming & Curating Look',
+              ram_ram: '🙏 Ram Ram (Cultural Respect)',
+              happy_deal: '🎉 Happy Deal / Booking Celebration',
+              sad_hesitant: '🥺 Sad / Hesitation Sigh',
+              thinking_coupon: '🤔 Thinking / Calculating Discount'
+            };
+            const lbl = document.getElementById('currentEmotionLabel');
+            if (lbl) lbl.textContent = labels[emotion] || emotion;
+          }
+        });
+      } catch (err) {
+        console.error('Mascot init error:', err);
+      }
+    });
+
+    function switchMood(emotion, btn) {
+      if (!mascot) return;
+      mascot.setEmotion(emotion);
+      document.querySelectorAll('.emo-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+name: Deploy to Oracle Cloud — Anshita Makeover
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: SSH Deploy to Oracle ARM64
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📢 Notify deployment starting
+        run: echo "Deploying commit ${{ github.sha }} to Oracle Cloud..."
+
+      - name: 🚀 SSH into Oracle Cloud and run deploy.sh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ORACLE_HOST }}
+          username: ${{ secrets.ORACLE_USER }}
+          key: ${{ secrets.ORACLE_SSH_KEY }}
+          port: 22
+          script: |
+            chmod +x /var/www/anshita/deployment/deploy.sh
+            /var/www/anshita/deployment/deploy.sh
+
+      - name: ✅ Deployment complete
+        run: echo "Deployment of ${{ github.sha }} completed successfully."

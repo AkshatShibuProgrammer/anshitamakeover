@@ -1,5 +1,12 @@
 from .common import get_site_settings, get_active_coupon
-from .public import home, academy, travel_estimator, cart_page, chatbot_page, set_language, sinha_logo_studio, animation_lab
+from .public import (
+    home, academy, travel_estimator, cart_page, chatbot_page, set_language,
+    sinha_logo_studio, animation_lab, services_page, service_detail,
+    packages_page, package_detail, gallery_page, gallery_album_detail, booking_enquiry,
+    package_builder, package_builder_api, admin_booking_enquiries,
+    robots_txt, sitemap_xml, llms_txt, custom_404_view, gameplay_view,
+    service_worker_js, manifest_json, offline_view
+)
 from .chatbot import chatbot_api, gemini_chat, admin_ai_command, fallback_chatbot, admin_ai_status, get_gemini_api_key
 from .auth import admin_login, admin_logout_view, admin_portal
 from .coupons import get_coupon_api, admin_coupon_update
@@ -22,6 +29,12 @@ __all__ = [
     'set_language',
     'sinha_logo_studio',
     'animation_lab',
+    'services_page',
+    'service_detail',
+    'packages_page',
+    'package_detail',
+    'gallery_page',
+    'gallery_album_detail',
     'chatbot_api',
     'gemini_chat',
     'admin_ai_command',
@@ -43,4 +56,13 @@ __all__ = [
     'admin_media_manage',
     'admin_lookgroup_manage',
     'admin_lookmedia_manage',
+    'robots_txt',
+    'sitemap_xml',
+    'llms_txt',
+    'custom_404_view',
+    'gameplay_view',
+    'service_worker_js',
+    'manifest_json',
+    'offline_view',
 ]
+

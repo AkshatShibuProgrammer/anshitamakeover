@@ -121,6 +121,11 @@ def playwright_ready(py):
 
 
 def have(tool):
+    if tool == 'bash':
+        # On Windows, WindowsApps/bash.exe points to WSL which fails if no distro is installed
+        return subprocess.run(['bash', '-c', 'exit 0'], capture_output=True).returncode == 0
+    if tool == 'mvn':
+        return subprocess.run(['mvn', '-version'], capture_output=True, shell=True).returncode == 0
     return shutil.which(tool) is not None
 
 
@@ -132,7 +137,7 @@ def runtime_report(py):
     lines.append(('Playwright library', subprocess.run(
         [py, '-c', 'import playwright'], capture_output=True).returncode == 0))
     lines.append(('Playwright chromium', playwright_ready(py)))
-    lines.append(('Java + Maven (Karate)', have('java') and have('mvn')))
+    lines.append(('Java + Maven (Karate)', have('java') and have('mvn') and have('bash')))
     return lines
 
 
@@ -149,33 +154,37 @@ def suite_api(py, results):
         results.append(('api', 'SKIP (pip install pytest requests)'))
         return
     (REPORTS_DIR / 'junit').mkdir(parents=True, exist_ok=True)
-    rc = run([py, '-m', 'pytest', str(TESTING_DIR / 'api'), '-q', '--tb=short',
-              f'--junitxml={REPORTS_DIR / "junit" / "api.xml"}',
-              f'--html={REPORTS_DIR / "api.html"}', '--self-contained-html'],
-             cwd=REPO_ROOT, env_extra={'AUTOMATION_PORT': str(PORT_API)})
+    has_html = subprocess.run([py, '-c', 'import pytest_html'], capture_output=True).returncode == 0
+    cmd = [py, '-m', 'pytest', str(TESTING_DIR / 'api'), '-q', '--tb=short',
+           f'--junitxml={REPORTS_DIR / "junit" / "api.xml"}']
+    if has_html:
+        cmd.extend([f'--html={REPORTS_DIR / "api.html"}', '--self-contained-html'])
+    rc = run(cmd, cwd=REPO_ROOT, env_extra={'AUTOMATION_PORT': str(PORT_API)})
     results.append(('api', 'PASS' if rc == 0 else 'FAIL'))
 
 
 def suite_e2e(py, results):
-    if subprocess.run([py, '-c', 'import playwright'], capture_output=True).returncode != 0:
+    if subprocess.run([py, '-c', 'import playwright, pytest_playwright'], capture_output=True).returncode != 0:
         results.append(('e2e', 'SKIP (pip install pytest-playwright)'))
         return
     if not playwright_ready(py):
         results.append(('e2e', f'SKIP (install browsers: {py} -m playwright install --with-deps chromium)'))
         return
     (REPORTS_DIR / 'junit').mkdir(parents=True, exist_ok=True)
-    rc = run([py, '-m', 'pytest', str(TESTING_DIR / 'e2e'), '-q', '--tb=short',
-              f'--junitxml={REPORTS_DIR / "junit" / "e2e.xml"}',
-              f'--html={REPORTS_DIR / "e2e.html"}', '--self-contained-html',
-              '--screenshot', 'only-on-failure', '--trace', 'retain-on-failure',
-              '--output', str(REPORTS_DIR / 'e2e-artifacts')],
-             cwd=REPO_ROOT, env_extra={'AUTOMATION_PORT': str(PORT_E2E)})
+    has_html = subprocess.run([py, '-c', 'import pytest_html'], capture_output=True).returncode == 0
+    cmd = [py, '-m', 'pytest', str(TESTING_DIR / 'e2e'), '-q', '--tb=short',
+           f'--junitxml={REPORTS_DIR / "junit" / "e2e.xml"}']
+    if has_html:
+        cmd.extend([f'--html={REPORTS_DIR / "e2e.html"}', '--self-contained-html'])
+    cmd.extend(['--screenshot', 'only-on-failure', '--trace', 'retain-on-failure',
+                '--output', str(REPORTS_DIR / 'e2e-artifacts')])
+    rc = run(cmd, cwd=REPO_ROOT, env_extra={'AUTOMATION_PORT': str(PORT_E2E)})
     results.append(('e2e', 'PASS' if rc == 0 else 'FAIL'))
 
 
 def suite_bdd(py, results):
-    if not (have('java') and have('mvn')):
-        results.append(('bdd', 'SKIP (needs Java 11+ & Maven — runs in CI)'))
+    if not (have('java') and have('mvn') and have('bash')):
+        results.append(('bdd', 'SKIP (needs Java 11+, Maven & Bash — runs in CI)'))
         return
     with SharedServer(py, PORT_SHARED):
         rc = run(['bash', str(TESTING_DIR / 'bdd' / 'run.sh')],

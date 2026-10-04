@@ -1,0 +1,1956 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Atelier Chronicles — Duolingo-Style 3D Bridal Masterclass | Anshita Makeover{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ═══ DUOLINGO-STYLE BRIDAL MASTERCLASS & 3D MASCOT ARENA ═══ */
+:root {
+  --duo-gold: #d4af37;
+  --duo-gold-light: #fbf5e6;
+  --duo-maroon: #22091c;
+  --duo-bg: #0a040b;
+  --duo-green: #10b981;
+  --duo-green-bg: #064e3b;
+  --duo-red: #ef4444;
+  --duo-red-bg: #7f1d1d;
+  --duo-border: rgba(212, 175, 55, 0.25);
+}
+
+body {
+  overflow-x: hidden !important;
+  background: var(--duo-bg) !important;
+}
+
+header,
+#cbanner,
+.am-hero__letters,
+#chat-speech-bubble,
+#chat-toggle-wrap,
+#chat-toggle-btn,
+#chatbot,
+#preloader,
+footer,
+.wa-float,
+#whatsapp-btn,
+#whatsapp-fab,
+#floatingCartPill,
+.floating-cart-pill,
+.cart-btn-indicator,
+#cart-indicator,
+.floating-contact {
+  display: none !important;
+}
+
+.duo-game-container {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at 50% 20%, #1e0919 0%, #0d040c 55%, #050105 100%);
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  user-select: none;
+  z-index: 999;
+  overflow: hidden;
+}
+
+/* ═══ TOP GAMIFICATION HUD ═══ */
+.duo-top-hud {
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4vw;
+  border-bottom: 1px solid var(--duo-border);
+  background: rgba(14, 5, 13, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 50;
+  gap: 16px;
+}
+
+.duo-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(245, 237, 214, 0.75);
+  text-decoration: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.25s ease;
+}
+.duo-back-btn:hover {
+  color: #fff;
+  border-color: var(--duo-gold);
+  background: rgba(212, 175, 55, 0.15);
+  transform: translateX(-2px);
+}
+
+.duo-progress-col {
+  flex: 1;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.duo-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: rgba(245, 237, 214, 0.7);
+  font-family: 'Space Mono', monospace;
+}
+.duo-progress-bar-wrap {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  position: relative;
+}
+.duo-progress-fill {
+  height: 100%;
+  width: 25%;
+  background: linear-gradient(90deg, #d4af37, #f59e0b, #10b981);
+  border-radius: 999px;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+}
+
+.duo-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+}
+.duo-hearts-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #ef4444;
+  font-size: 1rem;
+}
+.duo-streak-pill {
+  color: #f97316;
+  font-weight: 700;
+}
+.duo-xp-pill {
+  color: #eab308;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.duo-sound-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: rgba(245, 237, 214, 0.8);
+  transition: transform 0.2s;
+}
+.duo-sound-btn:hover {
+  transform: scale(1.15);
+}
+
+/* ═══ MAIN ARENA: DUAL COLUMN ═══ */
+.duo-arena {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  height: calc(100vh - 72px - 90px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── LEFT: 3D MASCOT ASHA (HOST) ── */
+.duo-host-panel {
+  position: relative;
+  border-right: 1px solid var(--duo-border);
+  background: linear-gradient(180deg, rgba(25, 9, 22, 0.5) 0%, rgba(10, 4, 10, 0.8) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 24px;
+  overflow: hidden;
+}
+
+/* Companion Switcher Selector */
+.duo-companion-bar {
+  position: relative;
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(18, 7, 16, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 999px;
+  padding: 4px 6px;
+  margin-top: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+}
+.duo-companion-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: rgba(245, 237, 214, 0.7);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.25s ease;
+}
+.duo-companion-btn:hover {
+  color: #fff;
+  background: rgba(212, 175, 55, 0.15);
+}
+.duo-companion-btn.active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(139, 94, 26, 0.45));
+  border-color: var(--duo-gold);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.35);
+}
+
+.duo-canvas-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.duo-mascot-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  cursor: pointer;
+}
+.duo-mascot-canvas.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Speech Bubble above 3D Mascot */
+.duo-speech-bubble {
+  position: relative;
+  z-index: 10;
+  width: 90%;
+  background: rgba(22, 9, 20, 0.95);
+  border: 1.5px solid var(--duo-gold);
+  border-radius: 16px;
+  padding: 10px 14px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.2);
+  margin-bottom: auto;
+  margin-top: 10px;
+  animation: floatBounce 4s ease-in-out infinite;
+}
+.duo-speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px 8px 0;
+  border-style: solid;
+  border-color: var(--duo-gold) transparent transparent;
+  display: block;
+  width: 0;
+}
+.duo-speech-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.duo-speech-title {
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  color: var(--duo-gold);
+  text-transform: uppercase;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+}
+.duo-speech-mood {
+  font-size: 0.75rem;
+}
+.duo-speech-hi {
+  font-size: 0.96rem;
+  line-height: 1.45;
+  color: #fff;
+  font-weight: 500;
+}
+.duo-speech-en {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: rgba(245, 237, 214, 0.7);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+@keyframes floatBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ── RIGHT: MASTERCLASS CHALLENGE STAGE ── */
+.duo-challenge-stage {
+  padding: 32px 4vw;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.duo-chapter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid var(--duo-gold);
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 1.5px;
+  color: var(--duo-gold-light);
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.duo-challenge-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2.1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.duo-challenge-scenario {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(245, 237, 214, 0.85);
+  max-width: 760px;
+}
+
+/* Real Bridal Client Card */
+.duo-client-card {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  background: rgba(18, 7, 16, 0.75);
+  border: 1px solid var(--duo-border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+.duo-client-photo-wrap {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+  background: #000;
+}
+.duo-client-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.duo-client-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(10, 4, 10, 0.85);
+  border: 1px solid var(--duo-gold);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-family: 'Space Mono', monospace;
+  color: var(--duo-gold-light);
+}
+
+.duo-client-info {
+  padding: 22px 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.duo-client-name {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.6rem;
+  color: #fff;
+  margin: 0 0 6px;
+}
+.duo-client-meta {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--duo-gold);
+  margin-bottom: 12px;
+}
+.duo-client-desc {
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: rgba(245, 237, 214, 0.8);
+  margin-bottom: 14px;
+}
+
+/* Interactive Interactive Stage (Step 1: Quiz Options) */
+.duo-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 8px;
+}
+.duo-option-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(212, 175, 55, 0.2);
+  border-radius: 16px;
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.duo-option-card:hover {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.5);
+  transform: translateY(-2px);
+}
+.duo-option-card.selected {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(139, 94, 26, 0.35));
+  border-color: var(--duo-gold);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  transform: translateY(-3px);
+}
+.duo-option-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid var(--duo-gold);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--duo-gold-light);
+  flex-shrink: 0;
+}
+.duo-option-text strong {
+  display: block;
+  font-size: 0.92rem;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.duo-option-text span {
+  font-size: 0.78rem;
+  color: rgba(245, 237, 214, 0.7);
+  line-height: 1.4;
+  display: block;
+}
+
+/* Interactive Practical Canvas Layer (Step 2: Chandan Art / Tool Application) */
+.duo-practical-zone {
+  display: none;
+  background: rgba(14, 5, 12, 0.9);
+  border: 1.5px solid var(--duo-gold);
+  border-radius: 20px;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+.duo-practical-zone.active {
+  display: block;
+  animation: fadeIn 0.4s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.duo-practical-canvas-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  height: 380px;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+.duo-practical-canvas-wrap img.bg-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+#chandanInteractiveCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  cursor: crosshair;
+}
+
+.chandan-guide-dot {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px dashed #f59e0b;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  cursor: pointer;
+  background: rgba(245, 158, 11, 0.2);
+  transition: all 0.2s ease;
+  animation: guidePulse 1.8s infinite;
+}
+@keyframes guidePulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; border-color: #fff; }
+}
+.chandan-guide-dot.painted {
+  background: #ffffff !important;
+  border: 2px solid #dc2626 !important;
+  animation: none;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+}
+
+/* ═══ BOTTOM DUOLINGO ACTION TRAY & FEEDBACK DRAWER ═══ */
+.duo-bottom-tray {
+  height: 90px;
+  border-top: 1px solid var(--duo-border);
+  background: rgba(14, 5, 13, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4vw;
+  z-index: 60;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.duo-tray-hint {
+  font-size: 0.85rem;
+  color: rgba(245, 237, 214, 0.65);
+}
+
+.duo-main-btn {
+  background: linear-gradient(135deg, #d4af37 0%, #f59e0b 100%);
+  border: none;
+  color: #070207;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 14px 44px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.45);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.duo-main-btn:not(:disabled):hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(212, 175, 55, 0.7);
+  background: linear-gradient(135deg, #ffd700 0%, #f59e0b 100%);
+}
+.duo-main-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  background: #33261a;
+  color: rgba(245, 237, 214, 0.4);
+}
+
+/* Instant Feedback Drawer (Duolingo Slide-Up) */
+.duo-feedback-drawer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 140px;
+  padding: 24px 4vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+}
+.duo-feedback-drawer.show {
+  transform: translateY(0);
+}
+.duo-feedback-drawer.correct {
+  background: linear-gradient(135deg, #064e3b 0%, #042f24 100%);
+  border-top: 3px solid #10b981;
+}
+.duo-feedback-drawer.incorrect {
+  background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);
+  border-top: 3px solid #ef4444;
+}
+
+.duo-feedback-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.duo-feedback-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+.duo-feedback-drawer.correct .duo-feedback-icon {
+  color: #10b981;
+}
+.duo-feedback-drawer.incorrect .duo-feedback-icon {
+  color: #ef4444;
+}
+.duo-feedback-msg strong {
+  display: block;
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+}
+.duo-feedback-msg p {
+  margin: 0;
+  font-size: 0.88rem;
+  opacity: 0.9;
+  line-height: 1.4;
+  max-width: 600px;
+}
+
+/* ═══ VICTORY & SCHOLARSHIP CERTIFICATE MODAL ═══ */
+.duo-victory-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 1, 5, 0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.duo-victory-overlay.active {
+  display: flex;
+}
+.duo-victory-card {
+  width: min(580px, 94vw);
+  background: linear-gradient(160deg, #220b1e 0%, #0c040c 100%);
+  border: 2px solid var(--duo-gold);
+  border-radius: 30px;
+  padding: 38px 32px;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 50px rgba(212, 175, 55, 0.35);
+  animation: zoomPop 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes zoomPop {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.duo-victory-card h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2.2rem;
+  color: #fff;
+  margin: 12px 0 6px;
+}
+.duo-cert-box {
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px dashed rgba(212, 175, 55, 0.5);
+  border-radius: 16px;
+  padding: 18px;
+  margin: 20px 0;
+}
+.duo-cert-code {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(212, 175, 55, 0.25);
+  padding: 8px 18px;
+  border-radius: 8px;
+  display: inline-block;
+  margin: 10px 0 6px;
+  letter-spacing: 2px;
+}
+.duo-wa-claim-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #25D366;
+  color: #fff;
+  text-decoration: none;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.96rem;
+  padding: 14px 28px;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+.duo-wa-claim-btn:hover {
+  background: #1eb857;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(37, 211, 102, 0.5);
+}
+
+@media (max-width: 900px) {
+  .duo-arena {
+    grid-template-columns: 1fr;
+    grid-template-rows: 220px 1fr;
+    height: calc(100vh - 72px - 90px);
+  }
+  .duo-host-panel {
+    border-right: none;
+    border-bottom: 1px solid var(--duo-border);
+    padding-bottom: 8px;
+  }
+  .duo-speech-bubble {
+    width: 92%;
+    margin-top: 10px;
+    padding: 10px 14px;
+  }
+  .duo-speech-hi { font-size: 0.85rem; }
+  .duo-speech-en { font-size: 0.7rem; }
+  .duo-challenge-stage { padding: 18px 4vw; }
+  .duo-client-card { grid-template-columns: 1fr; }
+  .duo-client-photo-wrap { height: 180px; }
+  .duo-challenge-title { font-size: 1.6rem; }
+}
+/* Suppress redundant global floating elements on dedicated 3D gameplay arena */
+#chat-toggle-wrap, #three-bg, #preloader, .chat-speech-bubble { display: none !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Three.js + Confetti CDN + Companion Mascots -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="{% static 'core/js/characters/MochiCharacter.js' %}"></script>
+<script src="{% static 'core/js/characters/PipCharacter.js' %}"></script>
+
+<div class="duo-game-container" id="duoGame">
+  
+  <!-- ═══ TOP GAMIFICATION HUD ═══ -->
+  <div class="duo-top-hud">
+    <a href="{% url 'home' %}" class="duo-back-btn">
+      <span>←</span>
+      <span>ATELIER HOME</span>
+    </a>
+
+    <div class="duo-progress-col">
+      <div class="duo-progress-labels">
+        <span id="duoChapterLabel">CHAPTER 01 OF 04</span>
+        <span id="duoProgressPercent">25%</span>
+      </div>
+      <div class="duo-progress-bar-wrap">
+        <div class="duo-progress-fill" id="duoProgressFill"></div>
+      </div>
+    </div>
+
+    <div class="duo-stats-row">
+      <div class="duo-hearts-pill" id="duoHeartsDisplay" title="Lives Remaining">
+        <span>❤️</span><span>❤️</span><span>❤️</span>
+      </div>
+      <div class="duo-streak-pill" id="duoStreakDisplay">🔥 1 DAY</div>
+      <div class="duo-xp-pill" id="duoXpDisplay">✨ 100 XP</div>
+      <button type="button" class="duo-sound-btn" id="duoSoundToggle" title="Toggle Sound">🔊</button>
+    </div>
+  </div>
+
+  <!-- ═══ MAIN ARENA ═══ -->
+  <div class="duo-arena">
+    
+    <!-- LEFT: 3D Animated Mascots (Asha, Mochi, Pip) -->
+    <div class="duo-host-panel">
+      
+      <!-- Companion Selector Tabs -->
+      <div class="duo-companion-bar" id="duoCompanionBar" role="tablist" aria-label="Select 3D Beauty Coach">
+        <button type="button" class="duo-companion-btn active" id="tabCoachAsha" onclick="switchGameplayCoach('asha')" title="Switch to Asha (Bridal Muse)">
+          <span>👧</span> Asha
+        </button>
+        <button type="button" class="duo-companion-btn" id="tabCoachMochi" onclick="switchGameplayCoach('mochi')" title="Switch to Mochi (Velvet Mascot)">
+          <span>🐰</span> Mochi
+        </button>
+        <button type="button" class="duo-companion-btn" id="tabCoachPip" onclick="switchGameplayCoach('pip')" title="Switch to Pip (Celestial Muse)">
+          <span>🐦</span> Pip
+        </button>
+      </div>
+
+      <!-- Speech Bubble above Mascot -->
+      <div class="duo-speech-bubble" id="duoSpeechBubble">
+        <div class="duo-speech-header">
+          <span class="duo-speech-title" id="duoSpeechTitle">ASHA · BEAUTY COACH</span>
+          <span class="duo-speech-mood" id="duoMoodIcon">👧✨</span>
+        </div>
+        <div class="duo-speech-hi" id="duoSpeechHi">नमस्ते! मैं आशा हूँ। चलिए आज का पहला ब्राइडल मास्टरक्लास सीक्रेट सीखते हैं!</div>
+        <div class="duo-speech-en" id="duoSpeechEn">"Namaste! I'm Asha. Let's master our first bridal secret together!"</div>
+      </div>
+
+      <!-- 3D WebGL Canvases for Animated Mascots -->
+      <div class="duo-canvas-stage">
+        <canvas id="duoMascotCanvas" class="duo-mascot-canvas active" title="Asha - Pixar Bridal Coach"></canvas>
+        <canvas id="duoMochiCanvas" class="duo-mascot-canvas" title="Mochi - Haute Velvet Bunny"></canvas>
+        <canvas id="duoPipCanvas" class="duo-mascot-canvas" title="Pip - Celestial Finch Muse"></canvas>
+      </div>
+    </div>
+
+    <!-- RIGHT: Real Bride Storyline & Interactive Challenge -->
+    <div class="duo-challenge-stage" id="duoChallengeStage">
+      
+      <div class="duo-chapter-badge" id="duoBadgeText">🏆 CHAPTER 01 · AYURVEDIC SKIN ARCHITECTURE</div>
+      
+      <h1 class="duo-challenge-title" id="duoTitleText">The Mandap Morning: Lymphatic Cool-Down</h1>
+      
+      <p class="duo-challenge-scenario" id="duoScenarioText">
+        Bride Riya is getting ready in Jabalpur under scorching 40°C mandap heat. Before applying any high-definition formulation, the skin barrier must be cooled to prevent foundation melt.
+      </p>
+
+      <!-- Client Spotlight Card with Real Authentic Photo -->
+      <div class="duo-client-card" id="duoClientCard">
+        <div class="duo-client-photo-wrap">
+          <img src="{% static 'core/images/curated/anshita_artistry_brush_action.jpg' %}" alt="Bridal Skin Prep Artistry" id="duoClientImg">
+          <span class="duo-client-badge" id="duoClientLocation">JABALPUR STUDIO</span>
+        </div>
+        <div class="duo-client-info">
+          <h3 class="duo-client-name" id="duoClientName">Riya's Vivah Preparation</h3>
+          <div class="duo-client-meta" id="duoClientMeta">SKIN BARRIER PREP · 18-HOUR FOUNDATION LOCK</div>
+          <p class="duo-client-desc" id="duoClientDesc">
+            Targeting open pores, heat flushing, and barrier resilience before royal silk lehenga drape.
+          </p>
+          <div style="font-family:'Space Mono',monospace; font-size:0.75rem; color:var(--duo-gold);">
+            ✦ QUESTION: Which formulation must be applied first to lock moisture without flashback?
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 1: Duolingo Interactive Option Cards -->
+      <div class="duo-options-grid" id="duoOptionsGrid">
+        <!-- Generated Dynamically -->
+      </div>
+
+      <!-- Step 2: Interactive Practical Zone (Chandan Dots / Mist / Blender) -->
+      <div class="duo-practical-zone" id="duoPracticalZone">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div>
+            <strong style="color:var(--duo-gold); font-size:0.92rem; text-transform:uppercase; letter-spacing:1px; font-family:'Space Mono',monospace;" id="duoPracticalTitle">PRACTICAL ARTISTRY STEP</strong>
+            <p style="margin:2px 0 0; font-size:0.84rem; color:rgba(245,237,214,0.8);" id="duoPracticalHint">Tap all 7 sacred golden guide rings above Kuhu's brow arch in exact symmetry!</p>
+          </div>
+          <span style="font-family:'Space Mono',monospace; color:var(--duo-gold); font-size:0.85rem;" id="duoPracticalCounter">0 / 7 PLACED</span>
+        </div>
+
+        <div class="duo-practical-canvas-wrap" id="duoPracticalWrap">
+          <img src="{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}" alt="Kuhu Khare Bengali Bride Artistry" class="bg-photo" id="duoPracticalBgImg">
+          <div id="chandanGuideContainer"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ BOTTOM DUOLINGO ACTION TRAY ═══ -->
+  <div class="duo-bottom-tray">
+    <div class="duo-tray-hint" id="duoTrayHint">Select the most effective technique to proceed</div>
+    <button type="button" class="duo-main-btn" id="duoCheckBtn" onclick="onCheckAnswer()" disabled>
+      CHECK ANSWER
+    </button>
+  </div>
+
+  <!-- ═══ SLIDE-UP FEEDBACK DRAWER ═══ -->
+  <div class="duo-feedback-drawer" id="duoFeedbackDrawer">
+    <div class="duo-feedback-left">
+      <div class="duo-feedback-icon" id="duoFeedbackIcon">✓</div>
+      <div class="duo-feedback-msg">
+        <strong id="duoFeedbackTitle">शानदार! (Splendid!)</strong>
+        <p id="duoFeedbackExplanation">Ayurvedic Kansa wand with chilled rose infusion lowers surface heat, calming capillaries so 18-hour foundation glides seamlessly.</p>
+      </div>
+    </div>
+    <button type="button" class="duo-main-btn" id="duoContinueBtn" onclick="onContinueNext()" style="background:#fff; color:#070207;">
+      CONTINUE →
+    </button>
+  </div>
+
+  <!-- ═══ VICTORY MODAL & CERTIFICATE ═══ -->
+  <div class="duo-victory-overlay" id="duoVictoryModal">
+    <div class="duo-victory-card">
+      <div style="font-size:3rem">👑</div>
+      <div style="color:var(--duo-gold); font-size:1.8rem; letter-spacing:5px; margin:6px 0;">★★★★★</div>
+      <h2>Royal Artistry Certified!</h2>
+      <p style="color:rgba(245,237,214,0.85); font-size:0.92rem; line-height:1.6;">
+        Congratulations! You have completed all 4 Sacred Chapters of <strong>Atelier Chronicles</strong>, mastering Ayurvedic skin metallurgy, Kuhu Khare Banarasi Chandan art, 24K Sangeet cut-crease, and the 18-Hour Cry-Proof Starlight Seal!
+      </p>
+
+      <div class="duo-cert-box">
+        <span style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; color:var(--duo-gold);">EXCLUSIVE SCHOLARSHIP PRIVILEGE</span>
+        <div class="duo-cert-code">ANSHITA-CHRONICLES-2026</div>
+        <p style="font-size:0.82rem; margin:6px 0 0; color:rgba(245,237,214,0.75);">
+          Valid for <strong>₹2,000 OFF</strong> on Anshita Makeover Professional Academy Masterclass or <strong>10% Privilege Discount</strong> on Bridal Suites.
+        </p>
+      </div>
+
+      <a href="https://wa.me/{{ whatsapp|default:'917879223442' }}?text=Namaste%20Anshita!%20I%20completed%20the%20Atelier%20Chronicles%20Duolingo%20Masterclass%20with%203%20Stars!%20My%20Scholarship%20Code%20is%20ANSHITA-CHRONICLES-2026.%20Please%20reserve%20my%20session!" target="_blank" rel="noopener" class="duo-wa-claim-btn" id="duoWaClaimBtn">
+        <span>💬 Claim ₹2,000 Scholarship on WhatsApp</span>
+        <span>↗</span>
+      </a>
+
+      <button type="button" onclick="closeVictory()" style="background:none; border:none; color:rgba(245,237,214,0.5); font-size:0.75rem; margin-top:14px; cursor:pointer; text-decoration:underline;">
+        Keep Playing & Perfecting Looks
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══ WEB AUDIO SYNTHESIZER FOR DUOLINGO-GRADE SFX (ZERO EXTERNAL MP3s) ═══
+class DuoAudio {
+  constructor() {
+    this.ctx = null;
+    this.enabled = true;
+  }
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) this.ctx = new AudioCtx();
+    }
+  }
+  playCorrect() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    // Duolingo style cheerful ascending major arpeggio (C5 -> E5 -> G5 -> C6)
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now + i * 0.08);
+      gain.gain.setValueAtTime(0.18, now + i * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.35);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now + i * 0.08);
+      osc.stop(now + i * 0.08 + 0.35);
+    });
+  }
+  playWrong() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    // Soft descending bonk
+    [320, 240].forEach((freq, i) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.12);
+      gain.gain.setValueAtTime(0.15, now + i * 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.25);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now + i * 0.12);
+      osc.stop(now + i * 0.12 + 0.25);
+    });
+  }
+  playChime() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, now);
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.25);
+  }
+  playVictory() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    const notes = [440, 554.37, 659.25, 880, 1108.73];
+    notes.forEach((freq, idx) => {
+      const now = this.ctx.currentTime + idx * 0.14;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.6);
+    });
+  }
+}
+const duoAudio = new DuoAudio();
+
+// ═══ MASTERCLASS LESSONS WITH AUTHENTIC CLIENT STORIES ═══
+const LESSONS = [
+  {
+    chapterId: 1,
+    chapterLabel: "CHAPTER 01 OF 04",
+    percent: 25,
+    badge: "🏆 CHAPTER 01 · AYURVEDIC SKIN ARCHITECTURE",
+    title: "The Mandap Morning: Lymphatic Cool-Down",
+    scenario: "Bride Riya is preparing for sacred pheras under direct 40°C mandap flames. Skin flushing and sweat can ruin the base within minutes. What is step 1 before any foundation?",
+    clientImg: "{% static 'core/images/curated/anshita_artistry_brush_action.jpg' %}",
+    clientLoc: "JABALPUR BESPOKE SUITE",
+    clientName: "Riya's Vivah Preparation",
+    clientMeta: "SKIN BARRIER PREP · ZERO FLASHBACK FORMULATION",
+    clientDesc: "Targeting open pores, hydration resilience, and lymphatic drainage before silk zardozi lehenga drape.",
+    question: "Which formulation must be applied first to lock moisture without flashback?",
+    options: [
+      { id: "A", title: "Heavy Silicone Primer", desc: "Leaves a plastic film that traps heat and melts under high-powered stage lights.", correct: false },
+      { id: "B", title: "🌿 Lymphatic Rose & Kansa Ice Wand", desc: "Cooling botanical infusion that tightens pores, soothes redness, and creates an 18-hour sweat-proof lock.", correct: true },
+      { id: "C", title: "Loose Baking Powder Immediately", desc: "Absorbs natural oils too early, resulting in dry cakey patches and flash photography flare.", correct: false }
+    ],
+    correctExplanation: "शाबाश! Ayurvedic lymphatic cooling lowers skin surface temperature by up to 3°C, allowing the subsequent velvet veil to fuse seamlessly.",
+    wrongExplanation: "Almost! In severe heat, silicone primers melt and cause slipping. Always begin with Ayurvedic lymphatic rose cooling!",
+    mascotQuoteStart: { hi: "नमस्ते! मैं आशा हूँ। चलिए आज का पहला ब्राइडल मास्टरक्लास सीक्रेट सीखते हैं!", en: "\"Namaste! I'm Asha. Let's master our first bridal secret together!\"" },
+    mascotQuoteCorrect: { hi: "शानदार जवाब! स्किन प्रेप ही ब्राइडल ग्लो की असली कुंजी है!", en: "\"Brilliant answer! Skin prep is the true secret of royal bridal glow!\"" },
+    hasPractical: false
+  },
+  {
+    chapterId: 2,
+    chapterLabel: "CHAPTER 02 OF 04",
+    percent: 50,
+    badge: "🏆 CHAPTER 02 · COMPETITION ARTISTRY",
+    title: "Kuhu Khare: Banarasi Chandan Dot Artistry",
+    scenario: "Kuhu Khare is stepping into the bridal competition arena! The jury awards points based on sacred symmetry, red kumkum placement, and traditional Banarasi Chandan brow dots.",
+    clientImg: "{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}",
+    clientLoc: "COMPETITION PARTICIPATION ARENA",
+    clientName: "Kuhu Khare (Bengali Bride)",
+    clientMeta: "HAND-PAINTED CHANDAN · SACRED MUKUT BALANCING",
+    clientDesc: "Sculpted specifically for bridal competition participation showcasing traditional Bengal vivah motifs.",
+    question: "What gives authentic Chandan art its crisp, sweat-proof longevity through emotional wedding ceremonies?",
+    options: [
+      { id: "A", title: "Regular Water-Color Pigment", desc: "Smudges at the first tear or humidity spike.", correct: false },
+      { id: "B", title: "✨ Sacred Sandalwood Paste & Kumkum Seal", desc: "Pure Chandan ground with rose essence and sealed with microscopic fixing veil.", correct: true },
+      { id: "C", title: "Glitter Eyeliner Pen", desc: "Distorts traditional cultural heritage rules in competition scoring.", correct: false }
+    ],
+    correctExplanation: "बहुत खूब! Sandalwood is both an auspicious blessing and an organic cooling agent. Now tap the 7 dots on Kuhu's brow to complete the symmetry!",
+    wrongExplanation: "Incorrect! Traditional competition standards strictly prohibit cosmetic water-colors. Only sacred Chandan and Kumkum are valid.",
+    mascotQuoteStart: { hi: "कुहू खरे का यह लुक अवार्ड जीत चुका है! क्या आप चंदन की सिमिट्री बना सकते हैं?", en: "\"Kuhu Khare's Bengali bride is an award winner! Can you place her Chandan dots?\"" },
+    mascotQuoteCorrect: { hi: "वाह! बिल्कुल सही! अब कुहू के माथे पर 7 पवित्र चंदन बिंदु लगाएं!", en: "\"Superb! Now place the 7 sacred Chandan dots on Kuhu's brow!\"" },
+    hasPractical: true,
+    practicalTitle: "SACRED CHANDAN SYMMETRY",
+    practicalHint: "Click each of the 7 pulsing golden rings above Kuhu's brow arch!",
+    practicalImg: "{% static 'core/images/curated/bengali_bride_mukut_chandan.jpg' %}",
+    practicalTarget: 7
+  },
+  {
+    chapterId: 3,
+    chapterLabel: "CHAPTER 03 OF 04",
+    percent: 75,
+    badge: "👑 CHAPTER 03 · PALACE SANGEET GLAM",
+    title: "Miss Rajak: 24K Champagne Gold & Mauve Shimmer",
+    scenario: "The palace chandeliers ignite for the royal Sangeet celebration! The bride desires high-fashion cut-crease eyes that glow under 4K cinematic cameras without looking heavy.",
+    clientImg: "{% static 'core/images/curated/reception_ivory_bride.jpg' %}",
+    clientLoc: "PALACE SANGEET & COCKTAIL",
+    clientName: "Miss Rajak (Evening Glamour)",
+    clientMeta: "MAUVE SHIMMER CUT-CREASE · GLASS-SKIN RADIANCE",
+    clientDesc: "Paired with statement diamond choker and Hollywood sculpted blowout curls.",
+    question: "Which shade duo creates the signature glass-skin dimension for twilight Sangeet photography?",
+    options: [
+      { id: "A", title: "Flat Chalk White & Grey", desc: "Looks ghostly and chalky under flash bulbs.", correct: false },
+      { id: "B", title: "🌟 24K Champagne Gold + Velvet Mauve Duochrome", desc: "Reflects warm chandelier amber tones while defining the eye crease with royal depth.", correct: true },
+      { id: "C", title: "Pure Matte Neon Blue", desc: "Clashes with traditional Kundan and Polki jewelry.", correct: false }
+    ],
+    correctExplanation: "अद्भुत! Champagne gold on the lid center with velvet mauve in the outer socket gives cinematic depth on high-speed 4K reels.",
+    wrongExplanation: "Remember: Flat chalky pigments wash out under modern camera flashes. Rich duochromes reflect the palace lighting!",
+    mascotQuoteStart: { hi: "संगीत नाइट शुरू होने वाली है! चलिए आई-मेकअप का सबसे रॉयल शेड चुनते हैं!", en: "\"The Sangeet party is starting! Let's choose the most royal eye shade!\"" },
+    mascotQuoteCorrect: { hi: "लाजवाब! 24K शैंपेन गोल्ड और मॉव का कॉम्बिनेशन बिल्कुल परफेक्ट है!", en: "\"Magnificent! 24K Champagne Gold and Mauve is absolute perfection!\"" },
+    hasPractical: false
+  },
+  {
+    chapterId: 4,
+    chapterLabel: "CHAPTER 04 OF 04",
+    percent: 100,
+    badge: "✨ CHAPTER 04 · THE SACRED CLIMAX",
+    title: "Royal Crimson: 18-Hour Cry-Proof Vidai Seal",
+    scenario: "The sacred saat pheras are complete. The emotional Vidai moment arrives where tears are guaranteed. How does Anshita Makeover guarantee zero streak and zero transfer onto the velvet lehenga?",
+    clientImg: "{% static 'core/images/curated/royal_crimson_bride_main.jpg' %}",
+    clientLoc: "HERITAGE VIVAH MANDAP",
+    clientName: "The Royal Crimson Masterpiece",
+    clientMeta: "CRY-PROOF STRAW VEIL · 18-HOUR LONGEVITY",
+    clientDesc: "Tested against emotional tears, temple humidity, and midnight wedding ceremonies.",
+    question: "What is the final technical step to lock the entire look against tears and heat?",
+    options: [
+      { id: "A", title: "Dabbing with Paper Tissue", desc: "Lifts the base foundation and leaves visible patchy streaks.", correct: false },
+      { id: "B", title: "Heavy Layer of Hair Spray", desc: "Extremely toxic for the facial skin and causes chemical burning.", correct: false },
+      { id: "C", title: "💎 18-Hour Micro-Airbrush Starlight Mist", desc: "Micro-atomized cosmetic polymers that form a breathable, cry-proof shield over pigments.", correct: true }
+    ],
+    correctExplanation: "परफेक्ट! Micro-airbrush misting creates a non-comedogenic cross-linked micro-veil that resists emotional tears for 18 continuous hours!",
+    wrongExplanation: "Never use hair spray or rough paper towels on bridal skin! The micro-airbrush lock is the only professional standard.",
+    mascotQuoteStart: { hi: "यह सबसे महत्वपूर्ण चरण है! विदाई के आंसुओं में भी मेकअप नहीं छूटेगा!", en: "\"This is the ultimate stage! Even during emotional Vidai, makeup stays flawless!\"" },
+    mascotQuoteCorrect: { hi: "मुबारक हो! आपने 18-Hour Cry-Proof सीक्रेट मास्टर कर लिया!", en: "\"Congratulations! You've mastered the 18-Hour Cry-Proof Secret!\"" },
+    hasPractical: false
+  }
+];
+
+let currentLessonIdx = 0;
+let selectedOption = null;
+let hearts = 3;
+let xp = 100;
+let streak = 1;
+let practicalPlacedCount = 0;
+let isAnswerChecked = false;
+
+// ═══ 3D PIXAR LITTLE GIRL BRIDE MASCOT ASHA (HAUTE THREE.JS RIG) ═══
+let mascotScene, mascotCamera, mascotRenderer;
+let mascotGroup, headGroup, bodyGroup, rightArmGroup, leftArmGroup, brushGroup;
+let leftPupil, rightPupil, leftEyelid, rightEyelid, smileMesh;
+let targetGazeX = 0, targetGazeY = 0;
+let mascotMood = 'happy';
+let mascotBounce = 0;
+let isBlinking = false, blinkProgress = 0, nextBlinkTime = performance.now() + 3000;
+
+function initDuoMascot() {
+  const canvas = document.getElementById('duoMascotCanvas');
+  if (!canvas) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const width = rect.width || 380;
+  const height = rect.height || 600;
+
+  mascotScene = new THREE.Scene();
+
+  // Perspective camera framed perfectly to capture Asha's upper body, brush, and head
+  mascotCamera = new THREE.PerspectiveCamera(38, width / height, 0.1, 50);
+  mascotCamera.position.set(0, -0.32, 5.8);
+  mascotCamera.lookAt(0, -0.36, 0);
+
+  mascotRenderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+  mascotRenderer.setSize(width, height);
+  mascotRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  // Studio Lighting
+  const ambient = new THREE.AmbientLight(0xFFEFE6, 0.95);
+  mascotScene.add(ambient);
+
+  const keyLight = new THREE.DirectionalLight(0xFFE2C4, 1.25);
+  keyLight.position.set(2.2, 3.2, 3.0);
+  mascotScene.add(keyLight);
+
+  const fillLight = new THREE.DirectionalLight(0xF2CEBA, 0.55);
+  fillLight.position.set(-2.0, 0.5, 2.0);
+  mascotScene.add(fillLight);
+
+  const rimLight = new THREE.DirectionalLight(0xE5B842, 1.3);
+  rimLight.position.set(0, 2.5, -2.2);
+  mascotScene.add(rimLight);
+
+  // Materials — Authentic Warm Indian Honey Skin & Royal Vivah Velvet
+  const skinMat = new THREE.MeshStandardMaterial({ color: 0xBA7742, roughness: 0.60, metalness: 0.02 });
+  const blushMat = new THREE.MeshStandardMaterial({ color: 0xCF5A50, roughness: 0.70, transparent: true, opacity: 0.36 });
+  const hairMat = new THREE.MeshStandardMaterial({ color: 0x160F0B, roughness: 0.44 });
+  const goldMat = new THREE.MeshStandardMaterial({ color: 0xE2BA45, roughness: 0.22, metalness: 0.88 });
+  const pearlMat = new THREE.MeshStandardMaterial({ color: 0xFFFBF2, roughness: 0.15, metalness: 0.12 });
+  const rubyMat = new THREE.MeshStandardMaterial({ color: 0xBD182A, roughness: 0.25, metalness: 0.35 });
+  const bridalRedMat = new THREE.MeshStandardMaterial({ color: 0x82121E, roughness: 0.65 });
+  const chunniMat = new THREE.MeshStandardMaterial({ color: 0x9E1526, roughness: 0.48, side: THREE.DoubleSide });
+
+  // Root
+  mascotGroup = new THREE.Group();
+  mascotScene.add(mascotGroup);
+
+  // 1. Luxury Circular Atelier Pedestal
+  const pedestalGroup = new THREE.Group();
+  pedestalGroup.position.set(0, -1.70, 0);
+  const pedTopGeo = new THREE.CylinderGeometry(1.2, 1.35, 0.25, 36);
+  const pedTop = new THREE.Mesh(pedTopGeo, new THREE.MeshStandardMaterial({ color: 0x180716, roughness: 0.45 }));
+  pedestalGroup.add(pedTop);
+
+  const pedGoldRim = new THREE.Mesh(
+    new THREE.TorusGeometry(1.28, 0.038, 12, 40),
+    goldMat
+  );
+  pedGoldRim.rotation.x = Math.PI * 0.5;
+  pedGoldRim.position.y = 0.12;
+  pedestalGroup.add(pedGoldRim);
+  mascotGroup.add(pedestalGroup);
+
+  // 2. Full Upper Body Group
+  bodyGroup = new THREE.Group();
+  bodyGroup.position.set(0, -0.80, 0);
+  mascotGroup.add(bodyGroup);
+
+  // Royal Crimson Velvet Choli / Torso
+  const torsoGeo = new THREE.CylinderGeometry(0.38, 0.52, 0.65, 24);
+  const torsoMesh = new THREE.Mesh(torsoGeo, bridalRedMat);
+  torsoMesh.position.set(0, -0.05, 0);
+  bodyGroup.add(torsoMesh);
+
+  // Velvet Shoulder Caps with Zari Trims
+  const leftShoulder = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), bridalRedMat);
+  leftShoulder.position.set(-0.46, 0.18, 0);
+  bodyGroup.add(leftShoulder);
+  const leftShoulderZari = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.018, 8, 20), goldMat);
+  leftShoulderZari.position.set(-0.46, 0.16, 0);
+  leftShoulderZari.rotation.x = Math.PI * 0.5;
+  bodyGroup.add(leftShoulderZari);
+
+  const rightShoulder = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), bridalRedMat);
+  rightShoulder.position.set(0.46, 0.18, 0);
+  bodyGroup.add(rightShoulder);
+  const rightShoulderZari = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.018, 8, 20), goldMat);
+  rightShoulderZari.position.set(0.46, 0.16, 0);
+  rightShoulderZari.rotation.x = Math.PI * 0.5;
+  bodyGroup.add(rightShoulderZari);
+
+  // Diagonal Golden Dupatta / Pallu Pleats across chest
+  const palluGeo = new THREE.CylinderGeometry(0.08, 0.12, 0.72, 16);
+  const palluMesh = new THREE.Mesh(palluGeo, goldMat);
+  palluMesh.position.set(-0.06, 0.04, 0.24);
+  palluMesh.rotation.z = -0.65;
+  palluMesh.rotation.x = 0.25;
+  palluMesh.scale.set(1.4, 1.0, 0.35);
+  bodyGroup.add(palluMesh);
+
+  // Gold Waistband & Zari Embroidery Trims
+  const waistGold = new THREE.Mesh(new THREE.TorusGeometry(0.50, 0.026, 12, 32), goldMat);
+  waistGold.rotation.x = Math.PI * 0.5;
+  waistGold.position.y = -0.36;
+  bodyGroup.add(waistGold);
+
+  const chestZari = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.022, 10, 32), goldMat);
+  chestZari.rotation.x = Math.PI * 0.5;
+  chestZari.position.set(0, 0.12, 0.02);
+  bodyGroup.add(chestZari);
+
+  // Neck
+  const neckGeo = new THREE.CylinderGeometry(0.18, 0.22, 0.28, 20);
+  const neckMesh = new THREE.Mesh(neckGeo, skinMat);
+  neckMesh.position.set(0, 0.38, 0);
+  bodyGroup.add(neckMesh);
+
+  // Kundan Pearl Choker Necklace
+  const necklace = new THREE.Mesh(new THREE.TorusGeometry(0.23, 0.032, 10, 24), goldMat);
+  necklace.rotation.x = Math.PI * 0.5;
+  necklace.position.set(0, 0.32, 0.02);
+  bodyGroup.add(necklace);
+
+  // Red Vivah Dupatta draped gracefully over shoulders
+  const dupattaDrapeGeo = new THREE.CylinderGeometry(0.58, 0.85, 0.72, 28, 1, true, Math.PI * 0.75, Math.PI * 1.5);
+  const dupattaDrape = new THREE.Mesh(dupattaDrapeGeo, chunniMat);
+  dupattaDrape.position.set(0, -0.05, 0);
+  bodyGroup.add(dupattaDrape);
+
+  // Left Arm (Welcoming pose)
+  leftArmGroup = new THREE.Group();
+  leftArmGroup.position.set(-0.48, 0.20, 0);
+  const leftArmGeo = new THREE.CylinderGeometry(0.09, 0.075, 0.44, 16);
+  const leftArmMesh = new THREE.Mesh(leftArmGeo, skinMat);
+  leftArmMesh.position.set(-0.08, -0.18, 0.06);
+  leftArmMesh.rotation.z = 0.35;
+  leftArmMesh.rotation.x = 0.25;
+  leftArmGroup.add(leftArmMesh);
+
+  // Left Gold Bangles (Chuda)
+  const leftBangles = new THREE.Mesh(new THREE.TorusGeometry(0.092, 0.02, 8, 16), goldMat);
+  leftBangles.position.set(-0.14, -0.32, 0.12);
+  leftBangles.rotation.x = Math.PI * 0.5;
+  leftArmGroup.add(leftBangles);
+
+  // Left Hand
+  const leftHand = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), skinMat);
+  leftHand.position.set(-0.18, -0.38, 0.16);
+  leftArmGroup.add(leftHand);
+  bodyGroup.add(leftArmGroup);
+
+  // Right Arm (Holding 24K Bridal Makeup Brush)
+  rightArmGroup = new THREE.Group();
+  rightArmGroup.position.set(0.48, 0.20, 0);
+  const rightArmGeo = new THREE.CylinderGeometry(0.09, 0.075, 0.44, 16);
+  const rightArmMesh = new THREE.Mesh(rightArmGeo, skinMat);
+  rightArmMesh.position.set(0.08, -0.16, 0.10);
+  rightArmMesh.rotation.z = -0.40;
+  rightArmMesh.rotation.x = 0.45;
+  rightArmGroup.add(rightArmMesh);
+
+  // Right Gold Bangles
+  const rightBangles = new THREE.Mesh(new THREE.TorusGeometry(0.092, 0.02, 8, 16), goldMat);
+  rightBangles.position.set(0.15, -0.28, 0.22);
+  rightBangles.rotation.x = Math.PI * 0.5;
+  rightArmGroup.add(rightBangles);
+
+  // Right Hand
+  const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), skinMat);
+  rightHand.position.set(0.18, -0.32, 0.26);
+  rightArmGroup.add(rightHand);
+
+  // 24K Golden Bridal Makeup Brush!
+  brushGroup = new THREE.Group();
+  brushGroup.position.set(0.20, -0.26, 0.32);
+  brushGroup.rotation.z = 0.55;
+  brushGroup.rotation.x = -0.40;
+
+  // Handle
+  const handleGeo = new THREE.CylinderGeometry(0.016, 0.022, 0.45, 12);
+  const handleMesh = new THREE.Mesh(handleGeo, new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.3 }));
+  brushGroup.add(handleMesh);
+
+  // 24K Gold Ferrule
+  const ferruleGeo = new THREE.CylinderGeometry(0.025, 0.022, 0.12, 14);
+  const ferruleMesh = new THREE.Mesh(ferruleGeo, goldMat);
+  ferruleMesh.position.y = 0.24;
+  brushGroup.add(ferruleMesh);
+
+  // Luxurious Soft Bristles
+  const bristleGeo = new THREE.ConeGeometry(0.038, 0.15, 14);
+  const bristleMesh = new THREE.Mesh(bristleGeo, new THREE.MeshStandardMaterial({ color: 0xD4AF37, roughness: 0.65 }));
+  bristleMesh.position.y = 0.35;
+  brushGroup.add(bristleMesh);
+
+  // Twinkling Stardust Point Light at Brush Tip
+  const brushTipLight = new THREE.PointLight(0xFFEAA7, 1.2, 1.2);
+  brushTipLight.position.y = 0.44;
+  brushGroup.add(brushTipLight);
+
+  rightArmGroup.add(brushGroup);
+  bodyGroup.add(rightArmGroup);
+
+  // 3. Head & Adorable Pixar Girl Facial Rig
+  headGroup = new THREE.Group();
+  headGroup.position.set(0, 0.05, 0);
+  mascotGroup.add(headGroup);
+
+  // Chubby cute baby toddler head
+  const headGeo = new THREE.SphereGeometry(0.68, 36, 36);
+  const headMesh = new THREE.Mesh(headGeo, skinMat);
+  headMesh.scale.set(1.08, 0.94, 0.96);
+  headGroup.add(headMesh);
+
+  // Rosy Blushing Cheeks
+  const cheekGeo = new THREE.SphereGeometry(0.18, 18, 18);
+  const leftCheek = new THREE.Mesh(cheekGeo, blushMat);
+  leftCheek.position.set(-0.34, -0.14, 0.50);
+  leftCheek.scale.set(1.1, 0.65, 0.32);
+  headGroup.add(leftCheek);
+
+  const rightCheek = new THREE.Mesh(cheekGeo, blushMat);
+  rightCheek.position.set(0.34, -0.14, 0.50);
+  rightCheek.scale.set(1.1, 0.65, 0.32);
+  headGroup.add(rightCheek);
+
+  // Dainty Button Nose
+  const noseGeo = new THREE.SphereGeometry(0.038, 16, 16);
+  const noseMesh = new THREE.Mesh(noseGeo, skinMat);
+  noseMesh.position.set(0, -0.05, 0.66);
+  noseMesh.scale.set(1.0, 0.72, 0.65);
+  headGroup.add(noseMesh);
+
+  // Sweet Toddler Smile
+  const smileCurve = new THREE.QuadraticBezierCurve3(
+    new THREE.Vector3(-0.15, -0.18, 0.62),
+    new THREE.Vector3(0, -0.27, 0.65),
+    new THREE.Vector3(0.15, -0.18, 0.62)
+  );
+  const smileGeo = new THREE.TubeGeometry(smileCurve, 18, 0.02, 8, false);
+  smileMesh = new THREE.Mesh(smileGeo, new THREE.MeshBasicMaterial({ color: 0x6E101D }));
+  headGroup.add(smileMesh);
+
+  // Giant Pixar Eyes with Amber Depth & Specular Catchlights
+  function createEyeAssembly(xPos) {
+    const eyeAssembly = new THREE.Group();
+    eyeAssembly.position.set(xPos, 0.08, 0.50);
+
+    // Sclera
+    const sclera = new THREE.Mesh(
+      new THREE.SphereGeometry(0.23, 28, 28),
+      new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 0.15, metalness: 0.02 })
+    );
+    eyeAssembly.add(sclera);
+
+    const pupilPivot = new THREE.Group();
+    pupilPivot.position.set(0, 0, 0.22);
+
+    // Limbal ring
+    const limbal = new THREE.Mesh(new THREE.CircleGeometry(0.145, 28), new THREE.MeshBasicMaterial({ color: 0x1A0903 }));
+    pupilPivot.add(limbal);
+
+    // Warm Amber Honey Iris
+    const iris = new THREE.Mesh(new THREE.CircleGeometry(0.13, 28), new THREE.MeshBasicMaterial({ color: 0x8C4415 }));
+    iris.position.z = 0.003;
+    pupilPivot.add(iris);
+
+    // Golden Sunlight Fleck
+    const innerIris = new THREE.Mesh(new THREE.CircleGeometry(0.095, 20), new THREE.MeshBasicMaterial({ color: 0xD48430 }));
+    innerIris.position.z = 0.006;
+    pupilPivot.add(innerIris);
+
+    // Pupil
+    const pupil = new THREE.Mesh(new THREE.CircleGeometry(0.07, 20), new THREE.MeshBasicMaterial({ color: 0x060606 }));
+    pupil.position.z = 0.009;
+    pupilPivot.add(pupil);
+
+    // Pixar Specular Catchlights
+    const glint1 = new THREE.Mesh(new THREE.CircleGeometry(0.036, 14), new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+    glint1.position.set(0.038, 0.042, 0.012);
+    pupilPivot.add(glint1);
+
+    const glint2 = new THREE.Mesh(new THREE.CircleGeometry(0.016, 10), new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+    glint2.position.set(-0.032, -0.034, 0.012);
+    pupilPivot.add(glint2);
+
+    eyeAssembly.add(pupilPivot);
+
+    // Blinking Eyelid
+    const eyelidGeo = new THREE.SphereGeometry(0.235, 28, 14, 0, Math.PI * 2, 0, Math.PI * 0.5);
+    const eyelid = new THREE.Mesh(eyelidGeo, skinMat);
+    eyelid.rotation.x = -Math.PI * 0.55;
+    eyelid.position.set(0, 0.01, 0.01);
+    eyeAssembly.add(eyelid);
+
+    return { assembly: eyeAssembly, pupilPivot: pupilPivot, eyelid: eyelid };
+  }
+
+  const leftEye = createEyeAssembly(-0.24);
+  const rightEye = createEyeAssembly(0.24);
+  leftPupil = leftEye.pupilPivot;
+  rightPupil = rightEye.pupilPivot;
+  leftEyelid = leftEye.eyelid;
+  rightEyelid = rightEye.eyelid;
+  headGroup.add(leftEye.assembly);
+  headGroup.add(rightEye.assembly);
+
+  // Soft Front Baby Bangs
+  const bangLeft = new THREE.Mesh(new THREE.SphereGeometry(0.25, 18, 18), hairMat);
+  bangLeft.position.set(-0.22, 0.50, 0.48);
+  bangLeft.scale.set(1.15, 0.42, 0.55);
+  bangLeft.rotation.z = 0.20;
+  headGroup.add(bangLeft);
+
+  const bangRight = new THREE.Mesh(new THREE.SphereGeometry(0.25, 18, 18), hairMat);
+  bangRight.position.set(0.22, 0.50, 0.48);
+  bangRight.scale.set(1.15, 0.42, 0.55);
+  bangRight.rotation.z = -0.20;
+  headGroup.add(bangRight);
+
+  // Hair Back
+  const hairBack = new THREE.Mesh(new THREE.SphereGeometry(0.72, 28, 24), hairMat);
+  hairBack.position.set(0, 0.06, -0.10);
+  hairBack.scale.set(1.04, 1.04, 1.04);
+  headGroup.add(hairBack);
+
+  // Two Cute Side Puffs / Bridal Buns with Jasmine Flower Garland (Gajra)
+  function createBridalHairBun(isLeft) {
+    const bunGroup = new THREE.Group();
+    bunGroup.position.set(isLeft ? -0.52 : 0.52, 0.42, 0.02);
+
+    const bunMesh = new THREE.Mesh(new THREE.SphereGeometry(0.26, 20, 20), hairMat);
+    bunGroup.add(bunMesh);
+
+    // Jasmine Floral Gajra Ring
+    const gajraRing = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.045, 10, 24), pearlMat);
+    gajraRing.rotation.y = Math.PI * 0.5;
+    bunGroup.add(gajraRing);
+
+    // Gold Pin
+    const goldPin = new THREE.Mesh(new THREE.SphereGeometry(0.045, 10, 10), goldMat);
+    goldPin.position.set(isLeft ? -0.26 : 0.26, 0, 0);
+    bunGroup.add(goldPin);
+
+    return bunGroup;
+  }
+  headGroup.add(createBridalHairBun(true));
+  headGroup.add(createBridalHairBun(false));
+
+  // Sacred Vivah Maang Tikka
+  const tikkaChain = new THREE.Mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.30, 8), goldMat);
+  tikkaChain.position.set(0, 0.48, 0.62);
+  tikkaChain.rotation.x = 0.20;
+  headGroup.add(tikkaChain);
+
+  const tikkaPendant = new THREE.Mesh(new THREE.SphereGeometry(0.052, 14, 14), goldMat);
+  tikkaPendant.position.set(0, 0.34, 0.66);
+  tikkaPendant.scale.set(1.1, 1.25, 0.7);
+  headGroup.add(tikkaPendant);
+
+  const tikkaRuby = new THREE.Mesh(new THREE.SphereGeometry(0.026, 10, 10), rubyMat);
+  tikkaRuby.position.set(0, 0.34, 0.70);
+  headGroup.add(tikkaRuby);
+
+  // Kundan Jhumka Earrings
+  function createJhumka(xPos) {
+    const jhumka = new THREE.Group();
+    jhumka.position.set(xPos, -0.16, 0.35);
+    const stud = new THREE.Mesh(new THREE.SphereGeometry(0.04, 10, 10), goldMat);
+    jhumka.add(stud);
+    const bell = new THREE.Mesh(new THREE.ConeGeometry(0.054, 0.065, 12, 1, true), goldMat);
+    bell.position.y = -0.065;
+    bell.rotation.x = Math.PI;
+    jhumka.add(bell);
+    const pearl = new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 8), pearlMat);
+    pearl.position.y = -0.105;
+    jhumka.add(pearl);
+    return jhumka;
+  }
+  headGroup.add(createJhumka(-0.44));
+  headGroup.add(createJhumka(0.44));
+
+  // Sacred Crimson Red Chunni Framing Head
+  const chunniGeo = new THREE.SphereGeometry(0.80, 28, 18, Math.PI * 0.95, Math.PI * 1.10, 0, Math.PI * 0.65);
+  const chunni = new THREE.Mesh(chunniGeo, chunniMat);
+  chunni.position.set(0, 0.06, -0.05);
+  chunni.scale.set(1.06, 1.04, 1.08);
+  headGroup.add(chunni);
+
+  const zariBorder = new THREE.Mesh(new THREE.TorusGeometry(0.80, 0.022, 10, 36, Math.PI), goldMat);
+  zariBorder.position.set(0, 0.20, 0.04);
+  zariBorder.rotation.x = Math.PI * 0.35;
+  headGroup.add(zariBorder);
+
+  // Mouse tracking gaze
+  window.addEventListener('mousemove', (e) => {
+    targetGazeX = (e.clientX / window.innerWidth - 0.5) * 2;
+    targetGazeY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  canvas.addEventListener('click', () => {
+    setMascotMood('excited');
+    duoAudio.playChime();
+    setTimeout(() => setMascotMood('happy'), 2200);
+  });
+
+  animateMascot();
+}
+
+function animateMascot(time = 0) {
+  requestAnimationFrame(animateMascot);
+
+  // Natural Blinking Cycle
+  if (time > nextBlinkTime && !isBlinking) {
+    isBlinking = true;
+    blinkProgress = 0;
+  }
+  if (isBlinking) {
+    blinkProgress += 0.16;
+    const blinkAngle = Math.sin(blinkProgress * Math.PI) * Math.PI * 0.52;
+    if (leftEyelid && rightEyelid) {
+      leftEyelid.rotation.x = -Math.PI * 0.55 + blinkAngle;
+      rightEyelid.rotation.x = -Math.PI * 0.55 + blinkAngle;
+    }
+    if (blinkProgress >= 1) {
+      isBlinking = false;
+      nextBlinkTime = time + 3000 + Math.random() * 2500;
+    }
+  }
+
+  // Smooth Breathing & Idle Life
+  const breathing = Math.sin(time * 0.0025) * 0.02;
+  if (bodyGroup) {
+    bodyGroup.position.y = -0.65 + breathing * 0.6;
+    bodyGroup.rotation.y = Math.sin(time * 0.0015) * 0.03;
+  }
+
+  if (headGroup) {
+    headGroup.position.y = 0.05 + breathing + mascotBounce;
+    headGroup.rotation.y += (targetGazeX * 0.32 - headGroup.rotation.y) * 0.08;
+    headGroup.rotation.x += (-targetGazeY * 0.22 - headGroup.rotation.x) * 0.08;
+
+    if (leftPupil && rightPupil) {
+      leftPupil.position.x = targetGazeX * 0.04;
+      leftPupil.position.y = -targetGazeY * 0.03;
+      rightPupil.position.x = targetGazeX * 0.04;
+      rightPupil.position.y = -targetGazeY * 0.03;
+    }
+  }
+
+  // Right arm and makeup brush waving dynamics
+  if (rightArmGroup && brushGroup) {
+    if (mascotMood === 'excited') {
+      rightArmGroup.rotation.z = Math.sin(time * 0.012) * 0.25;
+      brushGroup.rotation.x = -0.40 + Math.sin(time * 0.015) * 0.35;
+      mascotBounce = Math.abs(Math.sin(time * 0.012)) * 0.14;
+    } else if (mascotMood === 'sad') {
+      rightArmGroup.rotation.z = -0.15;
+      brushGroup.rotation.x = -0.10;
+      mascotBounce = -0.03;
+    } else {
+      rightArmGroup.rotation.z = Math.sin(time * 0.003) * 0.06;
+      brushGroup.rotation.x = -0.40 + Math.sin(time * 0.004) * 0.08;
+      mascotBounce = 0;
+    }
+  }
+
+  if (mascotRenderer && mascotScene && mascotCamera) {
+    mascotRenderer.render(mascotScene, mascotCamera);
+  }
+}
+
+let activeGameplayCoach = 'asha';
+let mochiGameplayInstance = null;
+let pipGameplayInstance = null;
+
+function initGameplayMochi() {
+  const canvas = document.getElementById('duoMochiCanvas');
+  if (!canvas || !window.MochiCharacter || mochiGameplayInstance) return;
+  const rect = canvas.getBoundingClientRect();
+  mochiGameplayInstance = new window.MochiCharacter({
+    canvas: canvas,
+    width: rect.width || 380,
+    height: rect.height || 600,
+    autoBlink: true,
+    cameraFov: 32,
+    cameraPos: [0, 0.15, 3.4],
+    cameraTarget: [0, -0.05, 0]
+  });
+  mochiGameplayInstance.start();
+}
+
+function initGameplayPip() {
+  const canvas = document.getElementById('duoPipCanvas');
+  if (!canvas || !window.PipCharacter || pipGameplayInstance) return;
+  const rect = canvas.getBoundingClientRect();
+  pipGameplayInstance = new window.PipCharacter({
+    canvas: canvas,
+    width: rect.width || 380,
+    height: rect.height || 600,
+    autoBlink: true,
+    cameraFov: 32,
+    cameraPos: [0, 0.15, 3.3],
+    cameraTarget: [0, -0.05, 0]
+  });
+  pipGameplayInstance.start();
+}
+
+function switchGameplayCoach(coachId) {
+  activeGameplayCoach = coachId;
+
+  // Update tabs
+  ['asha', 'mochi', 'pip'].forEach(id => {
+    const tab = document.getElementById(`tabCoach${id.charAt(0).toUpperCase() + id.slice(1)}`);
+    if (tab) tab.classList.toggle('active', id === coachId);
+  });
+
+  // Switch canvas visibility
+  const ashaCanvas = document.getElementById('duoMascotCanvas');
+  const mochiCanvas = document.getElementById('duoMochiCanvas');
+  const pipCanvas = document.getElementById('duoPipCanvas');
+
+  if (ashaCanvas) ashaCanvas.classList.toggle('active', coachId === 'asha');
+  if (mochiCanvas) mochiCanvas.classList.toggle('active', coachId === 'mochi');
+  if (pipCanvas) pipCanvas.classList.toggle('active', coachId === 'pip');
+
+  const titleEl = document.getElementById('duoSpeechTitle');
+  const moodEl = document.getElementById('duoMoodIcon');
+
+  if (coachId === 'asha') {
+    if (titleEl) titleEl.textContent = 'ASHA · BEAUTY COACH';
+    if (moodEl) moodEl.textContent = '👧✨';
+  } else if (coachId === 'mochi') {
+    if (!mochiGameplayInstance) initGameplayMochi();
+    if (titleEl) titleEl.textContent = 'MOCHI · VELVET COACH';
+    if (moodEl) moodEl.textContent = '🐰🎀';
+    if (mochiGameplayInstance) mochiGameplayInstance.setEmotion('happy');
+  } else if (coachId === 'pip') {
+    if (!pipGameplayInstance) initGameplayPip();
+    if (titleEl) titleEl.textContent = 'PIP · CELESTIAL GUIDE';
+    if (moodEl) moodEl.textContent = '🐦👑';
+    if (pipGameplayInstance) pipGameplayInstance.setEmotion('happy');
+  }
+}
+
+function setMascotMood(mood) {
+  mascotMood = mood;
+  const moodIcon = document.getElementById('duoMoodIcon');
+  if (moodIcon) {
+    if (mood === 'excited') {
+      moodIcon.textContent = activeGameplayCoach === 'mochi' ? '🐰🎉' : activeGameplayCoach === 'pip' ? '🐦💖' : '👧💖';
+    } else if (mood === 'sad') {
+      moodIcon.textContent = activeGameplayCoach === 'mochi' ? '🐰🥺' : activeGameplayCoach === 'pip' ? '🐦💔' : '👧💔';
+    } else {
+      moodIcon.textContent = activeGameplayCoach === 'mochi' ? '🐰✨' : activeGameplayCoach === 'pip' ? '🐦👑' : '👧✨';
+    }
+  }
+
+  // Forward to Mochi and Pip instances
+  if (mochiGameplayInstance) {
+    mochiGameplayInstance.setEmotion(mood === 'excited' ? 'happy' : mood === 'sad' ? 'sad' : 'neutral');
+  }
+  if (pipGameplayInstance) {
+    pipGameplayInstance.setEmotion(mood === 'excited' ? 'happy' : mood === 'sad' ? 'sad' : 'neutral');
+  }
+}
+
+// ═══ LESSON RENDERING & FLOW LOGIC ═══
+function renderCurrentLesson() {
+  const lesson = LESSONS[currentLessonIdx];
+  isAnswerChecked = false;
+  selectedOption = null;
+  practicalPlacedCount = 0;
+
+  // Update HUD
+  document.getElementById('duoChapterLabel').textContent = lesson.chapterLabel;
+  document.getElementById('duoProgressPercent').textContent = `${lesson.percent}%`;
+  document.getElementById('duoProgressFill').style.width = `${lesson.percent}%`;
+
+  // Update Texts
+  document.getElementById('duoBadgeText').textContent = lesson.badge;
+  document.getElementById('duoTitleText').textContent = lesson.title;
+  document.getElementById('duoScenarioText').textContent = lesson.scenario;
+
+  // Update Client Card
+  document.getElementById('duoClientImg').src = lesson.clientImg;
+  document.getElementById('duoClientLocation').textContent = lesson.clientLoc;
+  document.getElementById('duoClientName').textContent = lesson.clientName;
+  document.getElementById('duoClientMeta').textContent = lesson.clientMeta;
+  document.getElementById('duoClientDesc').textContent = lesson.clientDesc;
+
+  // Update Mascot speech
+  document.getElementById('duoSpeechHi').textContent = lesson.mascotQuoteStart.hi;
+  document.getElementById('duoSpeechEn').textContent = lesson.mascotQuoteStart.en;
+  setMascotMood('happy');
+
+  // Render Options
+  const grid = document.getElementById('duoOptionsGrid');
+  grid.innerHTML = '';
+  lesson.options.forEach((opt) => {
+    const card = document.createElement('div');
+    card.className = 'duo-option-card';
+    card.id = 'opt-' + opt.id;
+    card.onclick = () => selectLessonOption(opt.id, card);
+    card.innerHTML = `
+      <div class="duo-option-key">${opt.id}</div>
+      <div class="duo-option-text">
+        <strong>${opt.title}</strong>
+        <span>${opt.desc}</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Handle Practical Zone (Chandan Art)
+  const practicalZone = document.getElementById('duoPracticalZone');
+  if (lesson.hasPractical) {
+    practicalZone.classList.add('active');
+    document.getElementById('duoPracticalTitle').textContent = lesson.practicalTitle;
+    document.getElementById('duoPracticalHint').textContent = lesson.practicalHint;
+    document.getElementById('duoPracticalBgImg').src = lesson.practicalImg;
+    setupChandanGuideDots();
+  } else {
+    practicalZone.classList.remove('active');
+  }
+
+  // Reset Bottom Tray
+  const checkBtn = document.getElementById('duoCheckBtn');
+  checkBtn.disabled = true;
+  checkBtn.textContent = 'CHECK ANSWER';
+  document.getElementById('duoTrayHint').textContent = 'Select the most effective technique to proceed';
+
+  // Hide feedback drawer
+  document.getElementById('duoFeedbackDrawer').classList.remove('show');
+}
+
+function selectLessonOption(optId, cardElement) {
+  if (isAnswerChecked) return;
+  selectedOption = optId;
+  duoAudio.playChime();
+
+  document.querySelectorAll('.duo-option-card').forEach(c => c.classList.remove('selected'));
+  cardElement.classList.add('selected');
+
+  document.getElementById('duoCheckBtn').disabled = false;
+  document.getElementById('duoTrayHint').textContent = 'Press Check Answer to evaluate your bridal formulation';
+}
+
+function setupChandanGuideDots() {
+  const container = document.getElementById('chandanGuideContainer');
+  container.innerHTML = '';
+  practicalPlacedCount = 0;
+  updatePracticalCounter();
+
+  // 7 brow coordinates across Kuhu Khare's forehead (% coords)
+  const dotCoords = [
+    { top: 40, left: 34 },
+    { top: 37, left: 39 },
+    { top: 35, left: 44 },
+    { top: 34, left: 50 }, // Center
+    { top: 35, left: 56 },
+    { top: 37, left: 61 },
+    { top: 40, left: 66 }
+  ];
+
+  dotCoords.forEach((pt, idx) => {
+    const dot = document.createElement('div');
+    dot.className = 'chandan-guide-dot';
+    dot.style.top = `${pt.top}%`;
+    dot.style.left = `${pt.left}%`;
+    dot.title = `Place Chandan Dot ${idx + 1}`;
+    dot.onclick = () => {
+      if (!dot.classList.contains('painted')) {
+        dot.classList.add('painted');
+        practicalPlacedCount++;
+        duoAudio.playChime();
+        updatePracticalCounter();
+        setMascotMood('excited');
+        setTimeout(() => setMascotMood('happy'), 1000);
+      }
+    };
+    container.appendChild(dot);
+  });
+}
+
+function updatePracticalCounter() {
+  const el = document.getElementById('duoPracticalCounter');
+  if (el) el.textContent = `${practicalPlacedCount} / 7 PLACED`;
+}
+
+function onCheckAnswer() {
+  if (isAnswerChecked || !selectedOption) return;
+  isAnswerChecked = true;
+
+  const lesson = LESSONS[currentLessonIdx];
+  const chosenOpt = lesson.options.find(o => o.id === selectedOption);
+  const isCorrect = chosenOpt && chosenOpt.correct;
+
+  const drawer = document.getElementById('duoFeedbackDrawer');
+  const icon = document.getElementById('duoFeedbackIcon');
+  const title = document.getElementById('duoFeedbackTitle');
+  const expl = document.getElementById('duoFeedbackExplanation');
+  const contBtn = document.getElementById('duoContinueBtn');
+
+  drawer.className = 'duo-feedback-drawer show ' + (isCorrect ? 'correct' : 'incorrect');
+
+  if (isCorrect) {
+    duoAudio.playCorrect();
+    setMascotMood('excited');
+    icon.textContent = '✓';
+    title.textContent = 'शानदार! (Splendid!)';
+    expl.textContent = lesson.correctExplanation;
+    contBtn.textContent = 'CONTINUE →';
+
+    // Award XP
+    xp += 50;
+    document.getElementById('duoXpDisplay').textContent = `✨ ${xp} XP`;
+
+    // Mascot cheers
+    document.getElementById('duoSpeechHi').textContent = lesson.mascotQuoteCorrect.hi;
+    document.getElementById('duoSpeechEn').textContent = lesson.mascotQuoteCorrect.en;
+
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 60, spread: 70, origin: { y: 0.8 } });
+    }
+  } else {
+    duoAudio.playWrong();
+    setMascotMood('sad');
+    icon.textContent = '✕';
+    title.textContent = 'Almost! Try Again.';
+    expl.textContent = lesson.wrongExplanation;
+    contBtn.textContent = 'RE-ATTEMPT';
+
+    // Deduct Heart
+    hearts = Math.max(1, hearts - 1);
+    updateHeartsUI();
+
+    document.getElementById('duoSpeechHi').textContent = "कोई बात नहीं! फिर से सोचिए, हर गलती एक नया सबक है!";
+    document.getElementById('duoSpeechEn').textContent = "\"No worries! Think again, every mistake teaches a new technique!\"";
+  }
+}
+
+function updateHeartsUI() {
+  const el = document.getElementById('duoHeartsDisplay');
+  let hStr = '';
+  for (let i = 0; i < hearts; i++) hStr += '❤️';
+  for (let i = hearts; i < 3; i++) hStr += '💔';
+  el.innerHTML = hStr;
+}
+
+function onContinueNext() {
+  const drawer = document.getElementById('duoFeedbackDrawer');
+  const isCorrect = drawer.classList.contains('correct');
+
+  if (!isCorrect) {
+    // Re-attempt current lesson
+    drawer.classList.remove('show');
+    isAnswerChecked = false;
+    document.getElementById('duoCheckBtn').disabled = false;
+    return;
+  }
+
+  // Proceed to next lesson or victory
+  if (currentLessonIdx < LESSONS.length - 1) {
+    currentLessonIdx++;
+    renderCurrentLesson();
+  } else {
+    showVictoryModal();
+  }
+}
+
+function showVictoryModal() {
+  const modal = document.getElementById('duoVictoryModal');
+  if (modal) modal.classList.add('active');
+  duoAudio.playVictory();
+  setMascotMood('excited');
+  if (typeof confetti === 'function') {
+    confetti({ particleCount: 140, spread: 90, origin: { y: 0.5 } });
+  }
+}
+
+function closeVictory() {
+  const modal = document.getElementById('duoVictoryModal');
+  if (modal) modal.classList.remove('active');
+}
+
+// Sound toggle
+document.getElementById('duoSoundToggle').addEventListener('click', function() {
+  duoAudio.enabled = !duoAudio.enabled;
+  this.textContent = duoAudio.enabled ? '🔊' : '🔇';
+});
+
+// Window resize
+window.addEventListener('resize', () => {
+  const canvas = document.getElementById('duoMascotCanvas');
+  if (!canvas || !mascotCamera || !mascotRenderer) return;
+  const rect = canvas.getBoundingClientRect();
+  mascotCamera.aspect = rect.width / rect.height;
+  mascotCamera.updateProjectionMatrix();
+  mascotRenderer.setSize(rect.width, rect.height);
+});
+
+// Initialize on DOM Ready
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('gameplay-active');
+  initDuoMascot();
+  renderCurrentLesson();
+});
+</script>
+{% endblock %}
