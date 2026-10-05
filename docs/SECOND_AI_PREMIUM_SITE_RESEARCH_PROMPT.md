@@ -86,6 +86,7 @@ These are research leads, not instructions to clone. Review the actual current s
 - **Cartier Watches & Wonders 2026** — live lead `https://www.cartier.com/watchesandwonders`; Awwwards `https://www.awwwards.com/sites/cartier-watches-wonders-2026`; technical description `https://www.webgpu.com/showcase/cartier-watches-and-wonders-immersive-garden/`. A luxury-object/immersive-world lead; the technical article describes six scrollable 3D alcoves. Verify the page's current availability and whether it has appropriate mobile/reduced-motion behavior.
 - **The Watch** — Awwwards entry `https://www.awwwards.com/sites/the-watch`. A luxury object / real-time WebGL and Three.js lead. The direct live project URL is not yet confirmed; find it if possible and mark it unverified if unavailable.
 - **Mousham Singh 3D Web** — portfolio lead `https://mousham.design`; Awwwards `https://www.awwwards.com/sites/mousham-singh-3d-web`. Useful as a 3D artist/portfolio and scroll-motion reference, not as a beauty-business template.
+- **The World of Vogue Talents** — FWA case `https://thefwa.com/cases/the-world-of-vogue-talents-p2`. A fashion/editorial 3D-world lead: the FWA case describes a walkable desert, symbolic portals and photogrammetry fashion objects. Inspect its current availability and use only the world-building/art-direction lessons, not its navigation as a default for bookings.
 - **Sleep Well Creatives** — `https://sleep-well-creatives.com`. A 3D narrative/pacing lead; study story sequencing and craft separately from luxury beauty art direction. Use third-party writeups only as leads, not primary proof.
 - **MONOGRID** — `https://www.monogrid.com/`; Awwwards entry `https://www.awwwards.com/sites/monogrid-com`. Creative-studio 3D/scroll craft; use for technique and atmosphere, not a ready-made salon structure.
 - **Future of Beauty** — Awwwards project lead `https://www.awwwards.com/sites/future-of-beauty`; investigate the original L’Oréal experience/live archive if available and mark availability honestly.
@@ -140,5 +141,6 @@ These are starting points and should still be checked live by the second AI:
 - [Cartier Watches & Wonders 2026 — Awwwards](https://www.awwwards.com/sites/cartier-watches-wonders-2026) · [Immersive Garden technical overview](https://www.webgpu.com/showcase/cartier-watches-and-wonders-immersive-garden/)
 - [The Watch — Awwwards](https://www.awwwards.com/sites/the-watch)
 - [Mousham Singh 3D Web — Awwwards](https://www.awwwards.com/sites/mousham-singh-3d-web) · [portfolio](https://mousham.design)
+- [The World of Vogue Talents — FWA](https://thefwa.com/cases/the-world-of-vogue-talents-p2)
 - [Sleep Well Creatives — live experience](https://sleep-well-creatives.com)
 - [MONOGRID — Awwwards](https://www.awwwards.com/sites/monogrid-com)
