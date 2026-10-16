@@ -11,16 +11,39 @@ Your project now follows the official Spec-Driven Development (SDD) standard:
 ```
 .specify/
 ├── memory/
-│   └── constitution.md              <-- Foundational rules, architectural mandates, aesthetic principles
+│   ├── constitution.md                      <-- Foundational rules, architectural mandates, aesthetic principles
+│   ├── constitution-pip-mascot-concierge.md <-- Pip 3D mascot, Three.js r128 fidelity, autonomous kinematics
+│   ├── constitution-high-conversion-seo.md  <-- Technical SEO, schema engine, modular conversion architecture
+│   ├── constitution-pixar-3d-mascot.md      <-- Pixar child mascot sub-standard
+│   └── constitution-3d-orbit-and-motion.md  <-- 3D cylinder orbit and motion sub-standard
 ├── specs/
-│   └── SPEC-001-vector-curtain-entrance.md <-- Feature requirements, user stories, acceptance criteria
+│   ├── SPEC-001 ... SPEC-016
+│   ├── SPEC-017-pip-autonomous-concierge-3d.md             <-- 3D Pip Mascot Autonomous Concierge & Scroll Decoupling
+│   ├── SPEC-018-comprehensive-seo-architecture.md          <-- Luxury SEO, Structured Schema & Crawlability
+│   └── SPEC-019-website-simplification-and-modular-pages.md <-- Modular Page Architecture & Conversion Funnel
 ├── plans/
-│   └── PLAN-001-vector-curtain-entrance.md <-- Architecture, DOM design, timing sequences
+│   ├── PLAN-001 ... PLAN-016
+│   ├── PLAN-017-pip-autonomous-concierge-3d.md
+│   ├── PLAN-018-comprehensive-seo-architecture.md
+│   └── PLAN-019-website-simplification-and-modular-pages.md
 └── tasks/
-    └── TASKS-001-vector-curtain-entrance.md <-- Granular tasks (TSK-01 through TSK-08)
+    ├── TASKS-001 ... TASKS-016
+    ├── TASKS-017-pip-autonomous-concierge-3d.md
+    ├── TASKS-018-comprehensive-seo-architecture.md
+    └── TASKS-019-website-simplification-and-modular-pages.md
 ```
 
 ---
+
+## Active Milestone Specifications Index
+
+| Spec ID | Feature Title | Focus Area | Status |
+| :--- | :--- | :--- | :--- |
+| **SPEC-017** | [3D Pip Mascot Autonomous Concierge](file:///.specify/specs/SPEC-017-pip-autonomous-concierge-3d.md) | Decouple from scroll, 2.5s autonomous peek & 3.5s reveal, Pip default bird mascot | `Completed & Verified` |
+| **SPEC-018** | [Comprehensive Luxury SEO Architecture](file:///.specify/specs/SPEC-018-comprehensive-seo-architecture.md) | Meta tag inheritance, JSON-LD BeautySalon schema, sitemap.xml, robots.txt | `Completed & Verified` |
+| **SPEC-019** | [Website Simplification & Modular Pages](file:///.specify/specs/SPEC-019-website-simplification-and-modular-pages.md) | Deconstruct 4,400-line monolith, 5-link luxury nav, dedicated subpages, 1 primary CTA | `Completed & Verified` |
+| **SPEC-020** | [Pip Flight Kinematics & Editorial Refinement](file:///.specify/specs/SPEC-020-pip-flight-drag-and-editorial-refinement.md) | 3D flight entrance, pointer drag-and-drop relocation, authentic bridal copy | `Completed & Verified` |
+
 
 ## 2. The 5 Spec Kit Workflow Phases & Commands
 

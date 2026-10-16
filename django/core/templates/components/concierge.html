@@ -17,6 +17,8 @@
   pointer-events: none;
   overflow: visible;
   font-family: var(--font-b, 'Outfit', 'Segoe UI', Arial, sans-serif);
+  touch-action: none;
+  user-select: none;
 }
 
 #cc-canvas {
@@ -27,9 +29,54 @@
   height: 380px;
   display: block;
   pointer-events: auto;
-  cursor: pointer;
+  cursor: grab;
   z-index: 3;
   touch-action: none;
+}
+
+#cc-canvas:active,
+#cc-stage.is-dragging #cc-canvas {
+  cursor: grabbing;
+}
+
+/* Landing Halo Wave Ring */
+.cc-landing-ring {
+  position: absolute;
+  left: 50%;
+  bottom: 150px;
+  width: 140px;
+  height: 140px;
+  margin-left: -70px;
+  margin-bottom: -70px;
+  border-radius: 50%;
+  border: 3px solid var(--gold, #D4AF37);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.8), inset 0 0 15px rgba(212, 175, 55, 0.5);
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transform: scale(0.2) rotateX(65deg);
+}
+
+.cc-landing-ring.pulse {
+  animation: cc-ring-pulse 1.35s cubic-bezier(0.1, 0.85, 0.25, 1) forwards;
+}
+
+@keyframes cc-ring-pulse {
+  0% {
+    opacity: 0.95;
+    transform: scale(0.2) rotateX(65deg);
+    border-color: #F5EDD6;
+    box-shadow: 0 0 35px rgba(240, 208, 96, 0.95);
+  }
+  50% {
+    opacity: 0.75;
+    border-color: var(--gold, #D4AF37);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.4) rotateX(65deg);
+    box-shadow: 0 0 55px rgba(212, 175, 55, 0);
+  }
 }
 
 /* Speech Bubble */
@@ -327,12 +374,13 @@
 
   <!-- 3D WebGL Canvas for Mochi & Pip -->
   <canvas id="cc-canvas" width="340" height="460" aria-label="Interactive 3D Concierge Character"></canvas>
+  <div id="cc-landing-ring" class="cc-landing-ring" aria-hidden="true"></div>
 
   <!-- Docked Control & Interaction Panel -->
   <div id="cc-dock" role="dialog" aria-modal="false" aria-label="Concierge Chat">
     <div class="cc-dock-hdr">
       <div class="cc-dock-title">
-        <span>✨</span> <span id="cc-dock-name">Mochi Concierge</span>
+        <span>✨</span> <span id="cc-dock-name">Pip Concierge</span>
       </div>
       <div class="cc-dock-tools">
         <button type="button" class="cc-tool-btn" id="cc-mute-btn" onclick="window.ConciergeController && window.ConciergeController.toggleMute()" title="Toggle voice audio">🔊</button>
@@ -342,11 +390,11 @@
 
     <!-- Character Switcher Pills -->
     <div class="cc-switcher" role="tablist" aria-label="Select Concierge Character">
-      <button type="button" class="cc-switch-btn active" id="cc-sw-mochi" role="tab" aria-selected="true" onclick="window.ConciergeController && window.ConciergeController.switchCast('mochi')">
-        <span>🐰</span> Mochi
-      </button>
-      <button type="button" class="cc-switch-btn" id="cc-sw-pip" role="tab" aria-selected="false" onclick="window.ConciergeController && window.ConciergeController.switchCast('pip')">
+      <button type="button" class="cc-switch-btn active" id="cc-sw-pip" role="tab" aria-selected="true" onclick="window.ConciergeController && window.ConciergeController.switchCast('pip')">
         <span>🐦</span> Pip
+      </button>
+      <button type="button" class="cc-switch-btn" id="cc-sw-mochi" role="tab" aria-selected="false" onclick="window.ConciergeController && window.ConciergeController.switchCast('mochi')">
+        <span>🐰</span> Mochi
       </button>
     </div>
 
@@ -364,7 +412,7 @@
 
     <!-- Input Bar -->
     <form class="cc-input-row" onsubmit="event.preventDefault(); window.ConciergeController && window.ConciergeController.submitInput();">
-      <input type="text" class="cc-input" id="cc-text-input" placeholder="Ask Mochi or Pip..." autocomplete="off">
+      <input type="text" class="cc-input" id="cc-text-input" placeholder="Ask Pip or Mochi..." autocomplete="off">
       <button type="submit" class="cc-send-btn">Ask</button>
     </form>
   </div>
@@ -496,7 +544,7 @@
       dockRig.position.y = PEEK_Y;
     }
     cur.setEmotion('wink', false);
-    showBubble(cur.name === 'Mochi' ? 'May I help you? <span class="wave">🐰</span>' : 'May I help you? <span class="wave">🐦</span>', { sticky: true });
+    showBubble(cur.name === 'Pip' ? 'May I help you? <span class="wave">🐦</span>' : 'May I help you? <span class="wave">🐰</span>', { sticky: true });
     clearTimeout(retreatTimer);
     retreatTimer = setTimeout(function () {
       if (phase === 'peek') unpeek();
@@ -516,26 +564,58 @@
     }
   }
 
-  function comeOut() {
-    if (phase === 'out' || !cur || !dockRig) return;
+  function triggerLandingRing() {
+    const ring = document.getElementById('cc-landing-ring');
+    if (!ring) return;
+    ring.classList.remove('pulse');
+    void ring.offsetWidth; // trigger reflow
+    ring.classList.add('pulse');
+  }
+
+  function comeOut(isRelocating) {
+    if (phase === 'out' && !isRelocating) return;
     phase = 'out';
     clearTimeout(retreatTimer);
     hideBubble();
-    if (G) {
-      G.timeline()
-        .to(dockRig.position, { y: OUT_Y + 0.16, duration: 0.8, ease: 'power3.out' })
-        .to(dockRig.position, { y: OUT_Y, duration: 0.45, ease: 'bounce.out' });
-    } else {
+
+    if (G && dockRig) {
+      if (cur && cur.name === 'Pip') {
+        // Organic swooping flight entrance for Pip
+        cur.flap = 2.4;
+        cur.setEmotion('happy', false);
+        G.timeline()
+          .fromTo(dockRig.position, 
+            { y: PEEK_Y - 0.4, x: -0.35, z: -0.5 },
+            { y: OUT_Y + 0.22, x: 0.1, z: 0.1, duration: 0.85, ease: 'power2.out' }
+          )
+          .to(dockRig.position, {
+            y: OUT_Y, x: 0, z: 0, duration: 0.55, ease: 'bounce.out',
+            onComplete: () => {
+              cur.flap = 1.0;
+              triggerLandingRing();
+              if (cur.onSpark) cur.onSpark(new THREE.Vector3(0, 0.4, 0.2), 12);
+            }
+          });
+      } else {
+        G.timeline()
+          .to(dockRig.position, { y: OUT_Y + 0.16, duration: 0.8, ease: 'power3.out' })
+          .to(dockRig.position, { 
+            y: OUT_Y, duration: 0.45, ease: 'bounce.out',
+            onComplete: () => triggerLandingRing()
+          });
+      }
+    } else if (dockRig) {
       dockRig.position.y = OUT_Y;
+      triggerLandingRing();
     }
-    cur.setEmotion('happy', false);
+    if (cur) cur.setEmotion('happy', false);
     if (dockEl) dockEl.classList.add('open');
     setTimeout(function () {
       if (phase !== 'out') return;
-      cur.setEmotion('welcome', false);
-      const greeting = cur.name === 'Mochi'
-        ? 'Ram Ram! Main Mochi hoon. Bridal, hair, nails — sab bataungi. 😊'
-        : 'Hello! Pip here. Shall we find your royal look? ✨';
+      if (cur) cur.setEmotion('welcome', false);
+      const greeting = cur && cur.name === 'Pip'
+        ? '🙏 राम राम! Pip here. Ready to find your royal bridal look? ✨'
+        : 'Ram Ram! Main Mochi hoon. Bridal, hair, nails — sab bataungi. 😊';
       showBubble(greeting);
       appendLog(greeting);
       if (talker) talker.speak(greeting);
@@ -701,9 +781,10 @@
     dockRig.add(mochi.root);
     dockRig.add(pip.root);
 
-    pip.root.visible = false;
-    cur = mochi;
-    curId = 'mochi';
+    mochi.root.visible = false;
+    pip.root.visible = true;
+    cur = pip;
+    curId = 'pip';
 
     talker = makeTalker(cur);
     clock = new THREE.Clock();
@@ -733,12 +814,46 @@
     mochi.onSpark = emitSparkle;
     pip.onSpark = emitSparkle;
 
-    // Pointer tracking
+    // Pointer tracking & Draggable Relocation
     const ray = new THREE.Raycaster();
     const ndc = new THREE.Vector2();
+    const stageEl = document.getElementById('cc-stage');
     let downX = 0, downY = 0;
+    let stageStartX = 0, stageStartY = 0;
+    let isDragging = false;
+    let dragDistance = 0;
 
     window.addEventListener('pointermove', (e) => {
+      // 1. If currently dragging Pip across the screen:
+      if (isDragging && stageEl) {
+        const dx = e.clientX - downX;
+        const dy = e.clientY - downY;
+        const newLeft = stageStartX + dx;
+        const newTop = stageStartY + dy;
+
+        // Keep stage within viewport bounds
+        const maxLeft = window.innerWidth - (stageEl.offsetWidth || 320);
+        const maxTop = window.innerHeight - (stageEl.offsetHeight || 520);
+        const clampLeft = Math.max(10, Math.min(maxLeft - 10, newLeft));
+        const clampTop = Math.max(10, Math.min(maxTop - 10, newTop));
+
+        stageEl.style.left = `${clampLeft}px`;
+        stageEl.style.top = `${clampTop}px`;
+        stageEl.style.right = 'auto';
+        stageEl.style.bottom = 'auto';
+
+        // Bank tilt and flight flaps proportional to movement
+        if (cur) {
+          cur.flap = 2.6;
+          if (dockRig) {
+            dockRig.rotation.z = Math.max(-0.25, Math.min(0.25, -dx * 0.005));
+            dockRig.rotation.x = Math.max(-0.2, Math.min(0.2, dy * 0.005));
+          }
+        }
+        return;
+      }
+
+      // 2. Otherwise regular gaze tracking:
       const r = cvs.getBoundingClientRect();
       const px = ((e.clientX - (r.left + r.width / 2)) / (window.innerWidth / 2));
       const py = ((e.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2));
@@ -746,29 +861,97 @@
         cur.gazeTarget.x = Math.max(-1, Math.min(1, px));
         cur.gazeTarget.y = Math.max(-1, Math.min(1, py));
       }
-    }, { passive: true });
+    }, { passive: false });
 
     cvs.addEventListener('pointerdown', (e) => {
       downX = e.clientX;
       downY = e.clientY;
+      dragDistance = 0;
       armIdleChat();
+
+      if (stageEl) {
+        const rect = stageEl.getBoundingClientRect();
+        stageStartX = rect.left;
+        stageStartY = rect.top;
+      }
+
+      // Check if clicked character directly
+      const r = cvs.getBoundingClientRect();
+      ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+      ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+      ray.setFromCamera(ndc, camera);
+      const hits = cur ? ray.intersectObject(cur.root, true) : [];
+
+      if (hits.length > 0) {
+        isDragging = true;
+        if (stageEl) stageEl.classList.add('is-dragging');
+        cvs.setPointerCapture(e.pointerId);
+
+        // Enter flight mode immediately
+        if (cur) {
+          cur.flap = 2.5;
+          cur.setEmotion('happy', false);
+          if (cur.name === 'Pip' && cur.react_shyFly) {
+            // activate wing flutter
+          }
+          if (cur.onSpark) cur.onSpark(new THREE.Vector3(0, 0.9, 0.2), 6);
+        }
+      }
     });
 
-    cvs.addEventListener('pointerup', (e) => {
+    const endDragOrClick = (e) => {
+      if (isDragging) {
+        isDragging = false;
+        if (stageEl) stageEl.classList.remove('is-dragging');
+        try { cvs.releasePointerCapture(e.pointerId); } catch(err) {}
+
+        dragDistance = Math.hypot(e.clientX - downX, e.clientY - downY);
+
+        if (cur) {
+          cur.flap = 1.0;
+          if (dockRig) {
+            if (G) {
+              G.to(dockRig.rotation, { x: 0, z: 0, duration: 0.45, ease: 'back.out(1.5)' });
+              G.to(dockRig.position, { y: OUT_Y, duration: 0.35, ease: 'bounce.out' });
+            } else {
+              dockRig.rotation.x = 0;
+              dockRig.rotation.z = 0;
+              dockRig.position.y = OUT_Y;
+            }
+          }
+
+          // Trigger landing ripple circle effect on settling down
+          triggerLandingRing();
+          if (cur.onSpark) cur.onSpark(new THREE.Vector3(0, 0.4, 0.2), 16);
+          cur.setEmotion('welcome', false);
+        }
+
+        // If moved more than 10px, it was a drag, so don't fire tap reaction
+        if (dragDistance > 10) {
+          return;
+        }
+      }
+
+      // Normal tap/click handling
       if (Math.abs(e.clientX - downX) > 6 || Math.abs(e.clientY - downY) > 6) return;
       const r = cvs.getBoundingClientRect();
       ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
       ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
       ray.setFromCamera(ndc, camera);
-      const hits = ray.intersectObject(cur.root, true);
+      const hits = cur ? ray.intersectObject(cur.root, true) : [];
 
       if (phase !== 'out') {
         comeOut();
         return;
       }
-      cur.react();
-      if (hits.length && cur.onSpark) cur.onSpark(hits[0].point, 8);
-    });
+      if (cur) {
+        cur.react();
+        if (hits.length && cur.onSpark) cur.onSpark(hits[0].point, 8);
+      }
+    };
+
+    cvs.addEventListener('pointerup', endDragOrClick);
+    cvs.addEventListener('pointercancel', endDragOrClick);
 
     // Main Render Loop
     function animate() {
@@ -797,21 +980,20 @@
     }
     animate();
 
-    // Scroll trigger setup
-    function setupScrollTrigger() {
-      if (window.gsap && window.ScrollTrigger) {
-        window.gsap.registerPlugin(window.ScrollTrigger);
-        window.ScrollTrigger.create({
-          trigger: '#services-section',
-          start: 'top 72%',
-          onEnter: peek,
-          onLeaveBack: unpeek
-        });
-      } else {
-        setTimeout(peek, 1800);
-      }
+    // Autonomous entrance setup (Decoupled from scroll per SPEC-017)
+    function setupAutonomousEntrance() {
+      // Graceful 2.5s delay after page load: peek over the dock
+      setTimeout(() => {
+        peek();
+        // 1.0s after peeking (at 3.5s total): automatically emerge into full concierge assistant
+        setTimeout(() => {
+          if (phase === 'peek') {
+            comeOut();
+          }
+        }, 1000);
+      }, 2500);
     }
-    setupScrollTrigger();
+    setupAutonomousEntrance();
   }
 
   // Window resize handler

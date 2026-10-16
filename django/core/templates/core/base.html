@@ -5,8 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>{% block title %}Anshita Makeover — India's Premier Bridal Studio{% endblock %}</title>
-<meta name="description" content="{% block meta_description %}Anshita Makeover — India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio{% endblock %}">
-<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+<meta name="description" content="{% block meta_description %}Anshita Makeover — India's Premier Bridal Couture, 18-Hour Cry-Proof HD Airbrush, Hair Artistry & Beauty Studio in Jhansi, Bundelkhand & Pan-India.{% endblock %}">
+<meta name="keywords" content="{% block meta_keywords %}luxury bridal makeup jhansi, wedding makeup artist jhansi, anshita makeover, bridal studio bundelkhand, hd airbrush makeup jhansi{% endblock %}">
+<link rel="canonical" href="{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}">
 <link rel="icon" type="image/jpeg" href="{% static 'core/images/logo.jpeg' %}">
 <link rel="apple-touch-icon" href="{% static 'core/images/icons/icon-192.png' %}">
 <link rel="manifest" href="/manifest.json">
@@ -20,48 +21,61 @@
 <meta name="csrf-token" content="{{ csrf_token }}">
 <meta name="anshita-rate-limit" content="15/m">
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
+<!-- Open Graph / Facebook / WhatsApp -->
+<meta property="og:type" content="{% block og_type %}business.business{% endblock %}">
 <meta property="og:site_name" content="Anshita Makeover">
-<meta property="og:title" content="{% block og_title %}Anshita Makeover — India's Premier Bridal Studio{% endblock %}">
-<meta property="og:description" content="Anshita Makeover — India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio">
-<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/og-cover.jpg' %}">
+<meta property="og:title" content="{% block og_title %}Anshita Makeover — Premier Luxury Bridal Studio & Academy Jhansi{% endblock %}">
+<meta property="og:description" content="{% block og_description %}Experience luxury bespoke bridal makeup, 18-hour cry-proof HD airbrush artistry, and certified beauty masterclasses by Anshita Sinha in Jhansi & Pan-India.{% endblock %}">
+<meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/og-cover.jpg' %}{% endblock %}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+<meta property="og:locale" content="en_IN">
 
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Anshita Makeover — India's Premier Bridal Studio">
-<meta name="twitter:description" content="India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio">
-<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/og-cover.jpg' %}">
+<meta name="twitter:title" content="{% block twitter_title %}Anshita Makeover — Premier Luxury Bridal Studio & Academy{% endblock %}">
+<meta name="twitter:description" content="{% block twitter_description %}18-hour cry-proof bridal makeup, HD airbrush artistry, and royal bridal couture transformations in Jhansi & Pan-India.{% endblock %}">
+<meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/og-cover.jpg' %}{% endblock %}">
 
 <!-- Structured Data: LocalBusiness & BridalSalon -->
+{% block structured_data %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": ["BeautySalon", "LocalBusiness"],
   "name": "Anshita Makeover",
+  "alternateName": "Anshita Makeover Luxury Bridal Studio & Academy",
   "image": "{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/logo.jpeg' %}",
-  "description": "Luxury bespoke bridal makeup, HD airbrush artistry, couture hairstyling, and draping studio.",
+  "description": "Luxury bespoke bridal makeup, 18-hour cry-proof HD airbrush artistry, couture hairstyling, and certified beauty masterclasses in Jhansi, Bundelkhand & Pan-India.",
   "url": "https://anshitamakeover.com/",
-  "telephone": "+91-7879223442",
-  "priceRange": "₹₹₹",
+  "telephone": "+91-95594-55444",
+  "priceRange": "₹₹₹₹",
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "4.98",
     "bestRating": "5",
-    "ratingCount": "120"
+    "ratingCount": "520"
   },
   "address": {
     "@type": "PostalAddress",
+    "streetAddress": "Civil Lines",
+    "addressLocality": "Jhansi",
+    "addressRegion": "Uttar Pradesh",
+    "postalCode": "284001",
     "addressCountry": "IN"
   },
-  "areaServed": {
-    "@type": "Country",
-    "name": "India"
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 25.4484,
+    "longitude": 78.5685
   },
+  "areaServed": [
+    { "@type": "City", "name": "Jhansi" },
+    { "@type": "State", "name": "Uttar Pradesh" },
+    { "@type": "Country", "name": "India" }
+  ],
   "openingHoursSpecification": [
     {
       "@type": "OpeningHoursSpecification",
@@ -69,9 +83,13 @@
       "opens": "07:00",
       "closes": "22:00"
     }
+  ],
+  "sameAs": [
+    "https://www.instagram.com/anshitamakeover/"
   ]
 }
 </script>
+{% endblock %}
 <link rel="preload" as="image" href="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,8 +117,8 @@
 <script src="{% static 'core/js/lumiere-characters.js' %}"></script>
 <!-- Security: strict DOM sanitiser for every innerHTML sink (audit §7.1) -->
 <script src="{% static 'core/js/sanitize-html.js' %}"></script>
-<!-- Scroll-scrubbed walk-and-dock controller (audit §6) -->
-<script src="{% static 'core/js/controllers/mascot-scroll-engine.js' %}"></script>
+<!-- Scroll-scrubbed walk-and-dock controller (Deactivated per SPEC-017 in favor of autonomous Pip Concierge) -->
+<!-- <script src="{% static 'core/js/controllers/mascot-scroll-engine.js' %}"></script> -->
 
 <link rel="stylesheet" href="{% static 'core/css/animations.css' %}">
 <script>
@@ -2859,6 +2877,7 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
    medallion itself is parked inside it (invisible but laid out) so the dock
    target can always be measured with getBoundingClientRect(). */
 #mascot-walk-stage {
+  display: none !important;
   position: fixed;
   inset: 0;
   z-index: 9400;
@@ -2978,13 +2997,15 @@ html.mascot-engine-ready .chat-toggle-wrap.char-pre-entry {
   opacity: 0;
   z-index: 1;
 }
-.char-entry-portal.active {
-  animation: portalBloom 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.char-entry-portal.active,
+.char-entry-portal.pulse {
+  animation: portalBloom 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 @keyframes portalBloom {
-  0% { opacity: 0; transform: translateX(-50%) scale(0.2); }
-  35% { opacity: 1; transform: translateX(-50%) scale(1.4); }
-  100% { opacity: 0; transform: translateX(-50%) scale(2.1); }
+  0% { opacity: 0; transform: translateX(-50%) scale(0.2); filter: blur(2px); }
+  25% { opacity: 1; transform: translateX(-50%) scale(1.6); border: 2px solid #F5EDD6; box-shadow: 0 0 45px rgba(212,175,55,0.95); filter: blur(4px); }
+  70% { opacity: 0.6; transform: translateX(-50%) scale(2.4); border: 1.5px solid #D4AF37; }
+  100% { opacity: 0; transform: translateX(-50%) scale(3.2); filter: blur(12px); }
 }
 
 .chat-toggle-wrap.char-pre-entry {
@@ -2995,29 +3016,33 @@ html.mascot-engine-ready .chat-toggle-wrap.char-pre-entry {
 }
 .chat-toggle-wrap.char-entered {
   visibility: visible !important;
-  animation: conciergeScrollEntrance 1.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: conciergeFlightEntrance 1.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   pointer-events: auto !important;
 }
 .chat-toggle-wrap.char-exiting {
   pointer-events: none !important;
   animation: conciergeScrollExit 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
-@keyframes conciergeScrollEntrance {
+.chat-toggle-wrap.is-flying {
+  cursor: grabbing !important;
+  transition: transform 0.08s ease-out;
+}
+@keyframes conciergeFlightEntrance {
   0% {
     opacity: 0;
-    transform: translateY(90px) scale(0.2) rotate(-20deg);
+    transform: translate(-40px, 80px) scale(0.3) rotate(-15deg);
   }
-  50% {
+  40% {
     opacity: 1;
-    transform: translateY(-24px) scale(1.45) rotate(6deg);
+    transform: translate(15px, -35px) scale(1.3) rotate(8deg);
   }
   75% {
     opacity: 1;
-    transform: translateY(3px) scale(0.96) rotate(-2deg);
+    transform: translate(-4px, 4px) scale(0.95) rotate(-3deg);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1) rotate(0deg);
+    transform: translate(0, 0) scale(1) rotate(0deg);
   }
 }
 @keyframes conciergeScrollExit {
@@ -6826,6 +6851,8 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
 
 {% block content %}{% endblock %}
 
+{% include 'components/footer.html' %}
+
 {% if request.path != '/chatbot/' %}
 {% include 'components/chatbot_modal.html' %}
 {% endif %}
@@ -7107,7 +7134,7 @@ document.addEventListener('mouseout', e => {
 });
 
 /* ── AI ROYAL CONCIERGE STATE & QUICK ACTIONS ── */
-window.activeConciergeChar = localStorage.getItem('anshita_active_char') || 'asha';
+window.activeConciergeChar = localStorage.getItem('anshita_active_char') || 'pip';
 
 window.charConciergeState = {
   mood: 'happy',
@@ -7278,6 +7305,53 @@ window.quickAskConcierge = function(query) {
   }
 };
 
+/* ── UNIVERSAL 3D CONCIERGE ENTRANCE & EXIT CONTROLLER ── */
+window.triggerConciergeEntrance = function() {
+  const wrap = document.getElementById('chat-toggle-wrap');
+  if (!wrap || wrap.classList.contains('char-entered')) return;
+  const portalEl = document.getElementById('charEntryPortal');
+  if (portalEl) {
+    portalEl.classList.remove('active');
+    void portalEl.offsetWidth;
+    portalEl.classList.add('active');
+  }
+  wrap.classList.remove('char-pre-entry', 'char-exiting');
+  wrap.classList.add('char-entered');
+
+  // Pop speech bubble greeting
+  setTimeout(() => {
+    const bubble = document.getElementById('chat-speech-bubble');
+    const chatBox = document.getElementById('chat-box');
+    if (bubble && (!chatBox || !chatBox.classList.contains('open')) && !document.body.classList.contains('chat-is-open')) {
+      bubble.classList.add('active');
+      setTimeout(() => {
+        if (bubble && typeof isHoveringBubble !== 'undefined' && !isHoveringBubble) {
+          bubble.classList.remove('active');
+        }
+      }, 7000);
+    }
+  }, 800);
+};
+
+window.triggerConciergeExit = function() {
+  const wrap = document.getElementById('chat-toggle-wrap');
+  if (!wrap || !wrap.classList.contains('char-entered')) return;
+  const chatBox = document.getElementById('chat-box');
+  if (chatBox && chatBox.classList.contains('open')) return;
+
+  wrap.classList.remove('char-entered');
+  wrap.classList.add('char-exiting');
+  const bubble = document.getElementById('chat-speech-bubble');
+  if (bubble) bubble.classList.remove('active');
+
+  setTimeout(() => {
+    if (wrap.classList.contains('char-exiting')) {
+      wrap.classList.remove('char-exiting');
+      wrap.classList.add('char-pre-entry');
+    }
+  }, 500);
+};
+
 /* ── 3D PIXAR-STYLE CUTE KID AI CONCIERGE ("ASHA") CONTROLLER ── */
 (function initAshaPixarConcierge() {
   const toggleWrap = document.getElementById('chat-toggle-wrap');
@@ -7285,53 +7359,6 @@ window.quickAskConcierge = function(query) {
   const portal = document.getElementById('charEntryPortal');
   const canvas = document.getElementById('ashaMascotCanvas');
   if (!toggle || !toggleWrap || !canvas || typeof THREE === 'undefined') return;
-
-    // Concierge Scroll Entrance & Exit Controller
-  window.triggerConciergeEntrance = function() {
-    const wrap = document.getElementById('chat-toggle-wrap');
-    if (!wrap || wrap.classList.contains('char-entered')) return;
-    const portalEl = document.getElementById('charEntryPortal');
-    if (portalEl) {
-      portalEl.classList.remove('active');
-      void portalEl.offsetWidth;
-      portalEl.classList.add('active');
-    }
-    wrap.classList.remove('char-pre-entry', 'char-exiting');
-    wrap.classList.add('char-entered');
-
-    // Pop speech bubble greeting
-    setTimeout(() => {
-      const bubble = document.getElementById('chat-speech-bubble');
-      const chatBox = document.getElementById('chat-box');
-      if (bubble && (!chatBox || !chatBox.classList.contains('open')) && !document.body.classList.contains('chat-is-open')) {
-        bubble.classList.add('active');
-        setTimeout(() => {
-          if (bubble && typeof isHoveringBubble !== 'undefined' && !isHoveringBubble) {
-            bubble.classList.remove('active');
-          }
-        }, 7000);
-      }
-    }, 800);
-  };
-
-  window.triggerConciergeExit = function() {
-    const wrap = document.getElementById('chat-toggle-wrap');
-    if (!wrap || !wrap.classList.contains('char-entered')) return;
-    const chatBox = document.getElementById('chat-box');
-    if (chatBox && chatBox.classList.contains('open')) return;
-
-    wrap.classList.remove('char-entered');
-    wrap.classList.add('char-exiting');
-    const bubble = document.getElementById('chat-speech-bubble');
-    if (bubble) bubble.classList.remove('active');
-
-    setTimeout(() => {
-      if (wrap.classList.contains('char-exiting')) {
-        wrap.classList.remove('char-exiting');
-        wrap.classList.add('char-pre-entry');
-      }
-    }, 500);
-  };
 
   // 1. Three.js Scene, Camera, and WebGL Renderer
   const width = canvas.width || 168;
@@ -8029,9 +8056,9 @@ function initPipConcierge() {
   }
 }
 
-// Restore saved character preference (defaults to Mochi Bunny)
+// Restore saved character preference (defaults to Pip Haute Bird per SPEC-017)
 document.addEventListener('DOMContentLoaded', () => {
-  const savedChar = localStorage.getItem('anshita_active_char') || 'mochi';
+  const savedChar = localStorage.getItem('anshita_active_char') || 'pip';
   if (typeof window.toggleActiveConciergeCharacter === 'function') {
     window.toggleActiveConciergeCharacter(savedChar);
   }
@@ -8090,10 +8117,23 @@ document.addEventListener('DOMContentLoaded', () => {
     window.checkConciergeScrollPosition();
   }, { passive: true });
 
-  // Initial check once DOM loads (if already scrolled down on refresh)
-  window.addEventListener('load', () => {
-    setTimeout(window.checkConciergeScrollPosition, 300);
-  });
+  // Autonomous Entrance: Pip takes flight, displays circle portal, and settles down as chatbot
+  function triggerAutonomousEntrance() {
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (wrap && !wrap.classList.contains('char-entered')) {
+      if (typeof window.triggerConciergeEntrance === 'function') {
+        window.triggerConciergeEntrance();
+      }
+    }
+  }
+
+  // Trigger quickly so the user immediately sees the Pip flight & halo settle animation
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(triggerAutonomousEntrance, 600);
+  } else {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(triggerAutonomousEntrance, 600));
+    window.addEventListener('load', () => setTimeout(triggerAutonomousEntrance, 400));
+  }
 })();
 
 
@@ -10611,6 +10651,15 @@ function initDraggableChat() {
   let initialLeft = 0, initialTop = 0;
   let isDragging = false;
 
+  function triggerLandingRing() {
+    const portal = document.getElementById('charEntryPortal');
+    if (portal) {
+      portal.classList.remove('pulse', 'active');
+      void portal.offsetWidth;
+      portal.classList.add('pulse');
+    }
+  }
+
   function onPointerDown(e, handleEl) {
     if (e.target.closest('.chat-ctrl-btn') || e.target.closest('input') || e.target.closest('button')) {
       if (e.target !== toggleBtn) return;
@@ -10630,6 +10679,15 @@ function initDraggableChat() {
     container.style.right = 'auto';
     container.style.left = initialLeft + 'px';
     container.style.top = initialTop + 'px';
+
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (wrap) wrap.classList.add('is-flying');
+
+    // Trigger Pip flight wings & emotion
+    if (window.pipMascotInstance) {
+      window.pipMascotInstance.flap = 2.5;
+      window.pipMascotInstance.setEmotion('happy');
+    }
 
     document.addEventListener('mousemove', onPointerMove);
     document.addEventListener('mouseup', onPointerUp);
@@ -10656,6 +10714,17 @@ function initDraggableChat() {
 
     container.style.left = newLeft + 'px';
     container.style.top = newTop + 'px';
+
+    // Bank angle tilt during flight
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (wrap) {
+      const tilt = Math.max(-14, Math.min(14, dx * 0.25));
+      wrap.style.transform = `rotate(${tilt}deg) scale(1.1)`;
+    }
+    if (window.pipMascotInstance) {
+      window.pipMascotInstance.flap = 2.8;
+      window.pipMascotInstance.walkWingSpread = 0.8;
+    }
   }
 
   function onPointerUp(e) {
@@ -10665,6 +10734,20 @@ function initDraggableChat() {
     document.removeEventListener('mouseup', onPointerUp);
     document.removeEventListener('touchmove', onPointerMove);
     document.removeEventListener('touchend', onPointerUp);
+
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (wrap) {
+      wrap.classList.remove('is-flying');
+      wrap.style.transform = 'rotate(0deg) scale(1)';
+    }
+
+    // Settle Pip into new location with expanding golden halo ring
+    if (window.pipMascotInstance) {
+      window.pipMascotInstance.flap = 1.0;
+      window.pipMascotInstance.walkWingSpread = 0.2;
+      window.pipMascotInstance.setEmotion('welcome');
+    }
+    triggerLandingRing();
   }
 
   // Bind drag to the toggle floating head

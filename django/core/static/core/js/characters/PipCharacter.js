@@ -204,27 +204,32 @@
       this.renderer.setSize(this.width, this.height, false);
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-      // ── Studio treatment (parity with Mochi) ─────────────────────────
+      // ── Standalone Guaranteed High-Fidelity Three-Point Studio Lighting ──
+      const ambient = new THREE.AmbientLight(0xfff5ea, 1.25);
+      this.scene.add(ambient);
+
+      const keyLight = new THREE.DirectionalLight(0xffeedd, 1.45);
+      keyLight.position.set(2.4, 3.8, 3.2);
+      this.scene.add(keyLight);
+
+      const fillLight = new THREE.DirectionalLight(0xdcf8f5, 0.85);
+      fillLight.position.set(-2.4, 1.8, 2.2);
+      this.scene.add(fillLight);
+
+      const rimLight = new THREE.DirectionalLight(0xd4af37, 1.1);
+      rimLight.position.set(0, 3.2, -2.5);
+      this.scene.add(rimLight);
+
+      // Studio treatment enhancement if available
       const studio = window.StudioTreatment;
       if (studio) {
-        studio.applyRendererPipeline(this.renderer, { exposure: 1.05 });
-        this.envMap = studio.buildStudioEnvironment(this.renderer);
-        if (this.envMap) this.scene.environment = this.envMap;
-        this.lights = studio.createStudioLights(this.scene, { scale: 1 });
-        this.shadowCatcher = studio.createShadowCatcher({ size: 8, y: 0, opacity: 0.32 });
-        this.scene.add(this.shadowCatcher);
-      } else {
-        const ambient = new THREE.AmbientLight(0xf0fbf9, 1.15);
-        this.scene.add(ambient);
-        const keyLight = new THREE.DirectionalLight(0xfff1e0, 1.35);
-        keyLight.position.set(2.4, 3.8, 3.2);
-        this.scene.add(keyLight);
-        const fillLight = new THREE.DirectionalLight(0xd4f5f1, 0.75);
-        fillLight.position.set(-2.4, 1.8, 2.2);
-        this.scene.add(fillLight);
-        const rimLight = new THREE.DirectionalLight(0xc8a96a, 0.95);
-        rimLight.position.set(0, 3.2, -2.5);
-        this.scene.add(rimLight);
+        try {
+          studio.applyRendererPipeline(this.renderer, { exposure: 1.05 });
+          this.envMap = studio.buildStudioEnvironment(this.renderer);
+          if (this.envMap) this.scene.environment = this.envMap;
+        } catch(e) {
+          console.warn('[PipCharacter] StudioTreatment env notice:', e);
+        }
       }
     }
 

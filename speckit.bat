@@ -158,25 +158,42 @@ exit /b 0
 :specify
 echo [SPECIFICATIONS ^& ARCHITECTURE]
 echo ----------------------------------------------------------------
-echo Active Specs:
+echo Active Core Specs:
 echo   - SPEC-001: Vector Curtain ^& Liquid Shimmer Monogram Entrance
 echo   - SPEC-002: Evagher-Style Architectural Editorial Layout ^& Peek Gallery
 echo   - SPEC-003: Multi-Phase Luxury Experience ^& AI Dynamic Negotiation System
+echo.
+echo Active Milestone Specs:
+echo   - SPEC-017: 3D Pip Mascot Autonomous Concierge ^& Scroll Decoupling
+echo   - SPEC-018: Comprehensive Luxury SEO Architecture ^& Schema Engine
+echo   - SPEC-019: Website Simplification, Modular Pages ^& High-Conversion Funnel
 exit /b 0
 
 :plan
 echo [TECHNICAL IMPLEMENTATION BLUEPRINT]
 echo ----------------------------------------------------------------
-if exist "%SPEC_DIR%\plans\PLAN-002-evagher-editorial-redesign.md" (
-    type "%SPEC_DIR%\plans\PLAN-002-evagher-editorial-redesign.md"
+echo Milestone Blueprints Available in .specify\plans\:
+echo   - PLAN-017-pip-autonomous-concierge-3d.md
+echo   - PLAN-018-comprehensive-seo-architecture.md
+echo   - PLAN-019-website-simplification-and-modular-pages.md
+echo.
+if exist "%SPEC_DIR%\plans\PLAN-017-pip-autonomous-concierge-3d.md" (
+    echo Displaying PLAN-017 (3D Pip Autonomous Concierge):
+    type "%SPEC_DIR%\plans\PLAN-017-pip-autonomous-concierge-3d.md"
 )
 exit /b 0
 
 :tasks
 echo [GRANULAR TASKS REPOSITORY]
 echo ----------------------------------------------------------------
-if exist "%SPEC_DIR%\tasks\TASKS-002-evagher-editorial-redesign.md" (
-    type "%SPEC_DIR%\tasks\TASKS-002-evagher-editorial-redesign.md"
+echo Milestone Tasks Available in .specify\tasks\:
+echo   - TASKS-017-pip-autonomous-concierge-3d.md
+echo   - TASKS-018-comprehensive-seo-architecture.md
+echo   - TASKS-019-website-simplification-and-modular-pages.md
+echo.
+if exist "%SPEC_DIR%\tasks\TASKS-017-pip-autonomous-concierge-3d.md" (
+    echo Displaying TASKS-017 (3D Pip Autonomous Concierge):
+    type "%SPEC_DIR%\tasks\TASKS-017-pip-autonomous-concierge-3d.md"
 )
 exit /b 0
 

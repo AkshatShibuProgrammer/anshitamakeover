@@ -23,6 +23,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from junit_writer import write_junit  # noqa: E402
 
+if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 REPORTS_DIR = Path(__file__).resolve().parents[1] / 'reports' 
 
 CHECKS = [
@@ -35,14 +41,17 @@ CHECKS = [
 ]
 
 
-def fetch(base_url, method, path, payload=None, timeout=10):
+def fetch(base_url, method, path, payload=None, timeout=10, headers=None, opener=None):
     url = base_url.rstrip('/') + path
     data = json.dumps(payload).encode() if payload is not None else None
-    req = urllib.request.Request(url, data=data, method=method,
-                                 headers={'Content-Type': 'application/json'})
+    req_headers = {'Content-Type': 'application/json'}
+    if headers:
+        req_headers.update(headers)
+    req = urllib.request.Request(url, data=data, method=method, headers=req_headers)
     started = time.time()
+    call = opener.open if opener else urllib.request.urlopen
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
+        with call(req, timeout=timeout) as resp:
             body = resp.read().decode('utf-8', errors='replace')
             return resp.status, body, time.time() - started, dict(resp.headers)
     except urllib.error.HTTPError as e:
@@ -71,10 +80,24 @@ def main():
         if not ok:
             failures.append(f'{method} {path}')
 
-    # chatbot round-trip
+    # chatbot round-trip (with CSRF session)
+    import http.cookiejar
+    cj = http.cookiejar.CookieJar()
+    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
+    fetch(args.base_url, 'GET', '/', timeout=args.timeout, opener=opener)
+    csrftoken = ''
+    for cookie in cj:
+        if cookie.name == 'csrftoken':
+            csrftoken = cookie.value
+            break
+    chat_headers = {
+        'X-CSRFToken': csrftoken,
+        'Referer': args.base_url.rstrip('/') + '/',
+    } if csrftoken else {}
+
     code, body, elapsed, _ = fetch(args.base_url, 'POST', '/api/chatbot/',
                                    payload={'message': 'hello', 'session_id': 'smoke'},
-                                   timeout=args.timeout)
+                                   timeout=args.timeout, headers=chat_headers, opener=opener)
     chat_ok = code == 200 and 'reply' in body
     print(f'[{"PASS" if chat_ok else "FAIL"}] POST /api/chatbot/          -> {code} ({elapsed*1000:.0f} ms)')
     cases.append({'name': 'POST /api/chatbot/', 'passed': chat_ok, 'seconds': elapsed,
