@@ -3022,7 +3022,7 @@ html.mascot-engine-ready .chat-toggle-wrap.char-pre-entry {
 
 .chat-toggle-wrap.char-pre-entry {
   opacity: 0 !important;
-  transform: translate(-60px, 120px) scale(0.15) rotate(-22deg) !important;
+  transform: translate(-120px, 140px) scale(0.15) rotate(-22deg) !important;
   pointer-events: none !important;
   visibility: hidden !important;
 }
@@ -3038,6 +3038,57 @@ html.mascot-engine-ready .chat-toggle-wrap.char-pre-entry {
 .chat-toggle-wrap.is-flying {
   cursor: grabbing !important;
   transition: transform 0.08s ease-out;
+}
+
+/* ── Pure 3D Bird In-Flight State (No circle, border, aura, or background visible) ── */
+.chat-toggle-wrap.char-flying #chat-toggle,
+.chat-toggle-wrap.char-pre-entry #chat-toggle {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+.chat-toggle-wrap.char-flying .char-3d-stage,
+.chat-toggle-wrap.char-pre-entry .char-3d-stage {
+  background: transparent !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+.chat-toggle-wrap.char-flying .medallion-aura,
+.chat-toggle-wrap.char-flying .medallion-ring-pulse,
+.chat-toggle-wrap.char-flying .char-specular-shine,
+.chat-toggle-wrap.char-flying .medallion-online-dot,
+.chat-toggle-wrap.char-pre-entry .medallion-aura,
+.chat-toggle-wrap.char-pre-entry .medallion-ring-pulse,
+.chat-toggle-wrap.char-pre-entry .char-specular-shine,
+.chat-toggle-wrap.char-pre-entry .medallion-online-dot {
+  opacity: 0 !important;
+  transform: scale(0.3) !important;
+  pointer-events: none !important;
+}
+
+/* ── Settled Perch State (Golden medallion, velvet background & aura manifest upon landing) ── */
+.chat-toggle {
+  transition: background 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.45s ease,
+              box-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.char-3d-stage {
+  transition: background 0.45s ease, border-radius 0.45s ease !important;
+}
+.medallion-aura,
+.medallion-ring-pulse,
+.char-specular-shine,
+.medallion-online-dot {
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.chat-toggle-wrap.char-settled #chat-toggle {
+  animation: settlePuff 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes settlePuff {
+  0% { transform: scale(0.85); box-shadow: 0 0 0 rgba(212,175,55,0); }
+  60% { transform: scale(1.06); box-shadow: 0 16px 48px rgba(0,0,0,0.9), 0 0 38px rgba(212,175,55,0.6); }
+  100% { transform: scale(1); box-shadow: 0 12px 38px rgba(0,0,0,0.85), 0 0 28px rgba(212,175,55,0.4), inset 0 0 16px rgba(212,175,55,0.22); }
 }
 @keyframes conciergeFlightEntrance {
   0% {
@@ -7326,33 +7377,44 @@ window.triggerConciergeEntrance = function() {
   const wrap = document.getElementById('chat-toggle-wrap');
   if (!wrap || wrap.classList.contains('char-entered')) return;
   const portalEl = document.getElementById('charEntryPortal');
-  if (portalEl) {
-    portalEl.classList.remove('active', 'pulse');
-    void portalEl.offsetWidth;
-    portalEl.classList.add('active');
-  }
-  wrap.classList.remove('char-pre-entry', 'char-exiting');
-  wrap.classList.add('char-entered');
 
-  // Trigger Pip's active flight kinematics (wings beat rapidly while flying in)
+  // Phase 1: Pure 3D Bird Flight.
+  // Strip medallion, golden borders, dark circle background, and auras so only the 3D bird is seen flying.
+  wrap.classList.remove('char-pre-entry', 'char-exiting', 'char-settled');
+  wrap.classList.add('char-entered', 'char-flying');
+
+  // Trigger Pip's rapid flight wing flap & aerodynamic banking posture
   if (window.pipMascotInstance) {
     window.pipMascotInstance.flap = 2.8;
     window.pipMascotInstance.setEmotion('happy');
-    // On landing (after 1.45s flight duration): settle into warm welcome with landing ring pulse
-    setTimeout(() => {
-      if (window.pipMascotInstance) {
-        window.pipMascotInstance.flap = 1.0;
-        window.pipMascotInstance.setEmotion('welcome');
-      }
-      if (portalEl) {
-        portalEl.classList.remove('active', 'pulse');
-        void portalEl.offsetWidth;
-        portalEl.classList.add('pulse');
-      }
-    }, 1450);
   }
 
-  // Pop speech bubble greeting
+  // Phase 2: Landing & Settling Down.
+  // After flight finishes (1.45s), Pip touches down. At this exact moment:
+  // 1. Pip transitions from flight flapping to landing squash & calm breathing
+  // 2. The golden circle, velvet medallion, and aura rings bloom into view
+  // 3. Golden portal shockwave expands from his landing perch
+  setTimeout(() => {
+    wrap.classList.remove('char-flying');
+    wrap.classList.add('char-settled');
+
+    if (window.pipMascotInstance) {
+      window.pipMascotInstance.flap = 1.0;
+      window.pipMascotInstance.setEmotion('welcome');
+      // Landing squash bounce
+      if (typeof window.pipMascotInstance.triggerSquashLanding === 'function') {
+        window.pipMascotInstance.triggerSquashLanding();
+      }
+    }
+
+    if (portalEl) {
+      portalEl.classList.remove('active', 'pulse');
+      void portalEl.offsetWidth;
+      portalEl.classList.add('pulse');
+    }
+  }, 1450);
+
+  // Phase 3: Concierge Greeting Speech Bubble manifests once settled
   setTimeout(() => {
     const bubble = document.getElementById('chat-speech-bubble');
     const chatBox = document.getElementById('chat-box');
@@ -7364,7 +7426,7 @@ window.triggerConciergeEntrance = function() {
         }
       }, 7000);
     }
-  }, 800);
+  }, 1900);
 };
 
 window.triggerConciergeExit = function() {
@@ -7373,7 +7435,7 @@ window.triggerConciergeExit = function() {
   const chatBox = document.getElementById('chat-box');
   if (chatBox && chatBox.classList.contains('open')) return;
 
-  wrap.classList.remove('char-entered');
+  wrap.classList.remove('char-entered', 'char-settled', 'char-flying');
   wrap.classList.add('char-exiting');
   const bubble = document.getElementById('chat-speech-bubble');
   if (bubble) bubble.classList.remove('active');

@@ -500,6 +500,21 @@
       }
     }
 
+    triggerSquashLanding() {
+      const G = window.gsap || null;
+      if (G) {
+        G.killTweensOf(this);
+        this.squash = 1.35;
+        this.stanceY = -0.06;
+        G.to(this, { squash: 0.92, stanceY: 0.02, duration: 0.22, ease: 'power2.out', onComplete: () => {
+          G.to(this, { squash: 1.0, stanceY: 0.0, duration: 0.28, ease: 'elastic.out(1.2, 0.4)' });
+        }});
+      } else {
+        this.squash = 1.25;
+        setTimeout(() => { this.squash = 1.0; }, 200);
+      }
+    }
+
     update(dt, time) {
       dt = dt || 0.016;
       time = time !== undefined ? time : (this.clock ? this.clock.getElapsedTime() : performance.now() * 0.001);
