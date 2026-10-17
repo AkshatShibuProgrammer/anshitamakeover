@@ -1,1 +1,33 @@
-<article class="package-card"><span class="catalog-tag">{{ package.get_package_type_display }}</span><h2>{{ package.name }}</h2><p>{{ package.tagline }}</p><div class="package-price">{% if package.price %}From ₹{{ package.price|floatformat:0 }}{% else %}On request{% endif %}</div><ul>{% for item in package.get_features_list|slice:':4' %}<li>{{ item }}</li>{% endfor %}</ul><div class="package-actions"><a class="btn-o" href="{% url 'package_detail' package.id %}">View details</a><button class="btn-p" type="button" onclick="AnshitaCart.addItem({id:'package-{{ package.id }}',title:'{{ package.name|escapejs }}',price:{{ package.price|default:0 }},category:'package'})">Add to plan</button></div></article>
+<article class="package-card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <span class="catalog-tag">{{ package.get_package_type_display }}</span>
+    {% if package.original_price and package.original_price > package.price %}
+    <span style="font-size:0.68rem;background:rgba(212,175,55,0.12);color:var(--gold-l);padding:2px 8px;border-radius:10px;border:1px solid rgba(212,175,55,0.25)">Privilege Rate</span>
+    {% endif %}
+  </div>
+
+  <h2>{{ package.name }}</h2>
+  <p>{{ package.tagline }}</p>
+
+  <div class="package-price" style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+    {% if package.price %}
+      <span style="font-weight:700;color:var(--gold-l)">From ₹{{ package.price|floatformat:0 }}</span>
+      {% if package.original_price and package.original_price > package.price %}
+        <span style="text-decoration:line-through;color:rgba(245,237,214,0.4);font-size:0.88rem">₹{{ package.original_price|floatformat:0 }}</span>
+      {% endif %}
+    {% else %}
+      <span>On request</span>
+    {% endif %}
+  </div>
+
+  <ul>
+    {% for item in package.get_features_list|slice:':4' %}
+      <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+
+  <div class="package-actions">
+    <a class="btn-o" href="{% url 'package_detail' package.id %}">View details ↗</a>
+    <button class="btn-p" type="button" onclick="AnshitaCart.addItem({id:'package-{{ package.id }}',title:'{{ package.name|escapejs }}',price:{{ package.price|default:0 }},category:'package'})">Add to plan +</button>
+  </div>
+</article>

@@ -1,5 +1,530 @@
-{% extends 'core/base.html' %}{% load static %}
-{% block title %}{{ service_detail.title }} — Anshita Makeover{% endblock %}
-{% block content %}<main class="detail-page"><div class="detail-hero"><div><p class="section-kicker">{{ service_detail.get_category_display }}</p><h1>{{ service_detail.title }}</h1><p>{{ service_detail.description }}</p><div class="detail-price">From ₹{{ service_detail.price|floatformat:0 }}</div><button class="btn-p" onclick="AnshitaCart.addItem({id:'service-{{ service_detail.id }}',title:'{{ service_detail.title|escapejs }}',price:{{ service_detail.price|default:0 }},category:'{{ service_detail.category }}'})">Add to Beauty Plan</button></div><img src="{{ service_detail.display_image }}" alt="{{ service_detail.title }}"></div><section class="detail-columns"><div><h2>What's included</h2><ul>{% for item in service_detail.get_features_list %}<li>{{ item }}</li>{% empty %}<li>Personalised consultation and professional service.</li>{% endfor %}</ul></div><div><h2>Plan your booking</h2><p>Prices are starting estimates. Final availability and travel requirements are confirmed with your event date and location.</p><a class="btn-o" href="/cart/">View Beauty Plan</a></div></section>{% if related_services %}<section class="related"><h2>Explore related services</h2><div class="related-grid">{% for item in related_services %}<a href="{% url 'service_detail' item.id %}"><strong>{{ item.title }}</strong><span>From ₹{{ item.price|floatformat:0 }}</span></a>{% endfor %}</div></section>{% endif %}</main>{% endblock %}
-{% block extra_css %}<style>.detail-page{max-width:1180px;margin:0 auto;padding:80px 5vw 120px;position:relative;z-index:1}.detail-hero{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,7vw,100px);align-items:center}.detail-hero h1{font:500 clamp(2.5rem,5vw,5.6rem) var(--font-h);line-height:1.02;margin:14px 0}.detail-hero p{color:var(--text-sub);line-height:1.7}.detail-hero img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:20px;border:1px solid var(--card-border)}.detail-price{font-size:1.25rem;color:var(--gold-l);margin:26px 0}.detail-columns{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:80px}.detail-columns>div,.related{padding:28px;border:1px solid var(--card-border);border-radius:18px;background:var(--card-bg)}.detail-columns h2,.related h2{font:500 1.8rem var(--font-h);margin-bottom:18px}.detail-columns ul{list-style:none;padding:0}.detail-columns li{padding:11px 0;border-bottom:1px solid rgba(212,175,55,.12);color:var(--text-sub)}.detail-columns li::before{content:'✦';color:var(--gold);margin-right:10px}.related{margin-top:24px}.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.related-grid a{display:flex;flex-direction:column;gap:8px;padding:16px;border:1px solid var(--card-border);border-radius:12px}.related-grid span{color:var(--gold);font-size:.8rem}@media(max-width:700px){.detail-page{padding:55px 16px 90px}.detail-hero,.detail-columns{grid-template-columns:1fr}.detail-hero img{grid-row:1}.related-grid{grid-template-columns:1fr 1fr}}
-</style>{% endblock %}
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ service_detail.title }} — Haute Artistry | Anshita Makeover{% endblock %}
+{% block meta_description %}{{ service_detail.description|default:"Exclusive bridal makeup and styling discipline by Anshita Sinha with premium international products." }}{% endblock %}
+
+{% block content %}
+<main class="detail-page">
+  <!-- Breadcrumb Navigation -->
+  <nav class="detail-breadcrumb" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span>/</span>
+    <a href="{% url 'services' %}">Services Archive</a>
+    <span>/</span>
+    <span class="active">{{ service_detail.title }}</span>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="detail-hero">
+    <div class="detail-hero-content">
+      <div class="detail-badge-row">
+        <span class="section-kicker">✦ {{ service_detail.discipline|default:service_detail.get_category_display }}</span>
+        <span class="detail-pill-badge">Verified Authentic Kit</span>
+      </div>
+
+      <h1 class="detail-title">{{ service_detail.title }}</h1>
+      <p class="detail-lead">{{ service_detail.description }}</p>
+
+      <!-- Pricing & Privilege Matrix -->
+      <div class="detail-price-card">
+        <div class="detail-price-main">
+          <span class="dp-label">Starting Investment</span>
+          <div class="dp-amount-row">
+            <span class="dp-val">₹{{ service_detail.price|floatformat:0 }}</span>
+            {% if service_detail.discount_price and service_detail.discount_price > service_detail.price %}
+            <span class="dp-strikethrough">₹{{ service_detail.discount_price|floatformat:0 }}</span>
+            {% endif %}
+            <span class="dp-tag">Transparent Starter Rate</span>
+          </div>
+        </div>
+
+        {% if active_coupon %}
+        <div class="detail-coupon-box">
+          <span class="coupon-icon">🎟️</span>
+          <div>
+            <strong>Code: {{ active_coupon.code }} ({{ active_coupon.discount_percent }}% OFF Applied at Booking)</strong>
+            <small>{{ active_coupon.label }}</small>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="detail-actions">
+          <a href="https://wa.me/{{ whatsapp }}?text=Namaste%20Anshita!%20I%20would%20like%20to%20inquire%20and%20book%20{{ service_detail.title|urlencode }}%20(Starting%20₹{{ service_detail.price|floatformat:0 }})." target="_blank" class="btn-p">
+            Reserve Date on WhatsApp ↗
+          </a>
+          <button type="button" class="btn-o" onclick="AnshitaCart.addItem({id:'service-{{ service_detail.id }}',title:'{{ service_detail.title|escapejs }}',price:{{ service_detail.price|default:0 }},category:'{{ service_detail.category }}',image:'{{ service_detail.display_image|escapejs }}'})">
+            Add to Beauty Plan +
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Showcase -->
+    <div class="detail-hero-media">
+      <div class="detail-img-frame">
+        <img src="{{ service_detail.display_image }}" alt="{{ service_detail.title }}" class="detail-main-img">
+        <div class="detail-img-watermark">✦ ANSHITA MAKEOVER FLAGSHIP JABALPUR</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deep Dive Columns: Techniques, Products Used, Protocol -->
+  <section class="detail-columns">
+    <!-- Column 1: Included Luxuries -->
+    <div class="detail-col-card">
+      <div class="dcc-header">
+        <span class="dcc-icon">👑</span>
+        <h2>Included Luxuries & Artistry</h2>
+      </div>
+      <ul class="detail-feature-list">
+        {% for item in service_detail.get_features_list %}
+        <li>{{ item }}</li>
+        {% empty %}
+        <li>Comprehensive pre-bridal skin analysis & deep moisture saturation</li>
+        <li>18-hour HD Airbrush / waterproof cry-proof base application</li>
+        <li>Custom 3D mink lash extensions tailored to eye anatomy</li>
+        <li>Hair architecture styling with luxury floral/jeweled pins</li>
+        <li>Precision Dupatta draping & can-can zero-slip anchoring</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Column 2: Luxury Products & Verified Formulation Kit -->
+    <div class="detail-col-card">
+      <div class="dcc-header">
+        <span class="dcc-icon">✨</span>
+        <h2>Cosmetic Kit & Formulations</h2>
+      </div>
+      <p style="color:var(--text-sub);font-size:.85rem;line-height:1.6;margin-bottom:14px">
+        Only 100% genuine, internationally sourced prestige cosmetics are touched to your skin. Zero duplicate formulas, zero compromises:
+      </p>
+      <div class="product-pills-wrap">
+        <span class="prod-pill">✦ Dior Backstage Face & Body</span>
+        <span class="prod-pill">✦ Charlotte Tilbury Airbrush Flawless</span>
+        <span class="prod-pill">✦ MAC Studio Fix & Strobe Cream</span>
+        <span class="prod-pill">✦ Huda Beauty Faux Filter</span>
+        <span class="prod-pill">✦ NARS Radiant Creamy Concealer</span>
+        <span class="prod-pill">✦ Kryolan Dermacolor Base (HD)</span>
+        <span class="prod-pill">✦ Anastasia Beverly Hills Brow Wiz</span>
+        <span class="prod-pill">✦ Urban Decay All Nighter Cry-Proof Mist</span>
+      </div>
+      <div class="kit-guarantee-note">
+        <strong>✓ 100% Authentic Product Guarantee:</strong> Ingested & verified with authentic order receipts. Cruelty-free & hypoallergenic formulations prioritized for sensitive skin.
+      </div>
+    </div>
+
+    <!-- Column 3: Ceremony Logistics & Travel -->
+    <div class="detail-col-card">
+      <div class="dcc-header">
+        <span class="dcc-icon">📍</span>
+        <h2>Studio & Destination Logistics</h2>
+      </div>
+      <div class="logistics-info">
+        <div class="log-item">
+          <strong>Flagship Studio:</strong>
+          <span>Jabalpur (Dedicated bridal suites with professional HD daylight balanced illumination)</span>
+        </div>
+        <div class="log-item">
+          <strong>Destination Bridal Suites:</strong>
+          <span>Bhopal, Indore, Lucknow, and Jhansi (Available by destination advance enquiry)</span>
+        </div>
+        <div class="log-item">
+          <strong>Session Duration:</strong>
+          <span>Approx. 2.5 to 3.5 hours for full bridal transformation and hair styling</span>
+        </div>
+        <div class="log-item">
+          <strong>Multi-Person / Sider Add-ons:</strong>
+          <span>Bridesmaids & family makeover starting at ₹2,500/person; Saree draping at ₹800/person.</span>
+        </div>
+      </div>
+      <div style="margin-top:20px">
+        <a href="{% url 'packages' %}" class="btn-o" style="display:inline-block;width:100%;text-align:center">Explore Bundled Wedding Suites →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Services Carousel / Grid -->
+  {% if related_services %}
+  <section class="related-sec">
+    <div class="related-head">
+      <span class="section-kicker">✦ COMPLEMENTARY DISCIPLINES</span>
+      <h2>You May Also Consider</h2>
+    </div>
+    <div class="related-grid">
+      {% for item in related_services %}
+      <a href="{% url 'service_detail' item.id %}" class="related-card">
+        <img src="{{ item.display_image }}" alt="{{ item.title }}" class="related-img" loading="lazy">
+        <div class="related-body">
+          <span class="related-cat">{{ item.get_category_display }}</span>
+          <strong class="related-title">{{ item.title }}</strong>
+          <span class="related-price">From ₹{{ item.price|floatformat:0 }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</main>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.detail-page {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 80px 5vw 120px;
+  position: relative;
+  z-index: 1;
+}
+
+.detail-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  color: var(--text-sub);
+  margin-bottom: 30px;
+}
+.detail-breadcrumb a {
+  color: var(--gold);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.detail-breadcrumb a:hover {
+  text-decoration: underline;
+}
+.detail-breadcrumb .active {
+  color: var(--ivory);
+  opacity: 0.8;
+}
+
+.detail-hero {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(30px, 6vw, 70px);
+  align-items: center;
+  margin-bottom: 60px;
+}
+
+.detail-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.detail-pill-badge {
+  font-size: 0.72rem;
+  background: rgba(212, 175, 55, 0.12);
+  color: var(--gold-l);
+  padding: 4px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-title {
+  font: 500 clamp(2.4rem, 4.5vw, 4.2rem) var(--font-h);
+  line-height: 1.08;
+  color: var(--ivory);
+  margin: 10px 0 16px;
+}
+
+.detail-lead {
+  color: var(--text-sub);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.detail-price-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  padding: 24px;
+  margin-top: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+.dp-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.dp-amount-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.dp-val {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--gold-l);
+  font-family: var(--font-h);
+}
+
+.dp-strikethrough {
+  font-size: 1.15rem;
+  color: rgba(245, 237, 214, 0.4);
+  text-decoration: line-through;
+}
+
+.dp-tag {
+  font-size: 0.75rem;
+  color: var(--text-sub);
+  background: rgba(255,255,255,0.05);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.detail-coupon-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px dashed var(--gold);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+}
+.detail-coupon-box strong {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--gold-l);
+}
+.detail-coupon-box small {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-sub);
+}
+
+.detail-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.detail-hero-media {
+  position: relative;
+}
+.detail-img-frame {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  aspect-ratio: 4/5;
+}
+.detail-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.detail-img-frame:hover .detail-main-img {
+  transform: scale(1.03);
+}
+.detail-img-watermark {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  right: 14px;
+  background: rgba(14, 10, 16, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.68rem;
+  letter-spacing: 1px;
+  color: var(--gold-l);
+  text-align: center;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.detail-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 60px;
+}
+
+.detail-col-card {
+  padding: 28px;
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  background: var(--card-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.dcc-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  padding-bottom: 12px;
+}
+.dcc-icon {
+  font-size: 1.3rem;
+}
+.dcc-header h2 {
+  font: 500 1.35rem var(--font-h);
+  color: var(--ivory);
+  margin: 0;
+}
+
+.detail-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.detail-feature-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+  color: var(--text-sub);
+  font-size: 0.86rem;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.detail-feature-list li::before {
+  content: '✦';
+  color: var(--gold);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.product-pills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.prod-pill {
+  font-size: 0.72rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ivory);
+  padding: 5px 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.kit-guarantee-note {
+  background: rgba(212, 175, 55, 0.06);
+  border-left: 3px solid var(--gold);
+  padding: 10px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: var(--text-sub);
+  line-height: 1.5;
+  margin-top: auto;
+}
+
+.logistics-info {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.log-item strong {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--gold-l);
+  margin-bottom: 2px;
+}
+.log-item span {
+  font-size: 0.84rem;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+
+.related-sec {
+  margin-top: 40px;
+}
+.related-head {
+  margin-bottom: 24px;
+}
+.related-head h2 {
+  font: 500 2rem var(--font-h);
+  color: var(--ivory);
+  margin: 6px 0 0;
+}
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.related-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--card-bg);
+  text-decoration: none;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.related-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold);
+}
+.related-img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+}
+.related-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.related-cat {
+  font-size: 0.65rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.related-title {
+  color: var(--ivory);
+  font-size: 0.88rem;
+  line-height: 1.3;
+}
+.related-price {
+  color: var(--gold-l);
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: auto;
+}
+
+@media (max-width: 900px) {
+  .detail-hero {
+    grid-template-columns: 1fr;
+  }
+  .detail-columns {
+    grid-template-columns: 1fr;
+  }
+  .related-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 500px) {
+  .detail-page {
+    padding: 55px 16px 90px;
+  }
+  .related-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+{% endblock %}

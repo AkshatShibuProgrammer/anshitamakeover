@@ -8,13 +8,20 @@
 
 - **Visual direction:** A — Couture editorial, retaining the existing brand palette with more restraint.
 - **Protected animation:** The opening “Anshita Makeover” sequence that plays before entering the studio. Preserve it exactly; do not retime or redesign it.
-- **Mochi/Pip (Strict User Mandate):** **Pip (the celestial finch bird) is the DEFAULT mascot**; Mochi remains selectable. Pip features the bespoke unconstrained 3D flight swoop animation (flapping wings, banking, tail splay, plume drag) flying freely across the viewport without any initial circle/borders, landing at the perch, upon which the golden medallion circle manifests with a landing squash and portal shockwave. Use the real 3D character, never a flat image or unrelated substitute.
+- **3D Mascot Flight Reference (Documented for AI Analysis):**
+  - **Sketchfab 3D Reference Model:** [Bird Flight Animation - Download Free 3D model by Pikawut (@Pikawut) [e4b42d0]](https://sketchfab.com/3d-models/bird-flight-animation-e4b42d0abc1b495abf236c60cd6d729f)
+  - **Flight Kinematics Requirement:** Unconstrained free-flight across the viewport with banking, wing flapping cycles, and tail splay; settles onto the golden medallion perch with a soft touchdown squash and shockwave, followed by the concierge chat greeting.
+  - **Pip (celestial finch bird) is the DEFAULT mascot**; Mochi remains selectable.
+- **Pricing & Service Architecture Benchmark ([Satish Kargutkar](https://satishkargutkar.com/)):**
+  - Benchmark analysis: Transparent starter packs (e.g. Bride One-Time ₹10,000, Two-Time ₹18,000, Groom ₹3,000, Sider People ₹2,000, Hairstyle ₹2,000, Saree Draping ₹600, 30-Day Academy Course ₹35,000).
+  - Implementation for Anshita Makeover: Introduce transparent Starter Packs with active seasonal coupons (`GLAMOUR30`, `WINTER30`, `TODAYVIP`), clear starter pricing prominently displayed on services and packages, and dedicated deep-dive subpages (`/services/<slug>/`) detailing techniques, duration, cry-proof longevity, and kit products.
+  - **Product Scraping / Kit Ingestion Pipeline:** Architecture established for importing Flipkart order history / luxury cosmetics receipts (Dior Backstage, Charlotte Tilbury, MAC, Huda Beauty, NARS, Kryolan) to automatically populate verified genuine product badges on service detail pages.
 - **City treatment & Home Studio (Strict User Mandate):** **Jabalpur is the home/flagship studio** (`Jabalpur — Flagship Bridal Studio`), with Bhopal, Indore, Lucknow, and Jhansi as verified destination bridal suite service locations. Managed via the gentle city rotator with pause/next controls and a reduced-motion static state.
 - **First prototype scope:** A — Homepage and shared mobile shell, then extend page by page.
 - **Admin/customization knowledge:** The owner does not know the admin route or deployment customization. No credentials are requested; production reachability remains unverified.
 - **Homepage CTA:** The owner confirms the current actions are correct: “Explore Lookbook” links to Gallery and “Book on WhatsApp” opens WhatsApp. Preserve those destinations.
 
-These are the owner's preferred directions, not permission to begin implementation. Review the second AI's research and confirm the 3D asset before finalizing the motion details.
+These are the owner's preferred directions, benchmarks, and architectural decisions.
 
 ---
 
