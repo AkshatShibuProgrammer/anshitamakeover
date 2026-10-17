@@ -20,7 +20,11 @@ The owner’s supplied account is:
 
 Review that account directly if public access is available. Confirm that every post/reel you discuss actually belongs to this exact profile. Record the post/reel URL and visible date/caption where available. Do not use search thumbnails, competitor galleries, similarly named accounts, or images from third-party results as substitutes for this account.
 
-A previous image-search attempt returned unrelated “Makeover by Shivangi” images. **Those images were wrong and must be discarded; they are not evidence about Anshita Makeover.** A direct fetch of the owner-provided Instagram URL returned HTTP 403 in the first review pass. If access is still blocked, state that precisely, do not claim to have reviewed the Instagram feed, and complete the repository/local-media review. Ask the owner only for the minimum helpful input—such as selected public post links or an owner-provided export/screenshots—never for Instagram credentials, passwords, cookies, or two-factor codes.
+A previous image-search attempt returned unrelated “Makeover by Shivangi” images. **Those images were wrong and must be discarded; they are not evidence about Anshita Makeover.** A direct fetch of the owner-provided Instagram URL returned HTTP 403 in the first review pass. Make a good-faith attempt to access the exact public profile and public post/reel URLs with an ordinary browser or official Instagram viewing/sharing features. If access is still blocked, state that precisely, do not claim to have reviewed the feed, and complete the repository/local-media review. Ask the owner only for the minimum helpful input—such as selected public post links or an owner-provided export/screenshots—never for Instagram credentials, passwords, cookies, or two-factor codes.
+
+#### Retrieve media properly—do not substitute search images
+
+The owner specifically wants help getting the correct photos/videos from `@anshitamakeover21`. Work from the profile and direct post/reel URLs, not generic image-search results. For each candidate, record the canonical Instagram URL, caption/date visible, media type, and whether the original file can be obtained through an authorized Instagram download/export or from the owner. Do not bypass a 403, access private content, use credential-sharing, or rely on unofficial scraping/downloader sites. If the original file cannot be retrieved through an authorized route, return a short list of exact post URLs and ask the owner for the original files or an account export. Do not use a screenshot/thumbnail as if it were the original high-resolution asset. Preserve attribution and do not edit, reframe or publish client imagery without confirming rights and permission.
 
 For a public-feed review, sample a manageable, representative set rather than scraping the account. Prefer a mix of recent posts/reels and posts that visibly show different stages or looks. Separate what is directly visible from what is inferred. Do not infer a client’s name, exact venue/city, skin condition, personal circumstances, or consent from an image or caption alone.
 
@@ -89,6 +93,28 @@ Do not treat the admin portal, animation lab, staff onboarding, or internal tool
 
 For each customer-facing page, recommend the smallest clear job it should do. Prefer useful, concise text and genuine imagery over adding more sections, keyword blocks, decorative “luxury” claims, duplicate CTAs, or generic FAQs.
 
+#### Language switching and transformation-copy audit — required
+
+The owner reports that page text and transformation labels become incorrect or mixed when switching languages. Reproduce the behavior where possible; do not assume it is only a translation-quality issue. Inspect the actual language options, `setLang` behavior, query-string/cookie persistence, translation dictionaries, page templates and client-side strings. The current source has `<html lang="en">` in the shared template and the home transformation’s milestone/stage labels appear hard-coded in English; verify these at runtime and record any additional untranslated or mismatched content.
+
+Test every language that the website actually offers (inventory the options from the UI/source first) across the homepage and the main public pages. For each language, verify:
+
+- selected language remains selected after reload and page navigation;
+- title, description, navigation, buttons, form labels/errors, service/package copy, gallery captions, chatbot welcome and footer are coherent and not unexpectedly mixed;
+- transformation title, intro, three milestones, live stage label, skip links, canvas accessible name/ARIA, image captions and fallback/poster text use the same language where appropriate;
+- `html[lang]`, right-to-left/left-to-right behavior if applicable, punctuation, numerals and line breaks are appropriate;
+- no missing translation silently falls back to unrelated/incorrect text; brand names and cultural terms are preserved accurately.
+
+Build a language-parity matrix showing each language, the affected page/string, what appeared, expected meaning, severity and proposed source of truth. Do not machine-translate cultural or makeup terminology as fact without a fluent reviewer. Keep the approved facts and service-dependent wear-time wording consistent across every language.
+
+#### Mobile-first art direction — required
+
+Do not treat mobile as a narrower desktop screenshot. Recommend a deliberate mobile composition for the whole client journey while preserving the same brand, facts and CTA destinations. A different crop, section order, interaction or shorter/static story scene on mobile is welcome if it makes the experience clearer and faster.
+
+Review at 320, 360, 390/412px widths, a small tablet, and portrait/landscape where practical. Check the hero and CTA visibility, image crops, text length/wrapping, menus, sticky/floating chatbot and bottom navigation overlap, gallery browsing, booking forms, admin touch workflows, keyboard/focus, safe areas and horizontal overflow. Use touch-friendly controls instead of hover-only actions. Propose a page-by-page desktop/mobile layout table or text wireframe so the mobile design is intentional rather than just scaled down.
+
+For animation, test small screens and reduced motion: shorten or remove long pinned ranges when they make scrolling feel laborious; preserve the poster/static fallback; avoid loading the full frame sequence before it is needed; keep tap/scroll interactions predictable. The source currently sets a minimum 900px transformation pin distance on narrow screens and requests all 48 frame images immediately—verify the impact rather than assuming it is acceptable. Include the admin panel in the mobile review; if key owner tasks are desktop-only, identify them.
+
 ### 5. Review the admin panel as an operating tool
 
 Inspect the admin interface and its source-level workflows without logging in or requesting credentials. The existing panel contains controls for topics such as media, services/prices, packages/offers, travel, reviews and site content. Report what an owner/staff member needs to do, where terminology or layout is confusing, and how to reduce mistakes.
@@ -148,14 +174,16 @@ Write findings into this file’s **Reviewer Findings** section below. Do not re
 Include at least:
 
 1. Executive summary and confidence/limitations;
-2. Instagram access result and representative post/reel findings (or an explicit access block);
+2. Instagram access result, authorized media retrieval outcome, and representative post/reel findings (or an explicit access block);
 3. local media inventory and promising, permission-qualified story candidates;
 4. before/after pair audit;
 5. page-by-page website findings;
-6. admin-panel findings and safe workflow improvements;
-7. factual/SEO/local/AI-search findings;
-8. proposed natural story arc and page hierarchy;
-9. prioritized next steps (P0/P1/P2) and questions that require owner confirmation.
+6. a language-parity matrix, including the transformation labels/ARIA copy and exact mismatches found;
+7. a deliberate mobile layout concept by page, plus tested viewport/accessibility/performance notes;
+8. admin-panel findings and safe workflow improvements;
+9. factual/SEO/local/AI-search findings;
+10. proposed natural story arc and page hierarchy;
+11. prioritized next steps (P0/P1/P2) and questions that require owner confirmation.
 
 If direct Instagram access fails, do not stop at that point: complete the local repository and website review, then provide a short checklist for the owner to supply selected post URLs or an export. Do not fabricate Instagram findings.
 
@@ -190,6 +218,14 @@ _To be completed by reviewer._
 - Best 3–5 candidate posts/reels to build a website story around:
 - Follow-up material the owner should provide, if any:
 
+### Instagram media retrieval manifest
+
+| Exact profile/post/reel URL | Authorized access/download method | Original file saved to (if authorized) | Caption/date recorded | Rights/consent status | Blocker/owner request |
+|---|---|---|---|---|---|
+| | | | | | |
+
+Do not fill an asset path unless the original was obtained through an authorized route. If media cannot be retrieved, keep the post URL and mark the file as unavailable.
+
 ### Local media inventory and story candidates
 
 | Local path | Type / size / dimensions | Direct visual observation | Story role | Possible matched pair/sequence | Already used on site? | Consent/rights status | Confidence |
@@ -211,6 +247,30 @@ _To be completed by reviewer._
 | Page / route / template | Current job | Strongest real content | Friction or unverified claim | Natural improvement | Priority |
 |---|---|---|---|---|---|
 | | | | | | |
+
+### Language-switching and translation findings
+
+| Language | Page/string | What rendered | Expected meaning | Mixed/missing/wrong? | Source location | Severity / proposed fix |
+|---|---|---|---|---|---|---|
+| | | | | | | |
+
+- Site language options actually found in source/UI:
+- Switching/persistence behavior:
+- Transformation milestones/stage labels/ARIA language:
+- Mixed-language copy or translation terms needing a fluent human review:
+
+### Desktop versus mobile design findings
+
+| Page/flow | Desktop treatment | Recommended mobile treatment | Current mobile issue/evidence | Viewport tested | Priority |
+|---|---|---|---|---|---|
+| | | | | | |
+
+- Smallest viewport tested:
+- Largest/landscape/tablet tested:
+- Horizontal overflow or overlap:
+- Chatbot/bottom navigation obstruction:
+- Mobile animation/pin length and reduced-motion behavior:
+- Admin tasks usable on touch:
 
 ### Admin-panel review
 
@@ -261,4 +321,6 @@ _To be completed by reviewer._
 - The owner supplied the exact Instagram profile URL above. Direct page fetch returned **HTTP 403**, so this reviewer did not inspect or identify any Instagram post/reel.
 - A public image search returned unrelated images from another Jabalpur makeup vendor. Those results were discarded and must not be reused or attributed to Anshita Makeover.
 - A repository-wide filename scan found about **511 still images and 28 video files**, including test, UI, brand, archive and likely portfolio material; this is only an inventory count, not a count of authentic/approved client assets.
+- The owner reports that switching languages leaves some text and transformation content incorrect. The source has English-only transformation stage strings and a shared `<html lang="en">`; the next reviewer should verify the actual language behavior and document exact mismatches.
+- The owner asks whether mobile should have a distinct composition. Review the mobile experience as an intentional design, not merely a shrunken desktop layout.
 - The current reviewer has not visually verified local before/after pairs, chronology, image rights or client consent. The next reviewer should record exact paths and evidence rather than assume.
