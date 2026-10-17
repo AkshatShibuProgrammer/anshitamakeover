@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -661,6 +663,10 @@ class LookMediaItem(models.Model):
 
 class BookingEnquiry(models.Model):
     STATUS_CHOICES = [('new', 'New'), ('contacted', 'Contacted'), ('quoted', 'Quote Sent'), ('booked', 'Booked'), ('completed', 'Completed'), ('cancelled', 'Cancelled')]
+    # Public-facing identifier. The integer PK stays internal (admin URLs); the
+    # API hands clients this UUID so sequential ids can never be enumerated
+    # (IDOR — audit §7.1).
+    public_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False, db_index=True)
     name = models.CharField(max_length=160)
     phone = models.CharField(max_length=30)
     email = models.EmailField(blank=True)

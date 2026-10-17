@@ -31,6 +31,12 @@ import sys
 import time
 from pathlib import Path
 
+if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 TESTING_DIR = Path(__file__).resolve().parent
 REPORTS_DIR = TESTING_DIR / 'reports'
 sys.path.insert(0, str(TESTING_DIR))

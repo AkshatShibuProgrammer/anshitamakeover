@@ -10,7 +10,7 @@ from django.utils.text import slugify
 
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -26,6 +26,23 @@ from ..models import (
 )
 from ..translations import get_translation, TRANSLATIONS
 from .common import get_site_settings, get_active_coupon
+from ..ratelimit import rate_limit
+from ..security import (
+    sanitize_text, sanitize_bot_reply,
+    MAX_CHAT_MESSAGE_CHARS, MAX_BOT_REPLY_CHARS,
+)
+
+# Session ids are opaque browser-generated tokens, never free text. Constrain
+# them so an attacker cannot inflate the ChatMessage table with megabyte keys.
+_SESSION_ID_RE = re.compile(r'^[A-Za-z0-9_\-:.]{1,80}$')
+_ALLOWED_LANGUAGES = {'english', 'hindi', 'bundelkhandi', 'baghelkhandi', 'bhojpuri', 'marathi'}
+
+
+def _clean_session_id(value):
+    candidate = str(value or '').strip()
+    if candidate and _SESSION_ID_RE.match(candidate):
+        return candidate
+    return str(uuid.uuid4())
 
 
 def get_gemini_api_key():
@@ -118,14 +135,22 @@ def parse_expression(text):
 
 
 # ── API: Chatbot ──────────────────────────────────────────────
-@csrf_exempt
+# Security posture (audit §7.1):
+#   * CSRF protected  — browsers must send X-CSRFToken (the widgets do).
+#   * Rate limited    — 15 requests/minute/IP = LLM denial-of-wallet guard.
+#   * Output sanitised — Gemini output is untrusted input; tags are stripped
+#     before the reply is stored or returned.
+@csrf_protect
 @require_POST
+@rate_limit(key='ip', rate='15/m', block=True, scope='chatbot_api')
 def chatbot_api(request):
     try:
         data = json.loads(request.body)
-        user_msg = data.get('message', '').strip()
-        session_id = data.get('session_id', str(uuid.uuid4()))
-        language = data.get('language', 'english').strip().lower()
+        user_msg = sanitize_text(str(data.get('message', '')), max_length=MAX_CHAT_MESSAGE_CHARS)
+        session_id = _clean_session_id(data.get('session_id', ''))
+        language = str(data.get('language', 'english') or 'english').strip().lower()
+        if language not in _ALLOWED_LANGUAGES:
+            language = 'english'
 
         if not user_msg:
             return JsonResponse({
@@ -149,6 +174,9 @@ def chatbot_api(request):
                 reply = fallback_chatbot(user_msg, language=language)
 
         reply, mood, celebrate = parse_expression(reply)
+        # Server-side XSS sanitiser — the stored + returned copy is inert even
+        # if a future client renders it as HTML.
+        reply = sanitize_bot_reply(reply, max_length=MAX_BOT_REPLY_CHARS)
 
         ChatMessage.objects.create(session_id=session_id, message=user_msg, response=reply)
         return JsonResponse({
@@ -158,7 +186,7 @@ def chatbot_api(request):
             'celebrate': celebrate
         })
 
-    except Exception as e:
+    except Exception:
         return JsonResponse({
             'reply': 'We are temporarily unable to process your request. Please connect with us directly on WhatsApp at +91 78792 23442.',
             'session_id': '',

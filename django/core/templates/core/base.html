@@ -5,8 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>{% block title %}Anshita Makeover — India's Premier Bridal Studio{% endblock %}</title>
-<meta name="description" content="{% block meta_description %}Anshita Makeover — India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio{% endblock %}">
-<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+<meta name="description" content="{% block meta_description %}Anshita Makeover — India's Premier Bridal Couture, 18-Hour Cry-Proof HD Airbrush, Hair Artistry & Beauty Studio in Jhansi, Bundelkhand & Pan-India.{% endblock %}">
+<meta name="keywords" content="{% block meta_keywords %}luxury bridal makeup jhansi, wedding makeup artist jhansi, anshita makeover, bridal studio bundelkhand, hd airbrush makeup jhansi{% endblock %}">
+<link rel="canonical" href="{% block canonical_url %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}">
 <link rel="icon" type="image/jpeg" href="{% static 'core/images/logo.jpeg' %}">
 <link rel="apple-touch-icon" href="{% static 'core/images/icons/icon-192.png' %}">
 <link rel="manifest" href="/manifest.json">
@@ -15,49 +16,66 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Anshita">
+<!-- CSRF token for the JSON widgets (chat, cart, booking). Read by getCsrf();
+     kept in the DOM so the csrftoken cookie can stay HttpOnly in production. -->
+<meta name="csrf-token" content="{{ csrf_token }}">
+<meta name="anshita-rate-limit" content="15/m">
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
+<!-- Open Graph / Facebook / WhatsApp -->
+<meta property="og:type" content="{% block og_type %}business.business{% endblock %}">
 <meta property="og:site_name" content="Anshita Makeover">
-<meta property="og:title" content="{% block og_title %}Anshita Makeover — India's Premier Bridal Studio{% endblock %}">
-<meta property="og:description" content="Anshita Makeover — India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio">
-<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/og-cover.jpg' %}">
+<meta property="og:title" content="{% block og_title %}Anshita Makeover — Premier Luxury Bridal Studio & Academy Jhansi{% endblock %}">
+<meta property="og:description" content="{% block og_description %}Experience luxury bespoke bridal makeup, 18-hour cry-proof HD airbrush artistry, and certified beauty masterclasses by Anshita Sinha in Jhansi & Pan-India.{% endblock %}">
+<meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/og-cover.jpg' %}{% endblock %}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+<meta property="og:locale" content="en_IN">
 
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Anshita Makeover — India's Premier Bridal Studio">
-<meta name="twitter:description" content="India's Premier Bridal Couture, Hair Artistry, Nails & Beauty Studio">
-<meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/og-cover.jpg' %}">
+<meta name="twitter:title" content="{% block twitter_title %}Anshita Makeover — Premier Luxury Bridal Studio & Academy{% endblock %}">
+<meta name="twitter:description" content="{% block twitter_description %}18-hour cry-proof bridal makeup, HD airbrush artistry, and royal bridal couture transformations in Jhansi & Pan-India.{% endblock %}">
+<meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/og-cover.jpg' %}{% endblock %}">
 
 <!-- Structured Data: LocalBusiness & BridalSalon -->
+{% block structured_data %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": ["BeautySalon", "LocalBusiness"],
   "name": "Anshita Makeover",
+  "alternateName": "Anshita Makeover Luxury Bridal Studio & Academy",
   "image": "{{ request.scheme }}://{{ request.get_host }}{% static 'core/images/logo.jpeg' %}",
-  "description": "Luxury bespoke bridal makeup, HD airbrush artistry, couture hairstyling, and draping studio.",
+  "description": "Luxury bespoke bridal makeup, 18-hour cry-proof HD airbrush artistry, couture hairstyling, and certified beauty masterclasses in Jhansi, Bundelkhand & Pan-India.",
   "url": "https://anshitamakeover.com/",
-  "telephone": "+91-7879223442",
-  "priceRange": "₹₹₹",
+  "telephone": "+91-95594-55444",
+  "priceRange": "₹₹₹₹",
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "4.98",
     "bestRating": "5",
-    "ratingCount": "120"
+    "ratingCount": "520"
   },
   "address": {
     "@type": "PostalAddress",
+    "streetAddress": "Civil Lines",
+    "addressLocality": "Jhansi",
+    "addressRegion": "Uttar Pradesh",
+    "postalCode": "284001",
     "addressCountry": "IN"
   },
-  "areaServed": {
-    "@type": "Country",
-    "name": "India"
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 25.4484,
+    "longitude": 78.5685
   },
+  "areaServed": [
+    { "@type": "City", "name": "Jhansi" },
+    { "@type": "State", "name": "Uttar Pradesh" },
+    { "@type": "Country", "name": "India" }
+  ],
   "openingHoursSpecification": [
     {
       "@type": "OpeningHoursSpecification",
@@ -65,9 +83,13 @@
       "opens": "07:00",
       "closes": "22:00"
     }
+  ],
+  "sameAs": [
+    "https://www.instagram.com/anshitamakeover/"
   ]
 }
 </script>
+{% endblock %}
 <link rel="preload" as="image" href="{% static 'core/images/curated/royal_crimson_bride_angle3.jpg' %}" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,10 +99,26 @@
 <script src="{% static 'core/js/ScrollTrigger.min.js' %}"></script>
 <script src="{% static 'core/js/lenis.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.12.0/headroom.min.js"></script>
+<script src="{% static 'core/js/characters/studio-treatment.js' %}"></script>
+<script src="{% static 'core/js/characters/rig-optimize.js' %}"></script>
+<!-- Real GLB concierge rigs (audit §6): skinned models + native walk clips,
+     scrubbed by scroll. The procedural rigs below stay as the fallback when a
+     model cannot be fetched. -->
+{# Optional GLB path — NOT loaded by default. GltfWalkCharacter.js +
+   /static/core/models/{mochi,pip}.glb remain available as an opt-in
+   alternative rig, but it loads ~355 KB of loader + model for every visitor,
+   and the shipped GLBs (Fox.glb / Parrot.glb) are not the canonical Mochi &
+   Pip — the procedural rigs are (see the studio's own patch_mochi_pip.py).
+   To enable, restore these two tags plus the modelUrl branch in
+   initMochiConcierge/initPipConcierge. #}
 <script src="{% static 'core/js/characters/CuteBunnyCharacter.js' %}"></script>
 <script src="{% static 'core/js/characters/MochiCharacter.js' %}"></script>
 <script src="{% static 'core/js/characters/PipCharacter.js' %}"></script>
 <script src="{% static 'core/js/lumiere-characters.js' %}"></script>
+<!-- Security: strict DOM sanitiser for every innerHTML sink (audit §7.1) -->
+<script src="{% static 'core/js/sanitize-html.js' %}"></script>
+<!-- Scroll-scrubbed walk-and-dock controller (Deactivated per SPEC-017 in favor of autonomous Pip Concierge) -->
+<!-- <script src="{% static 'core/js/controllers/mascot-scroll-engine.js' %}"></script> -->
 
 <link rel="stylesheet" href="{% static 'core/css/animations.css' %}">
 <script>
@@ -2834,6 +2872,84 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
   align-items: center;
 }
 
+/* ═══ SCROLL-SCRUBBED MASCOT WALK STAGE (audit §6) ═══
+   Full-viewport transparent layer that hosts the walking character. The
+   medallion itself is parked inside it (invisible but laid out) so the dock
+   target can always be measured with getBoundingClientRect(). */
+#mascot-walk-stage {
+  display: none !important;
+  position: fixed;
+  inset: 0;
+  z-index: 9400;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+#mascot-walk-stage.is-live {
+  opacity: 1;
+  visibility: visible;
+}
+/* The runway: a soft stage band along the bottom of the viewport. Very low
+   contrast — it lifts the character off the page without hiding content. */
+#mascot-walk-stage::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 26vh;
+  pointer-events: none;
+  /* Behind the character canvas (which carries z-index 9401). */
+  z-index: 0;
+  background: linear-gradient(to top,
+    rgba(10, 3, 9, 0.55) 0%,
+    rgba(10, 3, 9, 0.26) 42%,
+    rgba(10, 3, 9, 0) 100%);
+}
+#mascot-walk-stage canvas.mascot-walk-canvas--active {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  border-radius: 0 !important;
+  pointer-events: none !important;
+  display: block;
+  z-index: 9401;
+}
+@media (max-width: 760px) {
+  #mascot-walk-stage canvas.mascot-walk-canvas--active { width: 100vw !important; height: 100vh !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #mascot-walk-stage { transition: none; }
+}
+
+/* Scrubbed states — these replace the legacy threshold keyframes, so the
+   entrance is driven frame-by-frame by mascot-scroll-engine.js instead of a
+   one-shot CSS animation. */
+.chat-toggle-wrap.char-scrubbing {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+.chat-toggle-wrap.char-docked {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: none !important;
+  animation: none !important;
+}
+/* Keep the hidden medallion geometrically in place so the walk spline can
+   steer onto its exact centre (the legacy translateY(90px) broke that). */
+html.mascot-engine-ready .chat-toggle-wrap.char-pre-entry {
+  transform: none !important;
+  animation: none !important;
+}
+
 /* ═══ 3D LIVING CONCIERGE CHARACTER STAGE & CANVAS ═══ */
 .char-3d-stage {
   position: absolute;
@@ -2869,58 +2985,131 @@ html.preloader-skipped .rev-r.on{opacity:1;transform:none}
 /* ═══ ROYAL ENTRANCE ANIMATION & GOLDEN PORTAL ═══ */
 .char-entry-portal {
   position: absolute;
-  bottom: -10px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%) scale(0.2);
-  width: 110px;
-  height: 36px;
+  transform: translate(-50%, -50%) scale(0.2);
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(255,215,0,0.85) 0%, rgba(212,175,55,0.45) 45%, transparent 75%);
-  filter: blur(6px);
+  border: 3px solid #F5EDD6;
+  box-shadow: 0 0 35px rgba(240, 208, 96, 0.95), inset 0 0 20px rgba(212, 175, 55, 0.6);
   pointer-events: none;
   opacity: 0;
-  z-index: 1;
+  z-index: 2;
 }
-.char-entry-portal.active {
-  animation: portalBloom 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.char-entry-portal.active,
+.char-entry-portal.pulse {
+  animation: portalBloom 1.45s cubic-bezier(0.12, 0.85, 0.25, 1) forwards;
 }
 @keyframes portalBloom {
-  0% { opacity: 0; transform: translateX(-50%) scale(0.2); }
-  35% { opacity: 1; transform: translateX(-50%) scale(1.4); }
-  100% { opacity: 0; transform: translateX(-50%) scale(2.1); }
+  0% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(0.2) rotateX(60deg);
+    border-color: #FFF9E6;
+    box-shadow: 0 0 45px rgba(255, 225, 100, 1), inset 0 0 25px rgba(212, 175, 55, 0.8);
+  }
+  45% {
+    opacity: 0.85;
+    border-color: var(--gold, #D4AF37);
+    box-shadow: 0 0 55px rgba(212, 175, 55, 0.85), inset 0 0 15px rgba(212, 175, 55, 0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.6) rotateX(60deg);
+    box-shadow: 0 0 65px rgba(212, 175, 55, 0);
+  }
 }
 
 .chat-toggle-wrap.char-pre-entry {
   opacity: 0 !important;
-  transform: translateY(90px) scale(0.15) rotate(-20deg) !important;
+  transform: translate(-120px, 140px) scale(0.15) rotate(-22deg) !important;
   pointer-events: none !important;
   visibility: hidden !important;
 }
 .chat-toggle-wrap.char-entered {
   visibility: visible !important;
-  animation: conciergeScrollEntrance 1.15s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: conciergeFlightEntrance 1.45s cubic-bezier(0.18, 0.92, 0.32, 1) forwards;
   pointer-events: auto !important;
 }
 .chat-toggle-wrap.char-exiting {
   pointer-events: none !important;
   animation: conciergeScrollExit 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
-@keyframes conciergeScrollEntrance {
+.chat-toggle-wrap.is-flying {
+  cursor: grabbing !important;
+  transition: transform 0.08s ease-out;
+}
+
+/* ── Pure 3D Bird In-Flight State (No circle, border, aura, or background visible) ── */
+.chat-toggle-wrap.char-flying #chat-toggle,
+.chat-toggle-wrap.char-pre-entry #chat-toggle {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+.chat-toggle-wrap.char-flying .char-3d-stage,
+.chat-toggle-wrap.char-pre-entry .char-3d-stage {
+  background: transparent !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+.chat-toggle-wrap.char-flying .medallion-aura,
+.chat-toggle-wrap.char-flying .medallion-ring-pulse,
+.chat-toggle-wrap.char-flying .char-specular-shine,
+.chat-toggle-wrap.char-flying .medallion-online-dot,
+.chat-toggle-wrap.char-pre-entry .medallion-aura,
+.chat-toggle-wrap.char-pre-entry .medallion-ring-pulse,
+.chat-toggle-wrap.char-pre-entry .char-specular-shine,
+.chat-toggle-wrap.char-pre-entry .medallion-online-dot {
+  opacity: 0 !important;
+  transform: scale(0.3) !important;
+  pointer-events: none !important;
+}
+
+/* ── Settled Perch State (Golden medallion, velvet background & aura manifest upon landing) ── */
+.chat-toggle {
+  transition: background 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.45s ease,
+              box-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.char-3d-stage {
+  transition: background 0.45s ease, border-radius 0.45s ease !important;
+}
+.medallion-aura,
+.medallion-ring-pulse,
+.char-specular-shine,
+.medallion-online-dot {
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.chat-toggle-wrap.char-settled #chat-toggle {
+  animation: settlePuff 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes settlePuff {
+  0% { transform: scale(0.85); box-shadow: 0 0 0 rgba(212,175,55,0); }
+  60% { transform: scale(1.06); box-shadow: 0 16px 48px rgba(0,0,0,0.9), 0 0 38px rgba(212,175,55,0.6); }
+  100% { transform: scale(1); box-shadow: 0 12px 38px rgba(0,0,0,0.85), 0 0 28px rgba(212,175,55,0.4), inset 0 0 16px rgba(212,175,55,0.22); }
+}
+@keyframes conciergeFlightEntrance {
   0% {
     opacity: 0;
-    transform: translateY(90px) scale(0.2) rotate(-20deg);
+    transform: translate(-60px, 120px) scale(0.25) rotate(-22deg);
   }
-  50% {
+  35% {
     opacity: 1;
-    transform: translateY(-24px) scale(1.45) rotate(6deg);
+    transform: translate(25px, -45px) scale(1.35) rotate(12deg);
   }
-  75% {
+  65% {
     opacity: 1;
-    transform: translateY(3px) scale(0.96) rotate(-2deg);
+    transform: translate(-10px, 8px) scale(0.92) rotate(-5deg);
+  }
+  85% {
+    opacity: 1;
+    transform: translate(4px, -3px) scale(1.05) rotate(2deg);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1) rotate(0deg);
+    transform: translate(0, 0) scale(1) rotate(0deg);
   }
 }
 @keyframes conciergeScrollExit {
@@ -6729,6 +6918,8 @@ footer{background:var(--black);border-top:1px solid rgba(212,175,55,.1);padding:
 
 {% block content %}{% endblock %}
 
+{% include 'components/footer.html' %}
+
 {% if request.path != '/chatbot/' %}
 {% include 'components/chatbot_modal.html' %}
 {% endif %}
@@ -7010,7 +7201,7 @@ document.addEventListener('mouseout', e => {
 });
 
 /* ── AI ROYAL CONCIERGE STATE & QUICK ACTIONS ── */
-window.activeConciergeChar = localStorage.getItem('anshita_active_char') || 'asha';
+window.activeConciergeChar = localStorage.getItem('anshita_active_char') || 'pip';
 
 window.charConciergeState = {
   mood: 'happy',
@@ -7106,8 +7297,8 @@ window.charConciergeState = {
 };
 
 window.toggleActiveConciergeCharacter = function(forceChar) {
-  const charOrder = ['asha', 'mochi', 'pip'];
-  let currentIdx = charOrder.indexOf(window.activeConciergeChar || 'asha');
+  const charOrder = ['pip', 'mochi', 'asha'];
+  let currentIdx = charOrder.indexOf(window.activeConciergeChar || 'pip');
   if (currentIdx === -1) currentIdx = 0;
   const nextChar = forceChar || charOrder[(currentIdx + 1) % charOrder.length];
   window.activeConciergeChar = nextChar;
@@ -7155,6 +7346,13 @@ window.toggleActiveConciergeCharacter = function(forceChar) {
     if (charName) charName.innerHTML = 'Asha Concierge <span class="chat-vip-badge">Atelier</span>';
     if (toggleIcon) toggleIcon.textContent = '🐰';
     if (toggleBtn) toggleBtn.title = 'Switch to Mochi (Velvet Mascot 🐰)';
+    // Asha has no ambulatory rig yet, so the engine falls back to the
+    // scroll-scrubbed medallion (no walking locomotion) for this character.
+    if (window.mascotScrollEngine) {
+      window.mascotScrollEngine.detachCharacter();
+      window.mascotScrollEngine.mode = 'css-fallback';
+      window.mascotScrollEngine.refreshCharacter();
+    }
   }
 };
 
@@ -7174,6 +7372,82 @@ window.quickAskConcierge = function(query) {
   }
 };
 
+/* ── UNIVERSAL 3D CONCIERGE ENTRANCE & EXIT CONTROLLER ── */
+window.triggerConciergeEntrance = function() {
+  const wrap = document.getElementById('chat-toggle-wrap');
+  if (!wrap || wrap.classList.contains('char-entered')) return;
+  const portalEl = document.getElementById('charEntryPortal');
+
+  // Phase 1: Pure 3D Bird Flight.
+  // Strip medallion, golden borders, dark circle background, and auras so only the 3D bird is seen flying.
+  wrap.classList.remove('char-pre-entry', 'char-exiting', 'char-settled');
+  wrap.classList.add('char-entered', 'char-flying');
+
+  // Trigger Pip's rapid flight wing flap & aerodynamic banking posture
+  if (window.pipMascotInstance) {
+    window.pipMascotInstance.flap = 2.8;
+    window.pipMascotInstance.setEmotion('happy');
+  }
+
+  // Phase 2: Landing & Settling Down.
+  // After flight finishes (1.45s), Pip touches down. At this exact moment:
+  // 1. Pip transitions from flight flapping to landing squash & calm breathing
+  // 2. The golden circle, velvet medallion, and aura rings bloom into view
+  // 3. Golden portal shockwave expands from his landing perch
+  setTimeout(() => {
+    wrap.classList.remove('char-flying');
+    wrap.classList.add('char-settled');
+
+    if (window.pipMascotInstance) {
+      window.pipMascotInstance.flap = 1.0;
+      window.pipMascotInstance.setEmotion('welcome');
+      // Landing squash bounce
+      if (typeof window.pipMascotInstance.triggerSquashLanding === 'function') {
+        window.pipMascotInstance.triggerSquashLanding();
+      }
+    }
+
+    if (portalEl) {
+      portalEl.classList.remove('active', 'pulse');
+      void portalEl.offsetWidth;
+      portalEl.classList.add('pulse');
+    }
+  }, 1450);
+
+  // Phase 3: Concierge Greeting Speech Bubble manifests once settled
+  setTimeout(() => {
+    const bubble = document.getElementById('chat-speech-bubble');
+    const chatBox = document.getElementById('chat-box');
+    if (bubble && (!chatBox || !chatBox.classList.contains('open')) && !document.body.classList.contains('chat-is-open')) {
+      bubble.classList.add('active');
+      setTimeout(() => {
+        if (bubble && typeof isHoveringBubble !== 'undefined' && !isHoveringBubble) {
+          bubble.classList.remove('active');
+        }
+      }, 7000);
+    }
+  }, 1900);
+};
+
+window.triggerConciergeExit = function() {
+  const wrap = document.getElementById('chat-toggle-wrap');
+  if (!wrap || !wrap.classList.contains('char-entered')) return;
+  const chatBox = document.getElementById('chat-box');
+  if (chatBox && chatBox.classList.contains('open')) return;
+
+  wrap.classList.remove('char-entered', 'char-settled', 'char-flying');
+  wrap.classList.add('char-exiting');
+  const bubble = document.getElementById('chat-speech-bubble');
+  if (bubble) bubble.classList.remove('active');
+
+  setTimeout(() => {
+    if (wrap.classList.contains('char-exiting')) {
+      wrap.classList.remove('char-exiting');
+      wrap.classList.add('char-pre-entry');
+    }
+  }, 500);
+};
+
 /* ── 3D PIXAR-STYLE CUTE KID AI CONCIERGE ("ASHA") CONTROLLER ── */
 (function initAshaPixarConcierge() {
   const toggleWrap = document.getElementById('chat-toggle-wrap');
@@ -7181,53 +7455,6 @@ window.quickAskConcierge = function(query) {
   const portal = document.getElementById('charEntryPortal');
   const canvas = document.getElementById('ashaMascotCanvas');
   if (!toggle || !toggleWrap || !canvas || typeof THREE === 'undefined') return;
-
-    // Concierge Scroll Entrance & Exit Controller
-  window.triggerConciergeEntrance = function() {
-    const wrap = document.getElementById('chat-toggle-wrap');
-    if (!wrap || wrap.classList.contains('char-entered')) return;
-    const portalEl = document.getElementById('charEntryPortal');
-    if (portalEl) {
-      portalEl.classList.remove('active');
-      void portalEl.offsetWidth;
-      portalEl.classList.add('active');
-    }
-    wrap.classList.remove('char-pre-entry', 'char-exiting');
-    wrap.classList.add('char-entered');
-
-    // Pop speech bubble greeting
-    setTimeout(() => {
-      const bubble = document.getElementById('chat-speech-bubble');
-      const chatBox = document.getElementById('chat-box');
-      if (bubble && (!chatBox || !chatBox.classList.contains('open')) && !document.body.classList.contains('chat-is-open')) {
-        bubble.classList.add('active');
-        setTimeout(() => {
-          if (bubble && typeof isHoveringBubble !== 'undefined' && !isHoveringBubble) {
-            bubble.classList.remove('active');
-          }
-        }, 7000);
-      }
-    }, 800);
-  };
-
-  window.triggerConciergeExit = function() {
-    const wrap = document.getElementById('chat-toggle-wrap');
-    if (!wrap || !wrap.classList.contains('char-entered')) return;
-    const chatBox = document.getElementById('chat-box');
-    if (chatBox && chatBox.classList.contains('open')) return;
-
-    wrap.classList.remove('char-entered');
-    wrap.classList.add('char-exiting');
-    const bubble = document.getElementById('chat-speech-bubble');
-    if (bubble) bubble.classList.remove('active');
-
-    setTimeout(() => {
-      if (wrap.classList.contains('char-exiting')) {
-        wrap.classList.remove('char-exiting');
-        wrap.classList.add('char-pre-entry');
-      }
-    }, 500);
-  };
 
   // 1. Three.js Scene, Camera, and WebGL Renderer
   const width = canvas.width || 168;
@@ -7828,6 +8055,9 @@ function initMochiConcierge() {
   if (!window.mochiMascotInstance) {
     try {
       if (typeof MochiCharacter !== 'undefined') {
+        // The procedural Mochi (ported from the studio's index-expressions.html
+        // — see patch_mochi_pip.py) is the canonical character; the GLB path is
+        // kept in GltfWalkCharacter.js as an opt-in alternative only.
         window.mochiMascotInstance = new MochiCharacter({
           canvas: canvas,
           width: 168,
@@ -7871,6 +8101,14 @@ function initMochiConcierge() {
       console.warn("Mochi Header canvas init error:", e);
     }
   }
+
+  // Hand the medallion rig to the scroll-scrubbed walk engine (audit §6).
+  // The engine re-parents this canvas onto the full-viewport walk stage and
+  // drives the hop cycle with scroll distance; when the mascot docks, the
+  // canvas is seated back inside #chat-toggle.
+  if (window.mascotScrollEngine && window.mochiMascotInstance) {
+    window.mascotScrollEngine.attachCharacter(window.mochiMascotInstance, 'mochi');
+  }
 }
 
 // Initialize Pip Finch Concierge Engine
@@ -7907,11 +8145,16 @@ function initPipConcierge() {
       console.warn("Pip Header canvas init error:", e);
     }
   }
+
+  // Parity with Mochi: Pip shares the same walk-and-dock timeline (audit §5.2).
+  if (window.mascotScrollEngine && window.pipMascotInstance) {
+    window.mascotScrollEngine.attachCharacter(window.pipMascotInstance, 'pip');
+  }
 }
 
-// Restore saved character preference (defaults to Mochi Bunny)
+// Restore saved character preference (defaults to Pip Haute Bird per SPEC-017)
 document.addEventListener('DOMContentLoaded', () => {
-  const savedChar = localStorage.getItem('anshita_active_char') || 'mochi';
+  const savedChar = localStorage.getItem('anshita_active_char') || 'pip';
   if (typeof window.toggleActiveConciergeCharacter === 'function') {
     window.toggleActiveConciergeCharacter(savedChar);
   }
@@ -7919,12 +8162,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ═══ SCROLL-DRIVEN CONCIERGE EMERGENCE & CHATBOT SHRINK ANIMATION ═══
 (function initConciergeScrollTrigger() {
-  let hasScrolledDown = false;
-  let scrollTicking = false;
-  const SCROLL_THRESHOLD_ENTER = 180; // Pixels down from top before mascot emerges
-  const SCROLL_THRESHOLD_EXIT = 80;   // Pixels near top where mascot retreats/hides
+  // ── PRIMARY PATH: scroll-scrubbed walk engine (audit §6) ────────────────
+  // mascot-scroll-engine.js boots on DOMContentLoaded and owns the whole
+  // timeline: per-pixel scrubbing, hop cycle, spline docking, portal bloom.
+  // Nothing here is threshold-based any more.
+  function engineActive() {
+    return !!(window.mascotScrollEngine && window.mascotScrollEngine.mode !== 'idle');
+  }
 
   window.checkConciergeScrollPosition = function() {
+    if (engineActive()) {
+      window.mascotScrollEngine.readScrollPosition();
+      return;
+    }
+    legacyThresholdCheck();
+  };
+
+  // ── FALLBACK PATH: no WebGL / rig without scrub() support ───────────────
+  // Kept deliberately conservative so a device without WebGL still gets a
+  // usable (if simpler) concierge rather than nothing at all.
+  let hasScrolledDown = false;
+  const SCROLL_THRESHOLD_ENTER = 180;
+  const SCROLL_THRESHOLD_EXIT = 80;
+
+  function legacyThresholdCheck() {
     const scrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
     const wrap = document.getElementById('chat-toggle-wrap');
     if (!wrap) return;
@@ -7944,22 +8205,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
-  };
+  }
 
   window.addEventListener('scroll', () => {
-    if (!scrollTicking) {
-      window.requestAnimationFrame(() => {
-        window.checkConciergeScrollPosition();
-        scrollTicking = false;
-      });
-      scrollTicking = true;
-    }
+    // The engine owns its own passive scroll listener + rAF sampling.
+    if (engineActive()) return;
+    window.checkConciergeScrollPosition();
   }, { passive: true });
 
-  // Initial check once DOM loads (if already scrolled down on refresh)
-  window.addEventListener('load', () => {
-    setTimeout(window.checkConciergeScrollPosition, 300);
-  });
+  // Autonomous Entrance: Pip takes flight, displays circle portal, and settles down as chatbot
+  function triggerAutonomousEntrance() {
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (!wrap || wrap.classList.contains('char-entered')) return;
+
+    // Ensure Pip is explicitly activated and initialized before entrance flight
+    const savedChar = localStorage.getItem('anshita_active_char') || 'pip';
+    if (typeof window.toggleActiveConciergeCharacter === 'function') {
+      window.toggleActiveConciergeCharacter(savedChar);
+    }
+    if (typeof initPipConcierge === 'function') {
+      initPipConcierge();
+    }
+
+    // Trigger full entrance choreography: 3D flight swoop, golden portal ring bloom, and chat bubble
+    if (typeof window.triggerConciergeEntrance === 'function') {
+      window.triggerConciergeEntrance();
+    }
+  }
+
+  // Trigger once page settles or immediately when preloader clears
+  if (document.readyState === 'complete') {
+    setTimeout(triggerAutonomousEntrance, 500);
+  } else {
+    window.addEventListener('load', () => setTimeout(triggerAutonomousEntrance, 700));
+    document.addEventListener('DOMContentLoaded', () => setTimeout(triggerAutonomousEntrance, 1200));
+  }
 })();
 
 
@@ -7983,6 +8263,10 @@ window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', duratio
   const subEl = document.getElementById('csb-sub');
   if (!bubble || !textEl) return;
 
+  // The docking greeting ("How may I help you today? ✨") is owned by the walk
+  // engine: marketing tips must not clobber it until the visitor scrolls away.
+  if (bubble.getAttribute('data-mascot-greeting') === '1') return;
+
   clearTimeout(conciergeDismissTimer);
   clearTimeout(conciergeCycleTimer);
 
@@ -7991,7 +8275,10 @@ window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', duratio
   if (subEl) subEl.style.opacity = '0';
 
   setTimeout(() => {
-    textEl.innerHTML = text;
+    // XSS gate (audit §7.1): bubble copy is attacker-influencable via AI
+    // replies, so it only ever lands in the DOM through the sanitiser.
+    if (window.AnshitaSanitizer) window.AnshitaSanitizer.setHtml(textEl, text);
+    else textEl.textContent = String(text || '');
     if (subEl && sub) subEl.textContent = sub;
     textEl.style.opacity = '1';
     if (subEl) subEl.style.opacity = '1';
@@ -8017,6 +8304,14 @@ window.setConciergeSpeech = function(text, sub = 'AI Wedding Concierge', duratio
 window.hideConciergeSpeech = function() {
   const bubble = document.getElementById('chat-speech-bubble');
   if (!bubble) return;
+
+  // The docking greeting stays put until the visitor scrolls the mascot away
+  // (the walk engine clears data-mascot-greeting on undock).
+  if (bubble.getAttribute('data-mascot-greeting') === '1' &&
+      !document.body.classList.contains('chat-is-open')) {
+    return;
+  }
+
   bubble.classList.remove('active');
 
   // Schedule next helpful tip after 8 seconds of rest ONLY if chat box is closed/minimized
@@ -8027,6 +8322,13 @@ window.hideConciergeSpeech = function() {
       triggerNextConciergePrompt();
     }
   }, 8500);
+};
+
+// Called by the walk engine when the visitor scrolls the mascot back up, so
+// the docking greeting can give way to the regular rotating tips again.
+window.releaseMascotGreeting = function() {
+  const bubble = document.getElementById('chat-speech-bubble');
+  if (bubble) bubble.removeAttribute('data-mascot-greeting');
 };
 
 // Periodic Concierge Insights rotation (adapts to current language & region)
@@ -10455,6 +10757,15 @@ function initDraggableChat() {
   let initialLeft = 0, initialTop = 0;
   let isDragging = false;
 
+  function triggerLandingRing() {
+    const portal = document.getElementById('charEntryPortal');
+    if (portal) {
+      portal.classList.remove('pulse', 'active');
+      void portal.offsetWidth;
+      portal.classList.add('pulse');
+    }
+  }
+
   function onPointerDown(e, handleEl) {
     if (e.target.closest('.chat-ctrl-btn') || e.target.closest('input') || e.target.closest('button')) {
       if (e.target !== toggleBtn) return;
@@ -10474,6 +10785,15 @@ function initDraggableChat() {
     container.style.right = 'auto';
     container.style.left = initialLeft + 'px';
     container.style.top = initialTop + 'px';
+
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (wrap) wrap.classList.add('is-flying');
+
+    // Trigger Pip flight wings & emotion
+    if (window.pipMascotInstance) {
+      window.pipMascotInstance.flap = 2.5;
+      window.pipMascotInstance.setEmotion('happy');
+    }
 
     document.addEventListener('mousemove', onPointerMove);
     document.addEventListener('mouseup', onPointerUp);
@@ -10500,6 +10820,17 @@ function initDraggableChat() {
 
     container.style.left = newLeft + 'px';
     container.style.top = newTop + 'px';
+
+    // Bank angle tilt during flight
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (wrap) {
+      const tilt = Math.max(-14, Math.min(14, dx * 0.25));
+      wrap.style.transform = `rotate(${tilt}deg) scale(1.1)`;
+    }
+    if (window.pipMascotInstance) {
+      window.pipMascotInstance.flap = 2.8;
+      window.pipMascotInstance.walkWingSpread = 0.8;
+    }
   }
 
   function onPointerUp(e) {
@@ -10509,6 +10840,20 @@ function initDraggableChat() {
     document.removeEventListener('mouseup', onPointerUp);
     document.removeEventListener('touchmove', onPointerMove);
     document.removeEventListener('touchend', onPointerUp);
+
+    const wrap = document.getElementById('chat-toggle-wrap');
+    if (wrap) {
+      wrap.classList.remove('is-flying');
+      wrap.style.transform = 'rotate(0deg) scale(1)';
+    }
+
+    // Settle Pip into new location with expanding golden halo ring
+    if (window.pipMascotInstance) {
+      window.pipMascotInstance.flap = 1.0;
+      window.pipMascotInstance.walkWingSpread = 0.2;
+      window.pipMascotInstance.setEmotion('welcome');
+    }
+    triggerLandingRing();
   }
 
   // Bind drag to the toggle floating head
@@ -10933,7 +11278,10 @@ function appendMsg(text, role){
   const d = document.createElement('div');
   d.className = 'msg ' + role;
   if(role === 'bot'){
-    d.innerHTML = renderMarkdownToHtml(text);
+    // renderMarkdownToHtml escapes first; the sanitiser is defence in depth
+    // so a future renderer change can never reintroduce an XSS sink.
+    const html = renderMarkdownToHtml(text);
+    d.innerHTML = window.AnshitaSanitizer ? window.AnshitaSanitizer.sanitize(html) : html;
   } else {
     d.textContent = text;
   }
@@ -10949,7 +11297,14 @@ function appendTyping(){
 }
 
 /* ── CSRF ── */
-function getCsrf(){return document.cookie.split(';').find(c=>c.trim().startsWith('csrftoken='))?.split('=')[1]||''}
+function getCsrf(){
+  // Prefer the <meta name="csrf-token"> value: production keeps the
+  // csrftoken cookie HttpOnly (audit §7.2), so document.cookie is empty there.
+  const meta=document.querySelector('meta[name="csrf-token"]');
+  if(meta && meta.content && meta.content!=='NOTPROVIDED') return meta.content;
+  const cookie=document.cookie.split(';').find(c=>c.trim().startsWith('csrftoken='));
+  return cookie?cookie.split('=')[1]:'';
+}
 
 /* ── Admin Login Modal ── */
 function openLoginModal(){document.getElementById('adm-login-modal').classList.add('open')}

@@ -297,8 +297,14 @@ async function submitCartPageBooking() {
   msg += `%0A%0APlease check availability for my date.`;
 
   try {
+    // CSRF-protected endpoint (audit §7.1): send the token like the chat widget.
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    const csrfCookie = document.cookie.split(';').find(c => c.trim().startsWith('csrftoken='));
+    const csrfToken = (csrfMeta && csrfMeta.content && csrfMeta.content !== 'NOTPROVIDED')
+      ? csrfMeta.content : (csrfCookie ? csrfCookie.split('=')[1] : '');
     const response = await fetch('/api/booking/', {
-      method: 'POST', headers: {'Content-Type': 'application/json'},
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrfToken},
       body: JSON.stringify({name, phone, event_date: date || null, city, notes, items: AnshitaCart.items, estimated_total: calc.total})
     });
     const result = await response.json();

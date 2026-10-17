@@ -1,4 +1,13 @@
 {% load static %}
+<!-- ══════════════════════════════════════════════════════════════════════════
+     SCROLL-SCRUBBED 3D WALK STAGE (audit §6)
+     The Mochi / Pip WebGL canvas is re-parented into this full-viewport
+     transparent layer during scroll phases 1–3, then seats itself inside
+     #chat-toggle on docking. pointer-events:none keeps the page interactive
+     while the mascot walks across it.
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div id="mascot-walk-stage" aria-hidden="true"></div>
+
 <!-- CHATBOT CONCIERGE COMPONENT (FB MESSENGER MOVABLE STYLE) -->
 <div id="chatbot" class="chat-container">
   <div class="chat-box" id="chat-box">
@@ -114,12 +123,12 @@
         <div class="char-specular-shine"></div>
       </div>
       <!-- Living 3D Cute Bunny Mascot ("Mochi") Stage & WebGL Canvas -->
-      <div class="char-3d-stage" id="bunnyMascotStage" style="display:block;">
+      <div class="char-3d-stage" id="bunnyMascotStage" style="display:none;">
         <canvas class="char-gaze-canvas" id="bunnyMascotCanvas" width="168" height="168" aria-label="Mochi — 3D Velvet Mascot"></canvas>
         <div class="char-specular-shine"></div>
       </div>
       <!-- Living 3D Celestial Finch Mascot ("Pip") Stage & WebGL Canvas -->
-      <div class="char-3d-stage" id="pipMascotStage" style="display:none;">
+      <div class="char-3d-stage" id="pipMascotStage" style="display:block;">
         <canvas class="char-gaze-canvas" id="pipMascotCanvas" width="168" height="168" aria-label="Pip — 3D Celestial Finch Muse"></canvas>
         <div class="char-specular-shine"></div>
       </div>
