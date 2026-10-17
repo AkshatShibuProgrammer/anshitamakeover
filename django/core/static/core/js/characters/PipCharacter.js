@@ -207,7 +207,8 @@
         powerPreference: 'high-performance'
       });
       this.renderer.setSize(this.width, this.height, false);
-      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      const maxDpr = (typeof window !== 'undefined' && window.innerWidth < 768) ? 1.6 : 2;
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr));
 
       // ── Standalone Guaranteed High-Fidelity Three-Point Studio Lighting ──
       const ambient = new THREE.AmbientLight(0xfff5ea, 1.25);
