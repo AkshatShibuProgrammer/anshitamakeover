@@ -40,27 +40,34 @@
 - **AC 2.1**: The double crawling ticker marquee section (`.marquee-band`) is completely removed from the DOM and CSS.
 - **AC 2.2**: Generous luxury whitespace and subtle gold hair-line dividers separate the Hero and Signature Looks sections.
 
-### User Story 3: Pinned One-Time Transformation & Pricing Split
-*As a visitor exploring bridal services, I want to see the transformation and pricing side-by-side without frustrating scroll traps.*
-- **AC 3.1**: The section features a 50/50 split: Left side displays high-resolution authentic bridal transformation (before/after); Right side displays transparent discipline pricing and character reaction.
-- **AC 3.2**: When scrolling into the section, the viewport locks briefly for one smooth scrub transition revealing the pricing tiers.
+### User Story 3: Pinned One-Time Transformation & Before/After Showcase
+*As a visitor exploring bridal services, I want to see genuine before-and-after transformations and transparent pricing without frustrating scroll traps.*
+- **AC 3.1**: The section features a 50/50 split: Left side displays high-resolution authentic bridal transformation (Before: skin prep/dermal base; After: full mandap radiance); Right side displays transparent discipline pricing and character reaction.
+- **AC 3.2**: When scrolling into the section, the viewport locks briefly for one smooth scrub transition revealing the transformation and pricing tiers.
 - **AC 3.3**: Once revealed (or if scrolled past once), the lock disengages permanently for that session (`sessionStorage.setItem('trans_revealed', '1')`), allowing uninterrupted natural scrolling.
 
-### User Story 4: Grounded, Authentic Indian Bridal Copy
-*As a luxury client, I want terminology that reflects real high-end Indian wedding artistry.*
-- **AC 4.1**: Eliminate *"Skin Metallurgy"*, *"Sacred Geometry"*, *"Haute Couture Metholegy"*.
-- **AC 4.2**: Replace with:
-  - **18-Hour Dermal Prep & Cry-Proof Base** (Dior & Charlotte Tilbury moisture infusion, sweat & tear resistant).
-  - **Cultural Heritage & Dupatta Draping** (Banarasi pleating, Mukut & Chandan styling, Kundan jewelry balancing).
-  - **HD Velvet Complexion** (Zero flashback, seamless camera-ready velvet coverage).
-  - **Ceremonial Glow & Mandap Radiance** (Airbrush luminescence under warm sacred mandap lighting).
+### User Story 4: Grounded, Authentic Indian Bridal Copy & Experience Truths (#confirmed)
+*As a discerning bride, I want truthful metrics, grounded luxury terminology, and complete ecosystem tie-ups.*
+- **AC 4.1 (#confirmed)**: Anshita Sinha has **3 years of professional experience** (not 12+ years, not 1200+ brides). Metric counter displays: `3+ Years of Artistry`, `100+ Brides Celebrated`.
+- **AC 4.2 (#confirmed)**: Eliminate pseudo-scientific "4 Pillars of Luxury Bridal Artistry" and "Skin Metallurgy". Replace with genuine Before/After transformations and clean service offerings.
+- **AC 4.3 (#confirmed)**: Categorize cultural makeup with authentic photos: Bengali Bride (Mukut & Chandan), Christian Bride (Cathedral Veil), Sangeet Glamour, Royal Vivah Bridal. Present non-makeup styling (Saree draping, Hair styling, Nail art) in clean auxiliary lists *without* photo clutter.
+- **AC 4.4 (#confirmed)**: Partner ecosystem tie-ups:
+  - Photography & Cinematography: Starting from ₹80,000.
+  - Full Event Management, Decorators & Facilitators: Enquire for combination discount (no starting price).
+  - Royal Catering & Banqueting: Strategic partner tie-up.
+- **AC 4.5 (#confirmed)**: Cinematic Repertoire (Works Wheel) pauses page scroll on first arrival, smoothly animates the downward/rotational movement of 3D cards, and permanently frees scroll. All cards show real 4K photos.
+- **AC 4.6 (#confirmed)**: Remove the noisy city rotator from immediate hero curtain-parting view. Move regional cities to an elegant, quiet regional coverage strip at the bottom of the page (Jabalpur Flagship Studio, Damoh, Katni, Bhopal, Indore, Lucknow, Jhansi, All Over India).
+- **AC 4.7 (#confirmed)**: Google Maps & website footer clearly states: "Flagship Studio in Jabalpur with Destination Wedding Services Available All Over India".
 
 ---
 
 ## 3. Verification & Acceptance Gate
 - [ ] Pip performs 3D flight entrance on load and lands with gold circular halo wave.
 - [ ] Pip is draggable to any screen position, flying dynamically while dragged and landing with ring pulse.
-- [ ] No crawling marquee text appears on the homepage.
-- [ ] Section 3B is transformed into a clean split showcase with real bridal imagery and transparent pricing.
-- [ ] Scroll pinning executes exactly once, freeing scroll immediately afterwards.
-- [ ] All copy reflects grounded, high-end bridal terminology.
+- [ ] Metric counters reflect 3+ years experience and 100+ brides.
+- [ ] Artificial "4 Pillars" section removed in favor of authentic Before/After transformation.
+- [ ] Cinematic Repertoire (Works Wheel) executes one-time downward motion pause and frees scroll.
+- [ ] Dedicated cultural makeup sections show real photos (Bengali, Christian, Sangeet, Bridal); non-makeup services (saree, hair, nails) listed without photo clutter.
+- [ ] Wedding partner tie-ups clearly featured: Photography starting from ₹80,000; Event management/decor "Enquire for combination discount"; Caterer tie-up.
+- [ ] Regional coverage strip placed at page bottom with Damoh, Katni, Jabalpur Flagship, and All Over India.
+- [ ] Strict `#confirmed` guardrail enforced for all future AI agents.

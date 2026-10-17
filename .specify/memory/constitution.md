@@ -60,3 +60,26 @@
 3. **Tasks Gate (`/speckit.tasks`)**: Work must be broken down into granular, dependency-ordered tasks.
 4. **Implement Gate (`/speckit.implement`)**: Execution with automated verification (Django test suite, browser visual checks, Git clean tree verification).
 
+---
+
+## 3. Owner Confirmed Truths & AI Guardrails (#confirmed)
+
+> [!CRITICAL]
+> **AI INSTRUCTION / GUARDRAIL:** Any AI assistant modifying this repository MUST strictly preserve all clauses marked with the `#confirmed` tag. If you want any change or suggestion regarding any item marked `#confirmed`, you **MUST ASK THE USER DIRECTLY BEFORE MODIFYING**.
+
+- `#confirmed` **Artist Experience & Track Record:** Anshita Sinha has **3 years of professional experience** (not 12+ years, not 1200+ brides). All metric counters and copy must state 3+ Years Experience and 100+ Brides Celebrated. False claims are strictly forbidden.
+- `#confirmed` **No Artificial "4 Pillars of Luxury" Psuedo-Science:** Professional bridal websites (e.g. Satish Kargutkar, Evagher, top MUA studios) do not feature gimmicky pseudo-scientific "4 Pillars" or "Sacred Geometry". Remove artificial pillar blocks; replace with genuine Before/After transformations and clear service offerings.
+- `#confirmed` **Cinematic Repertoire (Works Wheel) Motion Experience:** When the visitor reaches the Cinematic Repertoire section, the page scroll must pause on first arrival, smoothly showcase the downward/rotational movement of the 3D drum cards, and then unlock. Cards must display authentic high-resolution photos (no blank placeholders).
+- `#confirmed` **Artistic Disciplines Hover & Before/After Transformation:** Replace noisy hover tickers with real Before & After makeup transformations. Show authentic transformation pairs (Prep / Bare skin to Mandap / Ceremony glam).
+- `#confirmed` **Categorized Cultural & Event Makeup Showcase:**
+  - Showcase dedicated cultural makeup looks with real photos: **Bengali Bride** (Mukut & Chandan), **Christian Bride** (Cathedral veil), **Sangeet Glamour**, **Royal Vivah Bridal**.
+  - Non-makeup services (Saree Draping, Hair Styling, Nail Art) are presented cleanly in an auxiliary list *without* heavy photo clutter.
+- `#confirmed` **Wedding Ecosystem Partner Tie-ups:**
+  - **Photography & Cinematography:** Starting from **₹80,000** with verified studio partners.
+  - **Event Management, Decorators & Facilitators:** Direct tie-ups to manage full weddings. No starting prices displayed; state *"Enquire for combination discount"*.
+  - **Royal Catering & Hospitality:** Strategic tie-ups available for multi-event wedding banquets.
+- `#confirmed` **Regional Coverage & City Strip Placement:**
+  - Do not display an abrupt, noisy city rotator immediately when the curtain opens.
+  - Present service cities in an elegant, quiet regional coverage strip positioned at the bottom of the page (featuring **Jabalpur (Flagship Studio)**, **Damoh**, **Katni**, **Bhopal**, **Indore**, **Lucknow**, **Jhansi**, followed by **All Over India Available**).
+- `#confirmed` **Google Maps & Outstation Mandate:** Website and Google Business metadata must clearly state: *"Flagship Studio in Jabalpur with Destination Wedding Services Available All Over India"*.
+

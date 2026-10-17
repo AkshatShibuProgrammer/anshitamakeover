@@ -16,7 +16,23 @@
   - Benchmark analysis: Transparent starter packs (e.g. Bride One-Time ₹10,000, Two-Time ₹18,000, Groom ₹3,000, Sider People ₹2,000, Hairstyle ₹2,000, Saree Draping ₹600, 30-Day Academy Course ₹35,000).
   - Implementation for Anshita Makeover: Introduce transparent Starter Packs with active seasonal coupons (`GLAMOUR30`, `WINTER30`, `TODAYVIP`), clear starter pricing prominently displayed on services and packages, and dedicated deep-dive subpages (`/services/<slug>/`) detailing techniques, duration, cry-proof longevity, and kit products.
   - **Product Scraping / Kit Ingestion Pipeline:** Architecture established for importing Flipkart order history / luxury cosmetics receipts (Dior Backstage, Charlotte Tilbury, MAC, Huda Beauty, NARS, Kryolan) to automatically populate verified genuine product badges on service detail pages.
-- **City treatment & Home Studio (Strict User Mandate):** **Jabalpur is the home/flagship studio** (`Jabalpur — Flagship Bridal Studio`), with Bhopal, Indore, Lucknow, and Jhansi as verified destination bridal suite service locations. Managed via the gentle city rotator with pause/next controls and a reduced-motion static state.
+- **City treatment & Regional Coverage (Strict User Mandate & #confirmed):**
+  - **Jabalpur is the home & flagship studio** (`Jabalpur — Flagship Bridal Studio`).
+  - Immediately upon curtain parting, do NOT display an abrupt, distracting city rotator. Instead, place an elegant, quiet regional coverage strip at the bottom of the page featuring **Jabalpur (Flagship Studio)**, **Damoh**, **Katni**, **Bhopal**, **Indore**, **Lucknow**, **Jhansi**, followed by **All Over India Available**.
+  - Google Maps & business footer metadata must clearly declare: *"Flagship Studio in Jabalpur with Destination Wedding Services Available All Over India"*.
+- **Artist Experience Truth (#confirmed):**
+  - Anshita Sinha has **3 years of professional experience** (not 12+ years, not 1200+ brides). Metric counters and badges must accurately state `3+ Years of Artistry` and `100+ Brides Celebrated`. False metrics are strictly prohibited.
+- **Cinematic Repertoire (Works Wheel) Motion (#confirmed):**
+  - When the user scrolls to Cinematic Repertoire, the scroll must pause briefly on first arrival, showcase the smooth downward/rotational movement of the 3D drum cards, and then unlock. Cards must show authentic, unblanked 4K photos.
+- **Before & After Transformation Showcase (#confirmed):**
+  - Replace noisy text tickers with real Before & After makeup transformations (e.g. Skin Prep / Bare Skin $\rightarrow$ Mandap Radiance / Finished Vivah Glamour).
+- **Categorized Cultural Makeup & Styling Cleanliness (#confirmed):**
+  - Cultural makeup categories with authentic photos: Bengali Bride (Mukut & Chandan), Christian Bride (Cathedral Veil), Sangeet Glamour, Royal Vivah Bridal.
+  - Auxiliary styling services without photo clutter: Saree Draping, Hair Styling, Nail Art.
+- **Complete Wedding Ecosystem Tie-ups (#confirmed):**
+  - **Photography & Cinematography:** Starting from ₹80,000 with vetted studio partners.
+  - **Event Management, Decorators & Facilitators:** Direct tie-ups to manage full events. Quote: *"Enquire for combination discount"* (no starting price displayed).
+  - **Royal Catering & Hospitality:** Strategic tie-ups for multi-event wedding banquets.
 - **First prototype scope:** A — Homepage and shared mobile shell, then extend page by page.
 - **Admin/customization knowledge:** The owner does not know the admin route or deployment customization. No credentials are requested; production reachability remains unverified.
 - **Homepage CTA:** The owner confirms the current actions are correct: “Explore Lookbook” links to Gallery and “Book on WhatsApp” opens WhatsApp. Preserve those destinations.
@@ -25,14 +41,16 @@ These are the owner's preferred directions, benchmarks, and architectural decisi
 
 ---
 
-## 1. Non-negotiable constraints
+## 1. Non-negotiable constraints & AI Guardrails (#confirmed)
 
-- **Keep the existing Anshita Makeover brand animation exactly as it is.** It is protected. Do not alter its timing, keyframes, artwork, or choreography. Limit surrounding layout changes so they cannot affect it, and add a visual non-regression check before touching adjacent CSS/JS.
-- Keep the current chatbot and its useful behavior. Improve its first impression and accessibility; do not remove or replace it.
-- Keep the existing character designs. **Mochi is the rabbit; Pip is the bird.** Make their appearances easier to see, and make their entrances/exits calmer and more intentional.
-- Keep G8 strict: **fewer than 25 draw calls**. Do not trade away character fidelity or loosen this target without explicit approval.
-- Do not invent service cities, prices, ratings, timings, treatment outcomes, or travel promises. Verify business facts first.
-- The second AI's current premium-site research is still pending. Use this plan to compare options; select and implement only after that research is reviewed with the owner.
+> [!CRITICAL]
+> **AI INSTRUCTION / GUARDRAIL:** Any AI assistant modifying this repository MUST strictly preserve all clauses marked with the `#confirmed` tag. If you want any change or suggestion regarding any item marked `#confirmed`, you **MUST ASK THE USER DIRECTLY BEFORE MODIFYING**.
+
+- `#confirmed` Keep the existing Anshita Makeover brand animation exactly as it is. It is protected. Do not alter its timing, keyframes, artwork, or choreography. Limit surrounding layout changes so they cannot affect it, and add a visual non-regression check before touching adjacent CSS/JS.
+- `#confirmed` **Mochi is the rabbit; Pip is the bird.** Pip is the default haute bird mascot with 3D flight entrance and drag-and-drop; Mochi remains selectable.
+- `#confirmed` Keep G8 strict: **fewer than 25 draw calls**. Do not trade away character fidelity or loosen this target without explicit approval.
+- `#confirmed` Do not invent service cities, prices, ratings, timings, treatment outcomes, or travel promises. Verify business facts first.
+- `#confirmed` No pseudo-scientific "4 Pillars of Luxury Bridal Artistry" or "Skin Metallurgy". Top bridal studios (e.g. Satish Kargutkar, Evagher, Sabyasachi brides) do not use fake corporate jargon.
 
 ---
 
