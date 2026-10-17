@@ -580,22 +580,37 @@
 
     if (G && dockRig) {
       if (cur && cur.name === 'Pip') {
-        // Organic swooping flight entrance for Pip
-        cur.flap = 2.4;
+        // High-fidelity finch flight entrance:
+        // Pip accelerates up from behind the dock with high flutter, sweeps wide with banking,
+        // glides up to an apex, flares wings with landing squash, and settles into dock.
+        cur.flap = 2.8;
+        cur.flightPitch = -0.15;
         cur.setEmotion('happy', false);
+        if (cur.onSpark) cur.onSpark(new THREE.Vector3(0, 0.6, 0.1), 10);
+
         G.timeline()
           .fromTo(dockRig.position, 
-            { y: PEEK_Y - 0.4, x: -0.35, z: -0.5 },
-            { y: OUT_Y + 0.22, x: 0.1, z: 0.1, duration: 0.85, ease: 'power2.out' }
+            { y: PEEK_Y - 0.45, x: -0.4, z: -0.6 },
+            { y: OUT_Y + 0.32, x: 0.15, z: 0.12, duration: 0.72, ease: 'power2.out' }
+          )
+          .fromTo(dockRig.rotation,
+            { z: -0.32, x: 0.22, y: 0.25 },
+            { z: 0.12, x: -0.08, y: -0.10, duration: 0.72, ease: 'power2.out' },
+            0
           )
           .to(dockRig.position, {
-            y: OUT_Y, x: 0, z: 0, duration: 0.55, ease: 'bounce.out',
+            y: OUT_Y, x: 0, z: 0, duration: 0.52, ease: 'back.out(1.4)',
             onComplete: () => {
               cur.flap = 1.0;
+              cur.flightPitch = 0;
+              cur.flightRoll = 0;
               triggerLandingRing();
-              if (cur.onSpark) cur.onSpark(new THREE.Vector3(0, 0.4, 0.2), 12);
+              if (cur.onSpark) cur.onSpark(new THREE.Vector3(0, 0.35, 0.2), 16);
             }
-          });
+          })
+          .to(dockRig.rotation, {
+            z: 0, x: 0, y: 0, duration: 0.48, ease: 'power2.out'
+          }, '-=0.48');
       } else {
         G.timeline()
           .to(dockRig.position, { y: OUT_Y + 0.16, duration: 0.8, ease: 'power3.out' })
@@ -842,12 +857,17 @@
         stageEl.style.right = 'auto';
         stageEl.style.bottom = 'auto';
 
-        // Bank tilt and flight flaps proportional to movement
+        // Bank tilt, aerodynamic pitch, and flight flaps proportional to movement
         if (cur) {
-          cur.flap = 2.6;
+          cur.flap = Math.min(3.2, 1.8 + Math.hypot(dx, dy) * 0.012);
           if (dockRig) {
-            dockRig.rotation.z = Math.max(-0.25, Math.min(0.25, -dx * 0.005));
-            dockRig.rotation.x = Math.max(-0.2, Math.min(0.2, dy * 0.005));
+            dockRig.rotation.z = Math.max(-0.35, Math.min(0.35, -dx * 0.007));
+            dockRig.rotation.x = Math.max(-0.25, Math.min(0.25, dy * 0.007));
+            dockRig.rotation.y = Math.max(-0.25, Math.min(0.25, dx * 0.004));
+          }
+          if (cur.name === 'Pip') {
+            cur.flightPitch = Math.max(-0.25, Math.min(0.25, dy * 0.005));
+            cur.flightRoll = Math.max(-0.3, Math.min(0.3, -dx * 0.006));
           }
         }
         return;
@@ -889,12 +909,9 @@
 
         // Enter flight mode immediately
         if (cur) {
-          cur.flap = 2.5;
+          cur.flap = 2.6;
           cur.setEmotion('happy', false);
-          if (cur.name === 'Pip' && cur.react_shyFly) {
-            // activate wing flutter
-          }
-          if (cur.onSpark) cur.onSpark(new THREE.Vector3(0, 0.9, 0.2), 6);
+          if (cur.onSpark) cur.onSpark(new THREE.Vector3(0, 0.9, 0.2), 8);
         }
       }
     });
@@ -909,13 +926,16 @@
 
         if (cur) {
           cur.flap = 1.0;
+          if (cur.name === 'Pip') {
+            cur.flightPitch = 0;
+            cur.flightRoll = 0;
+          }
           if (dockRig) {
             if (G) {
-              G.to(dockRig.rotation, { x: 0, z: 0, duration: 0.45, ease: 'back.out(1.5)' });
-              G.to(dockRig.position, { y: OUT_Y, duration: 0.35, ease: 'bounce.out' });
+              G.to(dockRig.rotation, { x: 0, y: 0, z: 0, duration: 0.5, ease: 'back.out(1.6)' });
+              G.to(dockRig.position, { y: OUT_Y, duration: 0.42, ease: 'bounce.out' });
             } else {
-              dockRig.rotation.x = 0;
-              dockRig.rotation.z = 0;
+              dockRig.rotation.set(0, 0, 0);
               dockRig.position.y = OUT_Y;
             }
           }

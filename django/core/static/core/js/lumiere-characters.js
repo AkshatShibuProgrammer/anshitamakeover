@@ -995,35 +995,94 @@
         }
         const arms={L:{shoulder:wings[0].group,elbow:null,isWing:true},R:{shoulder:wings[1].group,elbow:null,isWing:true}};this.armL=arms.L;this.armR=arms.R;
         this.flap=1;
-        this.animateExtra=(t)=>{
-          // Wings also fold in the pose swing, so the "offering" stance reads on
-          // a bird. update() deliberately skips wings, because animateExtra owns
-          // their rotation.x -- so it has to be added here instead.
-          wings.forEach(w=>{
-            w.group.rotation.x=Math.sin(t*(this.emotion==='happy' ? 11 : 2.1)+w.side)*(.035+this.flap*(this.emotion==='happy' ? .18 : .025)) + this.armSwingX*.55;
-          });
-          // Crest: lifts and splays when bright, sweeps back and flattens when sad.
-          this.plumeLift += (this.plumeTarget-this.plumeLift)*.09;
-          this.plumes.forEach(p=>{
-            p.mesh.rotation.z=p.baseZ*(1+this.plumeLift*.5);
-            p.mesh.rotation.x=this.plumeLift<.3 ? (this.plumeLift-.3)*.55 : 0;
-            const s=1+this.plumeLift*.13; p.mesh.scale.set(s,s,s);
-          });
-          tail.rotation.y=Math.sin(t*1.5)*.07;
+        this.flightPitch=0;
+        this.flightRoll=0;
+        this.tail=tail;
+        // Tail fan feathers for aerodynamic splaying
+        this.tailFeathers = tail.children || [];
+
+        // Override poseArm so humanoid arm poses (e.g. -1.58, 1.58 rad) don't distort bird wings.
+        // Instead, wings remain driven by avian flight kinematics with gentle mood biasing.
+        this.poseArm = (arm, angle, elbow) => {
+          // Bird wings don't use humanoid shoulder Z rotations
+          return;
         };
+
+        this.animateExtra=(t, dt)=>{
+          dt = dt || 0.016;
+          // Determine active flight vs idle flutter rate
+          // Flight: flap >= 1.5 -> rapid flutter (14 to 22 rad/s); Idle: gentle breathing flutter (3 to 5 rad/s)
+          const isFlying = this.flap > 1.3 || this.emotion === 'happy';
+          const flutterFreq = isFlying ? (14.0 + (this.flap - 1.0) * 4.5) : (3.2 + this.flap * 1.2);
+          const flapPhase = t * flutterFreq;
+          const flapSin = Math.sin(flapPhase);
+          const flapCos = Math.cos(flapPhase);
+
+          // Authentic 3D Wing Kinematics:
+          // 1. Primary Flap Arc (Rotation Z): Wings sweep down and up relative to body side
+          // 2. Stroke Pitching (Rotation X): Angle of attack twists forward on downstroke, feathers pitch back on upstroke
+          // 3. Roll / Dihedral Flutter (Rotation Y): Secondary aerodynamic feather flexing
+          wings.forEach(w => {
+            const side = w.side; // -1 for left, +1 for right
+            if (isFlying) {
+              const flapAmp = 0.42 * Math.min(2.5, this.flap);
+              // Active flight flapping arc
+              w.group.rotation.z = -side * (0.15 + flapSin * flapAmp);
+              // Aerodynamic angle of attack / pitch
+              w.group.rotation.x = flapCos * (0.18 + this.flap * 0.08) + this.armSwingX * 0.35 + (this.flightPitch || 0);
+              // Wing tip roll
+              w.group.rotation.y = -side * flapSin * 0.16 + (this.flightRoll || 0) * 0.5;
+            } else {
+              // Idle folded / breathing flutter
+              const idleAmp = 0.045 + this.flap * 0.035;
+              w.group.rotation.z = -side * (0.08 + flapSin * idleAmp);
+              w.group.rotation.x = Math.sin(t * 2.2 + side) * 0.04 + this.armSwingX * 0.4;
+              w.group.rotation.y = -side * 0.04;
+            }
+          });
+
+          // Crest plumes: lift, perk and splay when excited/flying, flatten gracefully when calm/sad
+          this.plumeLift += (this.plumeTarget - this.plumeLift) * Math.min(1, dt * 6.5);
+          const plumeFlightBonus = isFlying ? 0.35 : 0;
+          this.plumes.forEach(p => {
+            p.mesh.rotation.z = p.baseZ * (1 + (this.plumeLift + plumeFlightBonus) * 0.48);
+            p.mesh.rotation.x = (this.plumeLift < 0.3 ? (this.plumeLift - 0.3) * 0.55 : 0) - (isFlying ? 0.12 : 0);
+            const s = 1 + (this.plumeLift + plumeFlightBonus) * 0.14;
+            p.mesh.scale.set(s, s, s);
+          });
+
+          // Tail: fans out and lifts during flight/glide; gentle rhythmic rudder bob during idle
+          if (isFlying) {
+            tail.rotation.x = 0.28 + flapSin * 0.08;
+            tail.rotation.y = Math.sin(t * 3.5) * 0.14;
+            // Tail feather fan flare
+            this.tailFeathers.forEach((f, idx) => {
+              const spread = (idx - 2) * 0.28;
+              f.rotation.z = spread;
+            });
+          } else {
+            tail.rotation.x = 0.20 + Math.sin(t * 1.8) * 0.04;
+            tail.rotation.y = Math.sin(t * 1.5) * 0.06;
+            this.tailFeathers.forEach((f, idx) => {
+              const spread = (idx - 2) * 0.20;
+              f.rotation.z = spread;
+            });
+          }
+        };
+
         /* Pip's own poke reaction: a burst of wing-beating and little hopped
            take-off attempts, head ducked and eyes sliding away = shy. */
         this.reactions=['shyFly','tickle','spin','startle'];
         this.react_shyFly=()=>{
           const prev=this.emotion, flap0=this.flap;
-          this.flap=2.2; this.emotion='happy';
+          this.flap=2.6; this.emotion='happy';
           if(this.eyes) this.eyes.mood(.5);
-          if(this.onSpark) this.onSpark(vec(0,1.05,.25),10);
+          if(this.onSpark) this.onSpark(vec(0,1.05,.25),12);
           const restore=()=>{ this.flap=flap0; this.setEmotion(prev,false); };
           if(!G){ window.setTimeout(restore,1300); return 1.4; }
           const tl=G.timeline({onComplete:restore});
-          tl.to(this,{jump:.17,duration:.17,repeat:3,yoyo:true,ease:'power2.out'},0)
-            .to(this,{wiggle:-.05,duration:.12,repeat:5,yoyo:true,ease:'sine.inOut'},0)
+          tl.to(this,{jump:.22,duration:.18,repeat:3,yoyo:true,ease:'power2.out'},0)
+            .to(this,{wiggle:-.06,duration:.12,repeat:5,yoyo:true,ease:'sine.inOut'},0)
             .to(this.headTarget,{x:.15,z:.11,duration:.32,ease:'power2.out'},0)
             .to(this.gazeTarget,{x:-.45,y:-.5,duration:.32,ease:'power2.out'},0)
             .to(this.headTarget,{x:0,z:0,duration:.45,ease:'power2.inOut'},1.05)
@@ -1034,7 +1093,7 @@
         };
         const PLUME_MOOD={happy:1.0,surprised:1.25,coupon:.85,welcome:.55,wink:.7,thinking:.3,waiting:.35,hesitant:.05,sad:-1.0};
         this.onMood=(mood)=>{
-          this.flap=mood==='happy' ? 1.5 : (mood==='thinking' ? .25 : .65);
+          this.flap=mood==='happy' ? 1.6 : (mood==='thinking' ? .35 : .75);
           this.plumeTarget=PLUME_MOOD[mood]!==undefined?PLUME_MOOD[mood]:.5;
           if((mood==='happy'||mood==='coupon')&&this.onSpark)this.onSpark(vec(.15,1.2,.4),mood==='coupon'?16:12);
         };

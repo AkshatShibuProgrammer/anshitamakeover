@@ -2985,38 +2985,50 @@ html.mascot-engine-ready .chat-toggle-wrap.char-pre-entry {
 /* ═══ ROYAL ENTRANCE ANIMATION & GOLDEN PORTAL ═══ */
 .char-entry-portal {
   position: absolute;
-  bottom: -10px;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%) scale(0.2);
-  width: 110px;
-  height: 36px;
+  transform: translate(-50%, -50%) scale(0.2);
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(255,215,0,0.85) 0%, rgba(212,175,55,0.45) 45%, transparent 75%);
-  filter: blur(6px);
+  border: 3px solid #F5EDD6;
+  box-shadow: 0 0 35px rgba(240, 208, 96, 0.95), inset 0 0 20px rgba(212, 175, 55, 0.6);
   pointer-events: none;
   opacity: 0;
-  z-index: 1;
+  z-index: 2;
 }
 .char-entry-portal.active,
 .char-entry-portal.pulse {
-  animation: portalBloom 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: portalBloom 1.45s cubic-bezier(0.12, 0.85, 0.25, 1) forwards;
 }
 @keyframes portalBloom {
-  0% { opacity: 0; transform: translateX(-50%) scale(0.2); filter: blur(2px); }
-  25% { opacity: 1; transform: translateX(-50%) scale(1.6); border: 2px solid #F5EDD6; box-shadow: 0 0 45px rgba(212,175,55,0.95); filter: blur(4px); }
-  70% { opacity: 0.6; transform: translateX(-50%) scale(2.4); border: 1.5px solid #D4AF37; }
-  100% { opacity: 0; transform: translateX(-50%) scale(3.2); filter: blur(12px); }
+  0% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(0.2) rotateX(60deg);
+    border-color: #FFF9E6;
+    box-shadow: 0 0 45px rgba(255, 225, 100, 1), inset 0 0 25px rgba(212, 175, 55, 0.8);
+  }
+  45% {
+    opacity: 0.85;
+    border-color: var(--gold, #D4AF37);
+    box-shadow: 0 0 55px rgba(212, 175, 55, 0.85), inset 0 0 15px rgba(212, 175, 55, 0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.6) rotateX(60deg);
+    box-shadow: 0 0 65px rgba(212, 175, 55, 0);
+  }
 }
 
 .chat-toggle-wrap.char-pre-entry {
   opacity: 0 !important;
-  transform: translateY(90px) scale(0.15) rotate(-20deg) !important;
+  transform: translate(-60px, 120px) scale(0.15) rotate(-22deg) !important;
   pointer-events: none !important;
   visibility: hidden !important;
 }
 .chat-toggle-wrap.char-entered {
   visibility: visible !important;
-  animation: conciergeFlightEntrance 1.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: conciergeFlightEntrance 1.45s cubic-bezier(0.18, 0.92, 0.32, 1) forwards;
   pointer-events: auto !important;
 }
 .chat-toggle-wrap.char-exiting {
@@ -3030,15 +3042,19 @@ html.mascot-engine-ready .chat-toggle-wrap.char-pre-entry {
 @keyframes conciergeFlightEntrance {
   0% {
     opacity: 0;
-    transform: translate(-40px, 80px) scale(0.3) rotate(-15deg);
+    transform: translate(-60px, 120px) scale(0.25) rotate(-22deg);
   }
-  40% {
+  35% {
     opacity: 1;
-    transform: translate(15px, -35px) scale(1.3) rotate(8deg);
+    transform: translate(25px, -45px) scale(1.35) rotate(12deg);
   }
-  75% {
+  65% {
     opacity: 1;
-    transform: translate(-4px, 4px) scale(0.95) rotate(-3deg);
+    transform: translate(-10px, 8px) scale(0.92) rotate(-5deg);
+  }
+  85% {
+    opacity: 1;
+    transform: translate(4px, -3px) scale(1.05) rotate(2deg);
   }
   100% {
     opacity: 1;
@@ -7230,8 +7246,8 @@ window.charConciergeState = {
 };
 
 window.toggleActiveConciergeCharacter = function(forceChar) {
-  const charOrder = ['asha', 'mochi', 'pip'];
-  let currentIdx = charOrder.indexOf(window.activeConciergeChar || 'asha');
+  const charOrder = ['pip', 'mochi', 'asha'];
+  let currentIdx = charOrder.indexOf(window.activeConciergeChar || 'pip');
   if (currentIdx === -1) currentIdx = 0;
   const nextChar = forceChar || charOrder[(currentIdx + 1) % charOrder.length];
   window.activeConciergeChar = nextChar;
@@ -7311,12 +7327,30 @@ window.triggerConciergeEntrance = function() {
   if (!wrap || wrap.classList.contains('char-entered')) return;
   const portalEl = document.getElementById('charEntryPortal');
   if (portalEl) {
-    portalEl.classList.remove('active');
+    portalEl.classList.remove('active', 'pulse');
     void portalEl.offsetWidth;
     portalEl.classList.add('active');
   }
   wrap.classList.remove('char-pre-entry', 'char-exiting');
   wrap.classList.add('char-entered');
+
+  // Trigger Pip's active flight kinematics (wings beat rapidly while flying in)
+  if (window.pipMascotInstance) {
+    window.pipMascotInstance.flap = 2.8;
+    window.pipMascotInstance.setEmotion('happy');
+    // On landing (after 1.45s flight duration): settle into warm welcome with landing ring pulse
+    setTimeout(() => {
+      if (window.pipMascotInstance) {
+        window.pipMascotInstance.flap = 1.0;
+        window.pipMascotInstance.setEmotion('welcome');
+      }
+      if (portalEl) {
+        portalEl.classList.remove('active', 'pulse');
+        void portalEl.offsetWidth;
+        portalEl.classList.add('pulse');
+      }
+    }, 1450);
+  }
 
   // Pop speech bubble greeting
   setTimeout(() => {
@@ -8120,19 +8154,29 @@ document.addEventListener('DOMContentLoaded', () => {
   // Autonomous Entrance: Pip takes flight, displays circle portal, and settles down as chatbot
   function triggerAutonomousEntrance() {
     const wrap = document.getElementById('chat-toggle-wrap');
-    if (wrap && !wrap.classList.contains('char-entered')) {
-      if (typeof window.triggerConciergeEntrance === 'function') {
-        window.triggerConciergeEntrance();
-      }
+    if (!wrap || wrap.classList.contains('char-entered')) return;
+
+    // Ensure Pip is explicitly activated and initialized before entrance flight
+    const savedChar = localStorage.getItem('anshita_active_char') || 'pip';
+    if (typeof window.toggleActiveConciergeCharacter === 'function') {
+      window.toggleActiveConciergeCharacter(savedChar);
+    }
+    if (typeof initPipConcierge === 'function') {
+      initPipConcierge();
+    }
+
+    // Trigger full entrance choreography: 3D flight swoop, golden portal ring bloom, and chat bubble
+    if (typeof window.triggerConciergeEntrance === 'function') {
+      window.triggerConciergeEntrance();
     }
   }
 
-  // Trigger quickly so the user immediately sees the Pip flight & halo settle animation
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    setTimeout(triggerAutonomousEntrance, 600);
+  // Trigger once page settles or immediately when preloader clears
+  if (document.readyState === 'complete') {
+    setTimeout(triggerAutonomousEntrance, 500);
   } else {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(triggerAutonomousEntrance, 600));
-    window.addEventListener('load', () => setTimeout(triggerAutonomousEntrance, 400));
+    window.addEventListener('load', () => setTimeout(triggerAutonomousEntrance, 700));
+    document.addEventListener('DOMContentLoaded', () => setTimeout(triggerAutonomousEntrance, 1200));
   }
 })();
 

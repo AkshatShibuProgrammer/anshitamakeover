@@ -136,16 +136,17 @@
 
   class PipCharacter {
     constructor(options = {}) {
+      this.isHosted = Boolean(options.hosted || options.isHosted);
       this.canvas = typeof options.canvas === 'string'
         ? document.querySelector(options.canvas)
         : (options.canvas || options.target);
 
-      if (!this.canvas) {
-        throw new Error('PipCharacter: A valid canvas must be provided.');
+      if (!this.canvas && !this.isHosted) {
+        throw new Error('PipCharacter: A valid canvas must be provided when not running in hosted mode.');
       }
 
-      this.width = options.width || this.canvas.clientWidth || 240;
-      this.height = options.height || this.canvas.clientHeight || 240;
+      this.width = options.width || (this.canvas ? this.canvas.clientWidth : 240) || 240;
+      this.height = options.height || (this.canvas ? this.canvas.clientHeight : 240) || 240;
       this.interactiveCursor = options.interactiveCursor !== false;
       this.autoBlink = options.autoBlink !== false;
 
@@ -183,17 +184,21 @@
       };
       this.paused = false;
 
-      this.initScene();
-      this.build();
-      this.setupListeners();
-      this.start();
+      if (!this.isHosted) {
+        this.initScene();
+        this.build();
+        this.setupListeners();
+        this.start();
+      } else {
+        this.build();
+      }
     }
 
     initScene() {
       this.scene = new THREE.Scene();
       this.camera = new THREE.PerspectiveCamera(34, this.width / this.height, 0.1, 50);
-      this.camera.position.set(0, 1.25, 4.0);
-      this.camera.lookAt(0, 1.05, 0);
+      this.camera.position.set(0, 1.18, 3.4);
+      this.camera.lookAt(0, 1.02, 0);
 
       this.renderer = new THREE.WebGLRenderer({
         canvas: this.canvas,
@@ -495,6 +500,91 @@
       }
     }
 
+    update(dt, time) {
+      dt = dt || 0.016;
+      time = time !== undefined ? time : (this.clock ? this.clock.getElapsedTime() : performance.now() * 0.001);
+
+      this.applyWalkPose(dt);
+
+      const breath = Math.sin(time * 1.85 + this.phase) * .009;
+      this.bodyGroup.scale.set(this.squash, (1 + breath) / Math.sqrt(this.squash), this.squash);
+      this.root.position.y = 0.10 + Math.sin(time * 1.35 + this.phase) * .012 + this.jump +
+        this.stanceY + (this.walkAerial || 0);
+      this.root.rotation.x = this.walkLean || 0;
+      this.root.rotation.y = this.spin + (this.walkYaw || 0);
+
+      // Authentic 3D Wing Kinematics (Flap arc on Z, Pitch on X, Roll on Y)
+      const isFlying = this.flap > 1.3 || this.emotion === 'happy' || (this.walk && this.walk.speed > 0.8);
+      const flutterFreq = isFlying ? (14.0 + (this.flap - 1.0) * 4.5) : (3.2 + this.flap * 1.2);
+      const flapPhase = time * flutterFreq;
+      const flapSin = Math.sin(flapPhase);
+      const flapCos = Math.cos(flapPhase);
+
+      this.wings.forEach(w => {
+        const side = w.side;
+        if (isFlying) {
+          const flapAmp = 0.42 * Math.min(2.5, this.flap) + (this.walkWingFlutter || 0);
+          w.group.rotation.z = -side * (0.15 + flapSin * flapAmp);
+          w.group.rotation.x = flapCos * (0.18 + this.flap * 0.08) + (this.walkLean || 0);
+          w.group.rotation.y = -side * flapSin * 0.16;
+        } else {
+          const idleAmp = 0.045 + this.flap * 0.035;
+          w.group.rotation.z = -side * (0.08 + flapSin * idleAmp);
+          w.group.rotation.x = Math.sin(time * 2.2 + side) * 0.04;
+          w.group.rotation.y = -side * 0.04;
+        }
+      });
+
+      // Crest plume animation (aerodynamic drag and mood-lift)
+      this.plumeLift += (this.plumeTarget - this.plumeLift) * Math.min(1, dt * 6.5);
+      const plumeFlightBonus = isFlying ? 0.35 : 0;
+      this.plumes.forEach(p => {
+        p.mesh.rotation.z = p.baseZ * (1 + (this.plumeLift + plumeFlightBonus) * 0.48);
+        p.mesh.rotation.x = (this.plumeLift < 0.3 ? (this.plumeLift - 0.3) * 0.55 : 0) - (isFlying ? 0.12 : 0);
+        const s = 1 + (this.plumeLift + plumeFlightBonus) * 0.14;
+        p.mesh.scale.set(s, s, s);
+      });
+
+      // Tail fanning & aerodynamic rudder motion
+      if (this.tail) {
+        if (isFlying) {
+          this.tail.rotation.x = 0.28 + flapSin * 0.08;
+          this.tail.rotation.y = Math.sin(time * 3.5) * 0.14;
+          if (this.tailFeathers) {
+            this.tailFeathers.forEach((f, idx) => {
+              const spread = (idx - 2) * 0.28;
+              f.mesh.rotation.z = spread;
+            });
+          }
+        } else {
+          this.tail.rotation.x = 0.20 + Math.sin(time * 1.8) * 0.04;
+          this.tail.rotation.y = Math.sin(time * 1.5) * 0.06;
+          if (this.tailFeathers) {
+            this.tailFeathers.forEach((f, idx) => {
+              const spread = (idx - 2) * 0.20;
+              f.mesh.rotation.z = spread;
+            });
+          }
+        }
+      }
+
+      this.gaze.x += (this.gazeTarget.x - this.gaze.x) * Math.min(1, dt * 4);
+      this.gaze.y += (this.gazeTarget.y - this.gaze.y) * Math.min(1, dt * 4);
+      this.headRig.rotation.x = this.headTarget.x + this.gaze.y * .11;
+      this.headRig.rotation.y = this.headTarget.y + this.gaze.x * .18;
+
+      if (this.eyes) this.eyes.gaze(this.gaze.x, this.gaze.y);
+
+      this.blinkElapsed += dt;
+      if (this.blinkElapsed >= this.blinkTimer) {
+        if (this.eyes && this.autoBlink) this.eyes.blink();
+        this.blinkElapsed = 0;
+        this.blinkTimer = 2.2 + Math.random() * 3.5;
+      }
+
+      this.tickers.forEach(fn => fn(time, dt));
+    }
+
     start() {
       this.isRunning = true;
       this.clock = new THREE.Clock();
@@ -507,47 +597,10 @@
         // Battery gate (audit §3): hidden tabs and paused rigs cost zero GPU.
         if (this.paused || (typeof document !== 'undefined' && document.hidden)) return;
 
-        this.applyWalkPose(dt);
-
-        const breath = Math.sin(time * 1.85 + this.phase) * .009;
-        this.bodyGroup.scale.set(this.squash, (1 + breath) / Math.sqrt(this.squash), this.squash);
-        this.root.position.y = 0.10 + Math.sin(time * 1.35 + this.phase) * .012 + this.jump +
-          this.stanceY + (this.walkAerial || 0);
-        this.root.rotation.x = this.walkLean || 0;
-        this.root.rotation.y = this.spin + (this.walkYaw || 0);
-
-        // Wing flutter (emotion-driven, plus the walk-cycle flutter channel)
-        const flutterRate = this.emotion === 'happy' ? 12 : 2.2;
-        this.wings.forEach(w => {
-          w.group.rotation.x = Math.sin(time * flutterRate + w.side) *
-            (.035 + this.flap * .03 + (this.walkWingFlutter || 0));
-          w.group.rotation.z = w.side * ((this.walkWingSpread || 0) * .28);
-        });
-
-        // Crest plume animation
-        this.plumeLift += (this.plumeTarget - this.plumeLift) * .09;
-        this.plumes.forEach(p => {
-          p.mesh.rotation.z = p.baseZ * (1 + this.plumeLift * .5);
-          const s = 1 + this.plumeLift * .12;
-          p.mesh.scale.set(s, s, s);
-        });
-
-        this.gaze.x += (this.gazeTarget.x - this.gaze.x) * Math.min(1, dt * 4);
-        this.gaze.y += (this.gazeTarget.y - this.gaze.y) * Math.min(1, dt * 4);
-        this.headRig.rotation.x = this.headTarget.x + this.gaze.y * .11;
-        this.headRig.rotation.y = this.headTarget.y + this.gaze.x * .18;
-
-        if (this.eyes) this.eyes.gaze(this.gaze.x, this.gaze.y);
-
-        this.blinkElapsed += dt;
-        if (this.blinkElapsed >= this.blinkTimer) {
-          if (this.eyes && this.autoBlink) this.eyes.blink();
-          this.blinkElapsed = 0;
-          this.blinkTimer = 2.2 + Math.random() * 3.5;
+        this.update(dt, time);
+        if (this.renderer && this.scene && this.camera) {
+          this.renderer.render(this.scene, this.camera);
         }
-
-        this.tickers.forEach(fn => fn(time, dt));
-        this.renderer.render(this.scene, this.camera);
       };
       animate();
     }
