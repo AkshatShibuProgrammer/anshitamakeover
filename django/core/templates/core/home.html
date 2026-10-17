@@ -1786,7 +1786,7 @@ window.triggerHeroEntrance = function() {
     { y: '0%', opacity: 1, duration: 0.95, stagger: 0.09, ease: 'power4.out' },
     '-=0.5'
   )
-  .fromTo('.am-hero__location',
+  .fromTo('.am-hero__location, .am-hero__location-rotator',
     { opacity: 0, y: 20 },
     { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' },
     '-=0.5'
@@ -2104,6 +2104,80 @@ function startHeroCycle() {
   }, 5000);
 }
 startHeroCycle();
+
+// ═══ ACCESSIBLE HERO CITY ROTATOR CONTROLLER ═══
+(function initHeroCityRotator() {
+  let cityIndex = 0;
+  let isRotating = true;
+  let cityTimer = null;
+  const ROTATE_INTERVAL = 4200;
+
+  function getSlides() {
+    return document.querySelectorAll('#heroLocationRotator .loc-slide');
+  }
+
+  window.setHeroCity = function(idx) {
+    const slides = getSlides();
+    if (!slides.length) return;
+    cityIndex = (idx + slides.length) % slides.length;
+    slides.forEach((slide, i) => {
+      const active = (i === cityIndex);
+      slide.classList.toggle('active', active);
+      slide.setAttribute('aria-hidden', !active);
+    });
+  };
+
+  window.nextHeroCity = function() {
+    setHeroCity(cityIndex + 1);
+  };
+
+  window.prevHeroCity = function() {
+    setHeroCity(cityIndex - 1);
+  };
+
+  window.toggleHeroCityRotation = function() {
+    const btn = document.getElementById('locToggleBtn');
+    isRotating = !isRotating;
+    if (isRotating) {
+      if (btn) {
+        btn.textContent = '⏸';
+        btn.setAttribute('aria-label', 'Pause city rotation');
+      }
+      startCityTimer();
+    } else {
+      if (btn) {
+        btn.textContent = '▶';
+        btn.setAttribute('aria-label', 'Resume city rotation');
+      }
+      clearInterval(cityTimer);
+    }
+  };
+
+  function startCityTimer() {
+    if (cityTimer) clearInterval(cityTimer);
+    // Respect reduced motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      isRotating = false;
+      const btn = document.getElementById('locToggleBtn');
+      if (btn) btn.textContent = '▶';
+      return;
+    }
+    cityTimer = setInterval(() => {
+      if (isRotating) nextHeroCity();
+    }, ROTATE_INTERVAL);
+  }
+
+  // Auto-pause when user hovers or focuses inside the rotator widget
+  const rotator = document.getElementById('heroLocationRotator');
+  if (rotator) {
+    rotator.addEventListener('mouseenter', () => clearInterval(cityTimer));
+    rotator.addEventListener('mouseleave', () => { if (isRotating) startCityTimer(); });
+    rotator.addEventListener('focusin', () => clearInterval(cityTimer));
+    rotator.addEventListener('focusout', () => { if (isRotating) startCityTimer(); });
+  }
+
+  startCityTimer();
+})();
 
 // 2.5D Interactive Studio Parallax Depth Tilt on Mouse Move
 (function initHeroStudioParallax() {

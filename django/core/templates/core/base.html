@@ -7201,7 +7201,7 @@ document.addEventListener('mouseout', e => {
 });
 
 /* ── AI ROYAL CONCIERGE STATE & QUICK ACTIONS ── */
-window.activeConciergeChar = localStorage.getItem('anshita_active_char') || 'pip';
+window.activeConciergeChar = localStorage.getItem('anshita_active_char') || 'mochi';
 
 window.charConciergeState = {
   mood: 'happy',
@@ -7383,17 +7383,22 @@ window.triggerConciergeEntrance = function() {
   wrap.classList.remove('char-pre-entry', 'char-exiting', 'char-settled');
   wrap.classList.add('char-entered', 'char-flying');
 
-  // Trigger Pip's rapid flight wing flap & aerodynamic banking posture
+  // Trigger character entrance kinematics (Pip flight wings or Mochi happy ears/hop)
   if (window.pipMascotInstance) {
     window.pipMascotInstance.flap = 2.8;
     window.pipMascotInstance.setEmotion('happy');
   }
+  if (window.mochiMascotInstance) {
+    if (typeof window.mochiMascotInstance.setEmotion === 'function') {
+      window.mochiMascotInstance.setEmotion('happy');
+    }
+  }
 
   // Phase 2: Landing & Settling Down.
-  // After flight finishes (1.45s), Pip touches down. At this exact moment:
-  // 1. Pip transitions from flight flapping to landing squash & calm breathing
+  // After flight/entrance finishes (1.45s), character touches down. At this exact moment:
+  // 1. Character transitions to calm welcoming posture and landing squash
   // 2. The golden circle, velvet medallion, and aura rings bloom into view
-  // 3. Golden portal shockwave expands from his landing perch
+  // 3. Golden portal shockwave expands from landing perch
   setTimeout(() => {
     wrap.classList.remove('char-flying');
     wrap.classList.add('char-settled');
@@ -7404,6 +7409,11 @@ window.triggerConciergeEntrance = function() {
       // Landing squash bounce
       if (typeof window.pipMascotInstance.triggerSquashLanding === 'function') {
         window.pipMascotInstance.triggerSquashLanding();
+      }
+    }
+    if (window.mochiMascotInstance) {
+      if (typeof window.mochiMascotInstance.setEmotion === 'function') {
+        window.mochiMascotInstance.setEmotion('welcoming');
       }
     }
 
@@ -8218,13 +8228,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const wrap = document.getElementById('chat-toggle-wrap');
     if (!wrap || wrap.classList.contains('char-entered')) return;
 
-    // Ensure Pip is explicitly activated and initialized before entrance flight
-    const savedChar = localStorage.getItem('anshita_active_char') || 'pip';
+    // Ensure active character is explicitly activated and initialized before entrance flight
+    const savedChar = localStorage.getItem('anshita_active_char') || 'mochi';
     if (typeof window.toggleActiveConciergeCharacter === 'function') {
       window.toggleActiveConciergeCharacter(savedChar);
     }
-    if (typeof initPipConcierge === 'function') {
-      initPipConcierge();
+    if (savedChar === 'mochi' || savedChar === 'bunny') {
+      if (typeof initMochiConcierge === 'function') initMochiConcierge();
+      else if (typeof initBunnyConcierge === 'function') initBunnyConcierge();
+    } else if (savedChar === 'pip') {
+      if (typeof initPipConcierge === 'function') initPipConcierge();
     }
 
     // Trigger full entrance choreography: 3D flight swoop, golden portal ring bloom, and chat bubble

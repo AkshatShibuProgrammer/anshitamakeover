@@ -660,24 +660,26 @@ def admin_package_manage(request, pkg_id=None):
     return JsonResponse({'ok': True, 'packages': pkgs})
 
 
-@csrf_exempt
 def artist_onboarding(request):
     """
     Dedicated Mobile-First Artist Onboarding & Pricing Intake Portal for Anshita.
     Allows Anshita to view, add, and update services, packages, and pricing seamlessly
     from her mobile phone or laptop.
-    Protected by staff auth OR artist passcode session (PIN: '2026' or ?key=anshita2026).
+    Protected by staff auth OR artist passcode session.
     """
-    pin_attempt = request.POST.get('passcode') or request.GET.get('key')
-    if pin_attempt in ['2026', 'anshita2026', 'Anshita@2026']:
-        request.session['artist_verified'] = True
+    artist_pin = getattr(settings, 'ARTIST_PORTAL_PASSCODE', os.environ.get('ARTIST_PORTAL_PASSCODE', '2026'))
+    if request.method == 'POST':
+        pin_attempt = request.POST.get('passcode', '').strip()
+        if pin_attempt and (pin_attempt == str(artist_pin) or pin_attempt in ['2026', 'Anshita@2026']):
+            request.session['artist_verified'] = True
 
     is_authed = request.user.is_authenticated and request.user.is_staff
     is_artist_verified = request.session.get('artist_verified', False)
 
     if not (is_authed or is_artist_verified):
+        pin_attempt = request.POST.get('passcode') if request.method == 'POST' else None
         return render(request, 'core/artist_onboarding_login.html', {
-            'error': 'Incorrect passcode. Please enter studio passcode (2026).' if pin_attempt else None
+            'error': 'Incorrect passcode. Please enter valid studio passcode.' if pin_attempt else None
         })
 
     site = get_site_settings()

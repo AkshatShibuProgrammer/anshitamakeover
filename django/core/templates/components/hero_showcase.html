@@ -26,8 +26,41 @@
     <h1 class="am-hero__h1">
       <span class="am-hero__h1-line"><span class="am-hero__word">Haute</span> <span class="am-hero__word">Bridal</span> <span class="am-hero__word am-hero__word--gold">Artistry</span></span>
     </h1>
-    <div class="am-hero__location">
-      <span class="loc-gold">Jhansi</span><span class="loc-dot">·</span>Bhopal<span class="loc-dot">·</span>Jabalpur<span class="loc-dot">·</span>Lucknow<span class="loc-dot">·</span>Delhi<span class="loc-dot">·</span><span class="loc-gold">{% if lang == 'hindi' or lang == 'marathi' %}संपूर्ण भारत{% else %}Pan-India Destination{% endif %}</span>
+    <!-- Accessible Luxury City Rotator (SPEC Option A: Jhansi Flagship + 4 Verified Destination Cities) -->
+    <div class="am-hero__location-rotator" id="heroLocationRotator" role="region" aria-label="Bridal Service Locations">
+      <span class="loc-badge">LOCATIONS</span>
+      <div class="loc-track-wrap">
+        <div class="loc-slide active" data-index="0" aria-hidden="false">
+          <strong class="loc-city">Jhansi</strong>
+          <span class="loc-type">Flagship Bridal Studio</span>
+        </div>
+        <div class="loc-slide" data-index="1" aria-hidden="true">
+          <strong class="loc-city">Jabalpur</strong>
+          <span class="loc-type">Destination Bridal Suites</span>
+        </div>
+        <div class="loc-slide" data-index="2" aria-hidden="true">
+          <strong class="loc-city">Bhopal</strong>
+          <span class="loc-type">Destination Bridal Suites</span>
+        </div>
+        <div class="loc-slide" data-index="3" aria-hidden="true">
+          <strong class="loc-city">Indore</strong>
+          <span class="loc-type">Destination Bridal Suites</span>
+        </div>
+        <div class="loc-slide" data-index="4" aria-hidden="true">
+          <strong class="loc-city">Lucknow</strong>
+          <span class="loc-type">Destination Bridal Suites</span>
+        </div>
+      </div>
+      <!-- Accessible Controls -->
+      <div class="loc-controls" aria-label="City Rotator Controls">
+        <button type="button" class="loc-btn" id="locPrevBtn" onclick="prevHeroCity()" aria-label="Previous service city">‹</button>
+        <button type="button" class="loc-btn loc-pause" id="locToggleBtn" onclick="toggleHeroCityRotation()" aria-label="Pause city rotation" title="Pause / Play">⏸</button>
+        <button type="button" class="loc-btn" id="locNextBtn" onclick="nextHeroCity()" aria-label="Next service city">›</button>
+      </div>
+      <!-- Static Search Crawler & Screen Reader Fallback -->
+      <div class="sr-only">
+        Serving bridal makeup in Jhansi (Flagship Studio), and destination weddings by enquiry in Jabalpur, Bhopal, Indore, and Lucknow.
+      </div>
     </div>
     <p class="am-hero__tagline">
       {{ t.hero_tagline_text|default:'Sculpting regal perfection for discerning brides. Timeless grace, bespoke jewel styling, and 18-hour cry-proof radiance for your most sacred celebration.' }}
