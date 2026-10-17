@@ -8,8 +8,8 @@
 
 - **Visual direction:** A — Couture editorial, retaining the existing brand palette with more restraint.
 - **Protected animation:** The opening “Anshita Makeover” sequence that plays before entering the studio. Preserve it exactly; do not retime or redesign it.
-- **Mochi/Pip:** Mochi is the rabbit and default; Pip is the bird and remains selectable. Use the real 3D character, never a flat image or unrelated substitute. The previous owner handoff identifies `3d character for anshitamakeover/index-expressions.html` as the intended Mochi/Pip reference; use that as the working source unless the owner identifies another file. Implement believable grounded motion and secondary movement; clarify any request for a full physics simulation before adding one.
-- **City treatment:** A — Gentle rotator with pause/next controls and a reduced-motion static state. The owner named Jabalpur, Bhopal, Indore and Lucknow; confirm whether each is regular service or destination-by-enquiry before publishing the details.
+- **Mochi/Pip (Strict User Mandate):** **Pip (the celestial finch bird) is the DEFAULT mascot**; Mochi remains selectable. Pip features the bespoke unconstrained 3D flight swoop animation (flapping wings, banking, tail splay, plume drag) flying freely across the viewport without any initial circle/borders, landing at the perch, upon which the golden medallion circle manifests with a landing squash and portal shockwave. Use the real 3D character, never a flat image or unrelated substitute.
+- **City treatment & Home Studio (Strict User Mandate):** **Jabalpur is the home/flagship studio** (`Jabalpur — Flagship Bridal Studio`), with Bhopal, Indore, Lucknow, and Jhansi as verified destination bridal suite service locations. Managed via the gentle city rotator with pause/next controls and a reduced-motion static state.
 - **First prototype scope:** A — Homepage and shared mobile shell, then extend page by page.
 - **Admin/customization knowledge:** The owner does not know the admin route or deployment customization. No credentials are requested; production reachability remains unverified.
 - **Homepage CTA:** The owner confirms the current actions are correct: “Explore Lookbook” links to Gallery and “Book on WhatsApp” opens WhatsApp. Preserve those destinations.
@@ -145,9 +145,9 @@ Use the owner's current list—Jabalpur, Bhopal, Indore and Lucknow—as the sta
 Selected/clarified by the owner in this discussion:
 
 1. **Couture editorial** direction, retaining the current brand identity with a more restrained layout.
-2. **Mochi default, Pip selectable**, with one live 3D rig at a time.
-3. The owner wants the **existing 3D-folder character**, not an image or unrelated substitute, with convincing physical motion.
-4. **Jabalpur, Bhopal, Indore and Lucknow** are the owner's named coverage cities; regular service vs destination-by-enquiry still needs to be stated accurately.
+2. **Pip default, Mochi selectable (Strict User Mandate)**: Pip (celestial finch) is the primary interactive mascot by default, utilizing unconstrained 3D flight swooping before settling into the golden circular medallion perch.
+3. The owner wants the **authentic 3D Pip finch character with unconstrained flight animation and landing squash**, settling into the golden medallion circle before opening the concierge greeting.
+4. **Jabalpur is the home/flagship studio** (`Jabalpur — Flagship Bridal Studio`), with Bhopal, Indore, Lucknow, and Jhansi as verified destination bridal suites.
 5. **Controlled city rotator** with pause/next controls and a reduced-motion static state.
 6. **Homepage and shared mobile shell first**, then extend the approved system page by page.
 7. The protected animation is the opening **“Anshita Makeover”** sequence before entering the studio; do not change it.

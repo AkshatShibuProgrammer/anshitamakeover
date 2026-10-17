@@ -7201,7 +7201,7 @@ document.addEventListener('mouseout', e => {
 });
 
 /* ── AI ROYAL CONCIERGE STATE & QUICK ACTIONS ── */
-window.activeConciergeChar = localStorage.getItem('anshita_active_char') || 'mochi';
+window.activeConciergeChar = localStorage.getItem('anshita_active_char') || 'pip';
 
 window.charConciergeState = {
   mood: 'happy',
@@ -7325,7 +7325,14 @@ window.toggleActiveConciergeCharacter = function(forceChar) {
   if (bunnyHdr) bunnyHdr.style.display = 'none';
   if (pipHdr) pipHdr.style.display = 'none';
 
-  if (nextChar === 'mochi' || nextChar === 'bunny') {
+  if (nextChar === 'pip') {
+    if (pipStage) pipStage.style.display = 'block';
+    if (pipHdr) pipHdr.style.display = 'block';
+    if (charName) charName.innerHTML = 'Pip Concierge <span class="chat-vip-badge">Celestial Muse</span>';
+    if (toggleIcon) toggleIcon.textContent = '🐰';
+    if (toggleBtn) toggleBtn.title = 'Switch to Mochi (Velvet Mascot 🐰)';
+    if (typeof initPipConcierge === 'function') initPipConcierge();
+  } else if (nextChar === 'mochi' || nextChar === 'bunny') {
     if (bunnyStage) bunnyStage.style.display = 'block';
     if (bunnyHdr) bunnyHdr.style.display = 'block';
     if (charName) charName.innerHTML = 'Mochi Mascot <span class="chat-vip-badge">Velvet Mascot</span>';
@@ -7333,21 +7340,12 @@ window.toggleActiveConciergeCharacter = function(forceChar) {
     if (toggleBtn) toggleBtn.title = 'Switch to Pip (Celestial Finch 🐦)';
     if (typeof initMochiConcierge === 'function') initMochiConcierge();
     else if (typeof initBunnyConcierge === 'function') initBunnyConcierge();
-  } else if (nextChar === 'pip') {
-    if (pipStage) pipStage.style.display = 'block';
-    if (pipHdr) pipHdr.style.display = 'block';
-    if (charName) charName.innerHTML = 'Pip Concierge <span class="chat-vip-badge">Celestial Muse</span>';
-    if (toggleIcon) toggleIcon.textContent = '👧';
-    if (toggleBtn) toggleBtn.title = 'Switch to Asha (Bridal Stylist 👧)';
-    if (typeof initPipConcierge === 'function') initPipConcierge();
   } else {
     if (ashaStage) ashaStage.style.display = 'block';
     if (ashaHdr) ashaHdr.style.display = 'block';
     if (charName) charName.innerHTML = 'Asha Concierge <span class="chat-vip-badge">Atelier</span>';
-    if (toggleIcon) toggleIcon.textContent = '🐰';
-    if (toggleBtn) toggleBtn.title = 'Switch to Mochi (Velvet Mascot 🐰)';
-    // Asha has no ambulatory rig yet, so the engine falls back to the
-    // scroll-scrubbed medallion (no walking locomotion) for this character.
+    if (toggleIcon) toggleIcon.textContent = '🐦';
+    if (toggleBtn) toggleBtn.title = 'Switch to Pip (Celestial Finch 🐦)';
     if (window.mascotScrollEngine) {
       window.mascotScrollEngine.detachCharacter();
       window.mascotScrollEngine.mode = 'css-fallback';
@@ -8229,15 +8227,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!wrap || wrap.classList.contains('char-entered')) return;
 
     // Ensure active character is explicitly activated and initialized before entrance flight
-    const savedChar = localStorage.getItem('anshita_active_char') || 'mochi';
+    const savedChar = localStorage.getItem('anshita_active_char') || 'pip';
     if (typeof window.toggleActiveConciergeCharacter === 'function') {
       window.toggleActiveConciergeCharacter(savedChar);
     }
-    if (savedChar === 'mochi' || savedChar === 'bunny') {
+    if (savedChar === 'pip') {
+      if (typeof initPipConcierge === 'function') initPipConcierge();
+    } else if (savedChar === 'mochi' || savedChar === 'bunny') {
       if (typeof initMochiConcierge === 'function') initMochiConcierge();
       else if (typeof initBunnyConcierge === 'function') initBunnyConcierge();
-    } else if (savedChar === 'pip') {
-      if (typeof initPipConcierge === 'function') initPipConcierge();
     }
 
     // Trigger full entrance choreography: 3D flight swoop, golden portal ring bloom, and chat bubble
