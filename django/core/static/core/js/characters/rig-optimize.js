@@ -45,6 +45,55 @@
     return ancestor;
   }
 
+  function createMergeContext(reversible) {
+    return {
+      reversible: !!reversible,
+      operations: [],
+      parentSnapshots: new Map(),
+      ownedMaterials: []
+    };
+  }
+
+  function rememberParent(parent, context) {
+    if (parent && !context.parentSnapshots.has(parent)) {
+      context.parentSnapshots.set(parent, parent.children.slice());
+    }
+  }
+
+  function detachSource(mesh, context) {
+    if (!mesh || !mesh.parent) return null;
+    var parent = mesh.parent;
+    rememberParent(parent, context);
+    parent.remove(mesh);
+    return { object: mesh, parent: parent };
+  }
+
+  function finishMerge(root, saved, context) {
+    if (!context.reversible) return saved;
+    var restored = false;
+    return {
+      saved: saved,
+      restore: function () {
+        if (restored) return;
+        restored = true;
+        for (var i = context.operations.length - 1; i >= 0; i--) {
+          var operation = context.operations[i];
+          if (operation.mesh.parent) operation.mesh.parent.remove(operation.mesh);
+          if (operation.mesh.geometry) operation.mesh.geometry.dispose();
+          operation.sources.forEach(function (source) {
+            if (source && !source.object.parent) source.parent.add(source.object);
+          });
+        }
+        context.parentSnapshots.forEach(function (children, parent) {
+          parent.children.splice.apply(parent.children, [0, parent.children.length].concat(children));
+          children.forEach(function (child) { child.parent = parent; });
+        });
+        context.ownedMaterials.forEach(function (material) { material.dispose(); });
+        if (root && root.updateMatrixWorld) root.updateMatrixWorld(true);
+      }
+    };
+  }
+
   /**
    * Merge a list of meshes (which must all be children of `parent`) sharing one
    * material into a single mesh. Used directly by rig builders for decorative
@@ -113,11 +162,13 @@
    * baking each mesh's colour into vertex colours so the palette survives.
    * PBR nuance between family members (a few percent of roughness) is
    * averaged into one shared material — invisible on matte plush surfaces,
-   * worth several draw calls.
+   * worth several draw calls. Pass `options.reversible` for a temporary merge
+   * that restores the source meshes/materials after flight.
    */
   function mergeMaterialFamily(root, materials, animatedNodes, options) {
-    if (!root || !materials || materials.length < 2) return 0;
     options = options || {};
+    var context = createMergeContext(options.reversible);
+    if (!root || !materials || materials.length < 2) return finishMerge(root, 0, context);
     var family = new Set(materials);
     var animated = [];
     (animatedNodes || []).forEach(function (n) { if (n) animated.push(n); });
@@ -144,7 +195,7 @@
       var w = o.geometry.attributes.position.count;
       weight.set(o.material, (weight.get(o.material) || 0) + w);
     });
-    if (!weight.size) return 0;
+    if (!weight.size) return finishMerge(root, 0, context);
     var canonical = materials[0], best = -1;
     weight.forEach(function (w, mat) { if (w > best) { best = w; canonical = mat; } });
 
@@ -163,6 +214,7 @@
     });
 
     var shared = canonical.clone();
+    if (context.reversible) context.ownedMaterials.push(shared);
     shared.vertexColors = true;
     shared.color = new THREE.Color(0xffffff);
     if (canonical.transparent) shared.transparent = false;
@@ -244,17 +296,25 @@
       out.receiveShadow = receiveShadow;
       out.name = 'family-' + meshes.length;
       out.userData.mergedFrom = meshes.length;
+      if (context.reversible) rememberParent(anchor, context);
       anchor.add(out);
 
+      var sourceRecords = [];
       removable.forEach(function (mesh) {
-        if (mesh.parent) mesh.parent.remove(mesh);
-        var g = mesh.geometry;
-        if (g && !seen.has(g.uuid)) { seen.add(g.uuid); g.dispose(); }
+        if (context.reversible) {
+          var source = detachSource(mesh, context);
+          if (source) sourceRecords.push(source);
+        } else {
+          if (mesh.parent) mesh.parent.remove(mesh);
+          var g = mesh.geometry;
+          if (g && !seen.has(g.uuid)) { seen.add(g.uuid); g.dispose(); }
+        }
       });
+      if (context.reversible) context.operations.push({ mesh: out, sources: sourceRecords });
       saved += meshes.length - 1;
     });
 
-    return saved;
+    return finishMerge(root, saved, context);
   }
 
   /**
@@ -266,10 +326,13 @@
    *        (root, body, head rig, ears, feet, eyes, arm pivots…). Meshes below
    *        different chains are never merged, so nothing visually moves
    *        differently afterwards.
-   * @returns {number} how many draw calls were saved
+   * @param {{reversible?: boolean}} options
+   * @returns {number|{saved:number, restore:function}} how many draw calls were
+   *          saved, with an undo handle for temporary flight-only merges
    */
-  function mergeStaticByMaterial(root, animatedNodes) {
-    if (!root) return 0;
+  function mergeStaticByMaterial(root, animatedNodes, options) {
+    var context = createMergeContext(options && options.reversible);
+    if (!root) return finishMerge(root, 0, context);
     var animated = [];
     (animatedNodes || []).forEach(function (n) { if (n) animated.push(n); });
     var animatedSet = new Set(animated);
@@ -298,6 +361,8 @@
       if (!o.geometry || !o.geometry.attributes || !o.geometry.attributes.position) return;
       if (o.morphTargetInfluences && o.morphTargetInfluences.length) return;
       if (o.userData && o.userData.noMerge) return;
+      // A temporary flight merge must not alter transparent-object sorting.
+      if (context.reversible && o.material && o.material.transparent) return;
       var key = o.material.uuid + '|' + chainKey(o);
       var bucket = buckets.get(key);
       if (!bucket) { bucket = { material: o.material, meshes: [] }; buckets.set(key, bucket); }
@@ -368,21 +433,31 @@
       out.receiveShadow = receiveShadow;
       out.name = 'merged-' + meshes.length + '-' + (bucket.material.name || bucket.material.type || 'mesh');
       out.userData.mergedFrom = meshes.length;
+      if (context.reversible) rememberParent(anchor, context);
       anchor.add(out);
 
+      var sourceRecords = [];
       removable.forEach(function (mesh) {
-        if (mesh.parent) mesh.parent.remove(mesh);
-        var g = mesh.geometry;
-        if (g && !seen.has(g.uuid)) { seen.add(g.uuid); g.dispose(); }
+        if (context.reversible) {
+          var source = detachSource(mesh, context);
+          if (source) sourceRecords.push(source);
+        } else {
+          if (mesh.parent) mesh.parent.remove(mesh);
+          var g = mesh.geometry;
+          if (g && !seen.has(g.uuid)) { seen.add(g.uuid); g.dispose(); }
+        }
       });
+      if (context.reversible) context.operations.push({ mesh: out, sources: sourceRecords });
 
       saved += meshes.length - 1;
-      if (!root.userData.drawCallMerge) root.userData.drawCallMerge = { groups: 0, saved: 0 };
-      root.userData.drawCallMerge.groups++;
-      root.userData.drawCallMerge.saved += meshes.length - 1;
+      if (!context.reversible) {
+        if (!root.userData.drawCallMerge) root.userData.drawCallMerge = { groups: 0, saved: 0 };
+        root.userData.drawCallMerge.groups++;
+        root.userData.drawCallMerge.saved += meshes.length - 1;
+      }
     });
 
-    return saved;
+    return finishMerge(root, saved, context);
   }
 
   window.AnshitaRigOptimizer = {

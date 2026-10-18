@@ -289,6 +289,7 @@
       this.beak = beak;
       sphere(beak, beakMat, [0, 0, 0], [.105, .075, .105], 20);
       const beakTip = addMesh(beak, new THREE.ConeGeometry(.092, .17, 7), beakMat);
+      this.beakTip = beakTip;
       beakTip.rotation.x = Math.PI / 2;
       beakTip.position.set(0, -.05, .049);
       // The tip opens on mood changes — never weld it to the beak sphere.
